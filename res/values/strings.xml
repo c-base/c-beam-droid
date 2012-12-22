@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">c-beam</string>
+    <string name="title_section4">Missions</string>
+    <string name="title_section3">Events</string>
+    <string name="title_section2">ETA</string>
+    <string name="title_section1">Online</string>
+    <string name="hello_world">c-beam</string>
+    <string name="menu_settings">Settings</string>
+
+</resources>
