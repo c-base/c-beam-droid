@@ -11,9 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ActionBar;
-import android.app.AlarmManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -30,13 +28,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-
-
-
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-
-	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -58,7 +51,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 		      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -96,15 +88,9 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		
-//		mSectionsPagerAdapter.getItem(0);
-//		mSectionsPagerAdapter.getItem(1);
-//		mSectionsPagerAdapter.getItem(2);
-			
-//		Bundle bundle = new Bundle();
 		// add extras here..
 		
-		 handler = new Handler();
-		 
+		 handler = new Handler();		 
 	}
 	
 	public void onStart() {
@@ -136,11 +122,10 @@ public class MainActivity extends FragmentActivity implements
 	            	ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
 	            	ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
 
-	            	
-        			Log.i("foo",""+online.isAdded());
-        			Log.i("foo",""+eta.isAdded());
-        			Log.i("foo",""+events.isAdded());
-        			Log.i("foo",""+missions.isAdded());
+        			Log.i("handler",""+online.isAdded());
+        			Log.i("handler",""+eta.isAdded());
+        			Log.i("handler",""+events.isAdded());
+        			Log.i("handler",""+missions.isAdded());
 	            	try {
 	            		JSONObject who = client.callJSONObject("who");
 	        			if (online.isAdded()) {
@@ -227,9 +212,10 @@ public class MainActivity extends FragmentActivity implements
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		ArrayListFragment[] pages = new ArrayListFragment[4];
+		ArrayListFragment[] pages;
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
+			pages = new ArrayListFragment[getCount()];
 		}
 
 		@Override
@@ -248,8 +234,6 @@ public class MainActivity extends FragmentActivity implements
 				Log.i("SectionsPagerAdapter","found");
 				fragment = pages[position];
 			}
-//			fragment = new ArrayListFragment();
-//			fragment.setArguments(new Bundle());
 			return (Fragment) fragment;
 		}
 
@@ -269,6 +253,8 @@ public class MainActivity extends FragmentActivity implements
 				return getString(R.string.title_section3).toUpperCase();
 			case 3:
 				return getString(R.string.title_section4).toUpperCase();
+			case 4:
+				return getString(R.string.title_section5).toUpperCase();
 			}
 			return null;
 		}

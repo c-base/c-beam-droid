@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">c-beam</string>
+    <string name="title_section5">Artefacts</string>
     <string name="title_section4">Missions</string>
     <string name="title_section3">Events</string>
     <string name="title_section2">ETA</string>
