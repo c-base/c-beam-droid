@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -29,7 +30,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener {
+ActionBar.TabListener {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -45,20 +46,19 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	ViewPager mViewPager;
 	private Handler handler;
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
-		      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		      StrictMode.setThreadPolicy(policy);
-		    }
-		
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
+
 		setContentView(R.layout.activity_main);
-		
+
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -76,110 +76,126 @@ public class MainActivity extends FragmentActivity implements
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
 		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+		.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
+
 		}
-		
+
+
+
 		// add extras here..
-		
-		 handler = new Handler();		 
+		handler = new Handler();
+
+		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
+		online.setNextActivity(UserActivity.class);
+		//     	 ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
+		//     	 ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
+		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
+		missions.setNextActivity(MissionActivity.class);
 	}
-	
+
 	public void onStart() {
 		super.onStart();
 		startProgress();
+		updateLists();
+	}
+
+	public void updateLists() {
+		C_beam c_beam = new C_beam();
+		ArrayList<User> users = c_beam.getUsers();
+
+		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(0);
+		online.setNextActivity(UserActivity.class);
+		ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
+		ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
+		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(3);
+
+		//		Log.i("handler",""+online.isAdded());
+		//		Log.i("handler",""+eta.isAdded());
+		//		Log.i("handler",""+events.isAdded());
+		//		Log.i("handler",""+missions.isAdded());
+		//Log.i("Users", users.toString());
+
+		ArrayList<User> onlineList = new ArrayList<User>();
+		ArrayList<User> offlineList = new ArrayList<User>();
+		ArrayList<User> etaList = new ArrayList<User>();
+
+		for (User user: users) {
+			if (user.getStatus().equals("online")) {
+				onlineList.add(user);
+			}
+			if (user.getStatus().equals("eta")) {
+				etaList.add(user);
+			}
+			if (user.getStatus().equals("offline")) {
+				offlineList.add(user);
+			}
+
+		}
+		try {
+			if (online.isAdded()) {
+				online.clear();
+				for(int i=0; i<onlineList.size();i++)
+					online.addItem(onlineList.get(i));
+			}
+			if (eta.isAdded()) {
+				eta.clear();
+				for(int i=0; i<etaList.size();i++)
+					eta.addItem(etaList.get(i).getUsername() + " (" + etaList.get(i).getEta() + ")");
+			}
+
+			if (events.isAdded()){
+				JSONArray eventsresult = c_beam.getEvents();
+				events.clear();
+				for(int i=0; i<eventsresult.length();i++)
+					events.addItem(eventsresult.get(i).toString());
+			}
+
+			if (missions.isAdded()){
+				ArrayList<Mission> missionList = c_beam.getMissions();
+				missions.clear();
+				for(int i=0; i<missionList.size();i++)
+					missions.addItem(missionList.get(i));
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void startProgress() {
-	    // Do something long
-	    Runnable runnable = new Runnable() {
-	      @Override
-	      public void run() {
-	        for (int i = 0; i >= 0; i++) {
-	          final int value = i;
-	          try {
-	            Thread.sleep(10000);
-	          } catch (InterruptedException e) {
-	            e.printStackTrace();
-	          }
-	          handler.post(new Runnable() {
-	            @Override
-	            public void run() {
-	            	JSONRPCClient client = JSONRPCClient.create("http://10.0.1.27:4254/rpc/");
-	            	client.setConnectionTimeout(5000);
-	            	client.setSoTimeout(5000);
-	            	
-	            	ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
-	            	ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
-	            	ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
-	            	ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
-
-        			Log.i("handler",""+online.isAdded());
-        			Log.i("handler",""+eta.isAdded());
-        			Log.i("handler",""+events.isAdded());
-        			Log.i("handler",""+missions.isAdded());
-	            	try {
-	            		JSONObject who = client.callJSONObject("who");
-	        			if (online.isAdded()) {
-		        			
-		        			JSONArray available = who.getJSONArray("available");
-		        			online.clear();
-		        			for(int i=0; i<available.length();i++)
-		        				online.addItem(available.get(i).toString());
-	        			}
-	        			
-	        			if (eta.isAdded()) {
-		        			JSONObject etaresult = who.getJSONObject("eta");
-		        			eta.clear();
-		        			Iterator etakeys = etaresult.keys();
-		        			while(etakeys.hasNext()){
-		        				String cur = etakeys.next().toString();
-		        				eta.addItem(cur.toString() + " (" + etaresult.get(cur) + ")");
-		        					
-		        			}
-	        			}
-	        		
-	        			if (events.isAdded()){
-		        			JSONArray eventsresult = client.callJSONArray("events");
-		        			events.clear();
-	        				for(int i=0; i<eventsresult.length();i++)
-	        					events.addItem(eventsresult.get(i).toString());
-	        			}
-	        			
-	        			if (missions.isAdded()){
-		        			JSONArray missionsresult = client.callJSONArray("missions");
-		        			missions.clear();
-	        				for(int i=0; i<missionsresult.length();i++)
-	        					missions.addItem(missionsresult.get(i).toString());
-	        			}
-	            	} catch (JSONRPCException e) {
-	        			// TODO Auto-generated catch block
-	        			e.printStackTrace();
-	        		} catch (JSONException e) {
-						// TODO Auto-generated catch block
+		// Do something long
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				for (int i = 0; i >= 0; i++) {
+					final int value = i;
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-	            	
-	            }
-	          });
-	        }
-	      }
-	    };
-	    new Thread(runnable).start();
-	  }
+					handler.post(new Runnable() {
+						@Override
+						public void run() {
+							updateLists();
+						}
+					});
+				}
+			}
+		};
+		new Thread(runnable).start();
+	}
 	protected void onResume () {
 		super.onResume();
-		
-		Log.i("FragmentList", "foo");
-		
 	}
 
 	@Override
@@ -226,12 +242,19 @@ public class MainActivity extends FragmentActivity implements
 			//Fragment fragment = new DummySectionFragment();
 			ArrayListFragment fragment;
 			if (pages[position] == null) {
-				fragment = new ArrayListFragment();
+				if(position == 0) {
+					fragment = new UserListFragment();
+				} else if(position == 3) {
+					fragment = new MissionListFragment();
+
+				} else {
+					fragment = new ArrayListFragment();
+				}
 				fragment.setArguments(new Bundle());
 				pages[position] = fragment;
-				Log.i("SectionsPagerAdapter","not found");
+				//Log.i("SectionsPagerAdapter","not found");
 			} else {
-				Log.i("SectionsPagerAdapter","found");
+				//Log.i("SectionsPagerAdapter","found");
 				fragment = pages[position];
 			}
 			return (Fragment) fragment;
@@ -259,30 +282,6 @@ public class MainActivity extends FragmentActivity implements
 			return null;
 		}
 	}	
-	class ArrayListFragment extends ListFragment {
-		List<String> items = new ArrayList<String>();
-		ListAdapter adapter;
-		
-		public void clear() {
-			items.clear();
-		}
-		public void addItem(String item) {
-			items.add(item);
-			 ((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged(); 
-		}
-		
-	    @Override
-	    public void onActivityCreated(Bundle savedInstanceState) {
-	        super.onActivityCreated(savedInstanceState);
-	        adapter = new ArrayAdapter<String>(getActivity(),
-	                android.R.layout.simple_list_item_1, items);
-	        setListAdapter(adapter);
-	    }
 
-	    @Override
-	    public void onListItemClick(ListView l, View v, int position, long id) {
-	        Log.i("FragmentList", "Item clicked: " + id);
-	    }
-	}		
 }
 
