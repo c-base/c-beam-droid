@@ -12,5 +12,11 @@
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_mission">MissionActivity</string>
     <string name="title_activity_event">EventActivity</string>
-
+	 <string name="gcm_message">From GCM: you got message!</string>
+	 <string name="title_activity_settings">Settings</string>
+	 <string name="pref_username">Username</string>
+	 <string name="pref_username_summ">Your c-base username</string>
+	 <string name="pref_push_summ">Enable Push Notifications</string>
+	 <string name="pref_push">Push</string>
+    
 </resources>

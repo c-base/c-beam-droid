@@ -104,4 +104,26 @@ public class C_beam {
 		}
 		return m;
 	}
+	
+	public void register(String regId, String user) {
+		try {
+			client.call("gcm_register", user, regId);
+			Log.i("c-beam", "register: "+user+":"+regId);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+	
+	public void register_update(String regId, String user) {
+		try {
+			client.call("gcm_update", user, regId);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+	
 }

@@ -1,5 +1,7 @@
 package org.c_base.c_beam;
 
+import java.sql.Date;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +12,7 @@ public class Mission {
 	private String short_description = "";
 	private String description = ""; 
 	private String status = "unknown";
+	private Date created_on = null;
 	
 	public Mission(JSONObject item) {
 		try {
@@ -18,6 +21,8 @@ public class Mission {
 			short_description = item.getString("short_description");
 			status = item.getString("status");
 			description = item.getString("description");
+			Log.i("due_date", item.getString("created_on"));
+			//created_on = Date.valueOf(item.getString("created_on"));
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -12,10 +12,13 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,10 +27,12 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends FragmentActivity implements
 ActionBar.TabListener {
@@ -100,6 +105,24 @@ ActionBar.TabListener {
 		//     	 ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
 		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
 		missions.setNextActivity(MissionActivity.class);
+
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		if (sharedPref.getBoolean("pref_push", false)) {
+			GCMRegistrar.checkDevice(this);
+			GCMRegistrar.checkManifest(this);
+			String regId = GCMRegistrar.getRegistrationId(this);
+			C_beam c_beam = new C_beam();
+			if (regId.equals("")) {
+				GCMRegistrar.register(this, "987966345562");
+				regId = GCMRegistrar.getRegistrationId(this);
+				Log.i("id", sharedPref.getString("pref_username", "dummy")+":"+GCMRegistrar.getRegistrationId(this));
+				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
+			} else {
+				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
+				Log.i("GCM", "Already registered");
+			}
+		}
+
 	}
 
 	public void onStart() {
@@ -203,6 +226,17 @@ ActionBar.TabListener {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		Log.i("Menu", item.toString());
+
+		Intent myIntent = new Intent(this, SettingsActivity.class);
+		startActivityForResult(myIntent, 0);
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
