@@ -1,8 +1,6 @@
 package org.c_base.c_beam;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
@@ -143,5 +141,21 @@ public class C_beam {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void force_login(String user) {
+		try {
+			client.call("force_login", user);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void force_logout(String user) {
+		try {
+			client.call("force_logout", user);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

@@ -29,6 +29,8 @@ public class UserListFragment extends ArrayListFragment {
         adapter = new ArrayAdapter<User>(getActivity(),
                 android.R.layout.simple_list_item_1, items);
         setListAdapter(adapter);
+        getListView().setPadding(5, 5, 5, 5);
+        //getListView().setDividerHeight(0);
     }
 
 	@Override

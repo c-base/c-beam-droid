@@ -13,9 +13,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <permission android:name="org.c_base.c_beam.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="org.c_base.c_beam.permission.C2D_MESSAGE" /> 
-    
+    <permission
+        android:name="org.c_base.c_beam.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="org.c_base.c_beam.permission.C2D_MESSAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -80,7 +83,12 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GCMIntentService" />
+        <service android:name="org.c_base.c_beam.GCMIntentService" />
+
+        <activity
+            android:name="org.c_base.c_beam.MainActivity2"
+            android:label="@string/title_activity_main_activity2" >
+        </activity>
     </application>
 
 </manifest>

@@ -21,6 +21,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ToggleButton;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -83,8 +86,22 @@ ActionBar.TabListener {
 					.setTabListener(this));
 
 		}
+		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		b.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				ToggleButton b = (ToggleButton) v;
+				if (b.isChecked()) {
+					login();
+				} else {
+					logout();
+				}
 
+			}
+
+		});
 
 		// add extras here..
 		handler = new Handler();
@@ -96,7 +113,6 @@ ActionBar.TabListener {
 		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
 		missions.setNextActivity(MissionActivity.class);
 
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPref.getBoolean("pref_push", false)) {
 			GCMRegistrar.checkDevice(this);
 			GCMRegistrar.checkManifest(this);
@@ -105,7 +121,6 @@ ActionBar.TabListener {
 			if (regId.equals("")) {
 				GCMRegistrar.register(this, "987966345562");
 				regId = GCMRegistrar.getRegistrationId(this);
-				Log.i("id", sharedPref.getString("pref_username", "dummy")+":"+GCMRegistrar.getRegistrationId(this));
 				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
 			} else {
 				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
@@ -121,7 +136,19 @@ ActionBar.TabListener {
 		updateLists();
 	}
 
+	public void login() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		C_beam c_beam = new C_beam();
+		c_beam.force_login(sharedPref.getString("pref_username", "bernd"));
+	}
+	public void logout() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		C_beam c_beam = new C_beam();
+		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
+	}
+
 	public void updateLists() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		C_beam c_beam = new C_beam();
 		ArrayList<User> users = c_beam.getUsers();
 
@@ -130,12 +157,6 @@ ActionBar.TabListener {
 		ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
 		ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(3);
-
-		//		Log.i("handler",""+online.isAdded());
-		//		Log.i("handler",""+eta.isAdded());
-		//		Log.i("handler",""+events.isAdded());
-		//		Log.i("handler",""+missions.isAdded());
-		//Log.i("Users", users.toString());
 
 		ArrayList<User> onlineList = new ArrayList<User>();
 		ArrayList<User> offlineList = new ArrayList<User>();
@@ -150,6 +171,12 @@ ActionBar.TabListener {
 			}
 			if (user.getStatus().equals("offline")) {
 				offlineList.add(user);
+			}
+			if(user.getUsername().equals(sharedPref.getString("pref_username", "bernd"))) {
+				ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+				if (button != null) {
+					button.setChecked(user.getStatus().equals("online"));
+				}
 			}
 
 		}
@@ -182,6 +209,7 @@ ActionBar.TabListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	public void startProgress() {
@@ -221,18 +249,16 @@ ActionBar.TabListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		Log.i("Menu", item.toString());
 		if (item.getItemId() == R.id.menu_settings) {
 			Intent myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_login) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			(new C_beam()).login(sharedPref.getString("username", "bernd"));
+			(new C_beam()).login(sharedPref.getString("pref_username", "bernd"));
 		} else if (item.getItemId() == R.id.menu_logout) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			(new C_beam()).logout(sharedPref.getString("username", "bernd"));
+			(new C_beam()).logout(sharedPref.getString("pref_username", "bernd"));
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -283,9 +309,7 @@ ActionBar.TabListener {
 				}
 				fragment.setArguments(new Bundle());
 				pages[position] = fragment;
-				//Log.i("SectionsPagerAdapter","not found");
 			} else {
-				//Log.i("SectionsPagerAdapter","found");
 				fragment = pages[position];
 			}
 			return (Fragment) fragment;
