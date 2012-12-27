@@ -13,11 +13,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class 	GCMIntentService extends GCMBaseIntentService {
@@ -40,7 +49,7 @@ public class 	GCMIntentService extends GCMBaseIntentService {
 		String text = arg1.getExtras().get("text").toString();
 
 		//notifications.get("foo").;
-		
+
 		Log.i("GCM Message", arg1.getExtras().get("title").toString());
 		NotificationCompat.Builder mBuilder =
 				new NotificationCompat.Builder(this)
@@ -54,11 +63,34 @@ public class 	GCMIntentService extends GCMBaseIntentService {
 		int id = (int) (Math.random()*10000000)+64;
 		if (title.equals("now boarding")) {
 			id = 1;
-			
+
 		} else if (title.equals("ETA")) {
 			id = 2;
+		} else if (title.equals("AES")) {
+			byte[] keyStart = "a1b2c3d4e5f6g7h8a1b2c3d4e5f6g7h8".getBytes();
+			KeyGenerator kgen = null;
+			SecureRandom sr = null;
+			try {
+				kgen = KeyGenerator.getInstance("AES");
+				sr = SecureRandom.getInstance("SHA1PRNG");
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			sr.setSeed(keyStart);
+			kgen.init(256, sr); // 192 and 256 bits may not be available
+			SecretKey skey = kgen.generateKey();
+			byte[] key = skey.getEncoded();    
+			try {
+				byte[] decryptedData = decrypt(key,text.getBytes());
+				Log.i("Decrypt", ""+decryptedData);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
 		}
-		
+
 		Log.i("id", ""+id);
 		//mBuilder.setNumber(42);
 		mBuilder.setAutoCancel(true);
@@ -71,18 +103,28 @@ public class 	GCMIntentService extends GCMBaseIntentService {
 		//mBuilder.setSubText("subtext");
 		//mBuilder.setSmallIcon(R.drawable.ic_launcher);
 		//Intent intent = new Intent(this, NotificationReceiverActivity.class);
-	    //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-	    
+		//PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
 		//mBuilder.setDeleteIntent(pIntent);
 		Notification notification = mBuilder.build();
 		notifications.put("foo", notification);
 		//notification.flags = Notification.DEFAULT_ALL;
 		notification.flags = Notification.FLAG_SHOW_LIGHTS;
 		notification.flags = Notification.DEFAULT_LIGHTS;
-		
+
 		mNotificationManager.notify(id, notification);
+
 	}
 
+	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
+		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+		Cipher cipher = Cipher.getInstance("AES");
+		cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+		
+		Log.i("encrypted", Base64.decode(encrypted, 0)+"");
+		byte[] decrypted = cipher.doFinal(Base64.decode(encrypted, 0));
+		return decrypted;
+	}
 	@Override
 	protected void onRegistered(Context context, String arg1) {
 		// TODO Auto-generated method stub

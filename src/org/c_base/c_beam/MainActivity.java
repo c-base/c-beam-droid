@@ -1,18 +1,12 @@
 package org.c_base.c_beam;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.alexd.jsonrpc.JSONRPCClient;
-import org.alexd.jsonrpc.JSONRPCException;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,15 +17,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+
 import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends FragmentActivity implements
@@ -232,9 +222,16 @@ ActionBar.TabListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		Log.i("Menu", item.toString());
-
-		Intent myIntent = new Intent(this, SettingsActivity.class);
-		startActivityForResult(myIntent, 0);
+		if (item.getItemId() == R.id.menu_settings) {
+			Intent myIntent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_login) {
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			(new C_beam()).login(sharedPref.getString("username", "bernd"));
+		} else if (item.getItemId() == R.id.menu_logout) {
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			(new C_beam()).logout(sharedPref.getString("username", "bernd"));
+		}
 
 		return super.onOptionsItemSelected(item);
 	}

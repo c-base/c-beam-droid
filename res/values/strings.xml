@@ -12,11 +12,14 @@
     <string name="title_activity_user">UserActivity</string>
     <string name="title_activity_mission">MissionActivity</string>
     <string name="title_activity_event">EventActivity</string>
-	 <string name="gcm_message">From GCM: you got message!</string>
-	 <string name="title_activity_settings">Settings</string>
-	 <string name="pref_username">Username</string>
-	 <string name="pref_username_summ">Your c-base username</string>
-	 <string name="pref_push_summ">Enable Push Notifications</string>
-	 <string name="pref_push">Push</string>
-    
+    <string name="gcm_message">From GCM: you got message!</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_username">Username</string>
+    <string name="pref_username_summ">Your c-base username</string>
+    <string name="pref_push_summ">Enable Push Notifications</string>
+    <string name="pref_push">Push</string>
+    <string name="c_beam_rpc_url">http://10.0.1.27:4254/rpc/</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_logout">Logout</string>
+
 </resources>

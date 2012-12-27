@@ -126,4 +126,22 @@ public class C_beam {
 	
 	}
 	
+	public void login(String user) {
+		try {
+			client.call("login", user);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void logout(String user) {
+		try {
+			client.call("logout", user);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
