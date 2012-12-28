@@ -1,8 +1,28 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/TableLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MissionActivity" >
+    tools:context=".MainActivity" >
 
-</TableLayout>
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/TableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/toggleMissionButton"
+        tools:context=".MissionActivity" >
+
+    </TableLayout>
+
+    <ToggleButton
+        android:id="@+id/toggleMissionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="ToggleButton"
+        android:textOff="@string/button_mission_start"
+        android:textOn="@string/button_mission_end" />
+
+</RelativeLayout>

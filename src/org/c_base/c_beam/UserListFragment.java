@@ -19,6 +19,8 @@ public class UserListFragment extends ArrayListFragment {
 	public void clear() {
 		items.clear();
 	}
+	
+	
 	public void addItem(User item) {
 		items.add(item);
 		 ((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();

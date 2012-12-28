@@ -15,7 +15,7 @@ public class User {
 	private String reminder;
 	private String remindertimestamp;
 	private String logintime;
-	
+
 	public User(JSONObject item) {
 		try {
 			id = item.getInt("id");	
@@ -41,7 +41,11 @@ public class User {
 	public String toString() {
 		//return "User [username=" + username + ", status=" + status + ", id="
 		//		+ id + "]";
-		return username;
+		if (status.equals("eta")) {
+			return username + " (" + eta + ")";
+		} else {
+			return username;
+		}
 	}
 	public void setUsername(String username) {
 		this.username = username;
@@ -106,5 +110,5 @@ public class User {
 	public void setLogintime(String logintime) {
 		this.logintime = logintime;
 	}
-	
+
 }

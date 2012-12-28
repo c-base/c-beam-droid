@@ -1,0 +1,11 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="294dp"
+    android:minHeight="72dp"
+    android:updatePeriodMillis="86400000"
+    android:previewImage="@drawable/ic_launcher"
+    android:initialLayout="@layout/c_beam_appwidget"
+    android:configure="com.example.android.C_beamAppWidgetConfigure" 
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen|keyguard"
+    android:initialKeyguardLayout="@layout/c_beam_keyguard">
+</appwidget-provider>

@@ -22,7 +22,7 @@ public class MissionActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		c_beam = new C_beam();
 
-		setContentView(R.layout.activity_user);
+		setContentView(R.layout.activity_mission);
 		// Show the Up button in the action bar.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {

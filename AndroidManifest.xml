@@ -79,15 +79,26 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="my_app_package" />
+                <category android:name="org.c_base.c_beam" />
             </intent-filter>
         </receiver>
 
         <service android:name="org.c_base.c_beam.GCMIntentService" />
 
-        <activity
-            android:name="org.c_base.c_beam.MainActivity2"
-            android:label="@string/title_activity_main_activity2" >
+        <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/c_beam_appwidget_info" />
+        </receiver>
+
+        <activity android:name=".ExampleAppWidgetConfigure" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
         </activity>
     </application>
 

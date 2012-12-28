@@ -6,7 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,10 +21,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ToggleButton;
 
 import com.google.android.gcm.GCMRegistrar;
@@ -45,10 +50,13 @@ ActionBar.TabListener {
 	ViewPager mViewPager;
 	private Handler handler;
 
+	C_beam c_beam = new C_beam();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		c_beam.startThread();
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -103,13 +111,19 @@ ActionBar.TabListener {
 
 		});
 
+		Button buttonC_out = (Button) findViewById(R.id.buttonC_out);
+		buttonC_out.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_out();
+			}
+
+		});
 		// add extras here..
 		handler = new Handler();
 
 		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
 		online.setNextActivity(UserActivity.class);
-		//     	 ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
-		//     	 ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
 		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
 		missions.setNextActivity(MissionActivity.class);
 
@@ -117,7 +131,6 @@ ActionBar.TabListener {
 			GCMRegistrar.checkDevice(this);
 			GCMRegistrar.checkManifest(this);
 			String regId = GCMRegistrar.getRegistrationId(this);
-			C_beam c_beam = new C_beam();
 			if (regId.equals("")) {
 				GCMRegistrar.register(this, "987966345562");
 				regId = GCMRegistrar.getRegistrationId(this);
@@ -138,40 +151,53 @@ ActionBar.TabListener {
 
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		C_beam c_beam = new C_beam();
 		c_beam.force_login(sharedPref.getString("pref_username", "bernd"));
 	}
 	public void logout() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		C_beam c_beam = new C_beam();
 		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
 	}
+	public void c_out() {
+		Log.i("c_out", "got called");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("c_out durchsage");
+		//.setTitle("Text:");
+		LayoutInflater inflater = this.getLayoutInflater();
 
+		// Inflate and set the layout for the dialog
+		// Pass null as the parent view because its going in the dialog layout
+		builder.setView(inflater.inflate(R.layout.dialog_c_out, null));
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				Log.i("dialog",dialog.toString());
+				//Log.i("c_out", "click: "+((EditText) findViewById(R.id.c_out_text)).getText().toString());
+				//c_beam.tts(((EditText) findViewById(R.id.c_out_text)).getText().toString());
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				// User cancelled the dialog
+			}
+		});
+		AlertDialog dialog = builder.create();
+		dialog.show();		
+	}
 	public void updateLists() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		C_beam c_beam = new C_beam();
-		ArrayList<User> users = c_beam.getUsers();
+
+		//ArrayList<User> users = c_beam.getUsers();
 
 		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(0);
 		online.setNextActivity(UserActivity.class);
-		ArrayListFragment eta = (ArrayListFragment) mSectionsPagerAdapter.getItem(1);
-		ArrayListFragment events = (ArrayListFragment) mSectionsPagerAdapter.getItem(2);
+		UserListFragment eta = (UserListFragment) mSectionsPagerAdapter.getItem(1);
+		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(2);
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(3);
 
-		ArrayList<User> onlineList = new ArrayList<User>();
-		ArrayList<User> offlineList = new ArrayList<User>();
-		ArrayList<User> etaList = new ArrayList<User>();
+		ArrayList<User> onlineList = c_beam.getOnlineList();
+		ArrayList<User> offlineList = c_beam.getOfflineList();
+		ArrayList<User> etaList = c_beam.getEtaList();
 
-		for (User user: users) {
-			if (user.getStatus().equals("online")) {
-				onlineList.add(user);
-			}
-			if (user.getStatus().equals("eta")) {
-				etaList.add(user);
-			}
-			if (user.getStatus().equals("offline")) {
-				offlineList.add(user);
-			}
+		for (User user: c_beam.getUsers()) {
 			if(user.getUsername().equals(sharedPref.getString("pref_username", "bernd"))) {
 				ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
 				if (button != null) {
@@ -189,14 +215,16 @@ ActionBar.TabListener {
 			if (eta.isAdded()) {
 				eta.clear();
 				for(int i=0; i<etaList.size();i++)
-					eta.addItem(etaList.get(i).getUsername() + " (" + etaList.get(i).getEta() + ")");
+					eta.addItem(etaList.get(i));
 			}
 
 			if (events.isAdded()){
 				JSONArray eventsresult = c_beam.getEvents();
 				events.clear();
-				for(int i=0; i<eventsresult.length();i++)
-					events.addItem(eventsresult.get(i).toString());
+				if (eventsresult != null) { 
+					for(int i=0; i<eventsresult.length();i++)
+						events.addItem(new Event(eventsresult.get(i).toString()));
+				}
 			}
 
 			if (missions.isAdded()){
@@ -220,7 +248,7 @@ ActionBar.TabListener {
 				for (int i = 0; i >= 0; i++) {
 					final int value = i;
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -254,10 +282,10 @@ ActionBar.TabListener {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_login) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			(new C_beam()).login(sharedPref.getString("pref_username", "bernd"));
+			c_beam.login(sharedPref.getString("pref_username", "bernd"));
 		} else if (item.getItemId() == R.id.menu_logout) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			(new C_beam()).logout(sharedPref.getString("pref_username", "bernd"));
+			c_beam.logout(sharedPref.getString("pref_username", "bernd"));
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -301,9 +329,12 @@ ActionBar.TabListener {
 			if (pages[position] == null) {
 				if(position == 0) {
 					fragment = new UserListFragment();
+				} else if(position == 1) {
+					fragment = new UserListFragment();
+				} else if(position == 2) {
+					fragment = new EventListFragment();
 				} else if(position == 3) {
 					fragment = new MissionListFragment();
-
 				} else {
 					fragment = new ArrayListFragment();
 				}

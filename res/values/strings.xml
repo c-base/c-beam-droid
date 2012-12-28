@@ -24,5 +24,9 @@
     <string name="title_activity_main_activity2">MainActivity2</string>
     <string name="offline">Nicht an Bord</string>
     <string name="online">An Bord</string>
+    <string name="button_mission_start">Mission starten</string>
+    <string name="button_mission_end">Mission beenden</string>
+    <string name="button_tts">c_out</string>
+     <string name="appwidget_prefix_default">c-beam</string>
 
 </resources>

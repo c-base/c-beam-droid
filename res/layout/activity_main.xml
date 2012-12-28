@@ -2,15 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity2" >
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".MainActivity" >
+
+<android.support.v4.view.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_above="@+id/toggleLogin"
     tools:context=".MainActivity" >
-
- 
 
 </android.support.v4.view.ViewPager>
 
@@ -20,8 +21,17 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"
-    android:layout_alignParentRight="true"
+    android:layout_toLeftOf="@+id/buttonC_out"
     android:textOff="@string/offline"
     android:textOn="@string/online" />
+
+<Button
+    android:id="@+id/buttonC_out"
+    style="?android:attr/buttonStyleSmall"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:text="@string/button_tts" />
 
 </RelativeLayout>   

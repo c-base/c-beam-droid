@@ -27,12 +27,13 @@ public class UserActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			User u = c_beam.getUser(extras.getInt("id"));
-			Log.i("UserActivity", u.getNickspell());
-			tl = (TableLayout) findViewById(R.id.TableLayout1);
 			//addHeaders();
-			addData(u);
-
-
+			tl = (TableLayout) findViewById(R.id.TableLayout1);
+			if (u!=null) {
+				addData(u);
+			} else {
+				Log.e("UserActivity", "user not forund: "+extras.getInt("id"));
+			}
 		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
