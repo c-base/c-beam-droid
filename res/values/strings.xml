@@ -2,11 +2,13 @@
 <resources>
 
     <string name="app_name">c-beam</string>
-    <string name="title_section5">Artefacts</string>
-    <string name="title_section4">Missions</string>
-    <string name="title_section3">Events</string>
-    <string name="title_section2">ETA</string>
-    <string name="title_section1">Online</string>
+    <string name="title_section5">Missionen</string>
+    <string name="title_section6">c-ontrol</string>
+    <string name="title_section4">Events</string>
+    <string name="title_section3">Artefacts</string>
+    <string name="title_section2">c-portal</string>
+    <string name="title_section1">An Bord</string>
+	<string name="title_section0">An Bord</string>
     <string name="hello_world">c-beam</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_user">UserActivity</string>
@@ -27,6 +29,9 @@
     <string name="button_mission_start">Mission starten</string>
     <string name="button_mission_end">Mission beenden</string>
     <string name="button_tts">c_out</string>
-     <string name="appwidget_prefix_default">c-beam</string>
+    <string name="appwidget_prefix_default">c-beam</string>
+    <string name="title_activity_c_out">c_out</string>
+    <string name="menu_c_out">c_out</string>
+    <string name="c_out_sound_played">Cound wurde abgespielt</string>
 
 </resources>

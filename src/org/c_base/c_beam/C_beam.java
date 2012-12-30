@@ -242,6 +242,55 @@ public class C_beam {
 		}
 		
 	}
+
+	public synchronized void r2d2(String text) {
+		try {
+			Log.i("c-beam","r2d2("+text+")");
+			client.call("tts", "r2d2", text);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public ArrayList<String> getSounds() {
+		ArrayList<String> result = new ArrayList<String>();
+		try {
+			JSONObject res = client.callJSONObject("sounds");
+			JSONArray items = res.getJSONArray("result");
+			for(int i=0; i<items.length();i++)
+				result.add(items.getString(i));
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public void play(String sound) {
+		try {
+			Log.i("c-beam","play("+sound+")");
+			client.call("play", sound);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void announce(String text) {
+		try {
+			Log.i("c-beam","announce("+text+")");
+			client.call("announce", text);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 }

@@ -5,16 +5,20 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/menu_settings"/>
-
-        <item
+    <item
         android:id="@+id/menu_login"
         android:orderInCategory="101"
         android:showAsAction="never"
         android:title="@string/menu_login"/>
-    
- 		<item
+    <item
         android:id="@+id/menu_logout"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:showAsAction="never"
-        android:title="@string/menu_logout"/>   
+        android:title="@string/menu_logout"/>
+    <item
+        android:id="@+id/menu_c_out"
+        android:orderInCategory="103"
+        android:showAsAction="never"
+        android:title="@string/menu_c_out"/>
+
 </menu>

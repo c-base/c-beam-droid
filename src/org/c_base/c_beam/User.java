@@ -42,7 +42,7 @@ public class User {
 		//return "User [username=" + username + ", status=" + status + ", id="
 		//		+ id + "]";
 		if (status.equals("eta")) {
-			return username + " (" + eta + ")";
+			return "ETA: " + username + " (" + eta + ")";
 		} else {
 			return username;
 		}

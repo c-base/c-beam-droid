@@ -20,11 +20,11 @@ public class UserListFragment extends ArrayListFragment {
 		items.clear();
 	}
 	
-	
 	public void addItem(User item) {
 		items.add(item);
 		 ((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
+	
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

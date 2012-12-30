@@ -3,22 +3,22 @@ package org.c_base.c_beam;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class ArrayListFragment extends ListFragment {
+public class C_outListFragment extends ArrayListFragment {
 	List<String> items = new ArrayList<String>();
 	ListAdapter adapter;
-	Class nextActivity = UserActivity.class;
+	C_beam c_beam;
 	
-	public ArrayListFragment() {
-		
+	
+	public C_outListFragment() {
+		c_beam = new C_beam();
 	}
 	
 	public void clear() {
@@ -39,13 +39,10 @@ public class ArrayListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.i("FragmentList", "Item clicked: " + id);
-        Intent myIntent = new Intent(v.getContext(), nextActivity);
-        myIntent.putExtra("username", items.get((int) id));
-        startActivityForResult(myIntent, 0);
+        Log.i("FragmentList", "Item clicked: " + items.get((int) id));
+        c_beam.play(items.get((int) id));
+        Toast.makeText(v.getContext(), R.string.c_out_sound_played, Toast.LENGTH_LONG).show();
     }
     
-    public void setNextActivity(Class cls) {
-    	nextActivity = cls;
-    }
+   
 }	

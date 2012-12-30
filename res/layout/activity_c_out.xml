@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_portrait"
+    tools:context=".C_outActivity" >
+
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="org.c_base.c_beam.C_outListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/textView3" />
+
+    <Button
+        android:id="@+id/button_tts"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/c_outEditText"
+        android:text="TTS" />
+
+    <Button
+        android:id="@+id/button_announce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView3"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/button1"
+        android:text="Announce" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/button_tts"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:text="c_out cound abspielen:" />
+
+    <Button
+        android:id="@+id/button_r2d2"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView3"
+        android:layout_toLeftOf="@id/button_announce"
+        android:layout_toRightOf="@+id/button_tts"
+        android:text="R2D2" />
+
+    <EditText
+        android:id="@+id/c_outEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/enter_text_textView"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/enter_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:text="Text eingeben:" />
+
+</RelativeLayout>

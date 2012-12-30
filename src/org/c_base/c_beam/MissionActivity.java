@@ -72,32 +72,25 @@ public class MissionActivity extends Activity {
 		/** Create a TableRow dynamically **/
 		tr = new TableRow(this);
 		tr.setLayoutParams(new LayoutParams(
-//					LayoutParams.FILL_PARENT,
-				LayoutParams.WRAP_CONTENT));
+				LayoutParams.MATCH_PARENT));
 
 		/** Creating a TextView to add to the row **/
 		labelTV = new TextView(this);
 		labelTV.setText(label);
-//		companyTV.setTextColor(Color.RED);
-//		companyTV.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-//		companyTV.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		labelTV.setPadding(15, 15, 15, 15);
 		tr.addView(labelTV);  // Adding textView to tablerow.
 
 		/** Creating another textview **/
 		valueTV = new TextView(this);
 		valueTV.setText(value);
-//		valueTV.setTextColor(Color.GREEN);
-//		valueTV.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		valueTV.setPadding(15, 15, 15, 15);
-		//valueTV.setWidth(LayoutParams.WRAP_CONTENT);
-//		valueTV.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+		
 		tr.addView(valueTV); // Adding textView to tablerow.
 
 		// Add the TableRow to the TableLayout
 		tl.addView(tr, new TableLayout.LayoutParams(
 				LayoutParams.FILL_PARENT,
-				LayoutParams.WRAP_CONTENT));
+				LayoutParams.MATCH_PARENT));
 		
 	}
 
