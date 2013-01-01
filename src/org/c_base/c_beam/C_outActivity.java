@@ -24,7 +24,7 @@ public class C_outActivity extends FragmentActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 		
-		c_beam = new C_beam();
+		c_beam = new C_beam(this);
 		ArrayList<String> sounds = c_beam.getSounds();
 		for(int i=0; i<sounds.size();i++)
 			f.addItem(sounds.get(i));

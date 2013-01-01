@@ -10,10 +10,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/TableLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/toggleButton1"
+        android:layout_below="@dimen/widget_margin"
         android:orientation="horizontal"
         tools:context=".UserActivity" >
+
     </TableLayout>
 
     <ToggleButton
@@ -25,19 +27,27 @@
         android:text="ToggleButton" />
 
     <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/button1"
-        android:text="Button" />
-
-    <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="Button" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TableLayout1"
+        android:layout_marginRight="35dp"
+        android:layout_toLeftOf="@+id/toggleButton1"
+        android:text="Button" />
+
+    <WebView
+        android:id="@+id/userWebView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/TableLayout1"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

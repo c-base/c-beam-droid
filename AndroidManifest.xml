@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -108,7 +108,38 @@
             android:parentActivityName="org.c_base.c_beam.MainActivity"
             android:taskAffinity="org.c_base.c_beam.C_outActivity"
             android:windowSoftInputMode="stateHidden" >
-            
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.c_base.c_beam.WebActivity"
+            android:label="@string/title_activity_web"
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:taskAffinity="org.c_base.c_beam.WebActivity"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="org.c_base.c_beam.ArtefactActivity"
+            android:label="@string/title_activity_artefact_long"
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:taskAffinity="org.c_base.c_beam.ArtefactActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.MainActivity" />
+
+        </activity>
+        <activity
+            android:name="org.c_base.c_beam.C_PortalActivity"
+            android:label="@string/title_activity_c_portal"
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:taskAffinity="org.c_base.c_beam.C_portalActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />

@@ -9,18 +9,16 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/button_self_destruct"
-        android:layout_toLeftOf="@+id/button_self_destruct"
+        android:layout_alignParentTop="true"
         android:text="Abheben" />
 
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:text="Antenne"
         android:textOff="Antenne aus"
         android:textOn="Antenne an" />
@@ -30,70 +28,20 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/toggleButton1"
+        android:layout_toRightOf="@+id/button2"
         android:text="Erde absprengen" />
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_below="@+id/textView2"
-        android:layout_toLeftOf="@+id/button1"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
-
-    <TextView
-        android:id="@+id/textView2"
+    <ToggleButton
+        android:id="@+id/toggleButtonBluewall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="14dp"
-        android:text="c_out tts:" />
-
-    <Button
-        android:id="@+id/button1"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText1"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/editText1"
-        android:layout_marginRight="18dp"
-        android:text="Go" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignRight="@+id/editText1"
-        android:layout_below="@+id/textView3"
-        android:ems="10"
-        android:focusableInTouchMode="false" />
-
-    <Button
-        android:id="@+id/button3"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText2"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_alignTop="@+id/editText2"
-        android:text="Go" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_below="@+id/editText1"
-        android:layout_marginTop="14dp"
-        android:text="c_out announce:" />
+        android:layout_below="@+id/button2"
+        android:text="ToggleButton"
+        android:textOff="Darkwall"
+        android:textOn="Bluewall" />
 
 </RelativeLayout>

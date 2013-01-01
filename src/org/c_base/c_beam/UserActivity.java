@@ -6,6 +6,7 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
@@ -20,7 +21,7 @@ public class UserActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		c_beam = new C_beam();
+		c_beam = new C_beam(this);
 
 		setContentView(R.layout.activity_user);
 		// Show the Up button in the action bar.
@@ -31,17 +32,21 @@ public class UserActivity extends Activity {
 			tl = (TableLayout) findViewById(R.id.TableLayout1);
 			if (u!=null) {
 				addData(u);
+				WebView w = (WebView) findViewById(R.id.userWebView);
+				w.loadUrl("http://"+u.getUsername()+".crew.c-base.org");
 			} else {
 				Log.e("UserActivity", "user not forund: "+extras.getInt("id"));
 			}
 		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_user, menu);
+		
 		return true;
 	}
 

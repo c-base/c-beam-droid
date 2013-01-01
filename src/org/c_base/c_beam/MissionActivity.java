@@ -20,7 +20,7 @@ public class MissionActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		c_beam = new C_beam();
+		c_beam = new C_beam(this);
 
 		setContentView(R.layout.activity_mission);
 		// Show the Up button in the action bar.
@@ -29,9 +29,12 @@ public class MissionActivity extends Activity {
 			Mission m = c_beam.getMission(extras.getInt("id"));
 			tl = (TableLayout) findViewById(R.id.TableLayout1);
 			//addHeaders();
-			Log.i("Mission", m.toString());
-			addData(m);
-
+			if (m != null) {
+				Log.i("Mission", m.toString());
+				addData(m);
+			} else {
+				Log.e("MissionActivity", "mission not forund: "+extras.getInt("id"));
+			}
 
 		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);

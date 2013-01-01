@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ToggleButton;
 
 
 
@@ -21,8 +22,17 @@ public class C_ontrolFragment extends Fragment {
 	C_ontrolFragment cf = this;
 	AlertDialog pd;
 	AlertDialog bam;
-	int progress; 
-	
+	int progress;
+	C_beam c_beam;
+
+	public C_ontrolFragment() {
+		this.c_beam = null;
+	}
+
+	public C_ontrolFragment(C_beam c_beam) {
+		this.c_beam = c_beam;
+	}
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (container == null) {
@@ -56,16 +66,15 @@ public class C_ontrolFragment extends Fragment {
 						Looper.prepare();
 						for (progress = 0; progress < 100; progress++) {
 							try {
-								Thread.sleep(10);
+								Thread.sleep(100);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
 							input.setProgress(progress);
 						}
 						Log.i("thread", "done");
-						pd.dismiss(); 
-						
-						
+						pd.dismiss();
+						bam.show();
 					}
 					public int getProgress(){
 						return progress;
@@ -87,7 +96,22 @@ public class C_ontrolFragment extends Fragment {
 				b.show();
 			}
 		});	
-		 
+
+		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
+		t.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ToggleButton t = (ToggleButton) v;
+				if (c_beam != null) {
+					if (t.isChecked()) {
+						c_beam.bluewall();
+					} else {
+						c_beam.bluewall();
+					}
+				}
+			}
+		});	
+
 		thisView = v;
 		return v;
 	}

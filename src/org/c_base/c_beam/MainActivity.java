@@ -42,20 +42,17 @@ ActionBar.TabListener {
 	private Handler handler;
 	EditText text;
 
-	C_beam c_beam = new C_beam();
+	C_beam c_beam = new C_beam(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-		Log.i("FOOOOO", ""+Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress) );
+		super.onCreate(savedInstanceState);
 
 		if (isInCrewNetwork()) {
 			c_beam.startThread();
 		} else {
-			Log.i("c-beam", "not starting thread, not in crew network");
+			Log.i("c-beam", "not starting c-beam thread, not in crew network");
 		}
-
-		super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -150,7 +147,8 @@ ActionBar.TabListener {
 	public boolean isInCrewNetwork() {
 		WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 
-		if (Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress).startsWith("10.0.") && wifiManager.isWifiEnabled()) {
+		if (wifiManager.isWifiEnabled() && Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress).startsWith("10.0.")) {
+		//if (true) {
 			return true;
 		} else {
 			// TODO: Display message 
@@ -203,6 +201,9 @@ ActionBar.TabListener {
 		//UserListFragment eta = (UserListFragment) mSectionsPagerAdapter.getItem(1);
 		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(3);
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(4);
+		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(1);
+		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(2);
+
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
 		//ArrayList<User> offlineList = c_beam.getOfflineList();
@@ -248,6 +249,26 @@ ActionBar.TabListener {
 				missions.clear();
 				for(int i=0; i<missionList.size();i++)
 					missions.addItem(missionList.get(i));
+			}
+
+			if(c_portal.isAdded()) {
+				ArrayList<Article> articleList = new ArrayList<Article>();
+				if (isInCrewNetwork())
+					articleList = c_beam.getArticles();
+				c_portal.clear();
+				for(int i=0; i<articleList.size();i++)
+					c_portal.addItem(articleList.get(i));
+			}
+
+			if(artefacts.isAdded()) {
+				ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+				if (isInCrewNetwork())
+					artefactList = c_beam.getArtefacts();
+				if (artefactList.size() != artefacts.size()) {
+					artefacts.clear();
+					for(int i=0; i<artefactList.size();i++)
+						artefacts.addItem(artefactList.get(i));
+				}
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -348,8 +369,12 @@ ActionBar.TabListener {
 			if (pages[position] == null) {
 				if(position == 0) {
 					fragment = new UserListFragment();
+				} else if(position == 1) {
+					fragment = new C_portalListFragment();
+				} else if(position == 2) {
+					fragment = new ArtefactListFragment();
 				} else if(position == 5) {
-					fragment = new C_ontrolFragment();
+					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == 3) {
 					fragment = new EventListFragment();
 				} else if(position == 4) {

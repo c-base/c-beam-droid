@@ -18,7 +18,7 @@ public class C_outListFragment extends ArrayListFragment {
 	
 	
 	public C_outListFragment() {
-		c_beam = new C_beam();
+		c_beam = new C_beam(this.getActivity());
 	}
 	
 	public void clear() {

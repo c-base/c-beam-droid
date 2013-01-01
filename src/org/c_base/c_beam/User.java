@@ -17,6 +17,7 @@ public class User {
 	private String logintime;
 
 	public User(JSONObject item) {
+		super();
 		try {
 			id = item.getInt("id");	
 			username = item.getString("username");
