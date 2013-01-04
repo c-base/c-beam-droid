@@ -6,11 +6,26 @@
         android:key="pref_push"
         android:summary="@string/pref_push_summ"
         android:title="@string/pref_push" />
-    
+
     <EditTextPreference
         android:defaultValue="bernd"
         android:key="pref_username"
         android:summary="@string/pref_username_summ"
         android:title="@string/pref_username" />
-
+    <!-- 
+    <EditTextPreference
+        android:defaultValue="X-Scale"
+        android:key="pref_font"
+        android:summary="@string/pref_font_summ"
+        android:title="@string/pref_font" />
+    
+     -->
+	<ListPreference
+        android:key="pref_font"
+        android:title="Font"
+        android:dialogTitle="Font"
+        android:entries="@array/fonts_array"
+        android:entryValues="@array/fonts_array"
+        android:defaultValue="X-Scale" />
+	
 </PreferenceScreen>

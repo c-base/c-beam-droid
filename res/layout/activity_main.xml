@@ -13,6 +13,11 @@
     android:layout_height="match_parent"
     android:layout_above="@+id/toggleLogin"
     tools:context=".MainActivity" >
+    
+     <android.support.v4.view.PagerTabStrip
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" />
 
 </android.support.v4.view.ViewPager>
 
@@ -22,7 +27,6 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"
-    android:layout_toLeftOf="@+id/buttonC_out"
     android:textOff="@string/offline"
     android:textOn="@string/online" />
 

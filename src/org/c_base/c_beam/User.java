@@ -15,6 +15,8 @@ public class User {
 	private String reminder;
 	private String remindertimestamp;
 	private String logintime;
+	private int autologout;
+	private int autologout_in;
 
 	public User(JSONObject item) {
 		super();
@@ -30,6 +32,8 @@ public class User {
 			reminder = item.getString("reminder");
 			remindertimestamp = item.getString("remindertimestamp");
 			logintime = item.getString("logintime");
+			setAutologout(item.getInt("autologout"));
+			setAutologout_in(item.getInt("autologout_in"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,6 +114,18 @@ public class User {
 	}
 	public void setLogintime(String logintime) {
 		this.logintime = logintime;
+	}
+	public int getAutologout() {
+		return autologout;
+	}
+	public void setAutologout(int autologout) {
+		this.autologout = autologout;
+	}
+	public int getAutologout_in() {
+		return autologout_in;
+	}
+	public void setAutologout_in(int autologout_in) {
+		this.autologout_in = autologout_in;
 	}
 
 }

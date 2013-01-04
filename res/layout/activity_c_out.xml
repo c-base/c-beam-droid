@@ -30,7 +30,7 @@
         android:layout_toRightOf="@+id/button1"
         android:text="Announce" />
 
-    <TextView
+    <org.c_base.c_beam.CTextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:layout_below="@+id/enter_text_textView"
         android:ems="10" />
 
-    <TextView
+    <org.c_base.c_beam.CTextView
         android:id="@+id/enter_text_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

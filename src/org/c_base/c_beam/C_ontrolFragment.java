@@ -1,7 +1,7 @@
 package org.c_base.c_beam;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -42,20 +42,19 @@ public class C_ontrolFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_c_ontrol, container, false);
 		Button b = (Button) v.findViewById(R.id.button_self_destruct);
 
+		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+		adb.setTitle("BAM!");
+		adb.setPositiveButton("Danke", null);
+		bam = adb.create();
+
 		b.setOnClickListener(new OnClickListener() {
-			ProgressDialog p;
 			@Override
 			public void onClick(View v) {
-				AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
-				adb.setTitle("BAM!");
-				adb.setPositiveButton("Danke", null);
-				bam = adb.create();
-
 				AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
 				b.setTitle("Erde wird abgesprengt, bitte warten...");
 				input = new ProgressBar(v.getContext(), null, android.R.attr.progressBarStyleHorizontal);
 				b.setView(input);
-				b.setNegativeButton("CANCEL", null);
+				b.setPositiveButton("Danke für den Fisch.", null);
 
 				pd = b.create();
 				pd.show();
@@ -66,7 +65,12 @@ public class C_ontrolFragment extends Fragment {
 						Looper.prepare();
 						for (progress = 0; progress < 100; progress++) {
 							try {
-								Thread.sleep(100);
+								if (progress < 97) {
+									Thread.sleep(5);
+								} else {
+									Thread.sleep(2000);
+								}
+								//Thread.sleep(2*progress);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -74,7 +78,8 @@ public class C_ontrolFragment extends Fragment {
 						}
 						Log.i("thread", "done");
 						pd.dismiss();
-						bam.show();
+						Intent myIntent = new Intent(cf.getActivity(), BamActivity.class);
+						startActivityForResult(myIntent, 0);
 					}
 					public int getProgress(){
 						return progress;
@@ -82,10 +87,12 @@ public class C_ontrolFragment extends Fragment {
 				};
 				Thread thread = new Thread(r);
 				thread.start();
+
+
 			}			
 		});
 
-		b = (Button) v.findViewById(R.id.button2);
+		b = (Button) v.findViewById(R.id.button_liftoff);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -112,15 +119,18 @@ public class C_ontrolFragment extends Fragment {
 			}
 		});	
 
+		b = (Button) v.findViewById(R.id.button_softwareverbrennung);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.hwstorage(true);
+			}
+		});	
+		
 		thisView = v;
 		return v;
 	}
-	public void bam() {
-		AlertDialog.Builder b = new AlertDialog.Builder(thisView.getContext());
-		b.setTitle("BAM!");
-		b.setPositiveButton("Danke", null);
-		b.create().show();
-	}
+
 	@Override
 	public void onViewStateRestored(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

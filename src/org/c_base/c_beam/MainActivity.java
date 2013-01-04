@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -22,37 +22,60 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gcm.GCMRegistrar;
 
+@SuppressLint("NewApi")
 public class MainActivity extends FragmentActivity implements
 ActionBar.TabListener {
+	private static final int USER_FRAGMENT = 0;
+	private static final int C_PORTAL_FRAGMENT = 1;
+	private static final int ARTEFACTS_FRAGMENT = 2;
+	private static final int EVENTS_FRAGMENT = 3;
+	private static final int C_ONTROL_FRAGMENT = 4;
+	private static final int MISSION_FRAGMENT = 5;
+
+
+	private static final int threadDelay = 1000;
+
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
 	private Handler handler;
 	EditText text;
+	
+	ActionBar actionBar;
 
 	C_beam c_beam = new C_beam(this);
 
+	public void setOnline() {
+		if (android.os.Build.VERSION.SDK_INT > 13) {
+			actionBar.setIcon(R.drawable.ic_launcher_c_beam_online);
+		}
+	}
+	
+	@SuppressLint("NewApi")
+	public void setOffline() {
+		if (android.os.Build.VERSION.SDK_INT > 13) {
+			actionBar.setIcon(R.drawable.ic_launcher);
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (isInCrewNetwork()) {
-			c_beam.startThread();
-		} else {
-			Log.i("c-beam", "not starting c-beam thread, not in crew network");
-		}
+		c_beam.startThread();
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -60,11 +83,16 @@ ActionBar.TabListener {
 		}
 
 		setContentView(R.layout.activity_main);
-
+		
 		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
+		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+		
+//		ViewPagerAdapter adapter = new ViewPagerAdapter( this );
+//	    ViewPager pager =
+//	        (ViewPager)findViewById( R.id.pager );
+//	    pager.setAdapter( adapter );
+		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -97,10 +125,35 @@ ActionBar.TabListener {
 			@Override
 			public void onClick(View v) {
 				ToggleButton b = (ToggleButton) v;
+				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
 				if (b.isChecked()) {
-					login();
+					builder.setTitle(R.string.confirm_login);
+					builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int whichButton)
+						{
+//							Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
+							login();
+						}
+					});
+					builder.setNegativeButton(R.string.button_cancel, null);
+					builder.create().show();
+
 				} else {
-					logout();
+					builder.setTitle(R.string.confirm_logout);
+					builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int whichButton)
+						{
+							// Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
+							logout();
+						}
+					});
+					builder.setNegativeButton(R.string.button_cancel, null);
+					builder.create().show();
 				}
 
 			}
@@ -111,7 +164,6 @@ ActionBar.TabListener {
 		buttonC_out.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//c_out();
 				Intent myIntent = new Intent(v.getContext(), C_outActivity.class);
 				startActivityForResult(myIntent, 0);
 
@@ -121,10 +173,10 @@ ActionBar.TabListener {
 		// add extras here..
 		handler = new Handler();
 
-		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
-		online.setNextActivity(UserActivity.class);
-		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(3);
-		missions.setNextActivity(MissionActivity.class);
+//		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
+//		online.setNextActivity(UserActivity.class);
+//		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
+//		missions.setNextActivity(MissionActivity.class);
 
 		if (sharedPref.getBoolean("pref_push", false)) {
 			GCMRegistrar.checkDevice(this);
@@ -133,29 +185,27 @@ ActionBar.TabListener {
 			if (regId.equals("")) {
 				GCMRegistrar.register(this, "987966345562");
 				regId = GCMRegistrar.getRegistrationId(this);
-				if (isInCrewNetwork())
-					c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
+				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
 			} else {
-				if (isInCrewNetwork())
-					c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
+				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
 				Log.i("GCM", "Already registered");
 			}
 		}
-
-	}
-
-	public boolean isInCrewNetwork() {
-		WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-
-		if (wifiManager.isWifiEnabled() && Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress).startsWith("10.0.")) {
-		//if (true) {
-			return true;
-		} else {
-			// TODO: Display message 
-			Log.i("c-beam", "not in crew network");
-			return false;
-		}
-
+//		String font = sharedPref.getString("pref_font", "Android Default");
+//		if (font.equals("Default Android")) {
+//			
+//		} else if (font.equals("X-Scale")) {
+//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "X-SCALE.TTF");
+//			final ViewGroup mContainer = (ViewGroup) findViewById(
+//					android.R.id.content).getRootView();
+//			setAppFont(mContainer, myTypeface);
+//		} else if (font.equals("Ceva")) {	
+//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF");
+//			final ViewGroup mContainer = (ViewGroup) findViewById(
+//					android.R.id.content).getRootView();
+//			setAppFont(mContainer, myTypeface);
+//			
+//		}
 	}
 
 	public void onStart() {
@@ -172,41 +222,36 @@ ActionBar.TabListener {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
 	}
-	public void c_out() {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("c_out-durchsage eingeben");
-		final EditText input = new EditText(this);
-		b.setView(input);
-		b.setPositiveButton("OK", new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton)
-			{
-				String result = input.getText().toString();
-				c_beam.tts(result);
-				Log.i("c_out", result);
-			}
-		});
-		b.setNegativeButton("CANCEL", null);
-		b.create().show();
-	}
-
+//	public void c_out() {
+//		AlertDialog.Builder b = new AlertDialog.Builder(this);
+//		b.setTitle("c_out-durchsage eingeben");
+//		final EditText input = new EditText(this);
+//		b.setView(input);
+//		b.setPositiveButton("OK", new DialogInterface.OnClickListener()
+//		{
+//			@Override
+//			public void onClick(DialogInterface dialog, int whichButton)
+//			{
+//				String result = input.getText().toString();
+//				c_beam.tts(result);
+//				Log.i("c_out", result);
+//			}
+//		});
+//		b.setNegativeButton("CANCEL", null);
+//		b.create().show();
+//	}
+	
 	public void updateLists() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-		//ArrayList<User> users = c_beam.getUsers();
-
-		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(0);
-		online.setNextActivity(UserActivity.class);
-		//UserListFragment eta = (UserListFragment) mSectionsPagerAdapter.getItem(1);
-		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(3);
-		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(4);
-		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(1);
-		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(2);
-
+//		if (true)
+//			return;
+		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(USER_FRAGMENT);
+		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(EVENTS_FRAGMENT);
+		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
+		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
+		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
-		//ArrayList<User> offlineList = c_beam.getOfflineList();
 		ArrayList<User> etaList = c_beam.getEtaList();
 
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
@@ -244,8 +289,7 @@ ActionBar.TabListener {
 
 			if (missions.isAdded()){
 				ArrayList<Mission> missionList = new ArrayList<Mission>();
-				if (isInCrewNetwork())
-					missionList = c_beam.getMissions();
+				missionList = c_beam.getMissions();
 				missions.clear();
 				for(int i=0; i<missionList.size();i++)
 					missions.addItem(missionList.get(i));
@@ -253,8 +297,7 @@ ActionBar.TabListener {
 
 			if(c_portal.isAdded()) {
 				ArrayList<Article> articleList = new ArrayList<Article>();
-				if (isInCrewNetwork())
-					articleList = c_beam.getArticles();
+				articleList = c_beam.getArticles();
 				c_portal.clear();
 				for(int i=0; i<articleList.size();i++)
 					c_portal.addItem(articleList.get(i));
@@ -262,9 +305,10 @@ ActionBar.TabListener {
 
 			if(artefacts.isAdded()) {
 				ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-				if (isInCrewNetwork())
-					artefactList = c_beam.getArtefacts();
+				artefactList = c_beam.getArtefacts();
 				if (artefactList.size() != artefacts.size()) {
+					Log.i("artefacts", "UPDATE: "+ artefactList.size() + " / "+ artefacts.size());
+					//artefacts.setArrayList(artefactList);
 					artefacts.clear();
 					for(int i=0; i<artefactList.size();i++)
 						artefacts.addItem(artefactList.get(i));
@@ -285,7 +329,7 @@ ActionBar.TabListener {
 				for (int i = 0; i >= 0; i++) {
 					final int value = i;
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(threadDelay);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -293,6 +337,10 @@ ActionBar.TabListener {
 						@Override
 						public void run() {
 							updateLists();
+							if (c_beam.isInCrewNetwork())
+								setOnline();
+							else
+								setOffline();
 						}
 					});
 				}
@@ -302,6 +350,7 @@ ActionBar.TabListener {
 	}
 	protected void onResume () {
 		super.onResume();
+		updateLists();
 	}
 
 	@Override
@@ -366,18 +415,21 @@ ActionBar.TabListener {
 			// below) with the page number as its lone argument.
 			//Fragment fragment = new DummySectionFragment();
 			Fragment fragment;
-			if (pages[position] == null) {
-				if(position == 0) {
+			//			if (pages[position] == null || pages[position].isAdded() == false) {
+			//				if (pages[position] != null)
+			//					Log.i("foo",pages[position].isAdded()+"");
+			if (pages[position] == null) { 
+				if(position == USER_FRAGMENT) {
 					fragment = new UserListFragment();
-				} else if(position == 1) {
+				} else if(position == C_PORTAL_FRAGMENT) {
 					fragment = new C_portalListFragment();
-				} else if(position == 2) {
+				} else if(position == ARTEFACTS_FRAGMENT) {
 					fragment = new ArtefactListFragment();
-				} else if(position == 5) {
-					fragment = new C_ontrolFragment(c_beam);
-				} else if(position == 3) {
+				} else if(position == EVENTS_FRAGMENT) {
 					fragment = new EventListFragment();
-				} else if(position == 4) {
+				} else if(position == C_ONTROL_FRAGMENT) {
+					fragment = new C_ontrolFragment(c_beam);	
+				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
 				} else {
 					fragment = new ArrayListFragment();
@@ -385,6 +437,7 @@ ActionBar.TabListener {
 				fragment.setArguments(new Bundle());
 				pages[position] = fragment;
 			} else {
+
 				fragment = pages[position];
 			}
 			return (Fragment) fragment;
@@ -398,22 +451,47 @@ ActionBar.TabListener {
 		@Override
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
-			case 0:
-				return getString(R.string.title_section0).toUpperCase();
-			case 1:
-				return getString(R.string.title_section2).toUpperCase();
-			case 2:
-				return getString(R.string.title_section3).toUpperCase();
-			case 3:
-				return getString(R.string.title_section4).toUpperCase();
-			case 4:
-				return getString(R.string.title_section5).toUpperCase();
-			case 5:
-				return getString(R.string.title_section6).toUpperCase();
+			case USER_FRAGMENT:
+				return getString(R.string.title_users).toUpperCase();
+			case C_PORTAL_FRAGMENT:
+				return getString(R.string.title_c_portal).toUpperCase();
+			case ARTEFACTS_FRAGMENT:
+				return getString(R.string.title_artefacts).toUpperCase();
+			case EVENTS_FRAGMENT:
+				return getString(R.string.title_events).toUpperCase();
+			case C_ONTROL_FRAGMENT:
+				return getString(R.string.title_c_ontrol).toUpperCase();
+			case MISSION_FRAGMENT:
+				return getString(R.string.title_missions).toUpperCase();
 			}
 			return null;
 		}
 	}	
+	
+	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
+	{
+	    if (mContainer == null || mFont == null) return;
+
+	    final int mCount = mContainer.getChildCount();
+
+	    // Loop through all of the children.
+	    for (int i = 0; i < mCount; ++i)
+	    {
+	        final View mChild = mContainer.getChildAt(i);
+	        if (mChild instanceof TextView)
+	        {
+	            // Set the font if it is a TextView.
+	            ((TextView) mChild).setTypeface(mFont);
+	        }
+	        else if (mChild instanceof ViewGroup)
+	        {
+	            // Recursively attempt another ViewGroup.
+	            setAppFont((ViewGroup) mChild, mFont);
+	        }
+	    }
+	    Log.i("MainActivity", "font set");
+	    
+	}
 
 }
 

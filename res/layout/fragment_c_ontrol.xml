@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
-    <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Abheben" />
 
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/button_self_destruct"
         android:text="Antenne"
         android:textOff="Antenne aus"
         android:textOn="Antenne an" />
+
+    <Button
+        android:id="@+id/button_liftoff"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Abheben" />
 
     <Button
         android:id="@+id/button_self_destruct"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/button2"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/toggleButton1"
-        android:layout_toRightOf="@+id/button2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button_liftoff"
         android:text="Erde absprengen" />
 
     <ToggleButton
@@ -39,9 +41,163 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button2"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toggleButton1"
         android:text="ToggleButton"
         android:textOff="Darkwall"
         android:textOn="Bluewall" />
+
+    <Button
+        android:id="@+id/button_softwareverbrennung"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/toggleButtonBluewall"
+        android:text="Software-Endlager" />
+
+    <Button
+        android:id="@+id/button_unlabeled"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button_softwareverbrennung" />
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/gridLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_unlabeled"
+        android:layout_centerHorizontal="true"
+        app:columnCount="3"
+        app:rowCount="3" >
+
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="0"
+            app:layout_columnSpan="1"
+            app:layout_gravity="left"
+            app:layout_row="0"
+            app:layout_rowSpan="2"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button2"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="1"
+            app:layout_gravity="left"
+            app:layout_row="0"
+            app:layout_rowSpan="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button3"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="2"
+            app:layout_gravity="left"
+            app:layout_row="0"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button4"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="0"
+            app:layout_gravity="left"
+            app:layout_row="1"
+            app:layout_rowSpan="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button5"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="1"
+            app:layout_gravity="left|bottom"
+            app:layout_row="1"
+            app:layout_rowSpan="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button6"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="2"
+            app:layout_gravity="left"
+            app:layout_row="1"
+            app:layout_rowSpan="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button8"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="1"
+            app:layout_gravity="left"
+            app:layout_row="2"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button9"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="2"
+            app:layout_gravity="left"
+            app:layout_row="2"
+            android:text="Button" />
+
+        <android.support.v7.widget.Space
+            android:id="@+id/space1"
+            android:layout_width="21dp"
+            android:layout_height="1dp"
+            app:layout_column="0"
+            app:layout_row="0" />
+
+        <android.support.v7.widget.Space
+            android:layout_width="1dp"
+            android:layout_height="21dp"
+            app:layout_column="0"
+            app:layout_row="0" />
+
+        <Button
+            android:id="@+id/button7"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_column="0"
+            app:layout_gravity="left"
+            app:layout_row="2"
+            app:layout_rowSpan="1"
+            android:text="Button" />
+
+        <android.support.v7.widget.Space
+            android:id="@+id/space3"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            app:layout_column="0"
+            app:layout_row="1" />
+
+        <android.support.v7.widget.Space
+            android:id="@+id/space2"
+            android:layout_width="1dp"
+            android:layout_height="32dp"
+            app:layout_column="0"
+            app:layout_row="2" />
+    </android.support.v7.widget.GridLayout>
 
 </RelativeLayout>

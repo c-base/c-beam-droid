@@ -2,12 +2,12 @@
 <resources>
 
     <string name="app_name">c-beam</string>
-    <string name="title_section5">Missionen</string>
-    <string name="title_section6">c-ontrol</string>
-    <string name="title_section4">Events</string>
-    <string name="title_section3">Artefacts</string>
-    <string name="title_section2">c-portal</string>
-    <string name="title_section1">An Bord</string>
+    <string name="title_missions">Missionen</string>
+    <string name="title_c_ontrol">c-ontrol</string>
+    <string name="title_events">Events</string>
+    <string name="title_artefacts">Artefacts</string>
+    <string name="title_c_portal">c-portal</string>
+    <string name="title_users">An Bord</string>
     <string name="title_section0">An Bord</string>
     <string name="title_c_portal_section0">Article View</string>
     <string name="title_c_portal_section1">Articles</string>
@@ -42,5 +42,19 @@
     <string name="title_activity_artefact">cbag3</string>
     <string name="title_activity_artefact_long">c-base artefact guide 3</string>
     <string name="title_activity_c_portal">c-portal</string>
+    <string name="title_activity_bam">BAM!</string>
+    <string name="confirm_login">Wirklich einloggen?</string>
+    <string name="button_login">Einloggen</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="message_logout">Du wirst ausgelogt, bitte warten...</string>
+    <string name="confirm_logout">Wirklich ausloggen?</string>
+    <string name="button_logout">Ausloggen</string>
+    <string-array name="fonts_array">
+        <item>Android Default</item>
+        <item>X-Scale</item>
+        <item>Ceva</item>
+    </string-array>
+    <string name="pref_font_summ">Font</string>
+    <string name="pref_font">Font</string>
 
 </resources>

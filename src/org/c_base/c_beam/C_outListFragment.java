@@ -3,16 +3,19 @@ package org.c_base.c_beam;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class C_outListFragment extends ArrayListFragment {
-	List<String> items = new ArrayList<String>();
+	ArrayList<String> items = new ArrayList<String>();
 	ListAdapter adapter;
 	C_beam c_beam;
 	
@@ -32,9 +35,11 @@ public class C_outListFragment extends ArrayListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        adapter = new ArrayAdapter<String>(getActivity(),
+        adapter = new C_outAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, items);
         setListAdapter(adapter);
+        getListView().setDividerHeight(0);
+		getListView().setHapticFeedbackEnabled(true);
     }
 
     @Override
@@ -43,6 +48,29 @@ public class C_outListFragment extends ArrayListFragment {
         c_beam.play(items.get((int) id));
         Toast.makeText(v.getContext(), R.string.c_out_sound_played, Toast.LENGTH_LONG).show();
     }
+    
+    @SuppressWarnings("rawtypes")
+	public class C_outAdapter extends ArrayAdapter {
+		private static final String TAG = "C_outAdapter";
+		private ArrayList<String> items;
+		private Context context;
+
+		@SuppressWarnings("unchecked")
+		public C_outAdapter(Context context, int textViewResourceId, ArrayList<String> items) {
+			super(context, textViewResourceId, items);
+			this.context = context;
+			this.items = items;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView view = (TextView) super.getView(position, convertView, parent);
+			String u = items.get(position);
+			view.setBackgroundResource(R.drawable.listitembg);
+			view.setPadding(25, 30, 25, 30);
+			return view;
+		}
+	}
     
    
 }	
