@@ -39,6 +39,10 @@ public class User {
 			e.printStackTrace();
 		}
 	}
+	public User(String username) {
+		this.username = username;
+		// TODO Auto-generated constructor stub
+	}
 	public String getUsername() {
 		return username;
 	}

@@ -17,17 +17,16 @@ package org.c_base.c_beam;
  */
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
-import java.util.ArrayList;
 
 // Need the following import to get access to the app resources, since this
 // class is in a sub-package.

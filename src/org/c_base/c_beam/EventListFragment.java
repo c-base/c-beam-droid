@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,6 +20,7 @@ public class EventListFragment extends ArrayListFragment {
 	ArrayList<Event> items = new ArrayList<Event>();
 	ListAdapter adapter;
 	Class nextActivity = EventActivity.class;
+	SharedPreferences sharedPref;
 
 	public void clear() {
 		items.clear();
@@ -27,10 +32,11 @@ public class EventListFragment extends ArrayListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		adapter = new EventAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-        getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
 	}
 
@@ -58,9 +64,10 @@ public class EventListFragment extends ArrayListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Event u = items.get(position);
-			view.setBackgroundResource(R.drawable.listitembg);
-			view.setPadding(25, 30, 25, 30);
+			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			Helper.setFont(getActivity(), view);
 			return view;
 		}
+		
 	}
 }

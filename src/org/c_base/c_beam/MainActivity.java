@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,9 +47,10 @@ ActionBar.TabListener {
 	private static final int C_ONTROL_FRAGMENT = 4;
 	private static final int MISSION_FRAGMENT = 5;
 
-
 	private static final int threadDelay = 1000;
+	private static final String TAG = "MainActivity";
 
+//	SectionsPagerAdapter mSectionsPagerAdapter;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
@@ -58,6 +61,8 @@ ActionBar.TabListener {
 
 	C_beam c_beam = new C_beam(this);
 
+	Thread thread;
+	
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
 			actionBar.setIcon(R.drawable.ic_launcher_c_beam_online);
@@ -75,7 +80,7 @@ ActionBar.TabListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		c_beam.startThread();
+		//c_beam.startThread();
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -87,12 +92,33 @@ ActionBar.TabListener {
 		// Set up the action bar.
 		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+//		BEGIN TEST Custom Font in Actionbar TEST BEGIN
+		
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+		
+		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+		View v = inflator.inflate(R.layout.view_actionbar, null);
+
+		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
+		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+		((TextView)v.findViewById(R.id.title)).setTextSize(30);
+		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
+		actionBar.setCustomView(v);
+
+//		END TEST Custom Font in Actionbar TEST END
 		
 //		ViewPagerAdapter adapter = new ViewPagerAdapter( this );
 //	    ViewPager pager =
 //	        (ViewPager)findViewById( R.id.pager );
 //	    pager.setAdapter( adapter );
-		
+
+//		mSectionsPagerAdapter = new MainPagerAdapter(
+//				getSupportFragmentManager());
+//
+//		
+//		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -113,9 +139,13 @@ ActionBar.TabListener {
 			}
 		});
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+			Tab tab = actionBar.newTab();
+			TextView t = new TextView(getApplicationContext());
+			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+//			tab.setCustomView(t);
+			tab.setTabListener(this);
+			actionBar.addTab(tab);
 
 		}
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
@@ -209,9 +239,27 @@ ActionBar.TabListener {
 	}
 
 	public void onStart() {
+		Log.i(TAG, "onStart()");
 		super.onStart();
 		startProgress();
 		updateLists();
+	}
+
+	
+	@Override
+	protected void onPause() {
+		Log.i(TAG, "onPause()");
+		super.onPause();
+		thread.interrupt();
+		c_beam.stopThread();
+	}
+
+	@Override
+	protected void onStop() {
+		Log.i(TAG, "onStop()");
+		super.onStop();
+		thread.interrupt();
+		c_beam.stopThread();
 	}
 
 	public void login() {
@@ -326,12 +374,12 @@ ActionBar.TabListener {
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				for (int i = 0; i >= 0; i++) {
-					final int value = i;
+				boolean stop = false;
+				while(!stop) {
 					try {
 						Thread.sleep(threadDelay);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						stop = true;
 					}
 					handler.post(new Runnable() {
 						@Override
@@ -346,10 +394,14 @@ ActionBar.TabListener {
 				}
 			}
 		};
-		new Thread(runnable).start();
+		thread = new Thread(runnable);
+//		thread.start();
 	}
 	protected void onResume () {
+		Log.i(TAG, "onResume()");
 		super.onResume();
+		thread.start();
+		c_beam.startThread();
 		updateLists();
 	}
 
@@ -374,6 +426,9 @@ ActionBar.TabListener {
 			c_beam.logout(sharedPref.getString("pref_username", "bernd"));
 		} else if (item.getItemId() == R.id.menu_c_out) {
 			Intent myIntent = new Intent(this, C_outActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_map) {
+			Intent myIntent = new Intent(this, MapActivity.class);
 			startActivityForResult(myIntent, 0);
 		}
 		return super.onOptionsItemSelected(item);

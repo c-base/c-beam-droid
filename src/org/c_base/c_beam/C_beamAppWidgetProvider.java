@@ -64,7 +64,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 		// be called after boot if there is a widget instance for this provider.
 		PackageManager pm = context.getPackageManager();
 		pm.setComponentEnabledSetting(
-				new ComponentName("com.example.android.apis", ".appwidget.ExampleBroadcastReceiver"),
+				new ComponentName("org.c_base.c_beam", "C_beamBroadcastReceiver"),
 				PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 				PackageManager.DONT_KILL_APP);
 	}
@@ -76,7 +76,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 		Log.d(TAG, "onDisabled");
 		PackageManager pm = context.getPackageManager();
 		pm.setComponentEnabledSetting(
-				new ComponentName("com.example.android.apis", ".appwidget.ExampleBroadcastReceiver"),
+				new ComponentName("org.c_base.c_beam", "C_beamBroadcastReceiver"),
 				PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
 				PackageManager.DONT_KILL_APP);
 	}

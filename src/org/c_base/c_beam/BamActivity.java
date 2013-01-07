@@ -1,23 +1,25 @@
 package org.c_base.c_beam;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.NavUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import android.view.View;
+import android.widget.TextView;
 
 public class BamActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		MediaPlayer mp=MediaPlayer.create(this,R.raw.microwave_ding);
-				
+		mp.start();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bam);
-		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		mp.start();
 	}
 
 	@Override
@@ -29,6 +31,7 @@ public class BamActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent myIntent;
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
@@ -39,6 +42,14 @@ public class BamActivity extends Activity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.menu_settings:
+			 myIntent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(myIntent, 0);
+			return true;
+		case R.id.menu_c_out:
+			myIntent = new Intent(this, C_outActivity.class);
+			startActivityForResult(myIntent, 0);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

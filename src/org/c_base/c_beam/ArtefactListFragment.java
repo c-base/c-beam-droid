@@ -2,7 +2,6 @@ package org.c_base.c_beam;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,8 @@ public class ArtefactListFragment extends ArrayListFragment {
 	ArrayList<Artefact> items = new ArrayList<Artefact>();
 	ListAdapter adapter;
 	Class nextActivity = ArtefactActivity.class;
-	
+	SharedPreferences sharedPref;
+
 	public void clear() {
 		Log.i("ArtefactListFragment", "clear");
 		items.clear();
@@ -37,10 +37,11 @@ public class ArtefactListFragment extends ArrayListFragment {
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         adapter = new ArtefactAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, items);
         setListAdapter(adapter);
-        getListView().setDividerHeight(0);
+        if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
     }
 
 	@Override
@@ -78,32 +79,13 @@ public class ArtefactListFragment extends ArrayListFragment {
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Artefact a = items.get(position);
-			view.setBackgroundResource(R.drawable.listitembg);
-			view.setPadding(25, 5, 25, 5);
-			setFont(view);
+			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+//			view.setPadding(25, 5, 25, 5);
+//			setFont(view);
+			Helper.setFont(getActivity(), view);
 			view.setText(a.getName());
 			return view;
 		}
 		
-		private void setFont(TextView view) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-			String font = sharedPref.getString("pref_font", "Android Default");
-
-			if (font.equals("X-Scale")) {
-				view.setPadding(25, 10, 25, 25);
-				Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "X-SCALE.TTF");
-				view.setTypeface(myTypeface);
-				view.setTextSize(20);
-			} else if (font.equals("Ceva")) {
-				view.setPadding(25, 25, 25, 25);
-				Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "CEVA-CM.TTF");
-				view.setTypeface(myTypeface);
-				view.setTextSize(20);
-			} else {
-				view.setPadding(25, 25, 25, 25);
-			}
-
-			view.setGravity(Gravity.CENTER_VERTICAL);		
-		}
 	}
 }

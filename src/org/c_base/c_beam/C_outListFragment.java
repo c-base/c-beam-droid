@@ -1,11 +1,14 @@
 package org.c_base.c_beam;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,7 +21,7 @@ public class C_outListFragment extends ArrayListFragment {
 	ArrayList<String> items = new ArrayList<String>();
 	ListAdapter adapter;
 	C_beam c_beam;
-	
+	SharedPreferences sharedPref;
 	
 	public C_outListFragment() {
 		c_beam = new C_beam(this.getActivity());
@@ -35,10 +38,11 @@ public class C_outListFragment extends ArrayListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         adapter = new C_outAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, items);
         setListAdapter(adapter);
-        getListView().setDividerHeight(0);
+        if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
     }
 
@@ -66,8 +70,9 @@ public class C_outListFragment extends ArrayListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			String u = items.get(position);
-			view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
 			view.setPadding(25, 30, 25, 30);
+			Helper.setFont(getActivity(), view);
 			return view;
 		}
 	}

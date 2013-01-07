@@ -103,6 +103,8 @@ public class C_ontrolFragment extends Fragment {
 				b.show();
 			}
 		});	
+		
+		
 
 		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
 		t.setOnClickListener(new OnClickListener() {
@@ -127,6 +129,102 @@ public class C_ontrolFragment extends Fragment {
 			}
 		});	
 		
+		b = (Button) v.findViewById(R.id.button1);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(0);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button2);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(1);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button3);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(2);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button4);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(3);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button5);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(4);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button6);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(5);
+			}
+		});	
+
+		b = (Button) v.findViewById(R.id.button7);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(6);
+			}
+		});	
+		
+		b = (Button) v.findViewById(R.id.button8);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(6);
+			}
+		});
+		
+		b = (Button) v.findViewById(R.id.button9);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(3);
+			}
+		});
+		
+		b = (Button) v.findViewById(R.id.button10);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(0);
+			}
+		});
+		
+		b = (Button) v.findViewById(R.id.button11);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(-3);
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button12);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(-6);
+			}
+		});
+
 		thisView = v;
 		return v;
 	}

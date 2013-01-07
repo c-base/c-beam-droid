@@ -2,15 +2,19 @@ package org.c_base.c_beam;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class C_outActivity extends FragmentActivity {
 	C_beam c_beam;
@@ -22,6 +26,19 @@ public class C_outActivity extends FragmentActivity {
 		setContentView(R.layout.activity_c_out);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		getActionBar().setDisplayShowCustomEnabled(true);
+		getActionBar().setDisplayShowTitleEnabled(false);
+		
+		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+		View v = inflator.inflate(R.layout.view_actionbar, null);
+
+		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
+		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+		((TextView)v.findViewById(R.id.title)).setTextSize(30);
+		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
+		getActionBar().setCustomView(v);
+		
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 		
 		c_beam = new C_beam(this);
@@ -75,6 +92,7 @@ public class C_outActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent myIntent;
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
@@ -85,6 +103,14 @@ public class C_outActivity extends FragmentActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.menu_settings:
+			 myIntent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(myIntent, 0);
+			return true;
+		case R.id.menu_c_out:
+			myIntent = new Intent(this, C_outActivity.class);
+			startActivityForResult(myIntent, 0);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

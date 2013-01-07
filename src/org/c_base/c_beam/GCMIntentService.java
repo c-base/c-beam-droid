@@ -1,32 +1,23 @@
 package org.c_base.c_beam;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.android.gcm.GCMBaseIntentService;
-
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
-import android.util.Base64;
-import android.util.Log;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.Security;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
+import android.util.Log;
+
+import com.google.android.gcm.GCMBaseIntentService;
 
 
 public class 	GCMIntentService extends GCMBaseIntentService {

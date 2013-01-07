@@ -39,8 +39,8 @@
         <activity
             android:name="org.c_base.c_beam.UserActivity"
             android:label="@string/title_activity_user"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
@@ -54,8 +54,8 @@
         <activity
             android:name="org.c_base.c_beam.EventActivity"
             android:label="@string/title_activity_event"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
@@ -63,8 +63,8 @@
         <activity
             android:name="org.c_base.c_beam.MissionActivity"
             android:label="@string/title_activity_mission"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
@@ -72,8 +72,8 @@
         <activity
             android:name="org.c_base.c_beam.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
@@ -102,7 +102,7 @@
                 android:resource="@xml/c_beam_appwidget_info" />
         </receiver>
 
-        <activity android:name="org.c_base.c_beam.ExampleAppWidgetConfigure" >
+        <activity android:name="org.c_base.c_beam.AppWidgetConfigure" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -110,8 +110,8 @@
         <activity
             android:name="org.c_base.c_beam.C_outActivity"
             android:label="@string/title_activity_c_out"
-            android:screenOrientation="portrait"
             android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.C_outActivity"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
@@ -127,16 +127,16 @@
         <activity
             android:name="org.c_base.c_beam.WebActivity"
             android:label="@string/title_activity_web"
-            android:screenOrientation="portrait"
             android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.WebActivity"
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="org.c_base.c_beam.ArtefactActivity"
             android:label="@string/title_activity_artefact_long"
-            android:screenOrientation="portrait"
             android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.ArtefactActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -145,8 +145,8 @@
         <activity
             android:name="org.c_base.c_beam.C_PortalActivity"
             android:label="@string/title_activity_c_portal"
-            android:screenOrientation="portrait"
             android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.C_portalActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -161,11 +161,43 @@
         <activity
             android:name="org.c_base.c_beam.BamActivity"
             android:label="@string/title_activity_bam"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
+        </activity>
+        <activity
+            android:name="org.c_base.c_beam.ViewPagerActivity"
+            android:label="ViewPagerActivity"
+            android:parentActivityName="org.c_base.c_beam.ViewPagerActivity"
+            android:screenOrientation="portrait"
+            android:taskAffinity="org.c_base.c_beam.ViewPagerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.c_base.c_beam.MapActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

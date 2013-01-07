@@ -1,203 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ToggleButton
-        android:id="@+id/toggleButton1"
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_self_destruct"
-        android:text="Antenne"
-        android:textOff="Antenne aus"
-        android:textOn="Antenne an" />
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/button_liftoff"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Abheben" />
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
+            android:id="@+id/RelativeLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/button_self_destruct"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_liftoff"
-        android:text="Erde absprengen" />
+            <ToggleButton
+                android:id="@+id/toggleButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/button_self_destruct"
+                android:text="Antenne"
+                android:textOff="Antenne aus"
+                android:textOn="Antenne an" />
 
-    <ToggleButton
-        android:id="@+id/toggleButtonBluewall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/toggleButton1"
-        android:text="ToggleButton"
-        android:textOff="Darkwall"
-        android:textOn="Bluewall" />
+            <Button
+                android:id="@+id/button_liftoff"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="Abheben" />
 
-    <Button
-        android:id="@+id/button_softwareverbrennung"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/toggleButtonBluewall"
-        android:text="Software-Endlager" />
+            <Button
+                android:id="@+id/button_self_destruct"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/button_liftoff"
+                android:layout_toLeftOf="@+id/button_reject_from_earth"
+                android:text="Erde absprengen" />
 
-    <Button
-        android:id="@+id/button_unlabeled"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_softwareverbrennung" />
+            <ToggleButton
+                android:id="@+id/toggleButtonBluewall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/toggleButton1"
+                android:layout_toRightOf="@+id/button_softwareverbrennung"
+                android:text="ToggleButton"
+                android:textOff="Darkwall"
+                android:textOn="Bluewall" />
 
-    <android.support.v7.widget.GridLayout
-        android:id="@+id/gridLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_unlabeled"
-        android:layout_centerHorizontal="true"
-        app:columnCount="3"
-        app:rowCount="3" >
+            <Button
+                android:id="@+id/button_unlabeled"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/button_softwareverbrennung" />
 
-        <Button
-            android:id="@+id/button1"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_columnSpan="1"
-            app:layout_gravity="left"
-            app:layout_row="0"
-            app:layout_rowSpan="2"
-            android:text="Button" />
+            <android.support.v7.widget.GridLayout
+                android:id="@+id/gridLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_unlabeled"
+                android:layout_centerHorizontal="true"
+                app:columnCount="2"
+                app:rowCount="3" >
+            </android.support.v7.widget.GridLayout>
 
-        <Button
-            android:id="@+id/button2"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="1"
-            app:layout_gravity="left"
-            app:layout_row="0"
-            app:layout_rowSpan="1"
-            android:text="Button" />
+            <Button
+                android:id="@+id/button_reject_from_earth"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button_self_destruct"
+                android:layout_alignBottom="@+id/button_self_destruct"
+                android:layout_alignParentRight="true"
+                android:text="von Erde abstossen" />
 
-        <Button
-            android:id="@+id/button3"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="2"
-            app:layout_gravity="left"
-            app:layout_row="0"
-            android:text="Button" />
+            <Button
+                android:id="@+id/button_softwareverbrennung"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/toggleButtonBluewall"
+                android:layout_alignBottom="@+id/toggleButtonBluewall"
+                android:layout_alignParentLeft="true"
+                android:text="Software-Endlager" />
 
-        <Button
-            android:id="@+id/button4"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="left"
-            app:layout_row="1"
-            app:layout_rowSpan="1"
-            android:text="Button" />
+            <TableLayout
+                android:id="@+id/tableLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/button_unlabeled"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal" >
 
-        <Button
-            android:id="@+id/button5"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="1"
-            app:layout_gravity="left|bottom"
-            app:layout_row="1"
-            app:layout_rowSpan="1"
-            android:text="Button" />
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="c_leusen-LED pattern:" />
 
-        <Button
-            android:id="@+id/button6"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="2"
-            app:layout_gravity="left"
-            app:layout_row="1"
-            app:layout_rowSpan="1"
-            android:text="Button" />
+                <TableRow
+                    android:id="@+id/tableRow5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/button8"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="1"
-            app:layout_gravity="left"
-            app:layout_row="2"
-            android:text="Button" />
+                    <Button
+                        android:id="@+id/button1"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="0"
+                        app:layout_gravity="left"
+                        app:layout_row="0"
+                        android:minWidth="66dip"
+                        android:text="OFF" />
 
-        <Button
-            android:id="@+id/button9"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="2"
-            app:layout_gravity="left"
-            app:layout_row="2"
-            android:text="Button" />
+                    <Button
+                        android:id="@+id/button2"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="1"
+                        app:layout_gravity="left"
+                        app:layout_row="0"
+                        android:minWidth="86dp"
+                        android:text="Rainbow" />
 
-        <android.support.v7.widget.Space
-            android:id="@+id/space1"
-            android:layout_width="21dp"
-            android:layout_height="1dp"
-            app:layout_column="0"
-            app:layout_row="0" />
+                    <Button
+                        android:id="@+id/button3"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="2"
+                        app:layout_columnSpan="2"
+                        app:layout_gravity="left"
+                        app:layout_row="0"
+                        android:text="Gru:n" />
+                </TableRow>
 
-        <android.support.v7.widget.Space
-            android:layout_width="1dp"
-            android:layout_height="21dp"
-            app:layout_column="0"
-            app:layout_row="0" />
+                <TableRow
+                    android:id="@+id/tableRow6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/button7"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="left"
-            app:layout_row="2"
-            app:layout_rowSpan="1"
-            android:text="Button" />
+                    <Button
+                        android:id="@+id/button4"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="4"
+                        app:layout_gravity="left"
+                        app:layout_row="0"
+                        android:text="Blaugru:n" />
 
-        <android.support.v7.widget.Space
-            android:id="@+id/space3"
-            android:layout_width="1dp"
-            android:layout_height="16dp"
-            app:layout_column="0"
-            app:layout_row="1" />
+                    <Button
+                        android:id="@+id/button5"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="0"
+                        app:layout_gravity="left|bottom"
+                        app:layout_row="1"
+                        android:minWidth="66dip"
+                        android:text="Rot" />
 
-        <android.support.v7.widget.Space
-            android:id="@+id/space2"
-            android:layout_width="1dp"
-            android:layout_height="32dp"
-            app:layout_column="0"
-            app:layout_row="2" />
-    </android.support.v7.widget.GridLayout>
+                    <Button
+                        android:id="@+id/button6"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="1"
+                        app:layout_gravity="left"
+                        app:layout_row="1"
+                        android:text="Rainbow2" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <Button
+                        android:id="@+id/button7"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="1"
+                        app:layout_gravity="left"
+                        app:layout_row="1"
+                        android:text="Weiss" />
+
+                    <Button
+                        android:id="@+id/button13"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Default" />
+
+                    <Button
+                        android:id="@+id/button14"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notbeleuchtung" />
+
+                </TableRow>
+            </TableLayout>
+
+            <TableLayout
+                android:id="@+id/TableLayout3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tableLayout2"
+                android:layout_centerHorizontal="true" >
+
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal" >
+
+                    <Button
+                        android:id="@+id/button12"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="3"
+                        app:layout_columnSpan="2"
+                        app:layout_gravity="left"
+                        app:layout_row="2"
+                        android:text="-6" />
+
+                    <Button
+                        android:id="@+id/button11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="2"
+                        app:layout_columnSpan="2"
+                        app:layout_gravity="left"
+                        app:layout_row="2"
+                        android:minWidth="48dp"
+                        android:text="-3" />
+
+                    <Button
+                        android:id="@+id/button10"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="1"
+                        app:layout_gravity="left"
+                        app:layout_row="2"
+                        android:text="0" />
+
+                    <Button
+                        android:id="@+id/button9"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="0"
+                        app:layout_gravity="left"
+                        app:layout_row="2"
+                        android:text="+3" />
+
+                    <Button
+                        android:id="@+id/button8"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="3"
+                        app:layout_gravity="left"
+                        app:layout_row="1"
+                        android:text="+6" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

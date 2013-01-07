@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
+import android.util.Log;
 import android.widget.TextView;
 
 public class CTextView extends TextView {
+
+	private static final String TAG = "CTextView";
 
 	public CTextView(Context context) {
 		super(context);
@@ -28,17 +30,18 @@ public class CTextView extends TextView {
 	}
 
 	public void init() {
-//		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-//		String font = sharedPref.getString("pref_font", "Android Default");
-//		if (font.equals("Default Android")) {
-//			
-//		} else if (font.equals("X-Scale")) {
-//			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "X-SCALE.TTF");
-//			setTypeface(myTypeface);
-//		} else if (font.equals("Ceva")) {	
-//			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "CEVA-CM.TTF");
-//			setTypeface(myTypeface);
-//		}
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+		String font = sharedPref.getString("pref_font", "Android Default");
+		Log.i(TAG, font);
+		if (font.equals("Default Android")) {
+			
+		} else if (font.equals("X-Scale")) {
+			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "X-SCALE.TTF");
+			setTypeface(myTypeface);
+		} else if (font.equals("Ceva")) {	
+			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "CEVA-CM.TTF");
+			setTypeface(myTypeface);
+		}
 	}
 
 }

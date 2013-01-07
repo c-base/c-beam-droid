@@ -2,8 +2,6 @@ package org.c_base.c_beam;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 public class SettingsFragment extends PreferenceFragment {
 	@Override

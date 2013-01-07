@@ -28,4 +28,24 @@
         android:entryValues="@array/fonts_array"
         android:defaultValue="X-Scale" />
 	
+	<ListPreference
+        android:key="pref_fontsize"
+        android:title="Font Size"
+        android:dialogTitle="Font Size"
+        android:entries="@array/fontsize_array"
+        android:entryValues="@array/fontsize_array"
+        android:defaultValue="20" />
+	
+	<CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_fade_users"
+        android:summary="@string/pref_fade_users_summ"
+        android:title="@string/pref_fade_users" />
+
+		<CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_c_theme"
+        android:summary="@string/pref_c_theme_summ"
+        android:title="@string/pref_c_theme" />
+		
 </PreferenceScreen>

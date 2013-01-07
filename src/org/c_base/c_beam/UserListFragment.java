@@ -1,15 +1,11 @@
 package org.c_base.c_beam;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,13 +16,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class UserListFragment extends ArrayListFragment {
 	ArrayList<User> items = new ArrayList<User>();
 	ListAdapter adapter;
 	Class nextActivity = UserActivity.class;
+	SharedPreferences sharedPref;
 
 	public void clear() {
 		items.clear();
@@ -40,11 +36,12 @@ public class UserListFragment extends ArrayListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		adapter = new UserAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
 		//getListView().setPadding(5, 5, 5, 5);
-		getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
 		//getListView().setDividerHeight(0);
 	}
@@ -72,39 +69,23 @@ public class UserListFragment extends ArrayListFragment {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			boolean fadeUsers = sharedPref.getBoolean("pref_fade_users", true);
+
 			NumberFormat defaultFormat = NumberFormat.getPercentInstance();
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			User u = items.get(position);
 			float alpha = u.getAutologout_in()/(float) u.getAutologout();
-			view.setAlpha(alpha);
-			view.setBackgroundResource(R.drawable.listitembg);
-			setFont(view);
+
+			if (fadeUsers) view.setAlpha(alpha);
+			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+
+			Helper.setFont(getActivity(), view);
 
 			if (u.getStatus().equals("online"))
 				view.setText(u.getUsername()+" ("+defaultFormat.format(alpha)+")");
 			return view;
 		}
 
-		private void setFont(TextView view) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-			String font = sharedPref.getString("pref_font", "Android Default");
-
-			if (font.equals("X-Scale")) {
-				view.setPadding(25, 10, 25, 25);
-				Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "X-SCALE.TTF");
-				view.setTypeface(myTypeface);
-				view.setTextSize(20);
-			} else if (font.equals("Ceva")) {
-				view.setPadding(25, 25, 25, 25);
-				Typeface myTypeface = Typeface.createFromAsset(getActivity().getAssets(), "CEVA-CM.TTF");
-				view.setTypeface(myTypeface);
-				view.setTextSize(20);
-			} else {
-				view.setPadding(25, 25, 25, 25);
-			}
-
-			view.setGravity(Gravity.CENTER_VERTICAL);		
-		}
 	}
 }

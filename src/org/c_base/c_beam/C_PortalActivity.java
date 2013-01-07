@@ -1,7 +1,6 @@
 package org.c_base.c_beam;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
 
 public class C_PortalActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -100,13 +98,26 @@ public class C_PortalActivity extends FragmentActivity implements ActionBar.TabL
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		if (item.getItemId() == R.id.menu_settings) {
-			Intent myIntent = new Intent(this, SettingsActivity.class);
+		Intent myIntent;
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.menu_settings:
+			 myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_c_out) {
-			Intent myIntent = new Intent(this, C_outActivity.class);
+			return true;
+		case R.id.menu_c_out:
+			myIntent = new Intent(this, C_outActivity.class);
 			startActivityForResult(myIntent, 0);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

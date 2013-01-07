@@ -32,6 +32,8 @@ public class C_beam {
 
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
+	
+	Thread thread;
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
@@ -47,31 +49,36 @@ public class C_beam {
 		runnable = new Runnable() {
 			@Override
 			public void run() {
-				while(true) {
+				boolean stop = false;
+				while(!stop) {
 					updateLists();
 					try {
 						Thread.sleep(sleeptime);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						stop = true;
 					}
 				}
 			}
 		};
-		new Thread(runnable).start();
+		thread = new Thread(runnable);
+		thread.start();
 	}
 	public boolean isInCrewNetwork() {
+		if (true)
+			return true;
 		if (parent == null) 
 			return true;
 		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
-
-		if (wifiManager.isWifiEnabled() && Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress).startsWith("10.0.")) {
+		String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
+		if (wifiManager.isWifiEnabled() && ip.startsWith("42.42.") ) {
+			return true;
+		} else if (wifiManager.isWifiEnabled() && ip.startsWith("10.0.")) {
 			return true;
 		} else {
 			// TODO: Display message 
 			Log.i(TAG, "not in crew network");
 			return false;
 		}
-
 	}
 
 	public void updateLists() {
@@ -115,9 +122,8 @@ public class C_beam {
 		return users;
 	}
 
-
 	private synchronized ArrayList<User> updateUsers() {
-		Log.i(TAG, "updateUsers");
+//		Log.i(TAG, "updateUsers");
 		ArrayList<User> list = new ArrayList<User>();
 
 		try {
@@ -127,10 +133,10 @@ public class C_beam {
 					JSONObject item = result.getJSONObject(i);
 					list.add(new User(item));
 				}			
-				Log.i(TAG, "updateUsers success");
+//				Log.i(TAG, "updateUsers success");
 			}
 			users = list;
-			Log.i(TAG, users.toString());
+//			Log.i(TAG, users.toString());
 			sleeptime = 6000;
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
@@ -223,7 +229,6 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public synchronized void register_update(String regId, String user) {
@@ -234,7 +239,6 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public synchronized void login(String user) {
@@ -329,7 +333,6 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public synchronized void r2d2(String text) {
@@ -341,7 +344,6 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public synchronized ArrayList<String> getSounds() {
@@ -464,8 +466,45 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 
-		
+	public void stopThread() {
+		if (thread != null) {
+			thread.interrupt();
+		}
+	}
+
+	public void set_stripe_pattern(int pattern) {
+		try {
+			if (isInCrewNetwork())
+				Log.i("c-beam", "set_stripe_pattern");
+				c_beamClient.callJSONObject("set_stripe_pattern", pattern);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void set_stripe_speed(int speed) {
+		try {
+			if (isInCrewNetwork())
+				Log.i("c-beam", "set_stripe_speed");
+				c_beamClient.callJSONObject("set_stripe_speed", speed);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void set_stripe_offset(int offset) {
+		try {
+			if (isInCrewNetwork())
+				Log.i("c-beam", "set_stripe_pattern");
+				c_beamClient.callJSONObject("set_stripe_pattern", offset);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
