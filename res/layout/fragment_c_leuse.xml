@@ -11,8 +11,6 @@
         android:layout_height="wrap_content" >
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
             android:id="@+id/RelativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
@@ -41,9 +39,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="0"
-                        app:layout_gravity="left"
-                        app:layout_row="0"
+                        android:layout_column="0"
+                        android:layout_gravity="left"
+                        android:layout_row="0"
                         android:minWidth="66dip"
                         android:text="OFF" />
 
@@ -52,9 +50,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="1"
-                        app:layout_gravity="left"
-                        app:layout_row="0"
+                        android:layout_column="1"
+                        android:layout_gravity="left"
+                        android:layout_row="0"
                         android:minWidth="86dp"
                         android:text="Rainbow" />
 
@@ -63,10 +61,10 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="2"
-                        app:layout_columnSpan="2"
-                        app:layout_gravity="left"
-                        app:layout_row="0"
+                        android:layout_column="2"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="left"
+                        android:layout_row="0"
                         android:text="Gru:n" />
                 </TableRow>
 
@@ -80,9 +78,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="4"
-                        app:layout_gravity="left"
-                        app:layout_row="0"
+                        android:layout_column="4"
+                        android:layout_gravity="left"
+                        android:layout_row="0"
                         android:text="Blaugru:n" />
 
                     <Button
@@ -90,9 +88,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="1"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
+                        android:layout_column="1"
+                        android:layout_gravity="left"
+                        android:layout_row="1"
                         android:text="Blau" />
 
                     <Button
@@ -100,9 +98,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="0"
-                        app:layout_gravity="left|bottom"
-                        app:layout_row="1"
+                        android:layout_column="0"
+                        android:layout_gravity="left|bottom"
+                        android:layout_row="1"
                         android:minWidth="66dip"
                         android:text="Rot" />
                 </TableRow>
@@ -117,9 +115,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="1"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
+                        android:layout_column="1"
+                        android:layout_gravity="left"
+                        android:layout_row="1"
                         android:text="Weiss" />
 
                     <Button
@@ -186,9 +184,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="3"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
+                        android:layout_column="3"
+                        android:layout_gravity="left"
+                        android:layout_row="1"
                         android:text="-6" />
 
                     <Button
@@ -196,20 +194,20 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="3"
-                        app:layout_columnSpan="2"
-                        app:layout_gravity="left"
-                        app:layout_row="2"
+                        android:layout_column="3"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="left"
+                        android:layout_row="2"
                         android:text="-3" />
 
                     <Button
                         android:id="@+id/button_speed_minus_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="2"
-                        app:layout_columnSpan="2"
-                        app:layout_gravity="left"
-                        app:layout_row="2"
+                        android:layout_column="2"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="left"
+                        android:layout_row="2"
                         android:minWidth="48dp"
                         android:text="-1" />
 
@@ -218,9 +216,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="1"
-                        app:layout_gravity="left"
-                        app:layout_row="2"
+                        android:layout_column="1"
+                        android:layout_gravity="left"
+                        android:layout_row="2"
                         android:text="0" />
 
                     <Button
@@ -228,9 +226,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="0"
-                        app:layout_gravity="left"
-                        app:layout_row="2"
+                        android:layout_column="0"
+                        android:layout_gravity="left"
+                        android:layout_row="2"
                         android:text="+1" />
 
                     <Button
@@ -238,9 +236,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="3"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
+                        android:layout_column="3"
+                        android:layout_gravity="left"
+                        android:layout_row="1"
                         android:text="+3" />
 
                     <Button
@@ -248,9 +246,9 @@
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_column="3"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
+                        android:layout_column="3"
+                        android:layout_gravity="left"
+                        android:layout_row="1"
                         android:text="+6" />
                 </TableRow>
             </TableLayout>

@@ -4,8 +4,6 @@
     android:updatePeriodMillis="86400000"
     android:previewImage="@drawable/ic_launcher"
     android:initialLayout="@layout/c_beam_appwidget"
-    android:configure="com.example.android.C_beamAppWidgetConfigure" 
-    android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen|keyguard"
-    android:initialKeyguardLayout="@layout/c_beam_keyguard">
+    android:configure="org.c_base.c_beam.activity.SettingsActivity" 
+    android:resizeMode="horizontal|vertical">
 </appwidget-provider>
