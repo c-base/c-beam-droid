@@ -6,18 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.fragment.ArrayListFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
-public class C_PortalActivity extends FragmentActivity implements ActionBar.TabListener {
+public class C_PortalActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -76,7 +76,7 @@ public class C_PortalActivity extends FragmentActivity implements ActionBar.TabL
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_c_portal, menu);
+		getSherlock().getMenuInflater().inflate(R.menu.activity_c_portal, menu);
 		return true;
 	}
 

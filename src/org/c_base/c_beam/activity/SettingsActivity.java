@@ -1,10 +1,10 @@
 package org.c_base.c_beam.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import com.actionbarsherlock.app.SherlockActivity;
 import org.c_base.c_beam.fragment.SettingsFragment;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends SherlockActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

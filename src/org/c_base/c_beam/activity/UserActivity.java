@@ -1,25 +1,25 @@
 package org.c_base.c_beam.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
-import org.c_base.c_beam.domain.C_beam;
+import com.actionbarsherlock.app.SherlockActivity;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
 
-public class UserActivity extends Activity {
+public class UserActivity extends SherlockActivity {
 	C_beam c_beam;
 	TableLayout tl;
 	TableRow tr;
@@ -71,7 +71,7 @@ public class UserActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_user, menu);
+		getSherlock().getMenuInflater().inflate(R.menu.activity_user, menu);
 
 		return true;
 	}

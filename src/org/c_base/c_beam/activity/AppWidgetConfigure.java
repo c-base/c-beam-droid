@@ -17,13 +17,13 @@ package org.c_base.c_beam.activity;
  */
 
 
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import com.actionbarsherlock.app.SherlockActivity;
 import org.c_base.c_beam.util.Helper;
 
 // Need the following import to get access to the app resources, since this
@@ -32,7 +32,7 @@ import org.c_base.c_beam.util.Helper;
 /**
  * The configuration screen for the ExampleAppWidgetProvider widget sample.
  */
-public class AppWidgetConfigure extends Activity {
+public class AppWidgetConfigure extends SherlockActivity {
     static final String TAG = "AppWidgetConfigure";
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;

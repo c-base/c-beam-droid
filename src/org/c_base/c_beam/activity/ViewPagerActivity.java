@@ -1,12 +1,12 @@
 package org.c_base.c_beam.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import org.c_base.c_beam.adapter.MainPagerAdapter;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.adapter.MainPagerAdapter;
 
-public class ViewPagerActivity extends FragmentActivity
+public class ViewPagerActivity extends SherlockFragmentActivity
 {
 	@Override
 	public void onCreate( Bundle savedInstanceState )

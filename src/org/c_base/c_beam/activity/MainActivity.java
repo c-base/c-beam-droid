@@ -1,24 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-
-import org.c_base.c_beam.domain.Artefact;
-import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.domain.Mission;
-import org.c_base.c_beam.fragment.MissionListFragment;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.UserListFragment;
-import org.c_base.c_beam.fragment.ArrayListFragment;
-import org.c_base.c_beam.fragment.ArtefactListFragment;
-import org.c_base.c_beam.fragment.C_ontrolFragment;
-import org.c_base.c_beam.fragment.C_portalListFragment;
-import org.c_base.c_beam.fragment.EventListFragment;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -33,14 +14,13 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -48,11 +28,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gcm.GCMRegistrar;
+import java.util.ArrayList;
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.Artefact;
+import org.c_base.c_beam.domain.Article;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.Event;
+import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.ArrayListFragment;
+import org.c_base.c_beam.fragment.ArtefactListFragment;
+import org.c_base.c_beam.fragment.C_ontrolFragment;
+import org.c_base.c_beam.fragment.C_portalListFragment;
+import org.c_base.c_beam.fragment.EventListFragment;
+import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.UserListFragment;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 @SuppressLint("NewApi")
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
@@ -432,7 +429,7 @@ ActionBar.TabListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 

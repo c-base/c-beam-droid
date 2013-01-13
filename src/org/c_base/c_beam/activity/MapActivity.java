@@ -4,22 +4,22 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
-public class MapActivity extends FragmentActivity implements
+public class MapActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener {
 
 	/**
@@ -80,12 +80,12 @@ public class MapActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_map, menu);
-		return true;
-	}
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getSherlock().getMenuInflater().inflate(R.menu.activity_map, menu);
+    return true;
+  }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

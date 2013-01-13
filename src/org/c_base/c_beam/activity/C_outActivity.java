@@ -1,25 +1,24 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.C_outListFragment;
 
-public class C_outActivity extends FragmentActivity {
+public class C_outActivity extends SherlockFragmentActivity {
 	C_beam c_beam;
 	EditText et;
 	
@@ -89,7 +88,7 @@ public class C_outActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_c_out, menu);
+		getSherlock().getMenuInflater().inflate(R.menu.activity_c_out, menu);
 		return true;
 	}
 
