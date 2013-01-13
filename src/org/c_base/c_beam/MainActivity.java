@@ -200,6 +200,16 @@ ActionBar.TabListener {
 			}
 
 		});
+		
+		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
+		button_c_maps.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent myIntent = new Intent(v.getContext(), MapActivity.class);
+				startActivityForResult(myIntent, 0);
+			}
+
+		});
 		// add extras here..
 		handler = new Handler();
 

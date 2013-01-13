@@ -3,6 +3,7 @@ package org.c_base.c_beam;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,23 +27,25 @@ public class C_portalWebViewFragment extends Fragment {
 				handler.proceed() ;
 			}
 		});
-
+		webView.getSettings().setJavaScriptEnabled(true);
+		Log.i("BAR", "FOOOO");
 		return v;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
 		if (webView != null)
 			webView.loadUrl(url);
-		
-		super.onActivityCreated(savedInstanceState);
 	}
 
 	public void setUrl(String url) {
 		this.url = url;
-		if (webView != null)
+		if (webView != null) {
+			Log.i("WebViewFragment", "load url");
 			webView.loadUrl(url);
+		}
 	}
 
 }

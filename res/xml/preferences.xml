@@ -12,6 +12,13 @@
         android:key="pref_username"
         android:summary="@string/pref_username_summ"
         android:title="@string/pref_username" />
+    
+    <EditTextPreference
+    	android:key="pref_password"
+    	android:title="@string/pref_password"
+    	android:summary="@string/pref_password_summ"   
+	    android:inputType="textPassword" />
+    
     <!-- 
     <EditTextPreference
         android:defaultValue="X-Scale"

@@ -64,8 +64,8 @@ public class C_beam {
 		thread.start();
 	}
 	public boolean isInCrewNetwork() {
-		if (true)
-			return true;
+//		if (true)
+//			return true;
 		if (parent == null) 
 			return true;
 		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
@@ -501,6 +501,28 @@ public class C_beam {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_stripe_pattern");
 				c_beamClient.callJSONObject("set_stripe_pattern", offset);
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void notbeleuchtung() {
+		try {
+			if (isInCrewNetwork())
+				Log.i("c-beam", "notbeleuchtung");
+				c_beamClient.callJSONObject("notbeleuchtung");
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void set_stripe_default() {
+		try {
+			if (isInCrewNetwork())
+				Log.i("c-beam", "set_pattern_default");
+				c_beamClient.callJSONObject("set_pattern_default");
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

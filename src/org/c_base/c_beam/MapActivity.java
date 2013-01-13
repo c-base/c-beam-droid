@@ -1,161 +1,88 @@
 package org.c_base.c_beam;
 
-import org.c_base.c_beam.util.SystemUiHider;
-
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.net.Uri;
-import android.os.Build;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.MenuItem;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.ImageView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- * 
- * @see SystemUiHider
- */
-public class MapActivity extends Activity {
-	/**
-	 * Whether or not the system UI should be auto-hidden after
-	 * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-	 */
-	private static final boolean AUTO_HIDE = true;
+public class MapActivity extends FragmentActivity implements
+		ActionBar.TabListener {
 
 	/**
-	 * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-	 * user interaction before hiding the system UI.
+	 * The {@link android.support.v4.view.PagerAdapter} that will provide
+	 * fragments for each of the sections. We use a
+	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
+	 * will keep every loaded fragment in memory. If this becomes too memory
+	 * intensive, it may be best to switch to a
+	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	/**
-	 * If set, will toggle the system UI visibility upon interaction. Otherwise,
-	 * will show the system UI visibility upon interaction.
+	 * The {@link ViewPager} that will host the section contents.
 	 */
-	private static final boolean TOGGLE_ON_CLICK = true;
-
-	/**
-	 * The flags to pass to {@link SystemUiHider#getInstance}.
-	 */
-	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-
-	/**
-	 * The instance of the {@link SystemUiHider} for this activity.
-	 */
-	private SystemUiHider mSystemUiHider;
+	ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_map);
-		setupActionBar();
-		
-//		WebView w = (WebView) findViewById(R.id.mapWebView);
-//		w.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
-////		w.getSettings().set
-////		w.getSettings().setJavaScriptEnabled(true);
-//		w.getSettings().setBuiltInZoomControls(true);
-////		w.getSettings().set
-////		w.lo
-//		Uri path = Uri.parse("android.resource://org.c_base.c_beam/" + R.drawable.c_base_risszeichnung_big);
-////		w.loadUrl("file:///android_res/drawable/c_base_risszeichnung_big.png");
-//		w.loadUrl("http://smile.crew.c-base.org/c-base_risszeichnung_big.png");
-		
 
-		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
+		// Set up the action bar.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		// Show the Up button in the action bar.
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		// Set up an instance of SystemUiHider to control the system UI for
-		// this activity.
-//		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-//				HIDER_FLAGS);
-//		mSystemUiHider.setup();
-//		mSystemUiHider
-//				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-//					// Cached values.
-//					int mControlsHeight;
-//					int mShortAnimTime;
-//
-//					@Override
-//					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-//					public void onVisibilityChange(boolean visible) {
-//						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//							// If the ViewPropertyAnimator API is available
-//							// (Honeycomb MR2 and later), use it to animate the
-//							// in-layout UI controls at the bottom of the
-//							// screen.
-//							if (mControlsHeight == 0) {
-//								mControlsHeight = controlsView.getHeight();
-//							}
-//							if (mShortAnimTime == 0) {
-//								mShortAnimTime = getResources().getInteger(
-//										android.R.integer.config_shortAnimTime);
-//							}
-//							controlsView
-//									.animate()
-//									.translationY(visible ? 0 : mControlsHeight)
-//									.setDuration(mShortAnimTime);
-//						} else {
-//							// If the ViewPropertyAnimator APIs aren't
-//							// available, simply show or hide the in-layout UI
-//							// controls.
-//							controlsView.setVisibility(visible ? View.VISIBLE
-//									: View.GONE);
-//						}
-//
-//						if (visible && AUTO_HIDE) {
-//							// Schedule a hide().
-//							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-//						}
-//					}
-//				});
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
 
-		// Set up the user interaction to manually show or hide the system UI.
-//		contentView.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				if (TOGGLE_ON_CLICK) {
-//					mSystemUiHider.toggle();
-//				} else {
-//					mSystemUiHider.show();
-//				}
-//			}
-//		});
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.map_pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		// Upon interacting with UI controls, delay any scheduled hide()
-		// operations to prevent the jarring behavior of controls going away
-		// while interacting with the UI.
-//		findViewById(R.id.dummy_button).setOnTouchListener(
-//				mDelayHideTouchListener);
+		// When swiping between different sections, select the corresponding
+		// tab. We can also use ActionBar.Tab#select() to do this if we have
+		// a reference to the Tab.
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						actionBar.setSelectedNavigationItem(position);
+					}
+				});
+
+		// For each of the sections in the app, add a tab to the action bar.
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+			// Create a tab with text corresponding to the page title defined by
+			// the adapter. Also specify this Activity object, which implements
+			// the TabListener interface, as the callback (listener) for when
+			// this tab is selected.
+			actionBar.addTab(actionBar.newTab()
+					.setText(mSectionsPagerAdapter.getPageTitle(i))
+					.setTabListener(this));
+		}
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-		delayedHide(100);
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			// Show the Up button in the action bar.
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_map, menu);
+		return true;
 	}
 
 	@Override
@@ -169,43 +96,115 @@ public class MapActivity extends Activity {
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			// TODO: If Settings has multiple levels, Up should navigate up
-			// that hierarchy.
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * Touch listener to use for in-layout UI controls to delay hiding the
-	 * system UI. This is to prevent the jarring behavior of controls going away
-	 * while interacting with activity UI.
-	 */
-	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-		@Override
-		public boolean onTouch(View view, MotionEvent motionEvent) {
-			if (AUTO_HIDE) {
-//				delayedHide(AUTO_HIDE_DELAY_MILLIS);
-			}
-			return false;
-		}
-	};
-
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable() {
-		@Override
-		public void run() {
-//			mSystemUiHider.hide();
-		}
-	};
-
-	/**
-	 * Schedules a call to hide() in [delay] milliseconds, canceling any
-	 * previously scheduled calls.
-	 */
-	private void delayedHide(int delayMillis) {
-//		mHideHandler.removeCallbacks(mHideRunnable);
-//		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+	@Override
+	public void onTabSelected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+		// When the given tab is selected, switch to the corresponding page in
+		// the ViewPager.
+		mViewPager.setCurrentItem(tab.getPosition());
 	}
+
+	@Override
+	public void onTabUnselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+	}
+
+	@Override
+	public void onTabReselected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+	}
+
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the sections/tabs/pages.
+	 */
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			Fragment fragment;
+			Bundle args = new Bundle();
+			if (position == 0) {
+				fragment = new C_portalWebViewFragment();
+				((C_portalWebViewFragment) fragment).setUrl("http://ijon.crew.c-base.org/interface/index.html");
+			} else if (position == 1) {
+				fragment = new C_portalWebViewFragment();
+				((C_portalWebViewFragment) fragment).setUrl("http://smile.crew.c-base.org/basemap/");
+			} else if (position == 2) {
+				fragment = new C_portalWebViewFragment();
+				((C_portalWebViewFragment) fragment).setUrl("https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A");
+				
+				
+			} else {
+				 fragment = new DummySectionFragment();
+				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+			}
+				
+			
+			
+			
+			return fragment;
+		}
+
+		@Override
+		public int getCount() {
+			// Show 3 total pages.
+			return 3;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			switch (position) {
+			case 0:
+				return getString(R.string.title_section1).toUpperCase();
+			case 1:
+				return getString(R.string.title_section2).toUpperCase();
+			case 2:
+				return getString(R.string.title_section3).toUpperCase();
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * A dummy fragment representing a section of the app, but that simply
+	 * displays dummy text.
+	 */
+	public static class DummySectionFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public DummySectionFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			// Create a new TextView and set its text to the fragment's section
+			// number argument value.
+			TextView textView = new TextView(getActivity());
+			textView.setGravity(Gravity.CENTER);
+			textView.setText(Integer.toString(getArguments().getInt(
+					ARG_SECTION_NUMBER)));
+			return textView;
+		}
+	}
+
 }

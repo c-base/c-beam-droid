@@ -44,12 +44,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="org.c_base.c_beam.EventActivity"
@@ -152,11 +146,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="org.c_base.c_beam.BamActivity"
@@ -167,6 +156,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
         </activity>
+        <!--
         <activity
             android:name="org.c_base.c_beam.ViewPagerActivity"
             android:label="ViewPagerActivity"
@@ -176,28 +166,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        -->
         <activity
             android:name="org.c_base.c_beam.MapActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_map"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
-            android:theme="@style/FullscreenTheme" >
+            android:parentActivityName="org.c_base.c_beam.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.MainActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

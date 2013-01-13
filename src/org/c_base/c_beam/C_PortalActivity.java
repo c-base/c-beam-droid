@@ -154,7 +154,7 @@ public class C_PortalActivity extends FragmentActivity implements ActionBar.TabL
 
 		@Override
 		public int getCount() {
-			return 5;
+			return 1;
 		}
 
 		@Override

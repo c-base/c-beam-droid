@@ -6,7 +6,7 @@
     android:layout_height="match_parent" >
 
     <ScrollView
-        android:id="@+id/scrollView1"
+        android:id="@+id/c_leuse_scrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
@@ -17,91 +17,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <ToggleButton
-                android:id="@+id/toggleButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/button_self_destruct"
-                android:text="Antenne"
-                android:textOff="Antenne aus"
-                android:textOn="Antenne an" />
-
-            <Button
-                android:id="@+id/button_self_destruct"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/button_liftoff"
-                android:layout_toLeftOf="@+id/button_reject_from_earth"
-                android:text="Erde absprengen" />
-
-            <ToggleButton
-                android:id="@+id/toggleButtonBluewall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/toggleButton1"
-                android:layout_toRightOf="@+id/button_softwareverbrennung"
-                android:text="ToggleButton"
-                android:textOff="Darkwall"
-                android:textOn="Bluewall" />
-
-            <android.support.v7.widget.GridLayout
-                android:id="@+id/gridLayout1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                app:columnCount="2"
-                app:rowCount="3" >
-            </android.support.v7.widget.GridLayout>
-
-            <Button
-                android:id="@+id/button_reject_from_earth"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/button_self_destruct"
-                android:layout_alignBottom="@+id/button_self_destruct"
-                android:layout_alignParentRight="true"
-                android:text="von Erde abstossen" />
-
-            <Button
-                android:id="@+id/button_softwareverbrennung"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/toggleButtonBluewall"
-                android:layout_alignBottom="@+id/toggleButtonBluewall"
-                android:layout_alignParentLeft="true"
-                android:text="Software-Endlager" />
-
-            <!--  -->
-
             <TableLayout
-                android:id="@+id/tableLayout2"
+                android:id="@+id/c_leuse_pattern_tableLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/button_softwareverbrennung"
-                android:layout_centerHorizontal="true"
+                android:layout_alignParentRight="true"
                 android:gravity="center_horizontal" >
 
-                <TextView
-                    android:id="@+id/textView1"
+                <org.c_base.c_beam.CTextView
+                    android:id="@+id/c_leuse_pattern_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="c_leusen-LED pattern:" />
 
                 <TableRow
-                    android:id="@+id/tableRow5"
+                    android:id="@+id/c_leuse_pattern_tableRow1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <Button
-                        android:id="@+id/button1"
+                        android:id="@+id/button_pattern_off"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -112,7 +48,7 @@
                         android:text="OFF" />
 
                     <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/button_pattern_rainbow"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -123,7 +59,7 @@
                         android:text="Rainbow" />
 
                     <Button
-                        android:id="@+id/button3"
+                        android:id="@+id/button_pattern_green"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -135,12 +71,12 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow6"
+                    android:id="@+id/c_leuse_pattern_tableRow2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <Button
-                        android:id="@+id/button4"
+                        android:id="@+id/button_pattern_bluegreen"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,7 +86,7 @@
                         android:text="Blaugru:n" />
 
                     <Button
-                        android:id="@+id/button6"
+                        android:id="@+id/button_pattern_blue"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -160,7 +96,7 @@
                         android:text="Blau" />
 
                     <Button
-                        android:id="@+id/button5"
+                        android:id="@+id/button_pattern_red"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -172,12 +108,12 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow7"
+                    android:id="@+id/c_leuse_pattern_tableRow3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
                     <Button
-                        android:id="@+id/button7"
+                        android:id="@+id/button_pattern_white"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -202,7 +138,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRow4"
+                    android:id="@+id/c_leuse_pattern_tableRow4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
@@ -230,33 +166,33 @@
             </TableLayout>
 
             <TableLayout
-                android:id="@+id/TableLayout3"
+                android:id="@+id/c_leuse_speed_TableLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/tableLayout2"
+                android:layout_below="@id/c_leuse_pattern_tableLayout"
                 android:layout_centerHorizontal="true" >
 
                 <TableRow
-                    android:id="@+id/tableRow1"
+                    android:id="@+id/c_leuse_speed_tableRow1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal" >
 
                     <Button
-                        android:id="@+id/button_speed_minus_9"
+                        android:id="@+id/button_speed_minus_6"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_column="3"
                         app:layout_gravity="left"
                         app:layout_row="1"
-                        android:text="-9" />
+                        android:text="-6" />
 
                     <Button
-                        android:id="@+id/button12"
+                        android:id="@+id/button_speed_minus_3"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -264,10 +200,10 @@
                         app:layout_columnSpan="2"
                         app:layout_gravity="left"
                         app:layout_row="2"
-                        android:text="-6" />
+                        android:text="-3" />
 
                     <Button
-                        android:id="@+id/button11"
+                        android:id="@+id/button_speed_minus_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_column="2"
@@ -275,10 +211,10 @@
                         app:layout_gravity="left"
                         app:layout_row="2"
                         android:minWidth="48dp"
-                        android:text="-3" />
+                        android:text="-1" />
 
                     <Button
-                        android:id="@+id/button10"
+                        android:id="@+id/button_speed_0"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -288,17 +224,27 @@
                         android:text="0" />
 
                     <Button
-                        android:id="@+id/button9"
+                        android:id="@+id/button_speed_plus_1"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_column="0"
                         app:layout_gravity="left"
                         app:layout_row="2"
+                        android:text="+1" />
+
+                    <Button
+                        android:id="@+id/button_speed_plus_3"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="3"
+                        app:layout_gravity="left"
+                        app:layout_row="1"
                         android:text="+3" />
 
                     <Button
-                        android:id="@+id/button8"
+                        android:id="@+id/button_speed_plus_6"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -306,48 +252,8 @@
                         app:layout_gravity="left"
                         app:layout_row="1"
                         android:text="+6" />
-
-                    <Button
-                        android:id="@+id/button_speed_plus_9"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_column="3"
-                        app:layout_gravity="left"
-                        app:layout_row="1"
-                        android:text="+9" />
                 </TableRow>
-
-                <TableRow
-                    android:id="@+id/tableRow2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/tableRow3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </TableRow>
-            </TableLayout> <!--  -->
-
-            <Button
-                android:id="@+id/button_unlabeled"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/button_reject_from_earth" />
-
-            <Button
-                android:id="@+id/button_liftoff"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/button_unlabeled"
-                android:text="@string/button_lift_off" />
+            </TableLayout>
         </RelativeLayout>
     </ScrollView>
-
 </RelativeLayout>

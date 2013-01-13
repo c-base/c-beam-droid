@@ -24,6 +24,7 @@ public class C_ontrolFragment extends Fragment {
 	AlertDialog bam;
 	int progress;
 	C_beam c_beam;
+	Fragment c_leuseFragment; 
 
 	public C_ontrolFragment() {
 		this.c_beam = null;
@@ -40,6 +41,15 @@ public class C_ontrolFragment extends Fragment {
 		}
 
 		View v = inflater.inflate(R.layout.fragment_c_ontrol, container, false);
+		//
+		//		getChildFragmentManager().findFragmentById(R.layout.fragment_c_leuse);
+		//
+		//		c_leuseFragment = new C_leuseFragment(c_beam);
+		//		FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+		//		transaction.add(R.id.RelativeLayout2, c_leuseFragment).commit();
+
+
+
 		Button b = (Button) v.findViewById(R.id.button_self_destruct);
 
 		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
@@ -103,8 +113,8 @@ public class C_ontrolFragment extends Fragment {
 				b.show();
 			}
 		});	
-		
-		
+
+
 
 		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
 		t.setOnClickListener(new OnClickListener() {
@@ -128,7 +138,7 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.hwstorage(true);
 			}
 		});	
-		
+		/* */
 		b = (Button) v.findViewById(R.id.button1);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -165,7 +175,7 @@ public class C_ontrolFragment extends Fragment {
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				c_beam.set_stripe_pattern(4);
+				c_beam.set_stripe_pattern(5);
 			}
 		});	
 
@@ -173,7 +183,7 @@ public class C_ontrolFragment extends Fragment {
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				c_beam.set_stripe_pattern(5);
+				c_beam.set_stripe_pattern(4);
 			}
 		});	
 
@@ -184,7 +194,16 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.set_stripe_pattern(6);
 			}
 		});	
-		
+
+		b = (Button) v.findViewById(R.id.button_speed_plus_9);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(9);
+			}
+		});
+
+
 		b = (Button) v.findViewById(R.id.button8);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -192,7 +211,7 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.set_stripe_speed(6);
 			}
 		});
-		
+
 		b = (Button) v.findViewById(R.id.button9);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -200,7 +219,7 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.set_stripe_speed(3);
 			}
 		});
-		
+
 		b = (Button) v.findViewById(R.id.button10);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -208,7 +227,7 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.set_stripe_speed(0);
 			}
 		});
-		
+
 		b = (Button) v.findViewById(R.id.button11);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -225,6 +244,54 @@ public class C_ontrolFragment extends Fragment {
 			}
 		});
 
+		b = (Button) v.findViewById(R.id.button_speed_minus_9);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_speed(-9);
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button_emergency_lights);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.notbeleuchtung();
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button_small_blue);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(7);
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button_small_green);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(8);
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button_small_red);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_pattern(9);
+			}
+		});
+
+		b = (Button) v.findViewById(R.id.button_pattern_default);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				c_beam.set_stripe_default();
+			}
+		});
+		/* */
 		thisView = v;
 		return v;
 	}
@@ -234,5 +301,17 @@ public class C_ontrolFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onViewStateRestored(savedInstanceState);
 	}
+
+	/*@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
+
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.addRule(RelativeLayout.BELOW, R.id.button_unlabeled);
+		c_leuseFragment.getView().setLayoutParams(params);
+	}*/
+
+
 
 }

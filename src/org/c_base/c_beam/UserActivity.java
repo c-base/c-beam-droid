@@ -52,7 +52,7 @@ public class UserActivity extends Activity {
 				((TextView)v.findViewById(R.id.title)).setText(u.getUsername());
 				addData(u);
 				WebView w = (WebView) findViewById(R.id.userWebView);
-				
+				w.getSettings().setJavaScriptEnabled(true);
 				w.loadUrl("http://"+u.getUsername()+".crew.c-base.org");
 				
 			} else {

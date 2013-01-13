@@ -28,28 +28,28 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 	private static final int C_ONTROL_FRAGMENT = 4;
 	private static final int MISSION_FRAGMENT = 5;
 	private static final String TAG = "MainPagerAdapter";
-	
+
 	private ArrayList<User> userList;
 	private ArrayList<Article> articleList;
 	private ArrayList<Artefact> artefactList;
 	private ArrayList<Event> eventList;
 	private ArrayList<Mission> missionList;
-	
+
 	private static String[] titles = new String[] { "An Bord", "C-Portal",
-			"Artefacts", "Events", "C-ontrol", "Missionen" };
-	
+		"Artefacts", "Events", "C-ontrol", "Missionen" };
+
 	private final Context context;
 	private int[] scrollPosition = new int[titles.length];
 
 	Fragment[] pages;
-	
+
 	UserListFragment userlist;
 	EventListFragment events;
 	MissionListFragment missions;
 	C_portalListFragment c_portal;
 	ArtefactListFragment artefacts;
 
-	
+
 	public MainPagerAdapter( FragmentManager fm, Context context )
 	{
 		super(fm);
@@ -59,7 +59,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 			scrollPosition[i] = 0;
 		}
 		pages = new Fragment[getCount()];
-		
+
 		userlist = (UserListFragment) getItem(USER_FRAGMENT);
 		events = (EventListFragment) getItem(EVENTS_FRAGMENT);
 		missions = (MissionListFragment) getItem(MISSION_FRAGMENT);
@@ -100,12 +100,12 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 		v.setSelection( scrollPosition[ position ] );
 		v.setOnScrollListener( new OnScrollListener()
 		{
-			
+
 			@Override
 			public void onScrollStateChanged( AbsListView view, int scrollState )
 			{
 			}
-			
+
 			@Override
 			public void onScroll( AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount )
@@ -150,8 +150,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 		return new ScrollState( scrollPosition );
 	}
 
-	
-	
+
+
 	@Override
 	public void startUpdate( View view )
 	{
@@ -175,7 +175,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 				fragment = new ArtefactListFragment();
 			} else if(position == EVENTS_FRAGMENT) {
 				fragment = new EventListFragment();
-			//} else if(position == C_ONTROL_FRAGMENT) {
+				//} else if(position == C_ONTROL_FRAGMENT) {
 				//fragment = new C_ontrolFragment(c_beam);	
 			} else if(position == MISSION_FRAGMENT) {
 				fragment = new MissionListFragment();
@@ -231,6 +231,6 @@ public class MainPagerAdapter extends FragmentPagerAdapter
 		this.artefacts = artefacts;
 	}
 
-	
-	
+
+
 }
