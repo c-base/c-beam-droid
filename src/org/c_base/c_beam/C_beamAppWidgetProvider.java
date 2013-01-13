@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import org.c_base.c_beam.util.Helper;
 
 // Need the following import to get access to the app resources, since this
 // class is in a sub-package.
@@ -40,7 +41,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 		final int N = appWidgetIds.length;
 		for (int i=0; i<N; i++) {
 			int appWidgetId = appWidgetIds[i];
-			String titlePrefix = AppWidgetConfigure.loadTitlePref(context, appWidgetId);
+			String titlePrefix = Helper.loadTitlePref(context, appWidgetId);
 			updateAppWidget(context, appWidgetManager, appWidgetId, titlePrefix);
 		}
 	}
@@ -51,7 +52,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 		// When the user deletes the widget, delete the preference associated with it.
 		final int N = appWidgetIds.length;
 		for (int i=0; i<N; i++) {
-			AppWidgetConfigure.deleteTitlePref(context, appWidgetIds[i]);
+			Helper.deleteTitlePref(context, appWidgetIds[i]);
 		}
 	}
 

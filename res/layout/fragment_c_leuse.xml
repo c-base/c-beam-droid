@@ -24,7 +24,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center_horizontal" >
 
-                <org.c_base.c_beam.CTextView
+                <org.c_base.c_beam.view.CTextView
                     android:id="@+id/c_leuse_pattern_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
