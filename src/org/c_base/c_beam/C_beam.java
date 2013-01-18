@@ -14,6 +14,18 @@ import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
 import android.util.Log;
 
+//The Client sessions package
+import com.thetransactioncompany.jsonrpc2.client.*;
+
+//The Base package for representing JSON-RPC 2.0 messages
+import com.thetransactioncompany.jsonrpc2.*;
+
+//The JSON Smart package for JSON encoding/decoding (optional)
+import net.minidev.json.*;
+
+//For creating URLs
+import java.net.*;
+
 public class C_beam {
 	private static final String TAG = "c-beam";
 	protected JSONRPCClient c_beamClient;
@@ -30,9 +42,11 @@ public class C_beam {
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
 
+	JSONRPC2Session portalSession;
+
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
-	
+
 	Thread thread;
 
 	public C_beam(Activity parent) {
@@ -43,6 +57,17 @@ public class C_beam {
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/");
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
+
+//		// Create new JSON-RPC 2.0 client session
+//		try {
+//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org"));
+//			portalSession.getOptions().trustAllCerts(true);
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+
 	}
 
 	public void startThread() {
@@ -64,8 +89,8 @@ public class C_beam {
 		thread.start();
 	}
 	public boolean isInCrewNetwork() {
-//		if (true)
-//			return true;
+		if (true)
+			return true;
 		if (parent == null) 
 			return true;
 		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
@@ -99,11 +124,27 @@ public class C_beam {
 				offlineList.add(user);
 			}
 		}
-
 		updateEvents();
 		updateArtefacts();
 		updateArticles();
 		updateMissions();
+
+//		String method = "list_articles";
+//		int requestID = 0;
+//
+//		JSONRPC2Request request = new JSONRPC2Request(method, requestID);
+//		JSONRPC2Response response = null;
+//
+//		try {
+//			response = portalSession.send(request);
+//			if (response.indicatesSuccess())
+//				System.out.println(response.getResult());
+//			else
+//				System.out.println(response.getError().getMessage());
+//		} catch (JSONRPC2SessionException e) {
+//			System.err.println(e.getMessage());
+//			e.printStackTrace();
+//		}
 	}
 
 	public synchronized JSONObject who() { 
@@ -123,7 +164,7 @@ public class C_beam {
 	}
 
 	private synchronized ArrayList<User> updateUsers() {
-//		Log.i(TAG, "updateUsers");
+		//		Log.i(TAG, "updateUsers");
 		ArrayList<User> list = new ArrayList<User>();
 
 		try {
@@ -133,10 +174,10 @@ public class C_beam {
 					JSONObject item = result.getJSONObject(i);
 					list.add(new User(item));
 				}			
-//				Log.i(TAG, "updateUsers success");
+				//				Log.i(TAG, "updateUsers success");
 			}
 			users = list;
-//			Log.i(TAG, users.toString());
+			//			Log.i(TAG, users.toString());
 			sleeptime = 6000;
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
@@ -185,7 +226,7 @@ public class C_beam {
 	}
 	public synchronized ArrayList<Mission> updateMissions() {
 		missions = new ArrayList<Mission>();
-		
+
 		try {
 			if (isInCrewNetwork()) {
 				JSONArray result = c_beamClient.callJSONArray("mission_list");
@@ -461,7 +502,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "hw-storage");
-				c_beamClient.callJSONObject("hwstorage", true);
+			c_beamClient.callJSONObject("hwstorage", true);
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -478,7 +519,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_stripe_pattern");
-				c_beamClient.callJSONObject("set_stripe_pattern", pattern);
+			c_beamClient.callJSONObject("set_stripe_pattern", pattern);
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -489,7 +530,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_stripe_speed");
-				c_beamClient.callJSONObject("set_stripe_speed", speed);
+			c_beamClient.callJSONObject("set_stripe_speed", speed);
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -500,7 +541,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_stripe_pattern");
-				c_beamClient.callJSONObject("set_stripe_pattern", offset);
+			c_beamClient.callJSONObject("set_stripe_pattern", offset);
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -511,7 +552,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "notbeleuchtung");
-				c_beamClient.callJSONObject("notbeleuchtung");
+			c_beamClient.callJSONObject("notbeleuchtung");
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -522,7 +563,7 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_pattern_default");
-				c_beamClient.callJSONObject("set_pattern_default");
+			c_beamClient.callJSONObject("set_pattern_default");
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
