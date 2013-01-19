@@ -33,7 +33,7 @@
         android:dialogTitle="Font"
         android:entries="@array/fonts_array"
         android:entryValues="@array/fonts_array"
-        android:defaultValue="X-Scale" />
+        android:defaultValue="@string/pref_font_default" />
 	
 	<ListPreference
         android:key="pref_fontsize"
