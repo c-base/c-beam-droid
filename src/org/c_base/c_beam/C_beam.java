@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
+import org.alexd.jsonrpc.JSONRPCParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +38,7 @@ public class C_beam {
 	protected ArrayList<User> etaList = new ArrayList<User>();
 	protected ArrayList<Mission> missions = new ArrayList<Mission>();
 	protected ArrayList<User> users = new ArrayList<User>();
-	protected JSONArray events = new JSONArray();
+	protected ArrayList<Event> events = new ArrayList<Event>();
 	protected Activity parent;
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
@@ -51,16 +52,16 @@ public class C_beam {
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
-		c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/");
+		c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
 		c_beamClient.setConnectionTimeout(5000);
 		c_beamClient.setSoTimeout(5000);
-		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/");
+		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
 
 //		// Create new JSON-RPC 2.0 client session
 //		try {
-//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org"));
+//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
 //			portalSession.getOptions().trustAllCerts(true);
 //		} catch (MalformedURLException e) {
 //			// TODO Auto-generated catch block
@@ -89,8 +90,8 @@ public class C_beam {
 		thread.start();
 	}
 	public boolean isInCrewNetwork() {
-		if (true)
-			return true;
+//		if (true)
+//			return true;
 		if (parent == null) 
 			return true;
 		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
@@ -129,9 +130,17 @@ public class C_beam {
 		updateArticles();
 		updateMissions();
 
-//		String method = "list_articles";
-//		int requestID = 0;
-//
+		String method = "list_articles";
+		int requestID = 0;
+
+//		try {
+//			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
+//			
+//		} catch (JSONRPCException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 //		JSONRPC2Request request = new JSONRPC2Request(method, requestID);
 //		JSONRPC2Response response = null;
 //
@@ -203,18 +212,23 @@ public class C_beam {
 		return u;
 	}
 
-	public JSONArray getEvents(){
+	public ArrayList<Event> getEvents(){
 		return events;
 	}
-	public synchronized JSONArray updateEvents() {
+	public synchronized ArrayList<Event> updateEvents() {
 		Log.i(TAG, "updateEvents()");
 		try {
-			events = new JSONArray();
-			if (isInCrewNetwork()) {
-				events = c_beamClient.callJSONArray("events");
-			}
+			events = new ArrayList<Event>();
+			JSONArray result = c_beamClient.callJSONArray("event_list");
+			for (int i=0; i<result.length(); i++) {
+				JSONObject item = result.getJSONObject(i);
+				events.add(new Event(item));
+			}			
 			return events;
 		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -269,13 +283,15 @@ public class C_beam {
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public synchronized void register_update(String regId, String user) {
 		try {
-			if (isInCrewNetwork())
-				c_beamClient.call("gcm_update", user, regId);
+			if (isInCrewNetwork()){
+				String result = c_beamClient.callString("gcm_update", user, regId);
+				Log.i(TAG, "registerUpdate("+user+", " +regId+")");
+			}
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

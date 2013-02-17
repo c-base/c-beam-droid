@@ -26,6 +26,7 @@ public class ArrayListFragment extends ListFragment {
 	}
 	public void addItem(String item) {
 		items.add(item);
+		
 		 //((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged(); 
 	}
 	

@@ -2,9 +2,6 @@ package org.c_base.c_beam;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -52,6 +49,7 @@ ActionBar.TabListener {
 	private static final String TAG = "MainActivity";
 
 	ArrayList<Article> articleList;
+	ArrayList<Event> eventList;
 
 	//	SectionsPagerAdapter mSectionsPagerAdapter;
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -65,7 +63,7 @@ ActionBar.TabListener {
 	C_beam c_beam = new C_beam(this);
 
 	protected Runnable fred;
-	
+
 
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
@@ -265,7 +263,7 @@ ActionBar.TabListener {
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
 		super.onPause();
-//		thread.interrupt();
+		//		thread.interrupt();
 		c_beam.stopThread();
 	}
 
@@ -273,7 +271,7 @@ ActionBar.TabListener {
 	protected void onStop() {
 		Log.i(TAG, "onStop()");
 		super.onStop();
-//		thread.interrupt();
+		//		thread.interrupt();
 		c_beam.stopThread();
 	}
 
@@ -333,54 +331,49 @@ ActionBar.TabListener {
 			}
 
 		}
-		try {
-			if (online.isAdded()) {
-				online.clear();
-				for(int i=0; i<onlineList.size();i++)
-					online.addItem(onlineList.get(i));
-				for(int i=0; i<etaList.size();i++)
-					online.addItem(etaList.get(i));
+		if (online.isAdded()) {
+			online.clear();
+			for(int i=0; i<onlineList.size();i++)
+				online.addItem(onlineList.get(i));
+			for(int i=0; i<etaList.size();i++)
+				online.addItem(etaList.get(i));
+		}
+		if (events.isAdded()){
+			eventList = c_beam.getEvents();
+			events.clear();
+			if (eventList != null) { 
+				for(int i=0; i<eventList.size();i++)
+					events.addItem(eventList.get(i));
 			}
-			if (events.isAdded()){
-				JSONArray eventsresult = c_beam.getEvents();
-				events.clear();
-				if (eventsresult != null) { 
-					for(int i=0; i<eventsresult.length();i++)
-						events.addItem(new Event(eventsresult.get(i).toString()));
-				}
-			}
+		}
 
-			if (missions.isAdded()){
-				ArrayList<Mission> missionList = new ArrayList<Mission>();
-				missionList = c_beam.getMissions();
-				missions.clear();
-				for(int i=0; i<missionList.size();i++)
-					missions.addItem(missionList.get(i));
-			}
+		if (missions.isAdded()){
+			ArrayList<Mission> missionList = new ArrayList<Mission>();
+			missionList = c_beam.getMissions();
+			missions.clear();
+			for(int i=0; i<missionList.size();i++)
+				missions.addItem(missionList.get(i));
+		}
 
-			if(c_portal.isAdded()) {
-				ArrayList<Article> tmpList = c_beam.getArticles();
-				if (articleList == null || 1 == 1 || articleList.size() != tmpList.size()) {
-					articleList = tmpList;
-					c_portal.clear();
-					for(int i=0; i<articleList.size();i++)
-						c_portal.addItem(articleList.get(i));
-				}
+		if(c_portal.isAdded()) {
+			ArrayList<Article> tmpList = c_beam.getArticles();
+			if (articleList == null || 1 == 1 || articleList.size() != tmpList.size()) {
+				articleList = tmpList;
+				c_portal.clear();
+				for(int i=0; i<articleList.size();i++)
+					c_portal.addItem(articleList.get(i));
 			}
+		}
 
-			if(artefacts.isAdded()) {
-				ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-				artefactList = c_beam.getArtefacts();
-				if (artefactList.size() != artefacts.size()) {
-					//artefacts.setArrayList(artefactList);
-					artefacts.clear();
-					for(int i=0; i<artefactList.size();i++)
-						artefacts.addItem(artefactList.get(i));
-				}
+		if(artefacts.isAdded()) {
+			ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+			artefactList = c_beam.getArtefacts();
+			if (artefactList.size() != artefacts.size()) {
+				//artefacts.setArrayList(artefactList);
+				artefacts.clear();
+				for(int i=0; i<artefactList.size();i++)
+					artefacts.addItem(artefactList.get(i));
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 	}
@@ -404,7 +397,7 @@ ActionBar.TabListener {
 	protected void onResume () {
 		Log.i(TAG, "onResume()");
 		super.onResume();
-//		thread.start();
+		//		thread.start();
 		c_beam.startThread();
 		updateLists();
 	}
@@ -491,7 +484,8 @@ ActionBar.TabListener {
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
 				} else {
-					fragment = new ArrayListFragment();
+					//fragment = new ArrayListFragment();
+					fragment = null;
 				}
 				fragment.setArguments(new Bundle());
 				pages[position] = fragment;

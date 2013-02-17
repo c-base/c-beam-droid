@@ -20,7 +20,7 @@ import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 
 
-public class 	GCMIntentService extends GCMBaseIntentService {
+public class GCMIntentService extends GCMBaseIntentService {
 	HashMap<String,Notification> notifications;
 	public GCMIntentService() {
 		super("GCMIntentService");
