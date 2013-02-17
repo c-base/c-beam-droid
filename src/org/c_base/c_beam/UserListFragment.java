@@ -6,21 +6,19 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.Gravity;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class UserListFragment extends ArrayListFragment {
+public class UserListFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
-	ListAdapter adapter;
+	UserAdapter adapter;
 	Class nextActivity = UserActivity.class;
 	SharedPreferences sharedPref;
 
@@ -30,20 +28,28 @@ public class UserListFragment extends ArrayListFragment {
 
 	public void addItem(User item) {
 		items.add(item);
-		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+		adapter.notifyDataSetChanged();
 	}
 
+	// Override onCreateView() so we can use a custom empty view
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	        Bundle savedInstanceState) {
+	    return inflater.inflate(R.layout.list_view, null);
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		adapter = new UserAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, items);
+		
+		adapter = new UserAdapter(getActivity(), android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		//getListView().setPadding(5, 5, 5, 5);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		if (sharedPref.getBoolean("pref_c_theme", true)) {
+		    getListView().setDividerHeight(0);
+		}
 		getListView().setHapticFeedbackEnabled(true);
-		//getListView().setDividerHeight(0);
 	}
 
 	@Override
