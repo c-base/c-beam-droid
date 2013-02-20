@@ -11,7 +11,8 @@ public class Helper {
 
 	public static void setFont(Activity activity, TextView view) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-		String font = sharedPref.getString("pref_font", "Android Default");
+		String defaultFont = activity.getString(R.string.pref_font_default);
+		String font = sharedPref.getString("pref_font", defaultFont);
 		int fontsize = Integer.parseInt(sharedPref.getString("pref_fontsize", "20"));
 		if (font.equals("X-Scale")) {
 			view.setPadding(25, 10, 25, 25);
