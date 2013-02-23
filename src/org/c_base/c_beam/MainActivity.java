@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -47,6 +48,8 @@ ActionBar.TabListener {
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
+	
+	Activity activity;
 
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
@@ -81,6 +84,7 @@ ActionBar.TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		activity = this;
 
 		//c_beam.startThread();
 
@@ -108,9 +112,29 @@ ActionBar.TabListener {
 		((TextView)v.findViewById(R.id.title)).setTextSize(30);
 		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
 		actionBar.setCustomView(v);
+		
+//		END TEST Custom Font in Actionbar TEST END
 
-		//		END TEST Custom Font in Actionbar TEST END
-
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		String defaultUsername = "bernd";getString(R.string.pref_username);
+		String user = sharedPref.getString("pref_username", defaultUsername);
+		Log.i(TAG, "username"+defaultUsername);
+		if (user.equals(defaultUsername) || user.isEmpty()) {
+			AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
+			b.setTitle(R.string.set_username_title);
+			b.setMessage(R.string.set_username_message);
+			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent myIntent = new Intent(activity, SettingsActivity.class);
+					startActivityForResult(myIntent, 0);
+				}
+			});
+			b.show();
+		}
+		
 		//		ViewPagerAdapter adapter = new ViewPagerAdapter( this );
 		//	    ViewPager pager =
 		//	        (ViewPager)findViewById( R.id.pager );
@@ -151,7 +175,6 @@ ActionBar.TabListener {
 
 		}
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		b.setOnClickListener(new OnClickListener() {
 
 			@Override
