@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
+import org.alexd.jsonrpc.JSONRPCParams.Versions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
+import android.util.JsonToken;
 import android.util.Log;
 
 public class C_beam {
@@ -37,7 +39,7 @@ public class C_beam {
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
-		c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/");
+		c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
 		c_beamClient.setConnectionTimeout(5000);
 		c_beamClient.setSoTimeout(5000);
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/");
