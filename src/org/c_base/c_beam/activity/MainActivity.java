@@ -2,6 +2,20 @@ package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.Artefact;
+import org.c_base.c_beam.domain.Article;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.Event;
+import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.ArtefactListFragment;
+import org.c_base.c_beam.fragment.C_ontrolFragment;
+import org.c_base.c_beam.fragment.C_portalListFragment;
+import org.c_base.c_beam.fragment.EventListFragment;
+import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.UserListFragment;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -22,8 +36,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -31,25 +43,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gcm.GCMRegistrar;
-import java.util.ArrayList;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.Artefact;
-import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.domain.Mission;
-import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.ArrayListFragment;
-import org.c_base.c_beam.fragment.ArtefactListFragment;
-import org.c_base.c_beam.fragment.C_ontrolFragment;
-import org.c_base.c_beam.fragment.C_portalListFragment;
-import org.c_base.c_beam.fragment.EventListFragment;
-import org.c_base.c_beam.fragment.MissionListFragment;
-import org.c_base.c_beam.fragment.UserListFragment;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 @SuppressLint("NewApi")
 public class MainActivity extends SherlockFragmentActivity implements
