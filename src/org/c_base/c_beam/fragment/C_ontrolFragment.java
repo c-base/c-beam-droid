@@ -134,7 +134,7 @@ public class C_ontrolFragment extends Fragment {
 				}
 			}
 		});	
- 
+
 		b = (Button) v.findViewById(R.id.button_softwareverbrennung);
 		b.setOnClickListener(new OnClickListener() {
 			@Override

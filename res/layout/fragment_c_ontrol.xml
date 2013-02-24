@@ -32,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_below="@+id/button_liftoff"
-                android:layout_toLeftOf="@+id/button_reject_from_earth"
                 android:text="Erde absprengen" />
 
             <ToggleButton
@@ -313,7 +313,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/button_reject_from_earth" />
+                android:layout_toLeftOf="@+id/toggleButtonBluewall" />
 
             <Button
                 android:id="@+id/button_liftoff"
