@@ -97,7 +97,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		//PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		//mBuilder.setDeleteIntent(pIntent);
-		Notification notification = mBuilder.build();
+		Notification notification = mBuilder.getNotification();
 		notifications.put("foo", notification);
 		//notification.flags = Notification.DEFAULT_ALL;
 		notification.flags = Notification.FLAG_SHOW_LIGHTS;

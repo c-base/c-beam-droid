@@ -1,4 +1,4 @@
-<org.c_base.c_beam.NonSwipeableViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<org.c_base.c_beam.view.NonSwipeableViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map_pager"
     android:layout_width="match_parent"

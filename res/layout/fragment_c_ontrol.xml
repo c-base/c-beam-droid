@@ -11,8 +11,6 @@
         android:layout_height="wrap_content" >
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
             android:id="@+id/RelativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
@@ -56,7 +54,7 @@
                 android:layout_centerHorizontal="true"
                 android:columnCount="2"
                 android:rowCount="3" >
-            </android.support.v7.widget.GridLayout> -->
+            </android.support.v7.widget.GridLayout>
 
             <Button
                 android:id="@+id/button_reject_from_earth"
@@ -67,7 +65,7 @@
                 android:layout_alignBottom="@+id/button_self_destruct"
                 android:layout_alignParentRight="true"
                 android:text="von Erde abstossen" />
-
+-->
             <Button
                 android:id="@+id/button_softwareverbrennung"
                 style="?android:attr/buttonStyleSmall"
@@ -78,7 +76,7 @@
                 android:layout_alignParentLeft="true"
                 android:text="Software-Endlager" />
 
-            <!--  -->
+           
 
             <TableLayout
                 android:id="@+id/tableLayout2"
@@ -178,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:text="Notbeleuchtung" />
                 </TableRow>
-
+ 
                 <TableRow
                     android:id="@+id/tableRow4"
                     android:layout_width="wrap_content"
@@ -307,7 +305,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
                 </TableRow>
-            </TableLayout> <!--  -->
+            </TableLayout>
 
             <Button
                 android:id="@+id/button_unlabeled"

@@ -11,8 +11,6 @@
         android:layout_height="wrap_content" >
 
         <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res/org.c_base.c_beam"
             android:id="@+id/RelativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
@@ -24,7 +22,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="center_horizontal" >
 
-                <org.c_base.c_beam.CTextView
+                <org.c_base.c_beam.view.CTextView
                     android:id="@+id/c_leuse_pattern_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
