@@ -92,6 +92,8 @@
     <string name="title_section1">interfaces</string>
     <string name="pref_password">Password</string>
     <string name="pref_password_summ">Your c-base member password</string>
+    <string name="set_username_title">Username setzen</string>
+    <string name="set_username_message">Bitte den Username auf deinen Membernamen setzen.</string>
     
 
 </resources>
