@@ -38,38 +38,38 @@
         <activity
             android:name=".activity.UserActivity"
             android:label="@string/title_activity_user"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.EventActivity"
             android:label="@string/title_activity_event"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.MissionActivity"
             android:label="@string/title_activity_mission"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
 
         <receiver
@@ -103,13 +103,13 @@
         <activity
             android:name=".activity.C_outActivity"
             android:label="@string/title_activity_c_out"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:taskAffinity="org.c_base.c_beam.C_outActivity"
+            android:taskAffinity="org.c_base.c_beam.activity.C_outActivity"
             android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,40 +120,40 @@
         <activity
             android:name=".activity.WebActivity"
             android:label="@string/title_activity_web"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:taskAffinity="org.c_base.c_beam.WebActivity"
+            android:taskAffinity="org.c_base.c_beam.activity.WebActivity"
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".activity.ArtefactActivity"
             android:label="@string/title_activity_artefact_long"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:taskAffinity="org.c_base.c_beam.ArtefactActivity" >
+            android:taskAffinity="org.c_base.c_beam.activity.ArtefactActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.C_PortalActivity"
             android:label="@string/title_activity_c_portal"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:taskAffinity="org.c_base.c_beam.C_portalActivity" >
+            android:taskAffinity="org.c_base.c_beam.activity.C_portalActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
 
         </activity>
         <activity
             android:name=".activity.BamActivity"
             android:label="@string/title_activity_bam"
-            android:parentActivityName="org.c_base.c_beam.MainActivity"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <!--
         <activity
@@ -170,10 +170,10 @@
         <activity
             android:name=".activity.MapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName="org.c_base.c_beam.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.c_base.c_beam.MainActivity" />
+                android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
     </application>
 

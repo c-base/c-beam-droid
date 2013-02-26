@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,7 +22,7 @@ import org.c_base.c_beam.activity.ArtefactActivity;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
 
-public class ArtefactListFragment extends ArrayListFragment {
+public class ArtefactListFragment extends ListFragment {
 	String TAG = "ArtefactListFragment";
 	ArrayList<Artefact> items = new ArrayList<Artefact>();
 	ListAdapter adapter;
@@ -36,23 +38,30 @@ public class ArtefactListFragment extends ArrayListFragment {
 		items.add(item);
 		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
+
+	// Override onCreateView() so we can use a custom empty view
 	@Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        adapter = new ArtefactAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        setListAdapter(adapter);
-        if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_view, null);
+	}
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		adapter = new ArtefactAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, items);
+		setListAdapter(adapter);
+		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+	}
 
 	@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Intent myIntent = new Intent(v.getContext(), nextActivity);
-        myIntent.putExtra("slug", items.get((int) id).getSlug());
-        Log.i(TAG, "slug: "+ items.get((int) id).getSlug());
-        startActivityForResult(myIntent, 0);
-    }
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Intent myIntent = new Intent(v.getContext(), nextActivity);
+		myIntent.putExtra("slug", items.get((int) id).getSlug());
+		Log.i(TAG, "slug: "+ items.get((int) id).getSlug());
+		startActivityForResult(myIntent, 0);
+	}
 	public int size() {
 		return items.size();
 	}
@@ -61,7 +70,7 @@ public class ArtefactListFragment extends ArrayListFragment {
 		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
 
-	
+
 	@SuppressWarnings("rawtypes")
 	public class ArtefactAdapter extends ArrayAdapter {
 		private static final String TAG = "UserAdapter";
@@ -82,12 +91,12 @@ public class ArtefactListFragment extends ArrayListFragment {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Artefact a = items.get(position);
 			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
-//			view.setPadding(25, 5, 25, 5);
-//			setFont(view);
+			//			view.setPadding(25, 5, 25, 5);
+			//			setFont(view);
 			Helper.setFont(getActivity(), view);
 			view.setText(a.getName());
 			return view;
 		}
-		
+
 	}
 }

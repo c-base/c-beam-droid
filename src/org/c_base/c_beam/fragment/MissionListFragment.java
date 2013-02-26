@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,7 +20,7 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.activity.MissionActivity;
 import org.c_base.c_beam.domain.Mission;
 
-public class MissionListFragment extends ArrayListFragment {
+public class MissionListFragment extends ListFragment {
 	ArrayList<Mission> items = new ArrayList<Mission>();
 	ListAdapter adapter;
 	Class nextActivity = MissionActivity.class;
@@ -29,26 +31,34 @@ public class MissionListFragment extends ArrayListFragment {
 	}
 	public void addItem(Mission item) {
 		items.add(item);
-		 ((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
+
+	// Override onCreateView() so we can use a custom empty view
 	@Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        adapter = new MissionAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        setListAdapter(adapter);
-        if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
-		getListView().setHapticFeedbackEnabled(true);
-    }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_view, null);
+	}
 
 	@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        Intent myIntent = new Intent(v.getContext(), nextActivity);
-        myIntent.putExtra("id", items.get((int) id).getId());
-        startActivityForResult(myIntent, 0);
-    }
-	
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+		adapter = new MissionAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, items);
+		setListAdapter(adapter);
+		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		getListView().setHapticFeedbackEnabled(true);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Intent myIntent = new Intent(v.getContext(), nextActivity);
+		myIntent.putExtra("id", items.get((int) id).getId());
+		startActivityForResult(myIntent, 0);
+	}
+
 	@SuppressWarnings("rawtypes")
 	public class MissionAdapter extends ArrayAdapter {
 		private static final String TAG = "MissionAdapter";
@@ -70,6 +80,8 @@ public class MissionListFragment extends ArrayListFragment {
 			view.setPadding(25, 30, 25, 30);
 			Helper.setFont(getActivity(), view);
 			return view;
-		}		
+		}
 	}
+
+
 }

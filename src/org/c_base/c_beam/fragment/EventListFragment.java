@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,7 +20,7 @@ import org.c_base.c_beam.activity.EventActivity;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
 
-public class EventListFragment extends ArrayListFragment {
+public class EventListFragment extends ListFragment {
 	ArrayList<Event> items = new ArrayList<Event>();
 	ListAdapter adapter;
 	Class nextActivity = EventActivity.class;
@@ -30,6 +32,12 @@ public class EventListFragment extends ArrayListFragment {
 	public void addItem(Event item) {
 		items.add(item);
 		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+	}
+	// Override onCreateView() so we can use a custom empty view
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_view, null);
 	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -48,7 +56,7 @@ public class EventListFragment extends ArrayListFragment {
 		myIntent.putExtra("id", items.get((int) id).getId());
 		startActivityForResult(myIntent, 0);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public class EventAdapter extends ArrayAdapter {
 		private static final String TAG = "EventAdapter";
@@ -70,6 +78,6 @@ public class EventListFragment extends ArrayListFragment {
 			Helper.setFont(getActivity(), view);
 			return view;
 		}
-		
+
 	}
 }
