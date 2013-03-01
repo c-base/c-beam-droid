@@ -68,7 +68,6 @@ ActionBar.TabListener {
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
 
-	//	SectionsPagerAdapter mSectionsPagerAdapter;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
@@ -100,8 +99,6 @@ ActionBar.TabListener {
 		super.onCreate(savedInstanceState);
 		activity = this;
 
-		//c_beam.startThread();
-
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
@@ -112,8 +109,6 @@ ActionBar.TabListener {
 		// Set up the action bar.
 		actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-		//		BEGIN TEST Custom Font in Actionbar TEST BEGIN
 
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -126,8 +121,6 @@ ActionBar.TabListener {
 		((TextView)v.findViewById(R.id.title)).setTextSize(30);
 		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
 		actionBar.setCustomView(v);
-		
-//		END TEST Custom Font in Actionbar TEST END
 
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -149,16 +142,6 @@ ActionBar.TabListener {
 			b.show();
 		}
 		
-		//		ViewPagerAdapter adapter = new ViewPagerAdapter( this );
-		//	    ViewPager pager =
-		//	        (ViewPager)findViewById( R.id.pager );
-		//	    pager.setAdapter( adapter );
-
-		//		mSectionsPagerAdapter = new MainPagerAdapter(
-		//				getSupportFragmentManager());
-		//
-		//		
-		//		
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -203,7 +186,6 @@ ActionBar.TabListener {
 						@Override
 						public void onClick(DialogInterface dialog, int whichButton)
 						{
-							//							Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
 							login();
 						}
 					});
@@ -217,7 +199,6 @@ ActionBar.TabListener {
 						@Override
 						public void onClick(DialogInterface dialog, int whichButton)
 						{
-							// Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
 							logout();
 						}
 					});
@@ -252,11 +233,6 @@ ActionBar.TabListener {
 		// add extras here..
 		handler = new Handler();
 
-		//		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
-		//		online.setNextActivity(UserActivity.class);
-		//		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
-		//		missions.setNextActivity(MissionActivity.class);
-
 		if (sharedPref.getBoolean("pref_push", false)) {
 			GCMRegistrar.checkDevice(this);
 			GCMRegistrar.checkManifest(this);
@@ -271,21 +247,6 @@ ActionBar.TabListener {
 				Log.i("GCM", "Already registered"); 
 			}
 		}
-		//		String font = sharedPref.getString("pref_font", "Android Default");
-		//		if (font.equals("Default Android")) {
-		//			
-		//		} else if (font.equals("X-Scale")) {
-		//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "X-SCALE.TTF");
-		//			final ViewGroup mContainer = (ViewGroup) findViewById(
-		//					android.R.id.content).getRootView();
-		//			setAppFont(mContainer, myTypeface);
-		//		} else if (font.equals("Ceva")) {	
-		//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF");
-		//			final ViewGroup mContainer = (ViewGroup) findViewById(
-		//					android.R.id.content).getRootView();
-		//			setAppFont(mContainer, myTypeface);
-		//			
-		//		}
 	}
 
 	public void onStart() {
@@ -300,7 +261,6 @@ ActionBar.TabListener {
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
 		super.onPause();
-		//		thread.interrupt();
 		c_beam.stopThread();
 	}
 
@@ -308,7 +268,6 @@ ActionBar.TabListener {
 	protected void onStop() {
 		Log.i(TAG, "onStop()");
 		super.onStop();
-		//		thread.interrupt();
 		c_beam.stopThread();
 	}
 
@@ -320,29 +279,9 @@ ActionBar.TabListener {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
 	}
-	//	public void c_out() {
-	//		AlertDialog.Builder b = new AlertDialog.Builder(this);
-	//		b.setTitle("c_out-durchsage eingeben");
-	//		final EditText input = new EditText(this);
-	//		b.setView(input);
-	//		b.setPositiveButton("OK", new DialogInterface.OnClickListener()
-	//		{
-	//			@Override
-	//			public void onClick(DialogInterface dialog, int whichButton)
-	//			{
-	//				String result = input.getText().toString();
-	//				c_beam.tts(result);
-	//				Log.i("c_out", result);
-	//			}
-	//		});
-	//		b.setNegativeButton("CANCEL", null);
-	//		b.create().show();
-	//	}
 
 	public void updateLists() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		//		if (true)
-		//			return;
 		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(USER_FRAGMENT);
 		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(EVENTS_FRAGMENT);
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
@@ -434,7 +373,6 @@ ActionBar.TabListener {
 	protected void onResume () {
 		Log.i(TAG, "onResume()");
 		super.onResume();
-		//		thread.start();
 		c_beam.startThread();
 		updateLists();
 	}
@@ -502,11 +440,7 @@ ActionBar.TabListener {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			//Fragment fragment = new DummySectionFragment();
 			Fragment fragment;
-			//			if (pages[position] == null || pages[position].isAdded() == false) {
-			//				if (pages[position] != null)
-			//					Log.i("foo",pages[position].isAdded()+"");
 			if (pages[position] == null) { 
 				if(position == USER_FRAGMENT) {
 					fragment = new UserListFragment();
@@ -521,7 +455,6 @@ ActionBar.TabListener {
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
 				} else {
-					//fragment = new ArrayListFragment();
 					fragment = null;
 				}
 				fragment.setArguments(new Bundle());
