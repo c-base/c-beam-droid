@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
 import org.alexd.jsonrpc.JSONRPCParams;
-import org.alexd.jsonrpc.JSONRPCParams.Versions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,20 +13,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
-import android.util.JsonToken;
 import android.util.Log;
-
-//The Client sessions package
-import com.thetransactioncompany.jsonrpc2.client.*;
-
-//The Base package for representing JSON-RPC 2.0 messages
-import com.thetransactioncompany.jsonrpc2.*;
-
-//The JSON Smart package for JSON encoding/decoding (optional)
-import net.minidev.json.*;
-
-//For creating URLs
-import java.net.*;
 
 public class C_beam {
 	private static final String TAG = "c-beam";
@@ -44,8 +30,6 @@ public class C_beam {
 	protected Activity parent;
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
-
-	JSONRPC2Session portalSession;
 
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
