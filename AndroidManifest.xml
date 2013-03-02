@@ -85,6 +85,7 @@
 
         <service android:name="org.c_base.c_beam.GCMIntentService" />
 
+        <!-- Currently not working 
         <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -94,6 +95,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/c_beam_appwidget_info" />
         </receiver>
+        -->
 
         <activity android:name=".activity.AppWidgetConfigure" >
             <intent-filter>
