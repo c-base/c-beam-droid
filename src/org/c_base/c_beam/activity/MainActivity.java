@@ -15,16 +15,21 @@ import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
+import org.c_base.c_beam.util.Helper;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -76,6 +81,11 @@ ActionBar.TabListener, OnClickListener {
 	C_beam c_beam = new C_beam(this);
 
 	protected Runnable fred;
+	private View mInfoArea;
+	private View mCbeamArea;
+	private boolean mIsOnline = false;
+	private WifiBroadcastReceiver mWifiReceiver;
+	private IntentFilter mWifiIntentFilter;
 
 
 	public void setOnline() {
@@ -102,6 +112,12 @@ ActionBar.TabListener, OnClickListener {
 
 		setContentView(R.layout.activity_main);
 
+		mCbeamArea = findViewById(R.id.cbeam_area);
+
+		mInfoArea = findViewById(R.id.info_area);
+		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
+		Helper.setFont(this, textView);
+
 		setupActionBar();
 		setupViewPager();
 
@@ -116,13 +132,14 @@ ActionBar.TabListener, OnClickListener {
 
 		setupGCM();
 		checkUserName();
+
+		initializeBroadcastReceiver();
 	}
 
 	public void onStart() {
 		Log.i(TAG, "onStart()");
 		super.onStart();
 		startProgress();
-		updateLists();
 	}
 
 
@@ -130,14 +147,9 @@ ActionBar.TabListener, OnClickListener {
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
 		super.onPause();
-		c_beam.stopThread();
-	}
 
-	@Override
-	protected void onStop() {
-		Log.i(TAG, "onStop()");
-		super.onStop();
-		c_beam.stopThread();
+		unregisterReceiver(mWifiReceiver);
+		stopNetworkingThreads();
 	}
 
 	public void login() {
@@ -239,17 +251,35 @@ ActionBar.TabListener, OnClickListener {
 		};
 		handler.postDelayed(fred, firstThreadDelay );
 	}
+
 	protected void onResume () {
 		Log.i(TAG, "onResume()");
 		super.onResume();
-		c_beam.startThread();
-		updateLists();
+
+		registerReceiver(mWifiReceiver, mWifiIntentFilter);
+
+		if (c_beam.isInCrewNetwork()) {
+			switchToOnlineMode();
+		} else {
+			switchToOfflineMode();
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// Hide some menu items when not connected to the crew network
+		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+
 		return true;
 	}
 
@@ -387,7 +417,6 @@ ActionBar.TabListener, OnClickListener {
 
 	private void setupActionBar() {
 		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -528,5 +557,65 @@ ActionBar.TabListener, OnClickListener {
 	private void startC_mapsActivity() {
 		Intent myIntent = new Intent(this, MapActivity.class);
 		startActivityForResult(myIntent, 0);
+	}
+
+	private void switchToOfflineMode() {
+		mIsOnline = false;
+		showOfflineView();
+		stopNetworkingThreads();
+	}
+
+	private void switchToOnlineMode() {
+		mIsOnline = true;
+		showOnlineView();
+		startNetworkingThreads();
+	}
+
+	private void startNetworkingThreads() {
+		c_beam.startThread();
+		updateLists();
+	}
+
+	private void stopNetworkingThreads() {
+		c_beam.stopThread();
+	}
+
+	private void showOfflineView() {
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		mCbeamArea.setVisibility(View.GONE);
+		mInfoArea.setVisibility(View.VISIBLE);
+	}
+
+	private void showOnlineView() {
+		mIsOnline = true;
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		mInfoArea.setVisibility(View.GONE);
+		mCbeamArea.setVisibility(View.VISIBLE);
+	}
+
+	private void initializeBroadcastReceiver() {
+		mWifiReceiver = new WifiBroadcastReceiver();
+		mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+	}
+
+
+	class WifiBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+				int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+				int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
+
+				if (state == previousState) {
+					return;
+				}
+
+				if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
+					showOnlineView();
+				} else if (mIsOnline) {
+					showOfflineView();
+				}
+			}
+		}
 	}
 }
