@@ -1,5 +1,7 @@
 package org.c_base.c_beam.view;
 
+import org.c_base.c_beam.Settings;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -31,14 +33,14 @@ public class CTextView extends TextView {
 
 	public void init() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-		String font = sharedPref.getString("pref_font", "Android Default");
+		String font = sharedPref.getString(Settings.FONT, "Android Default");
 		Log.i(TAG, font);
 		if (font.equals("Default Android")) {
-			
+
 		} else if (font.equals("X-Scale")) {
 			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "X-SCALE.TTF");
 			setTypeface(myTypeface);
-		} else if (font.equals("Ceva")) {	
+		} else if (font.equals("Ceva")) {
 			Typeface myTypeface = Typeface.createFromAsset(getContext().getAssets(), "CEVA-CM.TTF");
 			setTypeface(myTypeface);
 		}

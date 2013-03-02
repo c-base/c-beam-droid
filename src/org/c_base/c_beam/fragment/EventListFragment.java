@@ -19,6 +19,7 @@ import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.activity.EventActivity;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 
 public class EventListFragment extends ListFragment {
 	ArrayList<Event> items = new ArrayList<Event>();
@@ -46,7 +47,7 @@ public class EventListFragment extends ListFragment {
 		adapter = new EventAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
 	}
 
@@ -74,7 +75,7 @@ public class EventListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Event u = items.get(position);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			Helper.setFont(getActivity(), view);
 			return view;
 		}

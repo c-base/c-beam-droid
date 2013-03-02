@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.activity.MissionActivity;
 import org.c_base.c_beam.domain.Mission;
 
@@ -48,7 +49,7 @@ public class MissionListFragment extends ListFragment {
 		adapter = new MissionAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
 	}
 
@@ -76,7 +77,7 @@ public class MissionListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Mission u = items.get(position);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			view.setPadding(25, 30, 25, 30);
 			Helper.setFont(getActivity(), view);
 			return view;

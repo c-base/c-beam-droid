@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 
 public class C_outListFragment extends ListFragment {
 	ArrayList<String> items = new ArrayList<String>();
@@ -35,7 +36,7 @@ public class C_outListFragment extends ListFragment {
 	}
 	public void addItem(String item) {
 		items.add(item);
-		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged(); 
+		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
 	// Override onCreateView() so we can use a custom empty view
 	@Override
@@ -50,7 +51,7 @@ public class C_outListFragment extends ListFragment {
 		adapter = new C_outAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
 	}
 
@@ -78,7 +79,7 @@ public class C_outListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			String u = items.get(position);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			view.setPadding(25, 30, 25, 30);
 			Helper.setFont(getActivity(), view);
 			return view;
@@ -86,4 +87,4 @@ public class C_outListFragment extends ListFragment {
 	}
 
 
-}	
+}

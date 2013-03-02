@@ -21,6 +21,7 @@ import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.activity.ArtefactActivity;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 
 public class ArtefactListFragment extends ListFragment {
 	String TAG = "ArtefactListFragment";
@@ -52,7 +53,7 @@ public class ArtefactListFragment extends ListFragment {
 		adapter = new ArtefactAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class ArtefactListFragment extends ListFragment {
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Artefact a = items.get(position);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			//			view.setPadding(25, 5, 25, 5);
 			//			setFont(view);
 			Helper.setFont(getActivity(), view);

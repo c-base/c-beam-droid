@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.C_beam;
@@ -154,11 +155,11 @@ ActionBar.TabListener, OnClickListener {
 
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_login(sharedPref.getString("pref_username", "bernd"));
+		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
 	public void logout() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
+		c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
 
 	public void updateLists() {
@@ -175,7 +176,7 @@ ActionBar.TabListener, OnClickListener {
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
 		boolean found = false;
 		for (User user: c_beam.getUsers()) {
-			if(user.getUsername().equals(sharedPref.getString("pref_username", "bernd"))) {
+			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 				if (button != null) {
 					button.setChecked(user.getStatus().equals("online"));
 					button.setEnabled(true);
@@ -291,10 +292,10 @@ ActionBar.TabListener, OnClickListener {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_login) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString("pref_username", "bernd"));
+			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_logout) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString("pref_username", "bernd"));
+			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_c_out) {
 			Intent myIntent = new Intent(this, C_outActivity.class);
 			startActivityForResult(myIntent, 0);
@@ -463,9 +464,9 @@ ActionBar.TabListener, OnClickListener {
 
 	private void setupGCM() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		if (sharedPref.getBoolean("pref_push", false)) {
+		if (sharedPref.getBoolean(Settings.PUSH, false)) {
 			String registrationId = GCMManager.getRegistrationId(this);
-			String username = sharedPref.getString("pref_username", "dummy");
+			String username = sharedPref.getString(Settings.USERNAME, "dummy");
 			c_beam.register_update(registrationId, username);
 		}
 	}
@@ -474,7 +475,7 @@ ActionBar.TabListener, OnClickListener {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
 		String defaultUsername = "bernd";
-		String user = sharedPref.getString("pref_username", defaultUsername);
+		String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
 
 		if (user.equals(defaultUsername) || user.isEmpty()) {
 			AlertDialog.Builder b = new AlertDialog.Builder(this);
