@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="font" format="string" />
-
-    <declare-styleable name="MyPagerTabStrip">
-        <attr name="indicatorColor" format="reference|color" />
+    <!-- 
+    <declare-styleable name="styleName">
+        <attr name="attrName" format="reference" />
     </declare-styleable>
-    <declare-styleable name="ButtonBarContainerTheme">
-        <attr name="buttonBarStyle" format="reference" />
-        <attr name="buttonBarButtonStyle" format="reference" />
-    </declare-styleable>
+     -->
 
 </resources>

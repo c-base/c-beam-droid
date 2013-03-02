@@ -20,26 +20,4 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="Pager">
-        <item name="android:textColor">#14A804</item>
-        <item name="indicatorColor">#AAFFAA</item>
-    </style>
-
-    <style name="ButtonBarButton" />
-
-    <style name="ButtonBar">
-        <item name="android:paddingLeft">2dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingRight">2dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:background">@android:drawable/bottom_bar</item>
-    </style>
-
-    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="buttonBarStyle">@style/ButtonBar</item>
-        <item name="buttonBarButtonStyle">@style/ButtonBarButton</item>
-    </style>
-
 </resources>
