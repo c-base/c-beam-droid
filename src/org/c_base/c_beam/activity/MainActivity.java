@@ -2,6 +2,7 @@ package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
 
+import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.Article;
@@ -51,7 +52,6 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.android.gcm.GCMRegistrar;
 
 @SuppressLint("NewApi")
 public class MainActivity extends SherlockFragmentActivity implements
@@ -464,18 +464,9 @@ ActionBar.TabListener, OnClickListener {
 	private void setupGCM() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPref.getBoolean("pref_push", false)) {
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-			String regId = GCMRegistrar.getRegistrationId(this);
-			if (regId.equals("")) {
-				GCMRegistrar.register(this, "987966345562");
-				regId = GCMRegistrar.getRegistrationId(this);
-				Log.i("GCM", "registering " + regId);
-				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
-			} else {
-				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
-				Log.i("GCM", "Already registered");
-			}
+			String registrationId = GCMManager.getRegistrationId(this);
+			String username = sharedPref.getString("pref_username", "dummy");
+			c_beam.register_update(registrationId, username);
 		}
 	}
 
