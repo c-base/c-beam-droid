@@ -45,8 +45,6 @@ public class C_beam {
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
 
-	JSONRPC2Session portalSession;
-
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
 
