@@ -19,7 +19,6 @@ import org.c_base.c_beam.fragment.UserListFragment;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -51,7 +50,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 @SuppressLint("NewApi")
 public class MainActivity extends SherlockFragmentActivity implements
-ActionBar.TabListener {
+ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
 	private static final int ARTEFACTS_FRAGMENT = 2;
@@ -62,8 +61,6 @@ ActionBar.TabListener {
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
-	
-	Activity activity;
 
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
@@ -71,7 +68,7 @@ ActionBar.TabListener {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
-	private Handler handler;
+	private Handler handler = new Handler();
 	EditText text;
 
 	ActionBar actionBar;
@@ -97,7 +94,6 @@ ActionBar.TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		activity = this;
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -106,147 +102,20 @@ ActionBar.TabListener {
 
 		setContentView(R.layout.activity_main);
 
-		// Set up the action bar.
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		setupActionBar();
+		setupViewPager();
 
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-
-		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
-		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		((TextView)v.findViewById(R.id.title)).setTextSize(30);
-		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
-
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		String defaultUsername = "bernd";getString(R.string.pref_username);
-		String user = sharedPref.getString("pref_username", defaultUsername);
-		Log.i(TAG, "username"+defaultUsername);
-		if (user.equals(defaultUsername) || user.isEmpty()) {
-			AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
-			b.setTitle(R.string.set_username_title);
-			b.setMessage(R.string.set_username_message);
-			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent myIntent = new Intent(activity, SettingsActivity.class);
-					startActivityForResult(myIntent, 0);
-				}
-			});
-			b.show();
-		}
-		
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
-		mViewPager
-		.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-				actionBar.setSelectedNavigationItem(position);
-			}
-		});
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			Tab tab = actionBar.newTab();
-			TextView t = new TextView(getApplicationContext());
-			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-			//			tab.setCustomView(t);
-			tab.setTabListener(this);
-			actionBar.addTab(tab);
-
-		}
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
-		b.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				ToggleButton b = (ToggleButton) v;
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-				if (b.isChecked()) {
-					builder.setTitle(R.string.confirm_login);
-					builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener()
-					{
-						@Override
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-							login();
-						}
-					});
-					builder.setNegativeButton(R.string.button_cancel, null);
-					builder.create().show();
-
-				} else {
-					builder.setTitle(R.string.confirm_logout);
-					builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener()
-					{
-						@Override
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-							logout();
-						}
-					});
-					builder.setNegativeButton(R.string.button_cancel, null);
-					builder.create().show();
-				}
-
-			}
-
-		});
+		b.setOnClickListener(this);
 
 		Button buttonC_out = (Button) findViewById(R.id.buttonC_out);
-		buttonC_out.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent myIntent = new Intent(v.getContext(), C_outActivity.class);
-				startActivityForResult(myIntent, 0);
-
-			}
-
-		});
+		buttonC_out.setOnClickListener(this);
 
 		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
-		button_c_maps.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent myIntent = new Intent(v.getContext(), MapActivity.class);
-				startActivityForResult(myIntent, 0);
-			}
+		button_c_maps.setOnClickListener(this);
 
-		});
-		// add extras here..
-		handler = new Handler();
-
-		if (sharedPref.getBoolean("pref_push", false)) {
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-			String regId = GCMRegistrar.getRegistrationId(this);
-			if (regId.equals("")) {
-				GCMRegistrar.register(this, "987966345562");
-				regId = GCMRegistrar.getRegistrationId(this);
-				Log.i("GCM", "registering " + regId); 
-				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
-			} else {
-				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
-				Log.i("GCM", "Already registered"); 
-			}
-		}
+		setupGCM();
+		checkUserName();
 	}
 
 	public void onStart() {
@@ -317,7 +186,7 @@ ActionBar.TabListener {
 		if (events.isAdded()){
 			eventList = c_beam.getEvents();
 			events.clear();
-			if (eventList != null) { 
+			if (eventList != null) {
 				for(int i=0; i<eventList.size();i++)
 					events.addItem(eventList.get(i));
 			}
@@ -441,7 +310,7 @@ ActionBar.TabListener {
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			Fragment fragment;
-			if (pages[position] == null) { 
+			if (pages[position] == null) {
 				if(position == USER_FRAGMENT) {
 					fragment = new UserListFragment();
 				} else if(position == C_PORTAL_FRAGMENT) {
@@ -451,7 +320,7 @@ ActionBar.TabListener {
 				} else if(position == EVENTS_FRAGMENT) {
 					fragment = new EventListFragment();
 				} else if(position == C_ONTROL_FRAGMENT) {
-					fragment = new C_ontrolFragment(c_beam);	
+					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
 				} else {
@@ -489,7 +358,7 @@ ActionBar.TabListener {
 			}
 			return null;
 		}
-	}	
+	}
 
 	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
 	{
@@ -516,5 +385,148 @@ ActionBar.TabListener {
 
 	}
 
-}
+	private void setupActionBar() {
+		actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+
+		LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		View v = inflator.inflate(R.layout.view_actionbar, null);
+		TextView titleView = (TextView) v.findViewById(R.id.title);
+		titleView.setText(this.getTitle());
+		titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+		titleView.setTextSize(30);
+		titleView.setPadding(10, 20, 10, 20);
+		actionBar.setCustomView(v);
+	}
+
+	private void setupViewPager() {
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+		// When swiping between different sections, select the corresponding
+		// tab. We can also use ActionBar.Tab#select() to do this if we have
+		// a reference to the Tab.
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
+
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+			Tab tab = actionBar.newTab();
+			TextView t = new TextView(getApplicationContext());
+			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+			tab.setTabListener(this);
+			actionBar.addTab(tab);
+		}
+	}
+
+	private void setupGCM() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		if (sharedPref.getBoolean("pref_push", false)) {
+			GCMRegistrar.checkDevice(this);
+			GCMRegistrar.checkManifest(this);
+			String regId = GCMRegistrar.getRegistrationId(this);
+			if (regId.equals("")) {
+				GCMRegistrar.register(this, "987966345562");
+				regId = GCMRegistrar.getRegistrationId(this);
+				Log.i("GCM", "registering " + regId);
+				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
+			} else {
+				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
+				Log.i("GCM", "Already registered");
+			}
+		}
+	}
+
+	private void checkUserName() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+		String defaultUsername = "bernd";
+		String user = sharedPref.getString("pref_username", defaultUsername);
+
+		if (user.equals(defaultUsername) || user.isEmpty()) {
+			AlertDialog.Builder b = new AlertDialog.Builder(this);
+			b.setTitle(R.string.set_username_title);
+			b.setMessage(R.string.set_username_message);
+			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+					startActivityForResult(myIntent, 0);
+				}
+			});
+			b.show();
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.toggleLogin: {
+				ToggleButton b = (ToggleButton) view;
+				if (b.isChecked()) {
+					showLoginDialog();
+				} else {
+					showLogoutDialog();
+				}
+				break;
+			}
+			case R.id.buttonC_out: {
+				startC_outActivity();
+				break;
+			}
+			case R.id.button_c_maps: {
+				startC_mapsActivity();
+			}
+		}
+	}
+
+	private void showLoginDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.confirm_login);
+		builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				login();
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void showLogoutDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.confirm_logout);
+		builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				logout();
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void startC_outActivity() {
+		Intent myIntent = new Intent(this, C_outActivity.class);
+		startActivityForResult(myIntent, 0);
+	}
+
+	private void startC_mapsActivity() {
+		Intent myIntent = new Intent(this, MapActivity.class);
+		startActivityForResult(myIntent, 0);
+	}
+}
