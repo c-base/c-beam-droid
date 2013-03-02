@@ -13,9 +13,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import org.c_base.c_beam.activity.BamActivity;
 import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
 
 
@@ -28,7 +30,7 @@ public class C_ontrolFragment extends Fragment {
 	AlertDialog bam;
 	int progress;
 	C_beam c_beam;
-	Fragment c_leuseFragment; 
+	Fragment c_leuseFragment;
 
 	public C_ontrolFragment() {
 		this.c_beam = null;
@@ -45,14 +47,9 @@ public class C_ontrolFragment extends Fragment {
 		}
 
 		View v = inflater.inflate(R.layout.fragment_c_ontrol, container, false);
-		//
-		//		getChildFragmentManager().findFragmentById(R.layout.fragment_c_leuse);
-		//
-		//		c_leuseFragment = new C_leuseFragment(c_beam);
-		//		FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-		//		transaction.add(R.id.RelativeLayout2, c_leuseFragment).commit();
 
-
+		TextView pattern = (TextView) v.findViewById(R.id.textView1);
+		Helper.setFont(getActivity(), pattern);
 
 		Button b = (Button) v.findViewById(R.id.button_self_destruct);
 
@@ -103,7 +100,7 @@ public class C_ontrolFragment extends Fragment {
 				thread.start();
 
 
-			}			
+			}
 		});
 
 		b = (Button) v.findViewById(R.id.button_liftoff);
@@ -116,7 +113,7 @@ public class C_ontrolFragment extends Fragment {
 				b.setPositiveButton("OK", null);
 				b.show();
 			}
-		});	
+		});
 
 
 
@@ -133,7 +130,7 @@ public class C_ontrolFragment extends Fragment {
 					}
 				}
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button_softwareverbrennung);
 		b.setOnClickListener(new OnClickListener() {
@@ -141,7 +138,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.hwstorage(true);
 			}
-		});	
+		});
 		/* */
 		b = (Button) v.findViewById(R.id.button1);
 		b.setOnClickListener(new OnClickListener() {
@@ -149,7 +146,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(0);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button2);
 		b.setOnClickListener(new OnClickListener() {
@@ -157,7 +154,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(1);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button3);
 		b.setOnClickListener(new OnClickListener() {
@@ -165,7 +162,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(2);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button4);
 		b.setOnClickListener(new OnClickListener() {
@@ -173,7 +170,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(3);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button5);
 		b.setOnClickListener(new OnClickListener() {
@@ -181,7 +178,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(5);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button6);
 		b.setOnClickListener(new OnClickListener() {
@@ -189,7 +186,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(4);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button7);
 		b.setOnClickListener(new OnClickListener() {
@@ -197,7 +194,7 @@ public class C_ontrolFragment extends Fragment {
 			public void onClick(View v) {
 				c_beam.set_stripe_pattern(6);
 			}
-		});	
+		});
 
 		b = (Button) v.findViewById(R.id.button_speed_plus_9);
 		b.setOnClickListener(new OnClickListener() {

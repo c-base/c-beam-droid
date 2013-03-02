@@ -2,7 +2,9 @@ package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
 
+import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.C_beam;
@@ -15,17 +17,21 @@ import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
+import org.c_base.c_beam.util.Helper;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -47,11 +53,10 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.android.gcm.GCMRegistrar;
 
 @SuppressLint("NewApi")
 public class MainActivity extends SherlockFragmentActivity implements
-ActionBar.TabListener {
+ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
 	private static final int ARTEFACTS_FRAGMENT = 2;
@@ -62,17 +67,14 @@ ActionBar.TabListener {
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
-	
-	Activity activity;
 
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
 
-	//	SectionsPagerAdapter mSectionsPagerAdapter;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
-	private Handler handler;
+	private Handler handler = new Handler();
 	EditText text;
 
 	ActionBar actionBar;
@@ -80,6 +82,11 @@ ActionBar.TabListener {
 	C_beam c_beam = new C_beam(this);
 
 	protected Runnable fred;
+	private View mInfoArea;
+	private View mCbeamArea;
+	private boolean mIsOnline = false;
+	private WifiBroadcastReceiver mWifiReceiver;
+	private IntentFilter mWifiIntentFilter;
 
 
 	public void setOnline() {
@@ -98,9 +105,6 @@ ActionBar.TabListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		activity = this;
-
-		//c_beam.startThread();
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -109,190 +113,34 @@ ActionBar.TabListener {
 
 		setContentView(R.layout.activity_main);
 
-		// Set up the action bar.
-		actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		mCbeamArea = findViewById(R.id.cbeam_area);
 
-		//		BEGIN TEST Custom Font in Actionbar TEST BEGIN
+		mInfoArea = findViewById(R.id.info_area);
+		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
+		Helper.setFont(this, textView);
 
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
+		setupActionBar();
+		setupViewPager();
 
-		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-
-		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
-		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		((TextView)v.findViewById(R.id.title)).setTextSize(30);
-		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
-		
-//		END TEST Custom Font in Actionbar TEST END
-
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		String defaultUsername = "bernd";getString(R.string.pref_username);
-		String user = sharedPref.getString("pref_username", defaultUsername);
-		Log.i(TAG, "username"+defaultUsername);
-		if (user.equals(defaultUsername) || user.isEmpty()) {
-			AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
-			b.setTitle(R.string.set_username_title);
-			b.setMessage(R.string.set_username_message);
-			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent myIntent = new Intent(activity, SettingsActivity.class);
-					startActivityForResult(myIntent, 0);
-				}
-			});
-			b.show();
-		}
-		
-		//		ViewPagerAdapter adapter = new ViewPagerAdapter( this );
-		//	    ViewPager pager =
-		//	        (ViewPager)findViewById( R.id.pager );
-		//	    pager.setAdapter( adapter );
-
-		//		mSectionsPagerAdapter = new MainPagerAdapter(
-		//				getSupportFragmentManager());
-		//
-		//		
-		//		
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
-		mViewPager
-		.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-				actionBar.setSelectedNavigationItem(position);
-			}
-		});
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			Tab tab = actionBar.newTab();
-			TextView t = new TextView(getApplicationContext());
-			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-			//			tab.setCustomView(t);
-			tab.setTabListener(this);
-			actionBar.addTab(tab);
-
-		}
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
-		b.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				ToggleButton b = (ToggleButton) v;
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-				if (b.isChecked()) {
-					builder.setTitle(R.string.confirm_login);
-					builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener()
-					{
-						@Override
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-							//							Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
-							login();
-						}
-					});
-					builder.setNegativeButton(R.string.button_cancel, null);
-					builder.create().show();
-
-				} else {
-					builder.setTitle(R.string.confirm_logout);
-					builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener()
-					{
-						@Override
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-							// Toast.makeText(v.getContext(), "Du wirst eingelogt, bitte warten", Toast.LENGTH_LONG).show();
-							logout();
-						}
-					});
-					builder.setNegativeButton(R.string.button_cancel, null);
-					builder.create().show();
-				}
-
-			}
-
-		});
+		b.setOnClickListener(this);
 
 		Button buttonC_out = (Button) findViewById(R.id.buttonC_out);
-		buttonC_out.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent myIntent = new Intent(v.getContext(), C_outActivity.class);
-				startActivityForResult(myIntent, 0);
-
-			}
-
-		});
+		buttonC_out.setOnClickListener(this);
 
 		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
-		button_c_maps.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent myIntent = new Intent(v.getContext(), MapActivity.class);
-				startActivityForResult(myIntent, 0);
-			}
+		button_c_maps.setOnClickListener(this);
 
-		});
-		// add extras here..
-		handler = new Handler();
+		setupGCM();
+		checkUserName();
 
-		//		ArrayListFragment online = (ArrayListFragment) mSectionsPagerAdapter.getItem(0);
-		//		online.setNextActivity(UserActivity.class);
-		//		ArrayListFragment missions = (ArrayListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
-		//		missions.setNextActivity(MissionActivity.class);
-
-		if (sharedPref.getBoolean("pref_push", false)) {
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-			String regId = GCMRegistrar.getRegistrationId(this);
-			if (regId.equals("")) {
-				GCMRegistrar.register(this, "987966345562");
-				regId = GCMRegistrar.getRegistrationId(this);
-				Log.i("GCM", "registering " + regId); 
-				c_beam.register(regId, sharedPref.getString("pref_username", "dummy"));
-			} else {
-				c_beam.register_update(regId, sharedPref.getString("pref_username", "dummy"));
-				Log.i("GCM", "Already registered"); 
-			}
-		}
-		//		String font = sharedPref.getString("pref_font", "Android Default");
-		//		if (font.equals("Default Android")) {
-		//			
-		//		} else if (font.equals("X-Scale")) {
-		//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "X-SCALE.TTF");
-		//			final ViewGroup mContainer = (ViewGroup) findViewById(
-		//					android.R.id.content).getRootView();
-		//			setAppFont(mContainer, myTypeface);
-		//		} else if (font.equals("Ceva")) {	
-		//			Typeface myTypeface = Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF");
-		//			final ViewGroup mContainer = (ViewGroup) findViewById(
-		//					android.R.id.content).getRootView();
-		//			setAppFont(mContainer, myTypeface);
-		//			
-		//		}
+		initializeBroadcastReceiver();
 	}
 
 	public void onStart() {
 		Log.i(TAG, "onStart()");
 		super.onStart();
 		startProgress();
-		updateLists();
 	}
 
 
@@ -300,49 +148,22 @@ ActionBar.TabListener {
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
 		super.onPause();
-		//		thread.interrupt();
-		c_beam.stopThread();
-	}
 
-	@Override
-	protected void onStop() {
-		Log.i(TAG, "onStop()");
-		super.onStop();
-		//		thread.interrupt();
-		c_beam.stopThread();
+		unregisterReceiver(mWifiReceiver);
+		stopNetworkingThreads();
 	}
 
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_login(sharedPref.getString("pref_username", "bernd"));
+		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
 	public void logout() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_logout(sharedPref.getString("pref_username", "bernd"));
+		c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
-	//	public void c_out() {
-	//		AlertDialog.Builder b = new AlertDialog.Builder(this);
-	//		b.setTitle("c_out-durchsage eingeben");
-	//		final EditText input = new EditText(this);
-	//		b.setView(input);
-	//		b.setPositiveButton("OK", new DialogInterface.OnClickListener()
-	//		{
-	//			@Override
-	//			public void onClick(DialogInterface dialog, int whichButton)
-	//			{
-	//				String result = input.getText().toString();
-	//				c_beam.tts(result);
-	//				Log.i("c_out", result);
-	//			}
-	//		});
-	//		b.setNegativeButton("CANCEL", null);
-	//		b.create().show();
-	//	}
 
 	public void updateLists() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		//		if (true)
-		//			return;
 		UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(USER_FRAGMENT);
 		EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(EVENTS_FRAGMENT);
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
@@ -355,7 +176,7 @@ ActionBar.TabListener {
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
 		boolean found = false;
 		for (User user: c_beam.getUsers()) {
-			if(user.getUsername().equals(sharedPref.getString("pref_username", "bernd"))) {
+			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 				if (button != null) {
 					button.setChecked(user.getStatus().equals("online"));
 					button.setEnabled(true);
@@ -378,7 +199,7 @@ ActionBar.TabListener {
 		if (events.isAdded()){
 			eventList = c_beam.getEvents();
 			events.clear();
-			if (eventList != null) { 
+			if (eventList != null) {
 				for(int i=0; i<eventList.size();i++)
 					events.addItem(eventList.get(i));
 			}
@@ -431,18 +252,35 @@ ActionBar.TabListener {
 		};
 		handler.postDelayed(fred, firstThreadDelay );
 	}
+
 	protected void onResume () {
 		Log.i(TAG, "onResume()");
 		super.onResume();
-		//		thread.start();
-		c_beam.startThread();
-		updateLists();
+
+		registerReceiver(mWifiReceiver, mWifiIntentFilter);
+
+		if (c_beam.isInCrewNetwork()) {
+			switchToOnlineMode();
+		} else {
+			switchToOfflineMode();
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// Hide some menu items when not connected to the crew network
+		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+
 		return true;
 	}
 
@@ -454,10 +292,10 @@ ActionBar.TabListener {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_login) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString("pref_username", "bernd"));
+			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_logout) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString("pref_username", "bernd"));
+			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_c_out) {
 			Intent myIntent = new Intent(this, C_outActivity.class);
 			startActivityForResult(myIntent, 0);
@@ -502,12 +340,8 @@ ActionBar.TabListener {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			//Fragment fragment = new DummySectionFragment();
 			Fragment fragment;
-			//			if (pages[position] == null || pages[position].isAdded() == false) {
-			//				if (pages[position] != null)
-			//					Log.i("foo",pages[position].isAdded()+"");
-			if (pages[position] == null) { 
+			if (pages[position] == null) {
 				if(position == USER_FRAGMENT) {
 					fragment = new UserListFragment();
 				} else if(position == C_PORTAL_FRAGMENT) {
@@ -517,11 +351,10 @@ ActionBar.TabListener {
 				} else if(position == EVENTS_FRAGMENT) {
 					fragment = new EventListFragment();
 				} else if(position == C_ONTROL_FRAGMENT) {
-					fragment = new C_ontrolFragment(c_beam);	
+					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
 				} else {
-					//fragment = new ArrayListFragment();
 					fragment = null;
 				}
 				fragment.setArguments(new Bundle());
@@ -556,7 +389,7 @@ ActionBar.TabListener {
 			}
 			return null;
 		}
-	}	
+	}
 
 	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
 	{
@@ -583,5 +416,198 @@ ActionBar.TabListener {
 
 	}
 
-}
+	private void setupActionBar() {
+		actionBar = getActionBar();
 
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
+
+		LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		View v = inflator.inflate(R.layout.view_actionbar, null);
+		TextView titleView = (TextView) v.findViewById(R.id.title);
+		titleView.setText(this.getTitle());
+		titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+		titleView.setTextSize(30);
+		titleView.setPadding(10, 20, 10, 20);
+		actionBar.setCustomView(v);
+	}
+
+	private void setupViewPager() {
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+		// When swiping between different sections, select the corresponding
+		// tab. We can also use ActionBar.Tab#select() to do this if we have
+		// a reference to the Tab.
+		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
+
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+			Tab tab = actionBar.newTab();
+			TextView t = new TextView(getApplicationContext());
+			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+			tab.setTabListener(this);
+			actionBar.addTab(tab);
+		}
+	}
+
+	private void setupGCM() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		if (sharedPref.getBoolean(Settings.PUSH, false)) {
+			String registrationId = GCMManager.getRegistrationId(this);
+			String username = sharedPref.getString(Settings.USERNAME, "dummy");
+			c_beam.register_update(registrationId, username);
+		}
+	}
+
+	private void checkUserName() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+		String defaultUsername = "bernd";
+		String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
+
+		if (user.equals(defaultUsername) || user.isEmpty()) {
+			AlertDialog.Builder b = new AlertDialog.Builder(this);
+			b.setTitle(R.string.set_username_title);
+			b.setMessage(R.string.set_username_message);
+			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+					startActivityForResult(myIntent, 0);
+				}
+			});
+			b.show();
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.toggleLogin: {
+				ToggleButton b = (ToggleButton) view;
+				if (b.isChecked()) {
+					showLoginDialog();
+				} else {
+					showLogoutDialog();
+				}
+				break;
+			}
+			case R.id.buttonC_out: {
+				startC_outActivity();
+				break;
+			}
+			case R.id.button_c_maps: {
+				startC_mapsActivity();
+			}
+		}
+	}
+
+	private void showLoginDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.confirm_login);
+		builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				login();
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void showLogoutDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.confirm_logout);
+		builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				logout();
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void startC_outActivity() {
+		Intent myIntent = new Intent(this, C_outActivity.class);
+		startActivityForResult(myIntent, 0);
+	}
+
+	private void startC_mapsActivity() {
+		Intent myIntent = new Intent(this, MapActivity.class);
+		startActivityForResult(myIntent, 0);
+	}
+
+	private void switchToOfflineMode() {
+		mIsOnline = false;
+		showOfflineView();
+		stopNetworkingThreads();
+	}
+
+	private void switchToOnlineMode() {
+		mIsOnline = true;
+		showOnlineView();
+		startNetworkingThreads();
+	}
+
+	private void startNetworkingThreads() {
+		c_beam.startThread();
+		updateLists();
+	}
+
+	private void stopNetworkingThreads() {
+		c_beam.stopThread();
+	}
+
+	private void showOfflineView() {
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		mCbeamArea.setVisibility(View.GONE);
+		mInfoArea.setVisibility(View.VISIBLE);
+	}
+
+	private void showOnlineView() {
+		mIsOnline = true;
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		mInfoArea.setVisibility(View.GONE);
+		mCbeamArea.setVisibility(View.VISIBLE);
+	}
+
+	private void initializeBroadcastReceiver() {
+		mWifiReceiver = new WifiBroadcastReceiver();
+		mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+	}
+
+
+	class WifiBroadcastReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+				int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+				int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
+
+				if (state == previousState) {
+					return;
+				}
+
+				if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
+					showOnlineView();
+				} else if (mIsOnline) {
+					showOfflineView();
+				}
+			}
+		}
+	}
+}

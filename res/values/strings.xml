@@ -95,5 +95,5 @@
     <string name="set_username_title">Username setzen</string>
     <string name="set_username_message">Bitte den Username auf deinen Membernamen setzen.</string>
     
-
+    <string name="not_in_crew_network">Not in crew network</string>
 </resources>

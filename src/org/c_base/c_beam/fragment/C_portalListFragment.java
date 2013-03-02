@@ -19,6 +19,7 @@ import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.activity.C_PortalActivity;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 
 public class C_portalListFragment extends ListFragment {
 	ArrayList<Article> items = new ArrayList<Article>();
@@ -48,7 +49,7 @@ public class C_portalListFragment extends ListFragment {
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
 		getListView().setPadding(5, 5, 5, 5);
-		if (sharedPref.getBoolean("pref_c_theme", true)) getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class C_portalListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Article u = items.get(position);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			view.setPadding(25, 30, 25, 30);
 			Helper.setFont(getActivity(), view);
 			return view;

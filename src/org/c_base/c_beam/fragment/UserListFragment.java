@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.activity.UserActivity;
 import org.c_base.c_beam.domain.User;
 
@@ -38,20 +39,20 @@ public class UserListFragment extends ListFragment {
 	// Override onCreateView() so we can use a custom empty view
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	        Bundle savedInstanceState) {
-	    return inflater.inflate(R.layout.list_view, null);
+			Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.list_view, null);
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		adapter = new UserAdapter(getActivity(), android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
 
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		if (sharedPref.getBoolean("pref_c_theme", true)) {
-		    getListView().setDividerHeight(0);
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) {
+			getListView().setDividerHeight(0);
 		}
 		getListView().setHapticFeedbackEnabled(true);
 	}
@@ -76,10 +77,10 @@ public class UserListFragment extends ListFragment {
 			this.context = context;
 			this.items = items;
 		}
- 
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			boolean fadeUsers = sharedPref.getBoolean("pref_fade_users", true);
+			boolean fadeUsers = sharedPref.getBoolean(Settings.FADE_USERS, true);
 
 			NumberFormat defaultFormat = NumberFormat.getPercentInstance();
 			defaultFormat.setMinimumFractionDigits(1);
@@ -88,7 +89,7 @@ public class UserListFragment extends ListFragment {
 			float alpha = u.getAutologout_in()/(float) u.getAutologout();
 
 //			if (fadeUsers) view.setAlpha(alpha);
-			if (sharedPref.getBoolean("pref_c_theme", true)) view.setBackgroundResource(R.drawable.listitembg);
+			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 
 			Helper.setFont(getActivity(), view);
 
