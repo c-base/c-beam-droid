@@ -14,7 +14,7 @@ public class ArtefactActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
+
 		setContentView(R.layout.activity_artefact);
 		// Show the Up button in the action bar.
 		Bundle extras = getIntent().getExtras();
@@ -23,7 +23,7 @@ public class ArtefactActivity extends SherlockActivity {
 			w.loadUrl("http://cbag3.c-base.org"+extras.getString("slug"));
 		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ArtefactActivity extends SherlockActivity {
 		getSherlock().getMenuInflater().inflate(R.menu.activity_artefact, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent myIntent;
@@ -48,7 +48,7 @@ public class ArtefactActivity extends SherlockActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.menu_settings:
-			 myIntent = new Intent(this, SettingsActivity.class);
+			myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 			return true;
 		case R.id.menu_c_out:

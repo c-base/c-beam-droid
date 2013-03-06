@@ -56,7 +56,7 @@ public class UserActivity extends SherlockActivity {
 				WebView w = (WebView) findViewById(R.id.userWebView);
 				w.getSettings().setJavaScriptEnabled(true);
 				w.loadUrl("http://"+u.getUsername()+".crew.c-base.org");
-				
+
 			} else {
 				Log.e("UserActivity", "user not found: "+extras.getInt("id"));
 				((TextView)v.findViewById(R.id.title)).setText("c-beam user view");
@@ -91,7 +91,7 @@ public class UserActivity extends SherlockActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.menu_settings:
-			 myIntent = new Intent(this, SettingsActivity.class);
+			myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 			return true;
 		case R.id.menu_c_out:

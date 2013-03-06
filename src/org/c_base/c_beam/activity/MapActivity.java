@@ -82,12 +82,12 @@ public class MapActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getSherlock().getMenuInflater().inflate(R.menu.activity_map, menu);
-    return true;
-  }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getSherlock().getMenuInflater().inflate(R.menu.activity_map, menu);
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,17 +150,12 @@ public class MapActivity extends SherlockFragmentActivity implements
 			} else if (position == 2) {
 				fragment = new C_portalWebViewFragment();
 				((C_portalWebViewFragment) fragment).setUrl("https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A");
-				
-				
 			} else {
-				 fragment = new DummySectionFragment();
+				fragment = new DummySectionFragment();
 				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 			}
-				
-			
-			
-			
+
 			return fragment;
 		}
 

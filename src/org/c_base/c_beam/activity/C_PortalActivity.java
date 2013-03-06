@@ -26,14 +26,14 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
 
 		setContentView(R.layout.activity_c_portal);
-		
+
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -62,7 +62,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 		}
 
 		Bundle extras = getIntent().getExtras();
-		
+
 		if (extras != null) {
 			C_portalWebViewFragment f = (C_portalWebViewFragment) mSectionsPagerAdapter.getItem(0);
 			currentArticle = extras.getInt("id");
@@ -70,7 +70,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 				f.setUrl("https://c-portal.c-base.org/articles/" + extras.getInt("id") + "/");
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			FragmentTransaction fragmentTransaction) {
 	}
 
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent myIntent;
@@ -114,7 +114,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.menu_settings:
-			 myIntent = new Intent(this, SettingsActivity.class);
+			myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 			return true;
 		case R.id.menu_c_out:
@@ -176,6 +176,6 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			}
 			return null;
 		}
-	}	
+	}
 
 }

@@ -21,17 +21,17 @@ import org.c_base.c_beam.fragment.C_outListFragment;
 public class C_outActivity extends SherlockFragmentActivity {
 	C_beam c_beam;
 	EditText et;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_c_out);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		getActionBar().setDisplayShowCustomEnabled(true);
 		getActionBar().setDisplayShowTitleEnabled(false);
-		
+
 		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.view_actionbar, null);
 
@@ -40,17 +40,17 @@ public class C_outActivity extends SherlockFragmentActivity {
 		((TextView)v.findViewById(R.id.title)).setTextSize(30);
 		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
 		getActionBar().setCustomView(v);
-		
+
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
-		
+
 		c_beam = new C_beam(this);
 		ArrayList<String> sounds = c_beam.getSounds();
 		for(int i=0; i<sounds.size();i++)
 			f.addItem(sounds.get(i));
 		//v.addView(f.getView());
-		
+
 		et = (EditText) findViewById(R.id.c_outEditText);
-		
+
 		Button b = (Button) findViewById(R.id.button_announce);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -61,7 +61,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 				}
 			}
 		});
-		
+
 		b = (Button) findViewById(R.id.button_r2d2);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -72,7 +72,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 				}
 			}
 		});
-		
+
 		b = (Button) findViewById(R.id.button_tts);
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -107,7 +107,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.menu_settings:
-			 myIntent = new Intent(this, SettingsActivity.class);
+			myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 			return true;
 		case R.id.menu_c_out:
