@@ -59,7 +59,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 			@Override
 			public void onClick(View v) {
 				String text = et.getText().toString();
-				if (!text.isEmpty()) {
+				if (text.length() != 0) {
 					c_beam.announce(text);
 				}
 			}
@@ -70,7 +70,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 			@Override
 			public void onClick(View v) {
 				String text = et.getText().toString();
-				if (!text.isEmpty()) {
+				if (text.length() != 0) {
 					c_beam.r2d2(text);
 				}
 			}
@@ -81,7 +81,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 			@Override
 			public void onClick(View v) {
 				String text = et.getText().toString();
-				if (!text.isEmpty()) {
+				if (text.length() != 0) {
 					c_beam.tts(text);
 				}
 			}

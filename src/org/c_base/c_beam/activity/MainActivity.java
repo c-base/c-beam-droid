@@ -477,7 +477,7 @@ ActionBar.TabListener, OnClickListener {
 		String defaultUsername = "bernd";
 		String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
 
-		if (user.equals(defaultUsername) || user.isEmpty()) {
+		if (user.equals(defaultUsername) || user.length() == 0) {
 			AlertDialog.Builder b = new AlertDialog.Builder(this);
 			b.setTitle(R.string.set_username_title);
 			b.setMessage(R.string.set_username_message);

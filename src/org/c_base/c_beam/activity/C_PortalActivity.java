@@ -1,6 +1,8 @@
 package org.c_base.c_beam.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -28,10 +30,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (android.os.Build.VERSION.SDK_INT > 9) {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-		}
+		enableStrictMode();
 
 		setContentView(R.layout.activity_c_portal);
 
@@ -179,4 +178,11 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	private void enableStrictMode() {
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
+	}
 }
