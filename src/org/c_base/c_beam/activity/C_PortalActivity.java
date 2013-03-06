@@ -1,15 +1,18 @@
 package org.c_base.c_beam.activity;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -26,15 +29,12 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		if (android.os.Build.VERSION.SDK_INT > 9) {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-		}
+
+		enableStrictMode();
 
 		setContentView(R.layout.activity_c_portal);
-		
-		final ActionBar actionBar = getActionBar();
+
+		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -62,7 +62,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 		}
 
 		Bundle extras = getIntent().getExtras();
-		
+
 		if (extras != null) {
 			C_portalWebViewFragment f = (C_portalWebViewFragment) mSectionsPagerAdapter.getItem(0);
 			currentArticle = extras.getInt("id");
@@ -70,7 +70,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 				f.setUrl("https://c-portal.c-base.org/articles/" + extras.getInt("id") + "/");
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			FragmentTransaction fragmentTransaction) {
 	}
 
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent myIntent;
@@ -114,7 +114,7 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.menu_settings:
-			 myIntent = new Intent(this, SettingsActivity.class);
+			myIntent = new Intent(this, SettingsActivity.class);
 			startActivityForResult(myIntent, 0);
 			return true;
 		case R.id.menu_c_out:
@@ -176,6 +176,13 @@ public class C_PortalActivity extends SherlockFragmentActivity implements Action
 			}
 			return null;
 		}
-	}	
+	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+	private void enableStrictMode() {
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
+	}
 }

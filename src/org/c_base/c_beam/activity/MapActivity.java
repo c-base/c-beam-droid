@@ -1,12 +1,11 @@
 package org.c_base.c_beam.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -14,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -45,7 +46,7 @@ public class MapActivity extends SherlockFragmentActivity implements
 		setContentView(R.layout.activity_map);
 
 		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
+		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		// Show the Up button in the action bar.
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -82,12 +83,12 @@ public class MapActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getSherlock().getMenuInflater().inflate(R.menu.activity_map, menu);
-    return true;
-  }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getSherlock().getMenuInflater().inflate(R.menu.activity_map, menu);
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,17 +151,12 @@ public class MapActivity extends SherlockFragmentActivity implements
 			} else if (position == 2) {
 				fragment = new C_portalWebViewFragment();
 				((C_portalWebViewFragment) fragment).setUrl("https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A");
-				
-				
 			} else {
-				 fragment = new DummySectionFragment();
+				fragment = new DummySectionFragment();
 				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 				fragment.setArguments(args);
 			}
-				
-			
-			
-			
+
 			return fragment;
 		}
 
