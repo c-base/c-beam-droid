@@ -22,7 +22,7 @@ public class ArtefactActivity extends SherlockActivity {
 			WebView w = (WebView) findViewById(R.id.artefactWebView);
 			w.loadUrl("http://cbag3.c-base.org"+extras.getString("slug"));
 		}
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 	}
 

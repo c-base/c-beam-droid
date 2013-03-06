@@ -42,7 +42,7 @@ public class MissionActivity extends SherlockActivity {
 			}
 
 		}
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

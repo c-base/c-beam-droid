@@ -14,6 +14,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.C_beam;
@@ -33,9 +35,10 @@ public class UserActivity extends SherlockActivity {
 		setContentView(R.layout.activity_user);
 		// Show the Up button in the action bar.
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setDisplayShowCustomEnabled(true);
-		getActionBar().setDisplayShowTitleEnabled(false);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
 
 		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.view_actionbar, null);
@@ -63,7 +66,7 @@ public class UserActivity extends SherlockActivity {
 			}
 		}
 
-		getActionBar().setCustomView(v);
+		actionBar.setCustomView(v);
 
 
 	}

@@ -10,6 +10,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -27,10 +29,11 @@ public class C_outActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_c_out);
 		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		getActionBar().setDisplayShowCustomEnabled(true);
-		getActionBar().setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
 
 		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.view_actionbar, null);
@@ -39,7 +42,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
 		((TextView)v.findViewById(R.id.title)).setTextSize(30);
 		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
-		getActionBar().setCustomView(v);
+		actionBar.setCustomView(v);
 
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 

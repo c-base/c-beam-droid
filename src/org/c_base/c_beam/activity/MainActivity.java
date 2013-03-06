@@ -20,10 +20,7 @@ import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,6 +36,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +48,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -417,7 +417,7 @@ ActionBar.TabListener, OnClickListener {
 	}
 
 	private void setupActionBar() {
-		actionBar = getActionBar();
+		actionBar = getSupportActionBar();
 
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -573,14 +573,14 @@ ActionBar.TabListener, OnClickListener {
 	}
 
 	private void showOfflineView() {
-		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		mCbeamArea.setVisibility(View.GONE);
 		mInfoArea.setVisibility(View.VISIBLE);
 	}
 
 	private void showOnlineView() {
 		mIsOnline = true;
-		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		mInfoArea.setVisibility(View.GONE);
 		mCbeamArea.setVisibility(View.VISIBLE);
 	}
