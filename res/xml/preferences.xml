@@ -17,7 +17,8 @@
     	android:key="pref_password"
     	android:title="@string/pref_password"
     	android:summary="@string/pref_password_summ"   
-	    android:inputType="textPassword" />
+	    android:inputType="textPassword"
+	    android:enabled="false" />
     
     <!-- 
     <EditTextPreference
