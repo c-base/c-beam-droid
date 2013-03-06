@@ -41,29 +41,29 @@ public class JSONRPCHttpClient extends JSONRPCClient
 	 * Service URI
 	 */
 	private String serviceUri;
-	
+
 	// HTTP 1.0
 	private static final ProtocolVersion PROTOCOL_VERSION = new ProtocolVersion("HTTP", 1, 0);
-	
- 	/**
+
+	/**
 	 * Construct a JsonRPCClient with the given httpClient and service uri
 	 *
-     * @param client
-     *            httpClient to use
+	 * @param client
+	 *            httpClient to use
 	 * @param uri
 	 *            uri of the service
 	 */
 	public JSONRPCHttpClient(HttpClient cleint, String uri){
 		httpClient = cleint;
 		serviceUri = uri;
-		
-		
-		
+
+
+		/* SSLContext.setDefault() is not available on Android 2.2 - but we currently don't support SSL anyway
 		SSLContext ctx;
 		try {
 			ctx = SSLContext.getInstance("TLS");
-	        ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
-	        SSLContext.setDefault(ctx);
+			ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
+			SSLContext.setDefault(ctx);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,16 +71,16 @@ public class JSONRPCHttpClient extends JSONRPCClient
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 
-    
-		
+
 		httpClient.getParams();
 		System.out.println("");
 	}
-	
+
 	/**
 	 * Construct a JsonRPCClient with the given service uri
-	 * 
+	 *
 	 * @param uri
 	 *            uri of the service
 	 */
@@ -102,9 +102,9 @@ public class JSONRPCHttpClient extends JSONRPCClient
 		if(_debug){
 			Log.i(JSONRPCHttpClient.class.toString(), "Request: " + jsonRequest.toString());
 		}
-		
+
 		HttpEntity entity;
-		
+
 		try
 		{
 			if(encoding.length() > 0){
@@ -119,23 +119,23 @@ public class JSONRPCHttpClient extends JSONRPCClient
 			throw new JSONRPCException("Unsupported encoding", e1);
 		}
 		request.setEntity(entity);
-		
+
 		try
 		{
 			// Execute the request and try to decode the JSON Response
 			long t = System.currentTimeMillis();
 			HttpResponse response = httpClient.execute(request);
-			
-			
+
+
 			t = System.currentTimeMillis() - t;
 			String responseString = EntityUtils.toString(response.getEntity());
-			
+
 			responseString = responseString.trim();
-			
+
 			if(_debug){
 				Log.i(JSONRPCHttpClient.class.toString(), "Response: " + responseString);
 			}
-			
+
 			JSONObject jsonResponse = new JSONObject(responseString);
 			// Check for remote errors
 			if (jsonResponse.has("error"))
