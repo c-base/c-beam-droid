@@ -11,6 +11,11 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <permission
@@ -25,7 +30,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.MainActivity"
+            android:name="org.c_base.c_beam.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
@@ -36,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.UserActivity"
+            android:name="org.c_base.c_beam.activity.UserActivity"
             android:label="@string/title_activity_user"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -45,7 +50,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.EventActivity"
+            android:name="org.c_base.c_beam.activity.EventActivity"
             android:label="@string/title_activity_event"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -54,7 +59,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.MissionActivity"
+            android:name="org.c_base.c_beam.activity.MissionActivity"
             android:label="@string/title_activity_mission"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -63,7 +68,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="org.c_base.c_beam.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -85,7 +90,8 @@
 
         <service android:name="org.c_base.c_beam.GCMIntentService" />
 
-        <!-- Currently not working 
+        <!--
+        Currently not working 
         <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -97,13 +103,13 @@
         </receiver>
         -->
 
-        <activity android:name=".activity.AppWidgetConfigure" >
+        <activity android:name="org.c_base.c_beam.activity.AppWidgetConfigure" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.C_outActivity"
+            android:name="org.c_base.c_beam.activity.C_outActivity"
             android:label="@string/title_activity_c_out"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -120,7 +126,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.WebActivity"
+            android:name="org.c_base.c_beam.activity.WebActivity"
             android:label="@string/title_activity_web"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -128,7 +134,7 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name=".activity.ArtefactActivity"
+            android:name="org.c_base.c_beam.activity.ArtefactActivity"
             android:label="@string/title_activity_artefact_long"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -138,7 +144,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.C_PortalActivity"
+            android:name="org.c_base.c_beam.activity.C_PortalActivity"
             android:label="@string/title_activity_c_portal"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -146,10 +152,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
-
         </activity>
         <activity
-            android:name=".activity.BamActivity"
+            android:name="org.c_base.c_beam.activity.BamActivity"
             android:label="@string/title_activity_bam"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -158,13 +163,23 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.MapActivity"
+            android:name="org.c_base.c_beam.activity.MapActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
+        
+        <activity
+            android:name="org.c_base.c_beam.activity.CcorderActivity"
+            android:label="@string/title_activity_ccorder"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
     </application>
+
 
 </manifest>

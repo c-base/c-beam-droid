@@ -43,7 +43,9 @@
     <string name="title_activity_c_out">c_out</string>
     <string name="menu_c_out">c_out</string>
     <string name="menu_map">Maps</string>
+    <string name="menu_ccorder">c-corder</string>
     <string name="c_out_sound_played">Cound wurde abgespielt</string>
+    
     <string name="title_activity_web">WebActivity</string>
     <string name="title_activity_artefact">cbag3</string>
     <string name="title_activity_artefact_long">c-base artefact guide 3</string>
@@ -94,6 +96,8 @@
     <string name="pref_password_summ">Your c-base member password</string>
     <string name="set_username_title">Username setzen</string>
     <string name="set_username_message">Bitte den Username auf deinen Membernamen setzen.</string>
-    
     <string name="not_in_crew_network">Not in crew network</string>
+    <string name="title_activity_ccorder">CcorderActivity</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

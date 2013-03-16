@@ -302,6 +302,9 @@ ActionBar.TabListener, OnClickListener {
 		} else if (item.getItemId() == R.id.menu_map) {
 			Intent myIntent = new Intent(this, MapActivity.class);
 			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_ccorder) {
+			Intent myIntent = new Intent(this, CcorderActivity.class);
+			startActivityForResult(myIntent, 0);
 		}
 		return super.onOptionsItemSelected(item);
 	}
