@@ -183,11 +183,6 @@ ActionBar.TabListener, OnClickListener {
 					found = true;
 				}
 			}
-			if (!found) {
-				if (button !=null)
-					button.setEnabled(false);
-			}
-
 		}
 		if (online.isAdded()) {
 			online.clear();
