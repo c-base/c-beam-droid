@@ -2,15 +2,23 @@ package org.c_base.c_beam.activity;
 
 import java.io.IOException;
 
+import org.c_base.c_beam.R;
 import org.c_base.c_beam.util.CubeRenderer;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.NinePatchDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
@@ -22,8 +30,10 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.TranslateAnimation;
 
-public class CcorderActivity extends Activity implements Callback {
+@SuppressLint("NewApi")
+public class CcorderActivity extends SherlockFragmentActivity implements Callback {
 	private Camera camera;
 	private SurfaceView mSurfaceView;
 	SurfaceHolder mSurfaceHolder;
@@ -63,10 +73,21 @@ public class CcorderActivity extends Activity implements Callback {
 
 		mSurfaceView = new SurfaceView(this);
 		addContentView(mSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
-		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+		//		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
 
 		DrawOnTop mDraw = new DrawOnTop(this);
 		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		
+		Scanbar scanbar = new Scanbar(this);
+		addContentView(scanbar, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
+		TranslateAnimation transAnimation= new TranslateAnimation(0, 0, 0, height);
+
+		transAnimation.setRepeatMode(2);
+		transAnimation.setRepeatCount(-1);
+		transAnimation.setDuration(1000);
+		scanbar.startAnimation(transAnimation);
+
 
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(this);
@@ -108,7 +129,7 @@ public class CcorderActivity extends Activity implements Callback {
 
 		public TouchSurfaceView(Context context) {       
 			super(context); 
-			cr  = new CubeRenderer(true);
+			cr  = new CubeRenderer(true, context);
 			this.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 			this.setRenderer(cr);
 			this.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);  
@@ -142,8 +163,57 @@ public class CcorderActivity extends Activity implements Callback {
 
 	class DrawOnTop extends View {
 		Paint paint = new Paint();
-		
+		int yPos = 0;
+
 		public DrawOnTop(Context context) {
+			super(context);
+			paint.setStyle(Paint.Style.FILL);
+			paint.setColor(Color.BLACK);
+			paint.setStrokeWidth(2);
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			NinePatchDrawable npd = (NinePatchDrawable)getResources().getDrawable(R.drawable.smlnpatch240dpi);
+			// Set its bound where you need
+			Rect npdBounds = new Rect(
+					1,1,canvas.getWidth(),canvas.getHeight());
+			npd.setBounds(npdBounds);
+
+			// Finally draw on the canvas
+			npd.draw(canvas);
+
+			//		    canvas.save();
+			//		    canvas.scale(10, 10, 0, 0);
+			//			canvas.drawText("Test Text", 20, 20, paint);
+			//			canvas.restore();
+			RectF oval;
+			oval = new RectF();
+			oval.set(100, 100, 200, 200);
+			//			canvas.drawArc(oval, 45, 270, true, paint);
+
+			int spacing = 10;
+			for(int y=0; y<canvas.getHeight(); y+=spacing) {
+				canvas.drawLine(0, y, canvas.getWidth(), y, paint);
+			}
+			for(int x=0; x<canvas.getWidth(); x+=spacing) {
+				canvas.drawLine(x, 0, x, canvas.getHeight(), paint);
+			}
+			yPos++;
+			super.onDraw(canvas);
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent e) {
+			return true;
+		}
+	}
+
+	class Scanbar extends View {
+		Paint paint = new Paint();
+		int yPos = 0;
+
+		public Scanbar(Context context) {
 			super(context);
 			paint.setStyle(Paint.Style.FILL);
 			paint.setColor(Color.YELLOW);
@@ -151,12 +221,16 @@ public class CcorderActivity extends Activity implements Callback {
 
 		@Override
 		protected void onDraw(Canvas canvas) {
-			canvas.drawText("Test Text", 20, 20, paint);
-			RectF oval;
-			oval = new RectF();
-			oval.set(100, 100, 200, 200);
-			canvas.drawArc(oval, 45, 270, true, paint);
+			Bitmap foo = BitmapFactory.decodeResource(getResources(),R.drawable.scanner);
+			Bitmap img = Bitmap.createScaledBitmap( foo, canvas.getWidth(), 100, true );
+			foo.recycle();
+			canvas.drawBitmap(img,0,yPos,null);
 			super.onDraw(canvas);
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent e) {
+			return true;
 		}
 	}
 }

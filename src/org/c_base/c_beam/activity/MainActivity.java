@@ -183,11 +183,6 @@ ActionBar.TabListener, OnClickListener {
 					found = true;
 				}
 			}
-			if (!found) {
-				if (button !=null)
-					button.setEnabled(false);
-			}
-
 		}
 		if (online.isAdded()) {
 			online.clear();
@@ -421,7 +416,6 @@ ActionBar.TabListener, OnClickListener {
 
 	private void setupActionBar() {
 		actionBar = getSupportActionBar();
-
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
 
