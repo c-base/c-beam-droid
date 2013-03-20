@@ -55,6 +55,7 @@
     <string name="message_logout">Du wirst ausgelogt, bitte warten...</string>
     <string name="confirm_logout">Wirklich ausloggen?</string>
     <string name="button_logout">Ausloggen</string>
+    <string name="confirm_mission_start">Mission wirklich starten?</string>
 
     <string-array name="fonts_array">
         <item>Android Default</item>
@@ -96,4 +97,14 @@
     <string name="set_username_message">Bitte den Username auf deinen Membernamen setzen.</string>
     
     <string name="not_in_crew_network">Not in crew network</string>
+    
+    <string name="self_destruct_thx">Danke für den Fisch.</string>
+    
+    <string name="self_destruct_in_progress">Erde wird abgesprengt, bitte warten...</string>
+    
+    <string name="lift_off_title">We need to lift off...</string>
+    
+    <string name="lift_off_message">There\'s no time to explain!</string>
+    
+    <string name="button_ok">OK</string>
 </resources>

@@ -53,19 +53,19 @@ public class C_ontrolFragment extends Fragment {
 
 		Button b = (Button) v.findViewById(R.id.button_self_destruct);
 
-		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
-		adb.setTitle("BAM!");
-		adb.setPositiveButton("Danke", null);
-		bam = adb.create();
+//		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+//		adb.setTitle("BAM!");
+//		adb.setPositiveButton("Danke", null);
+//		bam = adb.create();
 
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
-				b.setTitle("Erde wird abgesprengt, bitte warten...");
+				b.setTitle(R.string.self_destruct_in_progress);
 				input = new ProgressBar(v.getContext(), null, android.R.attr.progressBarStyleHorizontal);
 				b.setView(input);
-				b.setPositiveButton("Danke f�r den Fisch.", null);
+				b.setPositiveButton(R.string.self_destruct_thx, null);
 
 				pd = b.create();
 				pd.show();
@@ -108,14 +108,12 @@ public class C_ontrolFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder b = new AlertDialog.Builder(v.getContext());
-				b.setTitle("We need to lift off...");
-				b.setMessage("There's no time to explain!");
-				b.setPositiveButton("OK", null);
+				b.setTitle(R.string.lift_off_title);
+				b.setMessage(R.string.lift_off_message);
+				b.setPositiveButton(R.string.button_ok, null);
 				b.show();
 			}
 		});
-
-
 
 		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
 		t.setOnClickListener(new OnClickListener() {
@@ -296,17 +294,5 @@ public class C_ontrolFragment extends Fragment {
 		thisView = v;
 		return v;
 	}
-
-	/*@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onViewCreated(view, savedInstanceState);
-
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, R.id.button_unlabeled);
-		c_leuseFragment.getView().setLayoutParams(params);
-	}*/
-
-
 
 }
