@@ -1,25 +1,37 @@
 package org.c_base.c_beam.activity;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.util.Helper;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.Mission;
 
-public class MissionActivity extends SherlockActivity {
+public class MissionActivity extends SherlockActivity implements OnClickListener {
+	protected static final String TAG = "MissionActivity";
 	C_beam c_beam;
 	TableLayout tl;
 	TableRow tr;
 	TextView labelTV, valueTV;
+	ToggleButton toggleMissionButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +44,9 @@ public class MissionActivity extends SherlockActivity {
 		if (extras != null) {
 			Mission m = c_beam.getMission(extras.getInt("id"));
 			tl = (TableLayout) findViewById(R.id.TableLayout1);
+			//tl.setShrinkAllColumns(true);
+			tl.setColumnShrinkable(1, true);
+
 			// addHeaders();
 			if (m != null) {
 				Log.i("Mission", m.toString());
@@ -43,6 +58,9 @@ public class MissionActivity extends SherlockActivity {
 
 		}
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+		toggleMissionButton = (ToggleButton) findViewById(R.id.toggleMissionButton);
+		toggleMissionButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -84,31 +102,93 @@ public class MissionActivity extends SherlockActivity {
 	public void addData(Mission m) {
 		addRow("Mission:", m.getShort_description());
 		addRow("Status:", m.getStatus());
-		addRow("Description:", m.getDescription());
+		addRow("Aufgabe:", m.getDescription());
+		addRow("AP:", ""+m.getAp());
 	}
 
 	public void addRow(String label, String value) {
 		/** Create a TableRow dynamically **/
 		tr = new TableRow(this);
-		tr.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT));
+		tr.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT));
+		tr.setBackgroundResource(R.drawable.listitembg);
 
 		/** Creating a TextView to add to the row **/
 		labelTV = new TextView(this);
 		labelTV.setText(label);
 		labelTV.setPadding(15, 15, 15, 15);
+		Helper.setFont(this, labelTV);
+		labelTV.setTextColor(Color.WHITE);
+//		labelTV.setBackgroundResource(R.drawable.listitembg);
 		tr.addView(labelTV); // Adding textView to tablerow.
 
 		/** Creating another textview **/
 		valueTV = new TextView(this);
 		valueTV.setText(value);
 		valueTV.setPadding(15, 15, 15, 15);
-
+		Helper.setFont(this, valueTV);
+		valueTV.setTextColor(Color.WHITE);
+//		valueTV.setBackgroundResource(R.drawable.listitembg);
 		tr.addView(valueTV); // Adding textView to tablerow.
 
 		// Add the TableRow to the TableLayout
-		tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.MATCH_PARENT));
-
+		tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT));
 	}
 
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.toggleMissionButton: {
+			ToggleButton b = (ToggleButton) view;
+			if (b.isChecked()) {
+				// Ask if the user really wants to start the mission
+				showStartMissionDialog();
+			} else {
+				// Display dialog asking whether the mission is complete or if it should be canceled
+				showEndMissionDialog();
+			}
+			break;
+		}
+		}
+	}
+
+	private void showStartMissionDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.confirm_mission_start); 
+		builder.setPositiveButton(R.string.button_mission_start, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				startMission();
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void showEndMissionDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Mission beenden"); 
+		builder.setItems(R.array.mission_result_array, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				switch(whichButton) {
+				case 0: // mission complete
+					Log.i(TAG, "button 0");
+					break;
+				case 1: // mission cancelled
+					Log.i(TAG, "button 1");
+					break;
+				case 2: // oops
+					toggleMissionButton.setChecked(true);
+				}
+			}
+		});
+		builder.create().show();
+		
+	}
+	
+	private void startMission() {
+		// TODO Auto-generated method stub
+		
+	}
 }
