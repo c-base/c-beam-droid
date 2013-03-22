@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.activity.EventActivity;
+import org.c_base.c_beam.activity.UserActivity;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.util.Helper;
 
@@ -25,7 +26,7 @@ import android.widget.TextView;
 public class StatsFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
 	ListAdapter adapter;
-	Class nextActivity = EventActivity.class;
+	Class nextActivity = UserActivity.class;
 	SharedPreferences sharedPref;
 
 	public void clear() {
