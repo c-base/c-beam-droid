@@ -11,11 +11,13 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.StatsFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
@@ -63,6 +65,8 @@ ActionBar.TabListener, OnClickListener {
 	private static final int EVENTS_FRAGMENT = 3;
 	private static final int C_ONTROL_FRAGMENT = 4;
 	private static final int MISSION_FRAGMENT = 5;
+	private static final int STATS_FRAGMENT = 6;
+	private static final int ACTIVITYLOG_FRAGMENT = 7;
 
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
@@ -171,13 +175,16 @@ ActionBar.TabListener, OnClickListener {
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
 		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
 		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
+		StatsFragment stats = (StatsFragment) mSectionsPagerAdapter.getItem(STATS_FRAGMENT);
+		ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
 		ArrayList<User> etaList = c_beam.getEtaList();
 
+		ArrayList<User> userList = c_beam.getUsers();
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
 		boolean found = false;
-		for (User user: c_beam.getUsers()) {
+		for (User user: userList) {
 			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 				if (button != null) {
 					button.setChecked(user.getStatus().equals("online"));
@@ -230,7 +237,13 @@ ActionBar.TabListener, OnClickListener {
 					artefacts.addItem(artefactList.get(i));
 			}
 		}
-
+		
+		if(stats.isAdded()) {
+			ArrayList<User> statsList = new ArrayList<User>();
+			statsList = userList;
+			for(int i=0; i<statsList.size();i++)
+				stats.addItem(statsList.get(i));
+		}
 	}
 
 	public void startProgress() {
@@ -351,6 +364,10 @@ ActionBar.TabListener, OnClickListener {
 					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
+				} else if(position == STATS_FRAGMENT) {
+					fragment = new StatsFragment();
+				} else if(position == ACTIVITYLOG_FRAGMENT) {
+					fragment = new ActivitylogFragment();
 				} else {
 					fragment = null;
 				}
@@ -365,7 +382,7 @@ ActionBar.TabListener, OnClickListener {
 
 		@Override
 		public int getCount() {
-			return 6;
+			return 8;
 		}
 
 		@Override
@@ -383,6 +400,10 @@ ActionBar.TabListener, OnClickListener {
 				return getString(R.string.title_c_ontrol).toUpperCase();
 			case MISSION_FRAGMENT:
 				return getString(R.string.title_missions).toUpperCase();
+			case STATS_FRAGMENT:
+				return getString(R.string.title_stats).toUpperCase();
+			case ACTIVITYLOG_FRAGMENT:
+				return getString(R.string.title_activity).toUpperCase();
 			}
 			return null;
 		}
