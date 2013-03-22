@@ -67,6 +67,8 @@ ActionBar.TabListener, OnClickListener {
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
+	
+	private static final boolean debug = false;
 
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
@@ -589,6 +591,10 @@ ActionBar.TabListener, OnClickListener {
 	class WifiBroadcastReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			if (debug) {
+				showOnlineView();
+				return;
+			}
 			if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
 				int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
 				int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
