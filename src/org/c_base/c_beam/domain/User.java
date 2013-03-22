@@ -131,5 +131,9 @@ public class User {
 	public void setAutologout_in(int autologout_in) {
 		this.autologout_in = autologout_in;
 	}
+	public int getAp() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
