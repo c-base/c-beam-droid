@@ -8,6 +8,8 @@
     <string name="title_artefacts">Artefacte</string>
     <string name="title_c_portal">c-portal</string>
     <string name="title_users">An Bord</string>
+    <string name="title_stats">stats</string>
+    <string name="title_activity">activitylog</string>
     <string name="title_section0">An Bord</string>
     <string name="title_c_portal_section0">Article View</string>
     <string name="title_c_portal_section1">Article</string>
