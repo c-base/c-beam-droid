@@ -13,6 +13,9 @@ public class Mission {
 	private String description = ""; 
 	private String status = "unknown";
 	private Date created_on = null;
+	private int ap = 0;
+	//private User assigned_to = null;
+	
 	
 	public Mission(JSONObject item) {
 		try {
@@ -21,6 +24,7 @@ public class Mission {
 			short_description = item.getString("short_description");
 			status = item.getString("status");
 			description = item.getString("description");
+			ap = item.getInt("ap");
 			Log.i("due_date", item.getString("created_on"));
 			//created_on = Date.valueOf(item.getString("created_on"));
 			
@@ -60,6 +64,11 @@ public class Mission {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getAp() {
+		// TODO Auto-generated method stub
+		return this.ap;
 	}
 	
 }
