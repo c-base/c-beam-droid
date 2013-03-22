@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
 import org.alexd.jsonrpc.JSONRPCParams;
+import org.c_base.c_beam.Settings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
+import android.preference.PreferenceManager;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -76,8 +79,8 @@ public class C_beam {
 		thread.start();
 	}
 	public boolean isInCrewNetwork() {
-//		if (true)
-//			return false;
+		if (true)
+			return true;
 		if (parent == null)
 			return true;
 		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
@@ -259,6 +262,22 @@ public class C_beam {
 			e.printStackTrace();
 		}
 		return m;
+	}
+	
+	public synchronized String assignMission(int id) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		String result = "";
+		try {
+			if (isInCrewNetwork()) {
+				result = c_beamClient.callString("mission_assign", user, id);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+		//mission_assign
 	}
 
 	public synchronized void register(String regId, String user) {
