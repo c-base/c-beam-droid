@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.C_outListFragment;
+import org.c_base.c_beam.util.Helper;
 
 public class C_outActivity extends SherlockFragmentActivity {
 	C_beam c_beam;
@@ -39,7 +40,7 @@ public class C_outActivity extends SherlockFragmentActivity {
 		View v = inflator.inflate(R.layout.view_actionbar, null);
 
 		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
-		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+		Helper.setFont(this, ((TextView)v.findViewById(R.id.title)));
 		((TextView)v.findViewById(R.id.title)).setTextSize(30);
 		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
 		actionBar.setCustomView(v);
