@@ -9,8 +9,11 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.c_base.c_beam.activity.MainActivity;
+
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
@@ -93,10 +96,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 		mBuilder.setLights(0x00ffff00, 1000, 1000);
 		//mBuilder.setSubText("subtext");
 		//mBuilder.setSmallIcon(R.drawable.ic_launcher);
-		//Intent intent = new Intent(this, NotificationReceiverActivity.class);
-		//PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+		Intent intent = new Intent(this, MainActivity.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		//mBuilder.setDeleteIntent(pIntent);
+		mBuilder.setContentIntent(pIntent);
 		Notification notification = mBuilder.getNotification();
 		notifications.put("foo", notification);
 		//notification.flags = Notification.DEFAULT_ALL;
