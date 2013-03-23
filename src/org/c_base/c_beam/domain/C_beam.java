@@ -263,7 +263,7 @@ public class C_beam {
 		}
 		return m;
 	}
-	
+
 	public synchronized String assignMission(int id) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
 		String user = sharedPref.getString(Settings.USERNAME, "bernd");
@@ -332,6 +332,17 @@ public class C_beam {
 						onlineList.remove(i);
 					}
 				}
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public synchronized void toggleLogin(String user) {
+		try {
+			if (isInCrewNetwork()) {
+				c_beamClient.call("tagevent", user);
 			}
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block

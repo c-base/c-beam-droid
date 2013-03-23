@@ -31,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -71,7 +72,7 @@ ActionBar.TabListener, OnClickListener {
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
-	
+
 	private static final boolean debug = false;
 
 	ArrayList<Article> articleList;
@@ -138,7 +139,10 @@ ActionBar.TabListener, OnClickListener {
 		button_c_maps.setOnClickListener(this);
 
 		setupGCM();
-		checkUserName();
+
+		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			toggleLogin();
+		}
 
 		initializeBroadcastReceiver();
 	}
@@ -159,6 +163,10 @@ ActionBar.TabListener, OnClickListener {
 		stopNetworkingThreads();
 	}
 
+	public void toggleLogin() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+	}
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
@@ -237,7 +245,7 @@ ActionBar.TabListener, OnClickListener {
 					artefacts.addItem(artefactList.get(i));
 			}
 		}
-		
+
 		if(stats.isAdded()) {
 			ArrayList<User> statsList = new ArrayList<User>();
 			statsList = userList;
@@ -489,7 +497,7 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	private void checkUserName() {
+	private boolean checkUserName() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
 		String defaultUsername = "bernd";
@@ -508,7 +516,10 @@ ActionBar.TabListener, OnClickListener {
 				}
 			});
 			b.show();
+			return false;
 		}
+
+		return true;
 	}
 
 	@Override
