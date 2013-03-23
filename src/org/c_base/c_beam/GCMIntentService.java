@@ -25,6 +25,8 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 	HashMap<String,Notification> notifications;
+	String boardingCache = "";
+	
 	public GCMIntentService() {
 		super("GCMIntentService");
 		notifications = new HashMap<String,Notification>();
@@ -57,7 +59,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		int id = (int) (Math.random()*10000000)+64;
 		if (title.equals("now boarding")) {
 			id = 1;
-
+			boardingCache += text + "\n";
+			Log.i(TAG, boardingCache);
 		} else if (title.equals("ETA")) {
 			id = 2;
 		} else if (title.equals("AES")) {
@@ -68,7 +71,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 				kgen = KeyGenerator.getInstance("AES");
 				sr = SecureRandom.getInstance("SHA1PRNG");
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			sr.setSeed(keyStart);
@@ -86,16 +88,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 
 		Log.i("id", ""+id);
-		//mBuilder.setNumber(42);
 		mBuilder.setAutoCancel(true);
-		long[] l = new long[2];
-		l[0] = 500;
-		l[1] = 250;
-		//mBuilder.setVibrate(l);
+//		long[] l = new long[2];
+//		l[0] = 500;
+//		l[1] = 250;
+//		mBuilder.setVibrate(l);
 		mBuilder.setTicker(title+": "+text);
 		mBuilder.setLights(0x00ffff00, 1000, 1000);
-		//mBuilder.setSubText("subtext");
-		//mBuilder.setSmallIcon(R.drawable.ic_launcher);
+//		mBuilder.setSubText("subtext");
+//		mBuilder.setSmallIcon(R.drawable.ic_launcher);
 		Intent intent = new Intent(this, MainActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
