@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -61,12 +62,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
-	private static final int ARTEFACTS_FRAGMENT = 2;
-	private static final int EVENTS_FRAGMENT = 3;
-	private static final int C_ONTROL_FRAGMENT = 4;
-	private static final int MISSION_FRAGMENT = 5;
-	private static final int STATS_FRAGMENT = 6;
-	private static final int ACTIVITYLOG_FRAGMENT = 7;
+	private static final int ARTEFACTS_FRAGMENT = 7;
+	private static final int EVENTS_FRAGMENT = 6;
+	private static final int C_ONTROL_FRAGMENT = 2;
+	private static final int MISSION_FRAGMENT = 3;
+	private static final int STATS_FRAGMENT = 4;
+	private static final int ACTIVITYLOG_FRAGMENT = 5;
 
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
@@ -153,10 +154,9 @@ ActionBar.TabListener, OnClickListener {
 	@Override
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
-		super.onPause();
-
 		unregisterReceiver(mWifiReceiver);
 		stopNetworkingThreads();
+		super.onPause();
 	}
 
 	public void login() {
@@ -239,11 +239,12 @@ ActionBar.TabListener, OnClickListener {
 		}
 		
 		if(stats.isAdded()) {
-			ArrayList<User> statsList = new ArrayList<User>();
-			statsList = userList;
-			for(int i=0; i<statsList.size();i++)
-				stats.addItem(statsList.get(i));
+			stats.clear();
+			for(User user: c_beam.getStats())
+				stats.addItem(user);
 		}
+		
+		activitylog.updateLog(c_beam.getActivityLog());
 	}
 
 	public void startProgress() {
@@ -338,7 +339,7 @@ ActionBar.TabListener, OnClickListener {
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		Fragment[] pages;
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
