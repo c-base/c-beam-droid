@@ -33,11 +33,13 @@ public class C_beam {
 	protected Activity parent;
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
-
+	protected ArrayList<User> stats = new ArrayList<User>();
+	
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
 
 	Thread thread;
+	private ArrayList<ActivityLog> activitylog;
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
@@ -114,10 +116,13 @@ public class C_beam {
 				offlineList.add(user);
 			}
 		}
+		// TODO put this all into one RPC call
 		updateEvents();
 		updateArtefacts();
 		updateArticles();
 		updateMissions();
+		updateActivityLog();
+		updateStats();
 
 		String method = "list_articles";
 		int requestID = 0;
@@ -247,6 +252,28 @@ public class C_beam {
 		}
 		return missions;
 	}
+	
+	public synchronized ArrayList<ActivityLog> getActivityLog() {
+		return activitylog;
+	}
+	public synchronized ArrayList<ActivityLog> updateActivityLog() {
+		activitylog = new ArrayList<ActivityLog>();
+
+		try {
+			if (isInCrewNetwork()) {
+				JSONArray result = c_beamClient.callJSONArray("activitylog");
+				for (int i=0; i<result.length(); i++) {
+					JSONObject item = result.getJSONObject(i);
+					activitylog.add(new ActivityLog(item));
+				}
+			}
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return activitylog;
+	}
 
 	public synchronized Mission getMission(int id) {
 		Mission m = null;
@@ -258,7 +285,6 @@ public class C_beam {
 				Log.i("dn", m.toString());
 			}
 		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return m;
@@ -273,13 +299,63 @@ public class C_beam {
 				result = c_beamClient.callString("mission_assign", user, id);
 			}
 		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return result;
-		//mission_assign
 	}
 
+	public synchronized String completeMission(int id) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		String result = "";
+		try {
+			if (isInCrewNetwork()) {
+				result = c_beamClient.callString("mission_assign", user, id);
+			}
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public synchronized String cancelMission(int id) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		String result = "";
+		try {
+			if (isInCrewNetwork()) {
+				result = c_beamClient.callString("mission_cancel", user, id);
+			}
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	private synchronized ArrayList<User> updateStats() {
+		ArrayList<User> list = new ArrayList<User>();
+
+		try {
+			if (isInCrewNetwork()) {
+				JSONArray result = c_beamClient.callJSONArray("stats_list");
+				for (int i=0; i<result.length(); i++) {
+					JSONObject item = result.getJSONObject(i);
+					list.add(new User(item));
+				}
+			}
+			stats = list;
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public ArrayList<User> getStats() {
+		return stats;
+	}
+	
+	
 	public synchronized void register(String regId, String user) {
 		try {
 			if (isInCrewNetwork())
