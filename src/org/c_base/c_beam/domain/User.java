@@ -15,6 +15,7 @@ public class User {
 	private String reminder;
 	private String remindertimestamp;
 	private String logintime;
+	private int ap = 0;
 	private int autologout;
 	private int autologout_in;
 
@@ -32,6 +33,7 @@ public class User {
 			reminder = item.getString("reminder");
 			remindertimestamp = item.getString("remindertimestamp");
 			logintime = item.getString("logintime");
+			ap = item.getInt("ap");
 			setAutologout(item.getInt("autologout"));
 			setAutologout_in(item.getInt("autologout_in"));
 		} catch (JSONException e) {
@@ -131,9 +133,11 @@ public class User {
 	public void setAutologout_in(int autologout_in) {
 		this.autologout_in = autologout_in;
 	}
+	public void setAp(int ap) {
+		this.ap = ap;
+	}
 	public int getAp() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.ap;
 	}
 
 }
