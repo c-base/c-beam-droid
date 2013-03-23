@@ -1,6 +1,7 @@
 package org.c_base.c_beam.activity;
 
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.util.Helper;
@@ -8,9 +9,11 @@ import org.c_base.c_beam.util.Helper;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +35,7 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 	TableRow tr;
 	TextView labelTV, valueTV;
 	ToggleButton toggleMissionButton;
+	Mission m = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 		// Show the Up button in the action bar.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			Mission m = c_beam.getMission(extras.getInt("id"));
+			m = c_beam.getMission(extras.getInt("id"));
 			tl = (TableLayout) findViewById(R.id.TableLayout1);
 			//tl.setShrinkAllColumns(true);
 			tl.setColumnShrinkable(1, true);
@@ -51,9 +55,10 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 			if (m != null) {
 				Log.i("Mission", m.toString());
 				addData(m);
+				
 			} else {
 				Log.e("MissionActivity",
-						"mission not forund: " + extras.getInt("id"));
+						"mission not found: " + extras.getInt("id"));
 			}
 
 		}
@@ -61,6 +66,18 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 
 		toggleMissionButton = (ToggleButton) findViewById(R.id.toggleMissionButton);
 		toggleMissionButton.setOnClickListener(this);
+		boolean isUserAssigned = false;
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		String username = sharedPref.getString(Settings.USERNAME, "bernd");
+
+		if (m != null) {
+			for(String user: m.getAssigned_to()) {
+				if (user.equals(username))
+					isUserAssigned = true;
+			}
+			toggleMissionButton.setChecked(m.getStatus().equals("assigned") && isUserAssigned);
+		}
 	}
 
 	@Override
@@ -173,9 +190,11 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 			public void onClick(DialogInterface dialog, int whichButton) {
 				switch(whichButton) {
 				case 0: // mission complete
+					completeMission();
 					Log.i(TAG, "button 0");
 					break;
 				case 1: // mission cancelled
+					cancelMission();
 					Log.i(TAG, "button 1");
 					break;
 				case 2: // oops
@@ -188,7 +207,14 @@ public class MissionActivity extends SherlockActivity implements OnClickListener
 	}
 	
 	private void startMission() {
-		// TODO Auto-generated method stub
-		
+		c_beam.assignMission(getIntent().getExtras().getInt("id"));
+	}
+	
+	private void completeMission() {
+		c_beam.completeMission(getIntent().getExtras().getInt("id"));
+	}
+	
+	private void cancelMission() {
+		c_beam.cancelMission(getIntent().getExtras().getInt("id"));
 	}
 }
