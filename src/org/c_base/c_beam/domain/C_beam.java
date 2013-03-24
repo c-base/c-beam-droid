@@ -34,7 +34,7 @@ public class C_beam {
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
 	protected ArrayList<User> stats = new ArrayList<User>();
-	
+
 	protected int sleeptime = 5000;
 	protected boolean userSuccess = false;
 
@@ -50,14 +50,14 @@ public class C_beam {
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
 
-//		// Create new JSON-RPC 2.0 client session
-//		try {
-//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
-//			portalSession.getOptions().trustAllCerts(true);
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		// Create new JSON-RPC 2.0 client session
+		//		try {
+		//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
+		//			portalSession.getOptions().trustAllCerts(true);
+		//		} catch (MalformedURLException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 
 	public void startThread() {
@@ -98,7 +98,8 @@ public class C_beam {
 
 	public void updateLists() {
 		Log.i(TAG, "updateLists()");
-		updateUsers();
+		updateData();
+//		updateUsers();
 		onlineList.clear();
 		offlineList.clear();
 		etaList.clear();
@@ -115,37 +116,102 @@ public class C_beam {
 			}
 		}
 		// TODO put this all into one RPC call
-		updateEvents();
-		updateArtefacts();
-		updateArticles();
-		updateMissions();
-		updateActivityLog();
-		updateStats();
+
+//		updateEvents();
+//		updateArtefacts();
+//		updateArticles();
+//		updateMissions();
+//		updateActivityLog();
+//		updateStats();
 
 		String method = "list_articles";
 		int requestID = 0;
 
-//		try {
-//			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
-//
-//		} catch (JSONRPCException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
+		//
+		//		} catch (JSONRPCException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 
-//		JSONRPC2Request request = new JSONRPC2Request(method, requestID);
-//		JSONRPC2Response response = null;
-//
-//		try {
-//			response = portalSession.send(request);
-//			if (response.indicatesSuccess())
-//				System.out.println(response.getResult());
-//			else
-//				System.out.println(response.getError().getMessage());
-//		} catch (JSONRPC2SessionException e) {
-//			System.err.println(e.getMessage());
-//			e.printStackTrace();
-//		}
+		//		JSONRPC2Request request = new JSONRPC2Request(method, requestID);
+		//		JSONRPC2Response response = null;
+		//
+		//		try {
+		//			response = portalSession.send(request);
+		//			if (response.indicatesSuccess())
+		//				System.out.println(response.getResult());
+		//			else
+		//				System.out.println(response.getError().getMessage());
+		//		} catch (JSONRPC2SessionException e) {
+		//			System.err.println(e.getMessage());
+		//			e.printStackTrace();
+		//		}
+	}
+
+	private void updateData() {
+		Log.i(TAG, "updateData()");
+		try {
+			events = new ArrayList<Event>();
+
+
+			JSONObject result = c_beamClient.callJSONObject("app_data");
+
+			JSONArray userResult = result.getJSONArray("user");
+			JSONArray eventsResult = result.getJSONArray("events");
+			JSONArray artefactsResult = result.getJSONArray("artefacts");
+			JSONArray missionResult = result.getJSONArray("missions");
+			JSONArray activitylogResult = result.getJSONArray("activitylog");
+			JSONArray statsResult = result.getJSONArray("stats");
+			
+			ArrayList<User> userList = new ArrayList<User>();
+			for (int i=0; i<userResult.length(); i++) {
+				JSONObject item = userResult.getJSONObject(i);
+				userList.add(new User(item));
+			}
+			this.users = userList;
+
+			ArrayList<Event> eventList = new ArrayList<Event>();
+			for (int i=0; i<eventsResult.length(); i++) {
+				JSONObject item = eventsResult.getJSONObject(i);
+				eventList.add(new Event(item));
+			}
+			this.events = eventList;
+
+			ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+			for (int i=0; i<artefactsResult.length(); i++) {
+				JSONObject item = artefactsResult.getJSONObject(i);
+				artefactList.add(new Artefact(item));
+			}
+			this.artefactList = artefactList;
+			
+			ArrayList<Mission> missionList = new ArrayList<Mission>();
+			for (int i=0; i<missionResult.length(); i++) {
+				JSONObject item = missionResult.getJSONObject(i);
+				missionList.add(new Mission(item));
+			}
+			this.missions = missionList;
+			
+			ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
+			for (int i=0; i<activitylogResult.length(); i++) {
+				JSONObject item = activitylogResult.getJSONObject(i);
+				activitylogList.add(new ActivityLog(item));
+			}
+			this.activitylog = activitylogList;
+			
+			ArrayList<User> statsList = new ArrayList<User>();
+			for (int i=0; i<statsResult.length(); i++) {
+				JSONObject item = statsResult.getJSONObject(i);
+				statsList.add(new User(item));
+			}
+			this.stats = statsList;
+			this.events = eventList;
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public synchronized JSONObject who() {
@@ -165,7 +231,6 @@ public class C_beam {
 	}
 
 	private synchronized ArrayList<User> updateUsers() {
-		//		Log.i(TAG, "updateUsers");
 		ArrayList<User> list = new ArrayList<User>();
 
 		try {
@@ -175,16 +240,12 @@ public class C_beam {
 					JSONObject item = result.getJSONObject(i);
 					list.add(new User(item));
 				}
-				//				Log.i(TAG, "updateUsers success");
 			}
 			users = list;
-			//			Log.i(TAG, users.toString());
 			sleeptime = 6000;
 		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -250,7 +311,7 @@ public class C_beam {
 		}
 		return missions;
 	}
-	
+
 	public synchronized ArrayList<ActivityLog> getActivityLog() {
 		return activitylog;
 	}
@@ -329,7 +390,7 @@ public class C_beam {
 		}
 		return result;
 	}
-	
+
 	private synchronized ArrayList<User> updateStats() {
 		ArrayList<User> list = new ArrayList<User>();
 
@@ -352,8 +413,8 @@ public class C_beam {
 	public ArrayList<User> getStats() {
 		return stats;
 	}
-	
-	
+
+
 	public synchronized void register(String regId, String user) {
 		try {
 			if (isInCrewNetwork())
