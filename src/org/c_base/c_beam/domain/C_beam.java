@@ -41,7 +41,7 @@ public class C_beam {
 	Thread thread;
 	private ArrayList<ActivityLog> activitylog;
 	
-	private boolean debug = true;
+	private boolean debug = false;
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
