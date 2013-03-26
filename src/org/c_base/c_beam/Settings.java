@@ -8,4 +8,5 @@ public interface Settings {
 	public static final String FONT_SIZE = "pref_fontsize";
 	public static final String FADE_USERS = "pref_fade_users";
 	public static final String C_THEME = "pref_c_theme";
+	public static final String DISPLAY_AP = "pref_display_ap";
 }
