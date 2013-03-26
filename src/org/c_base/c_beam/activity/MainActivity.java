@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.nfc.NfcAdapter;
@@ -95,6 +96,9 @@ ActionBar.TabListener, OnClickListener {
 	private boolean mIsOnline = false;
 	private WifiBroadcastReceiver mWifiReceiver;
 	private IntentFilter mWifiIntentFilter;
+	
+	TextView tvAp = null;
+	TextView tvUsername = null;
 
 
 	public void setOnline() {
@@ -138,7 +142,21 @@ ActionBar.TabListener, OnClickListener {
 
 		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
 		button_c_maps.setOnClickListener(this);
-
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		tvAp = (TextView) findViewById(R.id.textView_ap);
+		tvAp.setTextColor(Color.rgb(58, 182, 228));
+		tvUsername = (TextView) findViewById(R.id.textView_username);
+		tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
+		tvUsername.setTextColor(Color.rgb(58, 182, 228));
+		Helper.setFont(this, tvUsername);
+		Helper.setFont(this, tvAp);
+		boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
+		if (!displayAp) {
+			tvUsername.setHeight(0);
+			tvAp.setHeight(0);
+		}
+		
 		setupGCM();
 
 		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
@@ -198,6 +216,7 @@ ActionBar.TabListener, OnClickListener {
 					button.setChecked(user.getStatus().equals("online"));
 					button.setEnabled(true);
 					found = true;
+					tvAp.setText(user.getAp()+" AP");
 				}
 			}
 		}
@@ -253,6 +272,7 @@ ActionBar.TabListener, OnClickListener {
 		}
 		
 		activitylog.updateLog(c_beam.getActivityLog());
+		
 	}
 
 	public void startProgress() {
@@ -475,7 +495,22 @@ ActionBar.TabListener, OnClickListener {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
-				actionBar.setSelectedNavigationItem(position);
+				try {
+					actionBar.setSelectedNavigationItem(position);
+				} catch (Exception e) {
+					
+				}
+//				switch (mActionView.getNavigationMode()) {
+//			    case NAVIGATION_MODE_TABS:
+//			        selectTab(mTabs.get(position));
+//			        break;
+//			    case NAVIGATION_MODE_LIST:
+//			        mActionView.setDropdownSelectedPosition(position);
+//			        break;
+//			    default:
+//			        throw new IllegalStateException(
+//			                "setSelectedNavigationIndex not valid for current navigation mode");
+//			    }
 			}
 		});
 
