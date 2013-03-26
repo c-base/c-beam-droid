@@ -26,12 +26,38 @@
 		android:background="@drawable/bg_portrait"
 		tools:context=".MainActivity" >
 
+		<TextView
+		    android:id="@+id/textView_username"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_toLeftOf="@+id/textView_ap"
+		    android:background="@color/black_overlay"
+		    android:paddingLeft="4dp"
+		    android:paddingRight="4dp"
+		    android:text="member:"
+		    android:textSize="20sp" />
+		
+		<TextView
+		    android:id="@+id/textView_ap"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_alignParentTop="true"
+		    android:background="@color/black_overlay"
+		    android:paddingLeft="4dp"
+		    android:paddingRight="4dp"
+		    android:text="0 AP"
+		    android:textSize="20sp" />
+
 		<android.support.v4.view.ViewPager
-			android:id="@+id/pager"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:layout_above="@+id/toggleLogin"
-			tools:context=".MainActivity" >
+		    android:id="@+id/pager"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_above="@+id/toggleLogin"
+		    android:layout_below="@+id/textView_username"
+		    tools:context=".MainActivity" >
+
 		</android.support.v4.view.ViewPager>
 
 		<Button
@@ -61,6 +87,9 @@
 			android:layout_toRightOf="@+id/button_c_maps"
 			android:textOff="@string/offline"
 			android:textOn="@string/online" />
+
+		
+
 	</RelativeLayout>
 
 </FrameLayout>
