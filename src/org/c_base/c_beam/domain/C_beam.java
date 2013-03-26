@@ -40,12 +40,20 @@ public class C_beam {
 
 	Thread thread;
 	private ArrayList<ActivityLog> activitylog;
+	
+	private boolean debug = true;
 
 	public C_beam(Activity parent) {
 		this.parent = parent;
-		c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-		c_beamClient.setConnectionTimeout(5000);
-		c_beamClient.setSoTimeout(5000);
+		if (debug) {
+			c_beamClient = JSONRPCClient.create("http://131.234.77.45:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient.setConnectionTimeout(5000);
+			c_beamClient.setSoTimeout(5000);
+		} else {
+			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient.setConnectionTimeout(5000);
+			c_beamClient.setSoTimeout(5000);
+		}
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
@@ -79,7 +87,7 @@ public class C_beam {
 		thread.start();
 	}
 	public boolean isInCrewNetwork() {
-		if (true)
+		if (debug)
 			return true;
 		if (parent == null)
 			return true;
@@ -97,9 +105,20 @@ public class C_beam {
 	}
 
 	public void updateLists() {
-		Log.i(TAG, "updateLists()");
+//		Log.i(TAG, "updateLists()");
 		updateData();
-//		updateUsers();
+		updateArticles();
+		
+		// TODO put this all into one RPC call
+		//		updateUsers();
+		//		updateEvents();
+		//		updateArtefacts();
+		//		updateMissions();
+		//		updateActivityLog();
+		//		updateStats();
+		
+		
+		
 		onlineList.clear();
 		offlineList.clear();
 		etaList.clear();
@@ -115,17 +134,10 @@ public class C_beam {
 				offlineList.add(user);
 			}
 		}
-		// TODO put this all into one RPC call
 
-//		updateEvents();
-//		updateArtefacts();
-//		updateArticles();
-//		updateMissions();
-//		updateActivityLog();
-//		updateStats();
 
-		String method = "list_articles";
-		int requestID = 0;
+		//		String method = "list_articles";
+		//		int requestID = 0;
 
 		//		try {
 		//			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
@@ -164,6 +176,7 @@ public class C_beam {
 			JSONArray missionResult = result.getJSONArray("missions");
 			JSONArray activitylogResult = result.getJSONArray("activitylog");
 			JSONArray statsResult = result.getJSONArray("stats");
+//			JSONArray articleResult = result.getJSONArray("articles");
 			
 			ArrayList<User> userList = new ArrayList<User>();
 			for (int i=0; i<userResult.length(); i++) {
@@ -192,6 +205,13 @@ public class C_beam {
 				missionList.add(new Mission(item));
 			}
 			this.missions = missionList;
+			
+//			ArrayList<Article> articleList = new ArrayList<Article>();
+//			for (int i=0; i<articleResult.length(); i++) {
+//				JSONObject item = articleResult.getJSONObject(i);
+//				articleList.add(new Article(item));
+//			}
+//			this.articleList = articleList;
 			
 			ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
 			for (int i=0; i<activitylogResult.length(); i++) {
@@ -534,7 +554,7 @@ public class C_beam {
 
 	public synchronized void tts(String text) {
 		try {
-			Log.i(TAG,"tts("+text+")");
+			Log.d(TAG,"tts("+text+")");
 			if (isInCrewNetwork())
 				c_beamClient.call("tts", "julia", text);
 		} catch (JSONRPCException e) {
@@ -545,7 +565,7 @@ public class C_beam {
 
 	public synchronized void r2d2(String text) {
 		try {
-			Log.i(TAG,"r2d2("+text+")");
+			Log.d(TAG,"r2d2("+text+")");
 			if (isInCrewNetwork())
 				c_beamClient.call("tts", "r2d2", text);
 		} catch (JSONRPCException e) {
