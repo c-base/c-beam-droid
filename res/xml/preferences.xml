@@ -12,48 +12,51 @@
         android:key="pref_username"
         android:summary="@string/pref_username_summ"
         android:title="@string/pref_username" />
-    
     <EditTextPreference
-    	android:key="pref_password"
-    	android:title="@string/pref_password"
-    	android:summary="@string/pref_password_summ"   
-	    android:inputType="textPassword"
-	    android:enabled="false" />
-    
-    <!-- 
+        android:enabled="false"
+        android:inputType="textPassword"
+        android:key="pref_password"
+        android:summary="@string/pref_password_summ"
+        android:title="@string/pref_password" />
+
+    <!--
     <EditTextPreference
         android:defaultValue="X-Scale"
         android:key="pref_font"
         android:summary="@string/pref_font_summ"
         android:title="@string/pref_font" />
-    
-     -->
-	<ListPreference
-        android:key="pref_font"
-        android:title="Font"
+    -->
+    <ListPreference
+        android:defaultValue="@string/pref_font_default"
         android:dialogTitle="Font"
         android:entries="@array/fonts_array"
         android:entryValues="@array/fonts_array"
-        android:defaultValue="@string/pref_font_default" />
-	
-	<ListPreference
-        android:key="pref_fontsize"
-        android:title="Font Size"
+        android:key="pref_font"
+        android:title="Font" />
+    <ListPreference
+        android:defaultValue="20"
         android:dialogTitle="Font Size"
         android:entries="@array/fontsize_array"
         android:entryValues="@array/fontsize_array"
-        android:defaultValue="20" />
-	
-	<CheckBoxPreference
+        android:key="pref_fontsize"
+        android:title="Font Size" />
+
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_fade_users"
         android:summary="@string/pref_fade_users_summ"
         android:title="@string/pref_fade_users" />
-
-		<CheckBoxPreference
+    
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_c_theme"
         android:summary="@string/pref_c_theme_summ"
         android:title="@string/pref_c_theme" />
-		
+    
+     <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_display_ap"
+        android:summary="@string/pref_display_ap_summ"
+        android:title="@string/pref_display_ap" />
+
 </PreferenceScreen>
