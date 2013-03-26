@@ -7,8 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class Mission {
 	private int id = 0;
 	private String short_description = "";
@@ -27,7 +25,6 @@ public class Mission {
 			status = item.getString("status");
 			description = item.getString("description");
 			ap = item.getInt("ap");
-			Log.i("due_date", item.getString("created_on"));
 			JSONArray tmp = item.getJSONArray("assigned_to");
 			assigned_to = new ArrayList<String>();
 			for (int i=0; i<tmp.length(); i++) {
