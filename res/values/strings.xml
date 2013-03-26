@@ -32,6 +32,9 @@
     <string name="pref_username_summ">Your c-base username</string>
     <string name="pref_push_summ">Enable Push Notifications</string>
     <string name="pref_push">Push</string>
+    <string name="pref_display_ap">AP anzeigen</string>
+    <string name="pref_display_ap_summ"></string>
+    
     <string name="c_beam_rpc_url">http://10.0.1.27:4254/rpc/</string>
     <string name="menu_login">Login</string>
     <string name="menu_logout">Logout</string>
