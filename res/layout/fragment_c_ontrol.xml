@@ -19,22 +19,12 @@
                 android:id="@+id/toggleButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignLeft="@+id/button_liftoff"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/button_self_destruct"
                 android:text="Antenne"
                 android:textOff="Antenne aus"
                 android:textOn="Antenne an" />
-
-            <Button
-                android:id="@+id/button_self_destruct"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/button_liftoff"
-                android:text="Erde absprengen" />
 
             <ToggleButton
                 android:id="@+id/toggleButtonBluewall"
@@ -312,17 +302,29 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_above="@id/button_softwareverbrennung"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/toggleButtonBluewall" />
-
+                android:layout_alignRight="@id/button_softwareverbrennung" />
+            
             <Button
                 android:id="@+id/button_liftoff"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/button_unlabeled"
+                android:layout_toRightOf="@id/button_unlabeled"
                 android:text="@string/button_lift_off" />
+
+            <Button
+                android:id="@+id/button_self_destruct"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/button_liftoff"
+                android:text="Erde absprengen" />
+
         </RelativeLayout>
     </ScrollView>
 
