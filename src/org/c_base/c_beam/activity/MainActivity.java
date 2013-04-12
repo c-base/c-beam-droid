@@ -64,12 +64,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
-	private static final int ARTEFACTS_FRAGMENT = 7;
-	private static final int EVENTS_FRAGMENT = 6;
+	private static final int ARTEFACTS_FRAGMENT = 6;
+	private static final int EVENTS_FRAGMENT = 5;
 	private static final int C_ONTROL_FRAGMENT = 2;
 	private static final int MISSION_FRAGMENT = 3;
-	private static final int STATS_FRAGMENT = 4;
-	private static final int ACTIVITYLOG_FRAGMENT = 5;
+	//	private static final int STATS_FRAGMENT = 4;
+	private static final int ACTIVITYLOG_FRAGMENT = 4;
 
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
@@ -88,15 +88,15 @@ ActionBar.TabListener, OnClickListener {
 
 	ActionBar actionBar;
 
-	C_beam c_beam = new C_beam(this);
-
+	C_beam c_beam = C_beam.getInstance();
+	
 	protected Runnable fred;
 	private View mInfoArea;
 	private View mCbeamArea;
 	private boolean mIsOnline = false;
 	private WifiBroadcastReceiver mWifiReceiver;
 	private IntentFilter mWifiIntentFilter;
-	
+
 	TextView tvAp = null;
 	TextView tvUsername = null;
 
@@ -116,6 +116,7 @@ ActionBar.TabListener, OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		c_beam.setActivity(this);
 		super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -142,7 +143,10 @@ ActionBar.TabListener, OnClickListener {
 
 		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
 		button_c_maps.setOnClickListener(this);
-		
+
+		Button button_c_mission = (Button) findViewById(R.id.button_c_mission);
+		button_c_mission.setOnClickListener(this);
+
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		tvAp = (TextView) findViewById(R.id.textView_ap);
 		tvAp.setTextColor(Color.rgb(58, 182, 228));
@@ -152,11 +156,13 @@ ActionBar.TabListener, OnClickListener {
 		Helper.setFont(this, tvUsername);
 		Helper.setFont(this, tvAp);
 		boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
-		if (!displayAp) {
-			tvUsername.setHeight(0);
-			tvAp.setHeight(0);
+		if (!displayAp || tvAp.getText().equals("0 AP")) {
+			//			tvUsername.setHeight(0);
+			//			tvAp.setHeight(0);
+			tvAp.setVisibility(View.GONE);
+			tvUsername.setVisibility(View.GONE);
 		}
-		
+		System.out.println(tvAp.getHeight());
 		setupGCM();
 
 		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
@@ -201,7 +207,7 @@ ActionBar.TabListener, OnClickListener {
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
 		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
 		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
-		StatsFragment stats = (StatsFragment) mSectionsPagerAdapter.getItem(STATS_FRAGMENT);
+		//		StatsFragment stats = (StatsFragment) mSectionsPagerAdapter.getItem(STATS_FRAGMENT);
 		ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
@@ -209,14 +215,16 @@ ActionBar.TabListener, OnClickListener {
 
 		ArrayList<User> userList = c_beam.getUsers();
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
-		boolean found = false;
 		for (User user: userList) {
 			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 				if (button != null) {
 					button.setChecked(user.getStatus().equals("online"));
 					button.setEnabled(true);
-					found = true;
-					tvAp.setText(user.getAp()+" AP");
+					if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+						tvAp.setText(user.getAp()+" AP");
+						tvAp.setVisibility(View.VISIBLE);
+						tvUsername.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 		}
@@ -246,12 +254,12 @@ ActionBar.TabListener, OnClickListener {
 
 		if(c_portal.isAdded()) {
 			ArrayList<Article> tmpList = c_beam.getArticles();
-			if (articleList == null || 1 == 1 || articleList.size() != tmpList.size()) {
-				articleList = tmpList;
-				c_portal.clear();
-				for(int i=0; i<articleList.size();i++)
-					c_portal.addItem(articleList.get(i));
-			}
+			//			if (articleList == null || articleList.size() != tmpList.size()) {
+			articleList = tmpList;
+			c_portal.clear();
+			for(int i=0; i<articleList.size();i++)
+				c_portal.addItem(articleList.get(i));
+			//			}
 		}
 
 		if(artefacts.isAdded()) {
@@ -265,14 +273,14 @@ ActionBar.TabListener, OnClickListener {
 			}
 		}
 
-		if(stats.isAdded()) {
-			stats.clear();
-			for(User user: c_beam.getStats())
-				stats.addItem(user);
-		}
-		
+		//		if(stats.isAdded()) {
+		//			stats.clear();
+		//			for(User user: c_beam.getStats())
+		//				stats.addItem(user);
+		//		}
+
 		activitylog.updateLog(c_beam.getActivityLog());
-		
+
 	}
 
 	public void startProgress() {
@@ -319,6 +327,7 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
 
 		return true;
 	}
@@ -340,6 +349,9 @@ ActionBar.TabListener, OnClickListener {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_map) {
 			Intent myIntent = new Intent(this, MapActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_c_mission) {
+			Intent myIntent = new Intent(this, MissionActivity.class);
 			startActivityForResult(myIntent, 0);
 		}
 		return super.onOptionsItemSelected(item);
@@ -393,8 +405,8 @@ ActionBar.TabListener, OnClickListener {
 					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
-				} else if(position == STATS_FRAGMENT) {
-					fragment = new StatsFragment();
+					//				} else if(position == STATS_FRAGMENT) {
+					//					fragment = new StatsFragment();
 				} else if(position == ACTIVITYLOG_FRAGMENT) {
 					fragment = new ActivitylogFragment();
 				} else {
@@ -411,57 +423,57 @@ ActionBar.TabListener, OnClickListener {
 
 		@Override
 		public int getCount() {
-			return 8;
+			return 7;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case USER_FRAGMENT:
-				return getString(R.string.title_users).toUpperCase();
+				return getString(R.string.title_users);
 			case C_PORTAL_FRAGMENT:
-				return getString(R.string.title_c_portal).toUpperCase();
+				return getString(R.string.title_c_portal);
 			case ARTEFACTS_FRAGMENT:
-				return getString(R.string.title_artefacts).toUpperCase();
+				return getString(R.string.title_artefacts);
 			case EVENTS_FRAGMENT:
-				return getString(R.string.title_events).toUpperCase();
+				return getString(R.string.title_events);
 			case C_ONTROL_FRAGMENT:
-				return getString(R.string.title_c_ontrol).toUpperCase();
+				return getString(R.string.title_c_ontrol);
 			case MISSION_FRAGMENT:
-				return getString(R.string.title_missions).toUpperCase();
-			case STATS_FRAGMENT:
-				return getString(R.string.title_stats).toUpperCase();
+				return getString(R.string.title_missions);
+				//			case STATS_FRAGMENT:
+				//				return getString(R.string.title_stats).toUpperCase();
 			case ACTIVITYLOG_FRAGMENT:
-				return getString(R.string.title_activity).toUpperCase();
+				return getString(R.string.title_activity);
 			}
 			return null;
 		}
 	}
 
-	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
-	{
-		if (mContainer == null || mFont == null) return;
-
-		final int mCount = mContainer.getChildCount();
-
-		// Loop through all of the children.
-		for (int i = 0; i < mCount; ++i)
-		{
-			final View mChild = mContainer.getChildAt(i);
-			if (mChild instanceof TextView)
-			{
-				// Set the font if it is a TextView.
-				((TextView) mChild).setTypeface(mFont);
-			}
-			else if (mChild instanceof ViewGroup)
-			{
-				// Recursively attempt another ViewGroup.
-				setAppFont((ViewGroup) mChild, mFont);
-			}
-		}
-		Log.i("MainActivity", "font set");
-
-	}
+	//	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
+	//	{
+	//		if (mContainer == null || mFont == null) return;
+	//
+	//		final int mCount = mContainer.getChildCount();
+	//
+	//		// Loop through all of the children.
+	//		for (int i = 0; i < mCount; ++i)
+	//		{
+	//			final View mChild = mContainer.getChildAt(i);
+	//			if (mChild instanceof TextView)
+	//			{
+	//				// Set the font if it is a TextView.
+	//				((TextView) mChild).setTypeface(mFont);
+	//			}
+	//			else if (mChild instanceof ViewGroup)
+	//			{
+	//				// Recursively attempt another ViewGroup.
+	//				setAppFont((ViewGroup) mChild, mFont);
+	//			}
+	//		}
+	//		Log.i("MainActivity", "font set");
+	//
+	//	}
 
 	private void setupActionBar() {
 		actionBar = getSupportActionBar();
@@ -498,27 +510,28 @@ ActionBar.TabListener, OnClickListener {
 				try {
 					actionBar.setSelectedNavigationItem(position);
 				} catch (Exception e) {
-					
+
 				}
-//				switch (mActionView.getNavigationMode()) {
-//			    case NAVIGATION_MODE_TABS:
-//			        selectTab(mTabs.get(position));
-//			        break;
-//			    case NAVIGATION_MODE_LIST:
-//			        mActionView.setDropdownSelectedPosition(position);
-//			        break;
-//			    default:
-//			        throw new IllegalStateException(
-//			                "setSelectedNavigationIndex not valid for current navigation mode");
-//			    }
+				//				switch (mActionView.getNavigationMode()) {
+				//			    case NAVIGATION_MODE_TABS:
+				//			        selectTab(mTabs.get(position));
+				//			        break;
+				//			    case NAVIGATION_MODE_LIST:
+				//			        mActionView.setDropdownSelectedPosition(position);
+				//			        break;
+				//			    default:
+				//			        throw new IllegalStateException(
+				//			                "setSelectedNavigationIndex not valid for current navigation mode");
+				//			    }
 			}
 		});
 
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			Tab tab = actionBar.newTab();
 			TextView t = new TextView(getApplicationContext());
-			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+			//t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
 			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+			System.out.println(mSectionsPagerAdapter.getPageTitle(i));
 			tab.setTabListener(this);
 			actionBar.addTab(tab);
 		}
@@ -528,7 +541,7 @@ ActionBar.TabListener, OnClickListener {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPref.getBoolean(Settings.PUSH, false)) {
 			String registrationId = GCMManager.getRegistrationId(this);
-			String username = sharedPref.getString(Settings.USERNAME, "dummy");
+			String username = sharedPref.getString(Settings.USERNAME, "bernd");
 			c_beam.register_update(registrationId, username);
 		}
 	}
@@ -561,23 +574,33 @@ ActionBar.TabListener, OnClickListener {
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-			case R.id.toggleLogin: {
-				ToggleButton b = (ToggleButton) view;
-				if (b.isChecked()) {
-					showLoginDialog();
-				} else {
-					showLogoutDialog();
-				}
-				break;
+		case R.id.toggleLogin: {
+			ToggleButton b = (ToggleButton) view;
+			if (b.isChecked()) {
+				showLoginDialog();
+			} else {
+				showLogoutDialog();
 			}
-			case R.id.buttonC_out: {
-				startC_outActivity();
-				break;
-			}
-			case R.id.button_c_maps: {
-				startC_mapsActivity();
-			}
+			break;
 		}
+		case R.id.buttonC_out: {
+			startC_outActivity();
+			break;
+		}
+		case R.id.button_c_maps: {
+			startC_mapsActivity();
+			break;
+		}
+		case R.id.button_c_mission: {
+			startC_missionActivity();
+			break;
+		}
+		}
+	}
+
+	private void startC_missionActivity() {
+		Intent myIntent = new Intent(this, MissionActivity.class);
+		startActivityForResult(myIntent, 0);
 	}
 
 	private void showLoginDialog() {
