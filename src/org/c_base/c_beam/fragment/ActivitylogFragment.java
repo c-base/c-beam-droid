@@ -28,12 +28,14 @@ public class ActivitylogFragment extends Fragment {
 		}
 		TextView tv = (TextView) getView().findViewById(R.id.textView_activitylog);
 		String tmp = "user@c-beam> tail activitlog\n";
-		for(ActivityLog activitylog: activitylogList) {
-			tmp += activitylog.getStr() + "\n";
+		if (activitylogList != null) {
+			for(ActivityLog activitylog: activitylogList) {
+				tmp += activitylog.getStr() + "\n";
+			}
 		}
 		tmp += "user@c-beam>";
-		
-		if (!logtail.equals(tmp)) {
+
+		if (!tv.getText().equals(tmp)) {
 			logtail = tmp;
 			tv.setTypeface(Typeface.MONOSPACE);
 			tv.setTextSize(10);
@@ -50,7 +52,7 @@ public class ActivitylogFragment extends Fragment {
 		if (container == null) {
 			return null;
 		}
-		
+
 		View view = inflater.inflate(R.layout.fragment_activitylog, container, false);
 		TextView tv = (TextView) view.findViewById(R.id.textView_activitylog);
 		String logtail = "user@c-beam>\n";
