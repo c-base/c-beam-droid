@@ -1,26 +1,100 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_portrait"
-    tools:context=".MainActivity" >
 
-    <TableLayout
-        android:id="@+id/TableLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/toggleMissionButton"
-        tools:context=".MissionActivity" >
-    </TableLayout>
+ <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	tools:context=".MainActivity" >
 
-    <ToggleButton
-        android:id="@+id/toggleMissionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="ToggleButton"
-        android:textOff="@string/button_mission_start"
-        android:textOn="@string/button_mission_end" />
+	<LinearLayout
+		android:id="@+id/info_area"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		android:visibility="gone" >
 
-</RelativeLayout>
+		<TextView
+			android:id="@+id/not_in_crew_network"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/not_in_crew_network"
+			android:textAppearance="?android:attr/textAppearanceMedium" />
+	</LinearLayout>
+
+	<RelativeLayout
+	    android:id="@+id/cbeam_area"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@drawable/bg_portrait"
+	    tools:context=".MainActivity" >
+
+	    <TextView
+	        android:id="@+id/textView_username"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_toLeftOf="@+id/textView_ap"
+	        android:background="@color/black_overlay"
+	        android:paddingLeft="4dp"
+	        android:paddingRight="4dp"
+	        android:text="member:"
+	        android:textSize="20sp" />
+
+	    <TextView
+	        android:id="@+id/textView_ap"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:background="@color/black_overlay"
+	        android:paddingLeft="4dp"
+	        android:paddingRight="4dp"
+	        android:text="0 AP"
+	        android:textSize="20sp" />
+
+	    <android.support.v4.view.ViewPager
+	        android:id="@+id/pager"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/activity_logger"
+	        android:layout_below="@+id/textView_username"
+	        tools:context=".MainActivity" >
+	    </android.support.v4.view.ViewPager>
+
+	    <LinearLayout
+	        android:id="@+id/activity_logger"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:background="@color/black_overlay" >
+
+	        <EditText
+	            android:id="@+id/edit_log_activity"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10"
+	            android:hint="activita:t" >
+
+	            <requestFocus />
+	        </EditText>
+
+	        <EditText
+	            android:id="@+id/edit_log_activity_ap"
+	            android:layout_width="46dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="0.24"
+	            android:ems="10"
+	            android:hint="100"
+	            android:inputType="number" />
+
+	        <Button
+	            android:id="@+id/button_log_activity"
+	            style="?android:attr/buttonStyleSmall"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="activita:t loggen" />
+	    </LinearLayout>
+	</RelativeLayout>
+
+</FrameLayout>
