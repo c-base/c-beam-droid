@@ -12,14 +12,25 @@
         android:key="pref_username"
         android:summary="@string/pref_username_summ"
         android:title="@string/pref_username" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_stats_enabled"
+        android:summary="@string/pref_stats_enabled_summ"
+        android:title="@string/pref_stats_enabled" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_display_ap"
+        android:summary="@string/pref_display_ap_summ"
+        android:title="@string/pref_display_ap" />
+    <!--
     <EditTextPreference
         android:enabled="false"
         android:inputType="textPassword"
         android:key="pref_password"
         android:summary="@string/pref_password_summ"
         android:title="@string/pref_password" />
-
-    <!--
+    
     <EditTextPreference
         android:defaultValue="X-Scale"
         android:key="pref_font"
@@ -43,20 +54,14 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="pref_fade_users"
-        android:summary="@string/pref_fade_users_summ"
-        android:title="@string/pref_fade_users" />
-    
-    <CheckBoxPreference
-        android:defaultValue="true"
         android:key="pref_c_theme"
         android:summary="@string/pref_c_theme_summ"
         android:title="@string/pref_c_theme" />
     
-     <CheckBoxPreference
+    <CheckBoxPreference
         android:defaultValue="true"
-        android:key="pref_display_ap"
-        android:summary="@string/pref_display_ap_summ"
-        android:title="@string/pref_display_ap" />
+        android:key="pref_fade_users"
+        android:summary="@string/pref_fade_users_summ"
+        android:title="@string/pref_fade_users" />
 
 </PreferenceScreen>
