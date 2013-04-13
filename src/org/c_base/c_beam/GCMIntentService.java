@@ -24,12 +24,11 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 
 public class GCMIntentService extends GCMBaseIntentService {
-	HashMap<String,Notification> notifications;
-	String boardingCache = "";
+	private static HashMap<String,Notification> notifications = new HashMap<String,Notification>();
+	private static String boardingCache = "";
 	
 	public GCMIntentService() {
 		super("GCMIntentService");
-		notifications = new HashMap<String,Notification>();
 	}
 
 	@Override
@@ -37,6 +36,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// TODO Auto-generated method stub
 		Log.i("GCM Error", arg1);
 	}
+	
+	
 
 	@Override
 	protected void onMessage(Context context, Intent arg1) {
@@ -59,7 +60,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 		int id = (int) (Math.random()*10000000)+64;
 		if (title.equals("now boarding")) {
 			id = 1;
-			boardingCache += text + "\n";
+			if (boardingCache.equals("")) { 
+				boardingCache = text;
+			} else {
+				boardingCache += ", " + text;
+			}
 			Log.i(TAG, boardingCache);
 		} else if (title.equals("ETA")) {
 			id = 2;
@@ -100,6 +105,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Intent intent = new Intent(this, MainActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+		Intent deleteIntent = new Intent(this, NotificationBroadcastReceiver.class);
+	    deleteIntent.setAction("notification_cancelled");
+	    deleteIntent.putExtra("org.c_base.c_beam.message_id", id);
+	    mBuilder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+		
 		//mBuilder.setDeleteIntent(pIntent);
 		mBuilder.setContentIntent(pIntent);
 		Notification notification = mBuilder.getNotification();
@@ -110,6 +120,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		mNotificationManager.notify(id, notification);
 
+	}
+
+	@Override
+	public void onStart(Intent intent, int startId) {
+		// TODO Auto-generated method stub
+		super.onStart(intent, startId);
+		System.out.println("bar");
 	}
 
 	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
