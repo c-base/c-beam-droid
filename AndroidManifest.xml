@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.c_base.c_beam"
-    android:versionCode="3"
-    android:versionName="1.1.1" >
+    android:versionCode="4"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.MainActivity"
+            android:name="org.c_base.c_beam.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
@@ -36,6 +36,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
@@ -43,10 +44,9 @@
                     android:pathPrefix="/login"
                     android:scheme="http" />
             </intent-filter>
-            
         </activity>
         <activity
-            android:name=".activity.UserActivity"
+            android:name="org.c_base.c_beam.activity.UserActivity"
             android:label="@string/title_activity_user"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -55,7 +55,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.EventActivity"
+            android:name="org.c_base.c_beam.activity.EventActivity"
             android:label="@string/title_activity_event"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -64,16 +64,25 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.MissionActivity"
+            android:name="org.c_base.c_beam.activity.MissionActivity"
             android:label="@string/title_activity_mission"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:taskAffinity="org.c_base.c_beam.activity.MissionActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
+			<!-- 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
         </activity>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="org.c_base.c_beam.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -95,7 +104,8 @@
 
         <service android:name="org.c_base.c_beam.GCMIntentService" />
 
-        <!-- Currently not working 
+        <!--
+        Currently not working 
         <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -107,13 +117,13 @@
         </receiver>
         -->
 
-        <activity android:name=".activity.AppWidgetConfigure" >
+        <activity android:name="org.c_base.c_beam.activity.AppWidgetConfigure" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.C_outActivity"
+            android:name="org.c_base.c_beam.activity.C_outActivity"
             android:label="@string/title_activity_c_out"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -130,7 +140,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.WebActivity"
+            android:name="org.c_base.c_beam.activity.WebActivity"
             android:label="@string/title_activity_web"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -138,7 +148,7 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name=".activity.ArtefactActivity"
+            android:name="org.c_base.c_beam.activity.ArtefactActivity"
             android:label="@string/title_activity_artefact_long"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -148,7 +158,7 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.C_PortalActivity"
+            android:name="org.c_base.c_beam.activity.C_PortalActivity"
             android:label="@string/title_activity_c_portal"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait"
@@ -156,10 +166,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
-
         </activity>
         <activity
-            android:name=".activity.BamActivity"
+            android:name="org.c_base.c_beam.activity.BamActivity"
             android:label="@string/title_activity_bam"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
             android:screenOrientation="portrait" >
@@ -168,14 +177,28 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.MapActivity"
+            android:name="org.c_base.c_beam.activity.MapActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
+        <activity
+            android:name="org.c_base.c_beam.activity.MissionDetailActivity"
+            android:label="@string/title_activity_mission_detail"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
         
+        <receiver android:name="org.c_base.c_beam.NotificationBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="notification_cancelled" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
