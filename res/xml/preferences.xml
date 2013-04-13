@@ -19,7 +19,7 @@
         android:summary="@string/pref_stats_enabled_summ"
         android:title="@string/pref_stats_enabled" />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pref_display_ap"
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
