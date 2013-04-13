@@ -18,13 +18,13 @@ import android.widget.TextView;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.activity.MissionActivity;
+import org.c_base.c_beam.activity.MissionDetailActivity;
 import org.c_base.c_beam.domain.Mission;
 
 public class MissionListFragment extends ListFragment {
 	ArrayList<Mission> items = new ArrayList<Mission>();
 	ListAdapter adapter;
-	Class nextActivity = MissionActivity.class;
+	Class nextActivity = MissionDetailActivity.class;
 	SharedPreferences sharedPref;
 
 	public void clear() {
