@@ -6,8 +6,6 @@
     tools:context=".MainActivity" >
 
     <TableLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/TableLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -16,32 +14,18 @@
         android:orientation="horizontal"
         tools:context=".UserActivity" >
 
-    </TableLayout>
+    </TableLayout> 
 
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="ToggleButton" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="Button" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TableLayout1"
-        android:layout_marginRight="35dp"
-        android:layout_toLeftOf="@+id/toggleButton1"
-        android:text="Button" />
+        android:layout_alignParentRight="true"
+        android:text="ToggleButton"
+        android:textOff=" "
+        android:textOn=" " />
 
     <WebView
         android:id="@+id/userWebView"

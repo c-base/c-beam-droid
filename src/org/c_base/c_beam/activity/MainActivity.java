@@ -1,4 +1,4 @@
-package org.c_base.c_beam.activity;
+	package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalListFragment;
@@ -27,8 +28,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -36,13 +38,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -50,23 +51,25 @@ import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 @SuppressLint("NewApi")
-public class MainActivity extends SherlockFragmentActivity implements
+public class MainActivity extends C_beamActivity implements
 ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
-	private static final int ARTEFACTS_FRAGMENT = 2;
-	private static final int EVENTS_FRAGMENT = 3;
-	private static final int C_ONTROL_FRAGMENT = 4;
-	private static final int MISSION_FRAGMENT = 5;
+	private static final int ARTEFACTS_FRAGMENT = 6;
+	private static final int EVENTS_FRAGMENT = 5;
+	private static final int C_ONTROL_FRAGMENT = 2;
+	private static final int MISSION_FRAGMENT = 3;
+	private static final int ACTIVITYLOG_FRAGMENT = 4;
 
 	private static final int threadDelay = 5000;
 	private static final int firstThreadDelay = 1000;
 	private static final String TAG = "MainActivity";
+
+	private static final boolean debug = false;
 
 	ArrayList<Article> articleList;
 	ArrayList<Event> eventList;
@@ -77,16 +80,19 @@ ActionBar.TabListener, OnClickListener {
 	private Handler handler = new Handler();
 	EditText text;
 
-	ActionBar actionBar;
+	
 
-	C_beam c_beam = new C_beam(this);
-
+	C_beam c_beam = C_beam.getInstance();
+	
 	protected Runnable fred;
 	private View mInfoArea;
 	private View mCbeamArea;
 	private boolean mIsOnline = false;
 	private WifiBroadcastReceiver mWifiReceiver;
 	private IntentFilter mWifiIntentFilter;
+
+	TextView tvAp = null;
+	TextView tvUsername = null;
 
 
 	public void setOnline() {
@@ -119,7 +125,7 @@ ActionBar.TabListener, OnClickListener {
 		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
 		Helper.setFont(this, textView);
 
-		setupActionBar();
+//		setupActionBar();
 		setupViewPager();
 
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
@@ -131,8 +137,30 @@ ActionBar.TabListener, OnClickListener {
 		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
 		button_c_maps.setOnClickListener(this);
 
+		Button button_c_mission = (Button) findViewById(R.id.button_c_mission);
+		button_c_mission.setOnClickListener(this);
+
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		tvAp = (TextView) findViewById(R.id.textView_ap);
+		tvAp.setTextColor(Color.rgb(58, 182, 228));
+		tvUsername = (TextView) findViewById(R.id.textView_username);
+		tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
+		tvUsername.setTextColor(Color.rgb(58, 182, 228));
+		Helper.setFont(this, tvUsername);
+		Helper.setFont(this, tvAp);
+		boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
+		if (!displayAp || tvAp.getText().equals("0 AP")) {
+			//			tvUsername.setHeight(0);
+			//			tvAp.setHeight(0);
+			tvAp.setVisibility(View.GONE);
+			tvUsername.setVisibility(View.GONE);
+		}
+		System.out.println(tvAp.getHeight());
 		setupGCM();
-		checkUserName();
+
+		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			toggleLogin();
+		}
 
 		initializeBroadcastReceiver();
 	}
@@ -147,12 +175,15 @@ ActionBar.TabListener, OnClickListener {
 	@Override
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
-		super.onPause();
-
 		unregisterReceiver(mWifiReceiver);
 		stopNetworkingThreads();
+		super.onPause();
 	}
 
+	public void toggleLogin() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+	}
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
@@ -169,18 +200,23 @@ ActionBar.TabListener, OnClickListener {
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
 		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
 		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
+		ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
 		ArrayList<User> etaList = c_beam.getEtaList();
 
+		ArrayList<User> userList = c_beam.getUsers();
 		ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
-		boolean found = false;
-		for (User user: c_beam.getUsers()) {
+		for (User user: userList) {
 			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 				if (button != null) {
 					button.setChecked(user.getStatus().equals("online"));
 					button.setEnabled(true);
-					found = true;
+					if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+						tvAp.setText(user.getAp()+" AP");
+						tvAp.setVisibility(View.VISIBLE);
+						tvUsername.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 		}
@@ -210,12 +246,10 @@ ActionBar.TabListener, OnClickListener {
 
 		if(c_portal.isAdded()) {
 			ArrayList<Article> tmpList = c_beam.getArticles();
-			if (articleList == null || 1 == 1 || articleList.size() != tmpList.size()) {
-				articleList = tmpList;
-				c_portal.clear();
-				for(int i=0; i<articleList.size();i++)
-					c_portal.addItem(articleList.get(i));
-			}
+			articleList = tmpList;
+			c_portal.clear();
+			for(int i=0; i<articleList.size();i++)
+				c_portal.addItem(articleList.get(i));
 		}
 
 		if(artefacts.isAdded()) {
@@ -228,6 +262,8 @@ ActionBar.TabListener, OnClickListener {
 					artefacts.addItem(artefactList.get(i));
 			}
 		}
+
+		activitylog.updateLog(c_beam.getActivityLog());
 
 	}
 
@@ -275,6 +311,7 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
 
 		return true;
 	}
@@ -299,6 +336,9 @@ ActionBar.TabListener, OnClickListener {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_ccorder) {
 			Intent myIntent = new Intent(this, CcorderActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_c_mission) {
+			Intent myIntent = new Intent(this, MissionActivity.class);
 			startActivityForResult(myIntent, 0);
 		}
 		return super.onOptionsItemSelected(item);
@@ -326,7 +366,7 @@ ActionBar.TabListener, OnClickListener {
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 		Fragment[] pages;
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -352,6 +392,8 @@ ActionBar.TabListener, OnClickListener {
 					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
+				} else if(position == ACTIVITYLOG_FRAGMENT) {
+					fragment = new ActivitylogFragment();
 				} else {
 					fragment = null;
 				}
@@ -366,68 +408,29 @@ ActionBar.TabListener, OnClickListener {
 
 		@Override
 		public int getCount() {
-			return 6;
+			return 7;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			switch (position) {
 			case USER_FRAGMENT:
-				return getString(R.string.title_users).toUpperCase();
+				return getString(R.string.title_users);
 			case C_PORTAL_FRAGMENT:
-				return getString(R.string.title_c_portal).toUpperCase();
+				return getString(R.string.title_c_portal);
 			case ARTEFACTS_FRAGMENT:
-				return getString(R.string.title_artefacts).toUpperCase();
+				return getString(R.string.title_artefacts);
 			case EVENTS_FRAGMENT:
-				return getString(R.string.title_events).toUpperCase();
+				return getString(R.string.title_events);
 			case C_ONTROL_FRAGMENT:
-				return getString(R.string.title_c_ontrol).toUpperCase();
+				return getString(R.string.title_c_ontrol);
 			case MISSION_FRAGMENT:
-				return getString(R.string.title_missions).toUpperCase();
+				return getString(R.string.title_missions);
+			case ACTIVITYLOG_FRAGMENT:
+				return getString(R.string.title_activity);
 			}
 			return null;
 		}
-	}
-
-	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
-	{
-		if (mContainer == null || mFont == null) return;
-
-		final int mCount = mContainer.getChildCount();
-
-		// Loop through all of the children.
-		for (int i = 0; i < mCount; ++i)
-		{
-			final View mChild = mContainer.getChildAt(i);
-			if (mChild instanceof TextView)
-			{
-				// Set the font if it is a TextView.
-				((TextView) mChild).setTypeface(mFont);
-			}
-			else if (mChild instanceof ViewGroup)
-			{
-				// Recursively attempt another ViewGroup.
-				setAppFont((ViewGroup) mChild, mFont);
-			}
-		}
-		Log.i("MainActivity", "font set");
-
-	}
-
-	private void setupActionBar() {
-		actionBar = getSupportActionBar();
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-		TextView titleView = (TextView) v.findViewById(R.id.title);
-		titleView.setText(this.getTitle());
-		titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		titleView.setTextSize(30);
-		titleView.setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
 	}
 
 	private void setupViewPager() {
@@ -445,15 +448,18 @@ ActionBar.TabListener, OnClickListener {
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
-				actionBar.setSelectedNavigationItem(position);
+				try {
+					actionBar.setSelectedNavigationItem(position);
+				} catch (Exception e) {
+
+				}
 			}
 		});
 
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			Tab tab = actionBar.newTab();
-			TextView t = new TextView(getApplicationContext());
-			t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
 			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+			System.out.println(mSectionsPagerAdapter.getPageTitle(i));
 			tab.setTabListener(this);
 			actionBar.addTab(tab);
 		}
@@ -463,12 +469,12 @@ ActionBar.TabListener, OnClickListener {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPref.getBoolean(Settings.PUSH, false)) {
 			String registrationId = GCMManager.getRegistrationId(this);
-			String username = sharedPref.getString(Settings.USERNAME, "dummy");
+			String username = sharedPref.getString(Settings.USERNAME, "bernd");
 			c_beam.register_update(registrationId, username);
 		}
 	}
 
-	private void checkUserName() {
+	private boolean checkUserName() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
 		String defaultUsername = "bernd";
@@ -487,29 +493,42 @@ ActionBar.TabListener, OnClickListener {
 				}
 			});
 			b.show();
+			return false;
 		}
+
+		return true;
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-			case R.id.toggleLogin: {
-				ToggleButton b = (ToggleButton) view;
-				if (b.isChecked()) {
-					showLoginDialog();
-				} else {
-					showLogoutDialog();
-				}
-				break;
+		case R.id.toggleLogin: {
+			ToggleButton b = (ToggleButton) view;
+			if (b.isChecked()) {
+				showLoginDialog();
+			} else {
+				showLogoutDialog();
 			}
-			case R.id.buttonC_out: {
-				startC_outActivity();
-				break;
-			}
-			case R.id.button_c_maps: {
-				startC_mapsActivity();
-			}
+			break;
 		}
+		case R.id.buttonC_out: {
+			startC_outActivity();
+			break;
+		}
+		case R.id.button_c_maps: {
+			startC_mapsActivity();
+			break;
+		}
+		case R.id.button_c_mission: {
+			startC_missionActivity();
+			break;
+		}
+		}
+	}
+
+	private void startC_missionActivity() {
+		Intent myIntent = new Intent(this, MissionActivity.class);
+		startActivityForResult(myIntent, 0);
 	}
 
 	private void showLoginDialog() {
@@ -591,6 +610,10 @@ ActionBar.TabListener, OnClickListener {
 	class WifiBroadcastReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			if (debug) {
+				showOnlineView();
+				return;
+			}
 			if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
 				int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
 				int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);

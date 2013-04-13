@@ -9,8 +9,11 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.c_base.c_beam.activity.MainActivity;
+
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
@@ -21,10 +24,11 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 
 public class GCMIntentService extends GCMBaseIntentService {
-	HashMap<String,Notification> notifications;
+	private static HashMap<String,Notification> notifications = new HashMap<String,Notification>();
+	private static String boardingCache = "";
+	
 	public GCMIntentService() {
 		super("GCMIntentService");
-		notifications = new HashMap<String,Notification>();
 	}
 
 	@Override
@@ -32,6 +36,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// TODO Auto-generated method stub
 		Log.i("GCM Error", arg1);
 	}
+	
+	
 
 	@Override
 	protected void onMessage(Context context, Intent arg1) {
@@ -54,7 +60,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 		int id = (int) (Math.random()*10000000)+64;
 		if (title.equals("now boarding")) {
 			id = 1;
-
+			if (boardingCache.equals("")) { 
+				boardingCache = text;
+			} else {
+				boardingCache += ", " + text;
+			}
+			Log.i(TAG, boardingCache);
 		} else if (title.equals("ETA")) {
 			id = 2;
 		} else if (title.equals("AES")) {
@@ -65,7 +76,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 				kgen = KeyGenerator.getInstance("AES");
 				sr = SecureRandom.getInstance("SHA1PRNG");
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			sr.setSeed(keyStart);
@@ -83,20 +93,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 
 		Log.i("id", ""+id);
-		//mBuilder.setNumber(42);
 		mBuilder.setAutoCancel(true);
-		long[] l = new long[2];
-		l[0] = 500;
-		l[1] = 250;
-		//mBuilder.setVibrate(l);
+//		long[] l = new long[2];
+//		l[0] = 500;
+//		l[1] = 250;
+//		mBuilder.setVibrate(l);
 		mBuilder.setTicker(title+": "+text);
 		mBuilder.setLights(0x00ffff00, 1000, 1000);
-		//mBuilder.setSubText("subtext");
-		//mBuilder.setSmallIcon(R.drawable.ic_launcher);
-		//Intent intent = new Intent(this, NotificationReceiverActivity.class);
-		//PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+//		mBuilder.setSubText("subtext");
+//		mBuilder.setSmallIcon(R.drawable.ic_launcher);
+		Intent intent = new Intent(this, MainActivity.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+		Intent deleteIntent = new Intent(this, NotificationBroadcastReceiver.class);
+	    deleteIntent.setAction("notification_cancelled");
+	    deleteIntent.putExtra("org.c_base.c_beam.message_id", id);
+	    mBuilder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+		
 		//mBuilder.setDeleteIntent(pIntent);
+		mBuilder.setContentIntent(pIntent);
 		Notification notification = mBuilder.getNotification();
 		notifications.put("foo", notification);
 		//notification.flags = Notification.DEFAULT_ALL;
@@ -105,6 +120,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		mNotificationManager.notify(id, notification);
 
+	}
+
+	@Override
+	public void onStart(Intent intent, int startId) {
+		// TODO Auto-generated method stub
+		super.onStart(intent, startId);
+		System.out.println("bar");
 	}
 
 	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {

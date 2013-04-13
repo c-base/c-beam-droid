@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.c_base.c_beam"
-    android:versionCode="3"
-    android:versionName="1.1.1" >
+    android:versionCode="5"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -39,6 +39,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="c-leuse.c-base.org"
+                    android:pathPrefix="/login"
+                    android:scheme="http" />
+            </intent-filter>
         </activity>
         <activity
             android:name="org.c_base.c_beam.activity.UserActivity"
@@ -62,10 +72,19 @@
             android:name="org.c_base.c_beam.activity.MissionActivity"
             android:label="@string/title_activity_mission"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:taskAffinity="org.c_base.c_beam.activity.MissionActivity"
+            android:screenOrientation="portrait" 
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
+			<!-- 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name="org.c_base.c_beam.activity.SettingsActivity"
@@ -170,15 +189,31 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
-        
         <activity
             android:name="org.c_base.c_beam.activity.CcorderActivity"
             android:label="@string/title_activity_ccorder"
-            android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
+            
+        <activity
+            android:name="org.c_base.c_beam.activity.MissionDetailActivity"
+            android:label="@string/title_activity_mission_detail"
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        
+        <receiver android:name="org.c_base.c_beam.NotificationBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="notification_cancelled" />
+            </intent-filter>
+        </receiver>
     </application>
 
 

@@ -15,8 +15,10 @@ public class User {
 	private String reminder;
 	private String remindertimestamp;
 	private String logintime;
+	private int ap = 0;
 	private int autologout;
 	private int autologout_in;
+	private boolean stats_enabled = false;
 
 	public User(JSONObject item) {
 		super();
@@ -32,8 +34,10 @@ public class User {
 			reminder = item.getString("reminder");
 			remindertimestamp = item.getString("remindertimestamp");
 			logintime = item.getString("logintime");
+			ap = item.getInt("ap");
 			setAutologout(item.getInt("autologout"));
 			setAutologout_in(item.getInt("autologout_in"));
+			stats_enabled = item.getBoolean("stats_enabled");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,6 +134,19 @@ public class User {
 	}
 	public void setAutologout_in(int autologout_in) {
 		this.autologout_in = autologout_in;
+	}
+	public void setAp(int ap) {
+		this.ap = ap;
+	}
+	public int getAp() {
+		return this.ap;
+	}
+
+	public boolean isStats_enabled() {
+		return stats_enabled;
+	}
+	public void setStats_enabled(boolean stats_enabled) {
+		this.stats_enabled = stats_enabled;
 	}
 
 }
