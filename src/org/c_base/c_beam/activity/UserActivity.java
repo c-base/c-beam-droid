@@ -22,7 +22,7 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
 
 public class UserActivity extends SherlockActivity {
-	C_beam c_beam;
+	C_beam c_beam = C_beam.getInstance();;
 	TableLayout tl;
 	TableRow tr;
 	TextView labelTV,valueTV;
@@ -30,7 +30,8 @@ public class UserActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		c_beam = new C_beam(this);
+		//c_beam = new C_beam(this);
+		c_beam.setActivity(this);
 
 		setContentView(R.layout.activity_user);
 		// Show the Up button in the action bar.

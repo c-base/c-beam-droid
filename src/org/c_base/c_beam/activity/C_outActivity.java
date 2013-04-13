@@ -22,12 +22,15 @@ import org.c_base.c_beam.fragment.C_outListFragment;
 import org.c_base.c_beam.util.Helper;
 
 public class C_outActivity extends SherlockFragmentActivity {
-	C_beam c_beam;
+	C_beam c_beam = C_beam.getInstance();
 	EditText et;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		c_beam.setActivity(this);
+		
 		setContentView(R.layout.activity_c_out);
 		// Show the Up button in the action bar.
 		ActionBar actionBar = getSupportActionBar();
@@ -47,7 +50,6 @@ public class C_outActivity extends SherlockFragmentActivity {
 
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 
-		c_beam = new C_beam(this);
 		ArrayList<String> sounds = c_beam.getSounds();
 		for(int i=0; i<sounds.size();i++)
 			f.addItem(sounds.get(i));

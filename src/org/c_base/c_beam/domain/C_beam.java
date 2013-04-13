@@ -30,7 +30,8 @@ public class C_beam {
 	protected ArrayList<Mission> missions = new ArrayList<Mission>();
 	protected ArrayList<User> users = new ArrayList<User>();
 	protected ArrayList<Event> events = new ArrayList<Event>();
-	protected Activity parent;
+	protected Activity activity;
+
 	protected ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
 	protected ArrayList<Article> articleList = new ArrayList<Article>();
 	protected ArrayList<User> stats = new ArrayList<User>();
@@ -40,13 +41,14 @@ public class C_beam {
 
 	Thread thread;
 	private ArrayList<ActivityLog> activitylog;
-	
+
 	private boolean debug = false;
 
-	public C_beam(Activity parent) {
-		this.parent = parent;
+	private static C_beam instance = new C_beam();
+
+	public C_beam() {
 		if (debug) {
-			c_beamClient = JSONRPCClient.create("http://131.234.77.45:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
 			c_beamClient.setConnectionTimeout(5000);
 			c_beamClient.setSoTimeout(5000);
 		} else {
@@ -66,6 +68,51 @@ public class C_beam {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+	}
+
+	
+	public C_beam(Activity parent) {
+		this.activity = parent;
+		if (debug) {
+			//c_beamClient = JSONRPCClient.create("http://131.234.77.45:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient.setConnectionTimeout(5000);
+			c_beamClient.setSoTimeout(5000);
+		} else {
+			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+			c_beamClient.setConnectionTimeout(5000);
+			c_beamClient.setSoTimeout(5000);
+		}
+		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
+		portalClient.setConnectionTimeout(5000);
+		portalClient.setSoTimeout(5000);
+
+		//		// Create new JSON-RPC 2.0 client session
+		//		try {
+		//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
+		//			portalSession.getOptions().trustAllCerts(true);
+		//		} catch (MalformedURLException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+	}
+	
+	public static C_beam getInstance() {
+		return instance;
+	}
+
+
+	public static void setInstance(C_beam instance) {
+		C_beam.instance = instance;
+	}
+
+	public Activity getActivity() {
+		return activity;
+	}
+
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 
 	public void startThread() {
@@ -89,9 +136,9 @@ public class C_beam {
 	public boolean isInCrewNetwork() {
 		if (debug)
 			return true;
-		if (parent == null)
+		if (activity == null)
 			return true;
-		WifiManager wifiManager = (WifiManager) parent.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
 		String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
 		if (wifiManager.isWifiEnabled() && ip.startsWith("42.42.") ) {
 			return true;
@@ -105,20 +152,10 @@ public class C_beam {
 	}
 
 	public void updateLists() {
-//		Log.i(TAG, "updateLists()");
+		//		Log.i(TAG, "updateLists()");
 		updateData();
 		updateArticles();
-		
-		// TODO put this all into one RPC call
-		//		updateUsers();
-		//		updateEvents();
-		//		updateArtefacts();
-		//		updateMissions();
-		//		updateActivityLog();
-		//		updateStats();
-		
-		
-		
+
 		onlineList.clear();
 		offlineList.clear();
 		etaList.clear();
@@ -167,7 +204,6 @@ public class C_beam {
 		try {
 			events = new ArrayList<Event>();
 
-
 			JSONObject result = c_beamClient.callJSONObject("app_data");
 
 			JSONArray userResult = result.getJSONArray("user");
@@ -176,8 +212,8 @@ public class C_beam {
 			JSONArray missionResult = result.getJSONArray("missions");
 			JSONArray activitylogResult = result.getJSONArray("activitylog");
 			JSONArray statsResult = result.getJSONArray("stats");
-//			JSONArray articleResult = result.getJSONArray("articles");
-			
+			JSONArray articleResult = result.getJSONArray("articles");
+
 			ArrayList<User> userList = new ArrayList<User>();
 			for (int i=0; i<userResult.length(); i++) {
 				JSONObject item = userResult.getJSONObject(i);
@@ -198,28 +234,28 @@ public class C_beam {
 				artefactList.add(new Artefact(item));
 			}
 			this.artefactList = artefactList;
-			
+
 			ArrayList<Mission> missionList = new ArrayList<Mission>();
 			for (int i=0; i<missionResult.length(); i++) {
 				JSONObject item = missionResult.getJSONObject(i);
 				missionList.add(new Mission(item));
 			}
 			this.missions = missionList;
-			
-//			ArrayList<Article> articleList = new ArrayList<Article>();
-//			for (int i=0; i<articleResult.length(); i++) {
-//				JSONObject item = articleResult.getJSONObject(i);
-//				articleList.add(new Article(item));
-//			}
-//			this.articleList = articleList;
-			
+
+			ArrayList<Article> articleList = new ArrayList<Article>();
+			for (int i=0; i<articleResult.length(); i++) {
+				JSONObject item = articleResult.getJSONObject(i);
+				articleList.add(new Article(item));
+			}
+			this.articleList = articleList;
+
 			ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
 			for (int i=0; i<activitylogResult.length(); i++) {
 				JSONObject item = activitylogResult.getJSONObject(i);
 				activitylogList.add(new ActivityLog(item));
 			}
 			this.activitylog = activitylogList;
-			
+
 			ArrayList<User> statsList = new ArrayList<User>();
 			for (int i=0; i<statsResult.length(); i++) {
 				JSONObject item = statsResult.getJSONObject(i);
@@ -370,7 +406,7 @@ public class C_beam {
 	}
 
 	public synchronized String assignMission(int id) {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 		String user = sharedPref.getString(Settings.USERNAME, "bernd");
 		String result = "";
 		try {
@@ -384,7 +420,7 @@ public class C_beam {
 	}
 
 	public synchronized String completeMission(int id) {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 		String user = sharedPref.getString(Settings.USERNAME, "bernd");
 		String result = "";
 		try {
@@ -398,7 +434,7 @@ public class C_beam {
 	}
 
 	public synchronized String cancelMission(int id) {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 		String user = sharedPref.getString(Settings.USERNAME, "bernd");
 		String result = "";
 		try {
@@ -751,6 +787,53 @@ public class C_beam {
 			if (isInCrewNetwork())
 				Log.i("c-beam", "set_pattern_default");
 			c_beamClient.callJSONObject("set_pattern_default");
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public boolean isStats_enabled() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", user);
+				u = new User(item);
+				return u.isStats_enabled();
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public void setStats_enabled(boolean stats_enabled) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				String result = c_beamClient.callString("set_stats_enabled", user, stats_enabled);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void logactivity(String activity, String ap_string) {
+		int ap = Integer.parseInt(ap_string);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				String result = c_beamClient.callString("logactivity", user, activity, ap);
+			}
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
