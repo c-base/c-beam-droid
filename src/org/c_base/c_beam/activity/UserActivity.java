@@ -1,75 +1,55 @@
 package org.c_base.c_beam.activity;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.User;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.User;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
-public class UserActivity extends SherlockActivity {
+public class UserActivity extends C_beamActivity {
 	C_beam c_beam = C_beam.getInstance();;
 	TableLayout tl;
 	TableRow tr;
 	TextView labelTV,valueTV;
 
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		//c_beam = new C_beam(this);
-		c_beam.setActivity(this);
-
+		
 		setContentView(R.layout.activity_user);
-		// Show the Up button in the action bar.
-
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-
-
-		((TextView)v.findViewById(R.id.title)).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		((TextView)v.findViewById(R.id.title)).setTextSize(30);
-		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			User u = c_beam.getUser(extras.getInt("id"));
-			//addHeaders();
 			tl = (TableLayout) findViewById(R.id.TableLayout1);
 			if (u!=null) {
-				((TextView)v.findViewById(R.id.title)).setText(u.getUsername());
+				this.setTitle(u.getUsername());
 				addData(u);
 				WebView w = (WebView) findViewById(R.id.userWebView);
 				w.getSettings().setJavaScriptEnabled(true);
 				w.loadUrl("http://"+u.getUsername()+".crew.c-base.org");
 
 			} else {
-				Log.e("UserActivity", "user not found: "+extras.getInt("id"));
-				((TextView)v.findViewById(R.id.title)).setText("c-beam user view");
+				this.setTitle("c-beam user view");
 			}
 		}
-
-		actionBar.setCustomView(v);
-
-
+		
+		final ViewGroup mContainer = (ViewGroup) findViewById(
+				android.R.id.content).getRootView();
+		setAppFont(mContainer);
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.c_base.c_beam.activity;
+	package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,6 @@ import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
-import org.c_base.c_beam.fragment.StatsFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
@@ -30,7 +29,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -44,10 +42,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -55,12 +51,11 @@ import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 @SuppressLint("NewApi")
-public class MainActivity extends SherlockFragmentActivity implements
+public class MainActivity extends C_beamActivity implements
 ActionBar.TabListener, OnClickListener {
 	private static final int USER_FRAGMENT = 0;
 	private static final int C_PORTAL_FRAGMENT = 1;
@@ -68,7 +63,6 @@ ActionBar.TabListener, OnClickListener {
 	private static final int EVENTS_FRAGMENT = 5;
 	private static final int C_ONTROL_FRAGMENT = 2;
 	private static final int MISSION_FRAGMENT = 3;
-	//	private static final int STATS_FRAGMENT = 4;
 	private static final int ACTIVITYLOG_FRAGMENT = 4;
 
 	private static final int threadDelay = 5000;
@@ -86,7 +80,7 @@ ActionBar.TabListener, OnClickListener {
 	private Handler handler = new Handler();
 	EditText text;
 
-	ActionBar actionBar;
+	
 
 	C_beam c_beam = C_beam.getInstance();
 	
@@ -116,7 +110,6 @@ ActionBar.TabListener, OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		c_beam.setActivity(this);
 		super.onCreate(savedInstanceState);
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -132,7 +125,7 @@ ActionBar.TabListener, OnClickListener {
 		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
 		Helper.setFont(this, textView);
 
-		setupActionBar();
+//		setupActionBar();
 		setupViewPager();
 
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
@@ -207,7 +200,6 @@ ActionBar.TabListener, OnClickListener {
 		MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
 		C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
 		ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
-		//		StatsFragment stats = (StatsFragment) mSectionsPagerAdapter.getItem(STATS_FRAGMENT);
 		ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
 		ArrayList<User> onlineList = c_beam.getOnlineList();
@@ -254,12 +246,10 @@ ActionBar.TabListener, OnClickListener {
 
 		if(c_portal.isAdded()) {
 			ArrayList<Article> tmpList = c_beam.getArticles();
-			//			if (articleList == null || articleList.size() != tmpList.size()) {
 			articleList = tmpList;
 			c_portal.clear();
 			for(int i=0; i<articleList.size();i++)
 				c_portal.addItem(articleList.get(i));
-			//			}
 		}
 
 		if(artefacts.isAdded()) {
@@ -272,12 +262,6 @@ ActionBar.TabListener, OnClickListener {
 					artefacts.addItem(artefactList.get(i));
 			}
 		}
-
-		//		if(stats.isAdded()) {
-		//			stats.clear();
-		//			for(User user: c_beam.getStats())
-		//				stats.addItem(user);
-		//		}
 
 		activitylog.updateLog(c_beam.getActivityLog());
 
@@ -405,8 +389,6 @@ ActionBar.TabListener, OnClickListener {
 					fragment = new C_ontrolFragment(c_beam);
 				} else if(position == MISSION_FRAGMENT) {
 					fragment = new MissionListFragment();
-					//				} else if(position == STATS_FRAGMENT) {
-					//					fragment = new StatsFragment();
 				} else if(position == ACTIVITYLOG_FRAGMENT) {
 					fragment = new ActivitylogFragment();
 				} else {
@@ -441,55 +423,11 @@ ActionBar.TabListener, OnClickListener {
 				return getString(R.string.title_c_ontrol);
 			case MISSION_FRAGMENT:
 				return getString(R.string.title_missions);
-				//			case STATS_FRAGMENT:
-				//				return getString(R.string.title_stats).toUpperCase();
 			case ACTIVITYLOG_FRAGMENT:
 				return getString(R.string.title_activity);
 			}
 			return null;
 		}
-	}
-
-	//	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
-	//	{
-	//		if (mContainer == null || mFont == null) return;
-	//
-	//		final int mCount = mContainer.getChildCount();
-	//
-	//		// Loop through all of the children.
-	//		for (int i = 0; i < mCount; ++i)
-	//		{
-	//			final View mChild = mContainer.getChildAt(i);
-	//			if (mChild instanceof TextView)
-	//			{
-	//				// Set the font if it is a TextView.
-	//				((TextView) mChild).setTypeface(mFont);
-	//			}
-	//			else if (mChild instanceof ViewGroup)
-	//			{
-	//				// Recursively attempt another ViewGroup.
-	//				setAppFont((ViewGroup) mChild, mFont);
-	//			}
-	//		}
-	//		Log.i("MainActivity", "font set");
-	//
-	//	}
-
-	private void setupActionBar() {
-		actionBar = getSupportActionBar();
-
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-		TextView titleView = (TextView) v.findViewById(R.id.title);
-		titleView.setText(this.getTitle());
-		titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		titleView.setTextSize(30);
-		titleView.setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
 	}
 
 	private void setupViewPager() {
@@ -512,24 +450,11 @@ ActionBar.TabListener, OnClickListener {
 				} catch (Exception e) {
 
 				}
-				//				switch (mActionView.getNavigationMode()) {
-				//			    case NAVIGATION_MODE_TABS:
-				//			        selectTab(mTabs.get(position));
-				//			        break;
-				//			    case NAVIGATION_MODE_LIST:
-				//			        mActionView.setDropdownSelectedPosition(position);
-				//			        break;
-				//			    default:
-				//			        throw new IllegalStateException(
-				//			                "setSelectedNavigationIndex not valid for current navigation mode");
-				//			    }
 			}
 		});
 
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			Tab tab = actionBar.newTab();
-			TextView t = new TextView(getApplicationContext());
-			//t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
 			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
 			System.out.println(mSectionsPagerAdapter.getPageTitle(i));
 			tab.setTabListener(this);

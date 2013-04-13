@@ -2,7 +2,6 @@ package org.c_base.c_beam.activity;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.util.Helper;
 
@@ -11,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
@@ -24,13 +22,11 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MissionDetailActivity extends SherlockActivity implements OnClickListener {
+public class MissionDetailActivity extends C_beamActivity implements OnClickListener {
 	protected static final String TAG = "MissionActivity";
-	C_beam c_beam = C_beam.getInstance();
 	TableLayout tl;
 	TableRow tr;
 	TextView labelTV, valueTV;
@@ -40,8 +36,6 @@ public class MissionDetailActivity extends SherlockActivity implements OnClickLi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//c_beam = C_beam.getInstance();//new C_beam(this);
-		c_beam.setActivity(this);
 
 		setContentView(R.layout.activity_mission_detail);
 		// Show the Up button in the action bar.
@@ -63,7 +57,6 @@ public class MissionDetailActivity extends SherlockActivity implements OnClickLi
 			}
 
 		}
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		toggleMissionButton = (ToggleButton) findViewById(R.id.toggleMissionButton);
 		toggleMissionButton.setOnClickListener(this);

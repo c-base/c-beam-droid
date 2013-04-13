@@ -1,5 +1,8 @@
 package org.c_base.c_beam.activity;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,14 +18,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
 @SuppressLint("NewApi")
-public class MapActivity extends SherlockFragmentActivity implements
+public class MapActivity extends C_beamActivity implements
 		ActionBar.TabListener {
 
 	/**
@@ -46,7 +46,6 @@ public class MapActivity extends SherlockFragmentActivity implements
 		setContentView(R.layout.activity_map);
 
 		// Set up the action bar.
-		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		// Show the Up button in the action bar.
 		actionBar.setDisplayHomeAsUpEnabled(true);

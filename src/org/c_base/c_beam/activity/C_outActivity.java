@@ -1,52 +1,35 @@
 package org.c_base.c_beam.activity;
 
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import java.util.ArrayList;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.C_outListFragment;
-import org.c_base.c_beam.util.Helper;
 
-public class C_outActivity extends SherlockFragmentActivity {
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class C_outActivity extends C_beamActivity {
 	C_beam c_beam = C_beam.getInstance();
 	EditText et;
+	
+	ActionBar actionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		c_beam.setActivity(this);
-		
 		setContentView(R.layout.activity_c_out);
-		// Show the Up button in the action bar.
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater)this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-
-		((TextView)v.findViewById(R.id.title)).setText(this.getTitle());
-		Helper.setFont(this, ((TextView)v.findViewById(R.id.title)));
-		((TextView)v.findViewById(R.id.title)).setTextSize(30);
-		((TextView)v.findViewById(R.id.title)).setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
 
 		C_outListFragment f = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 
@@ -89,8 +72,13 @@ public class C_outActivity extends SherlockFragmentActivity {
 				}
 			}
 		});
+		
+		final ViewGroup mContainer = (ViewGroup) findViewById(
+				android.R.id.content).getRootView();
+		setAppFont(mContainer);
+		setupActionBar();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

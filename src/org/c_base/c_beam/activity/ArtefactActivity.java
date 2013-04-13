@@ -1,20 +1,20 @@
 package org.c_base.c_beam.activity;
 
+import org.c_base.c_beam.R;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.webkit.WebView;
-import com.actionbarsherlock.app.SherlockActivity;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import org.c_base.c_beam.R;
 
-public class ArtefactActivity extends SherlockActivity {
+public class ArtefactActivity extends C_beamActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_artefact);
 		// Show the Up button in the action bar.
 		Bundle extras = getIntent().getExtras();

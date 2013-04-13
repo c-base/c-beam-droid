@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
@@ -39,26 +38,22 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 @SuppressLint("NewApi")
-public class MissionActivity extends SherlockFragmentActivity implements
+public class MissionActivity extends C_beamActivity implements
 ActionBar.TabListener, OnClickListener {
 	private static final int MISSIONLIST_FRAGMENT = 0;
 	private static final int STATS_FRAGMENT = 2;
-	private static final int MISSION_DETAIL_FRAGMENT = 3;
 	private static final int ACTIVITYLOG_FRAGMENT = 1;
 
 	private static final int threadDelay = 5000;
@@ -80,10 +75,6 @@ ActionBar.TabListener, OnClickListener {
 	private Handler handler = new Handler();
 	EditText text;
 
-	ActionBar actionBar;
-
-	C_beam c_beam = C_beam.getInstance();//new C_beam(this);
-
 	protected Runnable fred;
 	private View mInfoArea;
 	private View mCbeamArea;
@@ -93,7 +84,6 @@ ActionBar.TabListener, OnClickListener {
 
 	TextView tvAp = null;
 	TextView tvUsername = null;
-
 
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
@@ -111,8 +101,6 @@ ActionBar.TabListener, OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		c_beam.setActivity(this);
-
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
@@ -217,10 +205,10 @@ ActionBar.TabListener, OnClickListener {
 		ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
 		ArrayList<User> userList = c_beam.getUsers();
-		boolean found = false;
+//		boolean found = false;
 		for (User user: userList) {
 			if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
-				found = true;
+//				found = true;
 				tvAp.setText(user.getAp()+" AP");
 			}
 		}
@@ -394,48 +382,6 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	//	public static final void setAppFont(ViewGroup mContainer, Typeface mFont)
-	//	{
-	//		if (mContainer == null || mFont == null) return;
-	//
-	//		final int mCount = mContainer.getChildCount();
-	//
-	//		// Loop through all of the children.
-	//		for (int i = 0; i < mCount; ++i)
-	//		{
-	//			final View mChild = mContainer.getChildAt(i);
-	//			if (mChild instanceof TextView)
-	//			{
-	//				// Set the font if it is a TextView.
-	//				((TextView) mChild).setTypeface(mFont);
-	//			}
-	//			else if (mChild instanceof ViewGroup)
-	//			{
-	//				// Recursively attempt another ViewGroup.
-	//				setAppFont((ViewGroup) mChild, mFont);
-	//			}
-	//		}
-	//		Log.i("MissionActivity", "font set");
-	//
-	//	}
-
-	private void setupActionBar() {
-		actionBar = getSupportActionBar();
-
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-
-		LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-
-		View v = inflator.inflate(R.layout.view_actionbar, null);
-		TextView titleView = (TextView) v.findViewById(R.id.title);
-		titleView.setText(this.getTitle());
-		titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-		titleView.setTextSize(30);
-		titleView.setPadding(10, 20, 10, 20);
-		actionBar.setCustomView(v);
-	}
-
 	private void setupViewPager() {
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -469,31 +415,6 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	private boolean checkUserName() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-		String defaultUsername = "bernd";
-		String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
-
-		if (user.equals(defaultUsername) || user.length() == 0) {
-			AlertDialog.Builder b = new AlertDialog.Builder(this);
-			b.setTitle(R.string.set_username_title);
-			b.setMessage(R.string.set_username_message);
-			b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Intent myIntent = new Intent(MissionActivity.this, SettingsActivity.class);
-					startActivityForResult(myIntent, 0);
-				}
-			});
-			b.show();
-			return false;
-		}
-
-		return true;
-	}
-
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
@@ -525,29 +446,6 @@ ActionBar.TabListener, OnClickListener {
 		c_beam.logactivity(activity_text.getText().toString(), activity_ap.getText().toString());
 		// TODO Auto-generated method stub
 
-	}
-
-	private void showLogoutDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.confirm_logout);
-		builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int whichButton) {
-				logout();
-			}
-		});
-		builder.setNegativeButton(R.string.button_cancel, null);
-		builder.create().show();
-	}
-
-	private void startC_outActivity() {
-		Intent myIntent = new Intent(this, C_outActivity.class);
-		startActivityForResult(myIntent, 0);
-	}
-
-	private void startC_mapsActivity() {
-		Intent myIntent = new Intent(this, MapActivity.class);
-		startActivityForResult(myIntent, 0);
 	}
 
 	private void switchToOfflineMode() {
