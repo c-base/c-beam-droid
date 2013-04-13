@@ -18,6 +18,7 @@ public class User {
 	private int ap = 0;
 	private int autologout;
 	private int autologout_in;
+	private boolean stats_enabled = false;
 
 	public User(JSONObject item) {
 		super();
@@ -36,6 +37,7 @@ public class User {
 			ap = item.getInt("ap");
 			setAutologout(item.getInt("autologout"));
 			setAutologout_in(item.getInt("autologout_in"));
+			stats_enabled = item.getBoolean("stats_enabled");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,6 +140,13 @@ public class User {
 	}
 	public int getAp() {
 		return this.ap;
+	}
+
+	public boolean isStats_enabled() {
+		return stats_enabled;
+	}
+	public void setStats_enabled(boolean stats_enabled) {
+		this.stats_enabled = stats_enabled;
 	}
 
 }
