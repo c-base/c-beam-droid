@@ -30,9 +30,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -155,15 +159,18 @@ ActionBar.TabListener, OnClickListener {
 			tvAp.setVisibility(View.GONE);
 			tvUsername.setVisibility(View.GONE);
 		}
-		System.out.println(tvAp.getHeight());
 		setupGCM();
-
 		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processNfcIntent(getIntent());
 			toggleLogin();
 		}
 
 		initializeBroadcastReceiver();
 	}
+
+	void processNfcIntent(Intent intent) {
+        System.out.println(intent.getData());
+    }
 
 	public void onStart() {
 		Log.i(TAG, "onStart()");
@@ -182,7 +189,12 @@ ActionBar.TabListener, OnClickListener {
 
 	public void toggleLogin() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+//		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+		if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+			showLogoutDialog();
+		} else {
+			showLoginDialog();
+		}
 	}
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
