@@ -263,9 +263,7 @@ public class C_beam {
 			}
 			this.stats = statsList;
 			this.events = eventList;
-		} catch (JSONRPCException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -425,7 +423,7 @@ public class C_beam {
 		String result = "";
 		try {
 			if (isInCrewNetwork()) {
-				result = c_beamClient.callString("mission_assign", user, id);
+				result = c_beamClient.callString("mission_complete", user, id);
 			}
 		} catch (JSONRPCException e) {
 			e.printStackTrace();
@@ -662,11 +660,7 @@ public class C_beam {
 					articleList.add(new Article(item));
 				}
 			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return articleList;
@@ -838,6 +832,22 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+
+	public boolean isLoggedIn(String user) {
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", user);
+				u = new User(item);
+				return u.getStatus().equals("online");
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }
