@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.c_base.c_beam"
-    android:versionCode="5"
-    android:versionName="1.2" >
+    android:versionCode="8"
+    android:versionName="1.2.2" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -34,6 +34,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -42,6 +43,16 @@
                 <data
                     android:host="c-leuse.c-base.org"
                     android:pathPrefix="/login"
+                    android:scheme="http" />
+            </intent-filter>
+            
+			<intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="c-leuse.cbrp3.c-base.org"
                     android:scheme="http" />
             </intent-filter>
         </activity>
