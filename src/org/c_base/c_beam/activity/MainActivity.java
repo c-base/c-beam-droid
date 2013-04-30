@@ -11,6 +11,7 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
@@ -309,12 +310,6 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -326,31 +321,6 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
 
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		if (item.getItemId() == R.id.menu_settings) {
-			Intent myIntent = new Intent(this, SettingsActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_login) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_logout) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_c_out) {
-			Intent myIntent = new Intent(this, C_outActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_map) {
-			Intent myIntent = new Intent(this, MapActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_c_mission) {
-			Intent myIntent = new Intent(this, MissionActivity.class);
-			startActivityForResult(myIntent, 0);
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

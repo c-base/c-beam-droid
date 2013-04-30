@@ -1,11 +1,16 @@
 package org.c_base.c_beam.activity;
 
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.util.Helper;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +18,8 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
  
 public class C_beamActivity extends SherlockFragmentActivity {
 	ActionBar actionBar;
@@ -64,6 +71,40 @@ public class C_beamActivity extends SherlockFragmentActivity {
 				setAppFont((ViewGroup) mChild);
 			}
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		if (item.getItemId() == R.id.menu_settings) {
+			Intent myIntent = new Intent(this, SettingsActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_login) {
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
+		} else if (item.getItemId() == R.id.menu_logout) {
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
+		} else if (item.getItemId() == R.id.menu_c_out) {
+			Intent myIntent = new Intent(this, C_outActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_map) {
+			Intent myIntent = new Intent(this, MapActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_c_mission) {
+			Intent myIntent = new Intent(this, MissionActivity.class);
+			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_ab_out) {
+			new AboutDialogFragment().show(getSupportFragmentManager(), "about");
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
 	}
 
 }

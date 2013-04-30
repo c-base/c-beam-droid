@@ -115,6 +115,14 @@ public class C_ontrolFragment extends Fragment {
 			}
 		});
 
+		b = (Button) v.findViewById(R.id.button_unlabeled);
+		b.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				throw new WTFException("I told you not to press the button...");
+			}
+		});
+		
 		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
 		t.setOnClickListener(new OnClickListener() {
 			@Override
@@ -294,5 +302,10 @@ public class C_ontrolFragment extends Fragment {
 		thisView = v;
 		return v;
 	}
-
+	static class WTFException extends RuntimeException {
+		public WTFException(String message) {
+			super(message);
+		}
+		
+	}
 }
