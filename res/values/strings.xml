@@ -116,8 +116,21 @@
     <string name="pref_stats_enabled_summ">legt fest, ob AP für missionen gesammelt werden sollen.</string>
     <string name="title_activity_mission_detail">c-mission</string>
     <string name="menu_c_mission">c-mission</string>
+    <string name="menu_ab_out">ab_out</string>
     <string name="confirm_log_activity">soll die activita:t wirklich geloggt werden?</string>
     <string name="button_c_mission">c-mission</string>
     <string name="button_c_maps">c-maps</string>
+    <string name="label_about">About</string>
+    <string name="about_text">
+		<![CDATA[
+		<p>
+		<strong>c-beam</strong> v%s<br>
+		by smile, cketti, keyboardsurfer ät c-base.org
+		</p><p>
+		The source code was released under the WTFPL, Version 2.0 and is available here:<br>
+		<a href="http://dev.c-base.org/c-beam-droid">http://dev.c-base.org/c-beam-droid</a>
+		</p>
+		]]>
+    </string>
 
 </resources>

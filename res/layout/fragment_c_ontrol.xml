@@ -304,7 +304,8 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@id/button_softwareverbrennung"
                 android:layout_alignParentLeft="true"
-                android:layout_alignRight="@id/button_softwareverbrennung" />
+                android:layout_alignRight="@id/button_softwareverbrennung"
+                android:text="Don&apos;t press" />
             
             <Button
                 android:id="@+id/button_liftoff"
