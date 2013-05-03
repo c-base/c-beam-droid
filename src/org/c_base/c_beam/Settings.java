@@ -10,4 +10,7 @@ public interface Settings {
 	public static final String C_THEME = "pref_c_theme";
 	public static final String DISPLAY_AP = "pref_display_ap";
 	public static final String STATS_ENABLED = "pref_stats_enabled";
+	public static final String PUSH_MISSIONS = "pref_push_missions";
+	public static final String PUSH_BOARDING = "pref_push_boarding";
+	public static final String PUSH_ETA = "pref_push_eta";
 }
