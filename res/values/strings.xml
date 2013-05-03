@@ -28,10 +28,17 @@
     <string name="title_activity_event">events</string>
     <string name="gcm_message">From GCM: you got message!</string>
     <string name="title_activity_settings">einstellungen</string>
+    <string name="pref_push_settings">push-einstellungen</string>
     <string name="pref_username">benutzername</string>
     <string name="pref_username_summ">dein c-base membername</string>
     <string name="pref_push_summ">push-nachrichten aktivieren (now boarding, ETA)</string>
     <string name="pref_push">push</string>
+    <string name="pref_push_missions_summ">push-nachrichten fu:r missionen activieren</string>
+    <string name="pref_push_missions">push missions</string>
+    <string name="pref_push_boarding_summ">push-nachrichten fu:r boarding activieren</string>
+    <string name="pref_push_boarding">push boarding</string>
+    <string name="pref_push_eta_summ">push-nachrichten fu:r ETA activieren</string>
+    <string name="pref_push_eta">push ETA</string>
     <string name="pref_display_ap">AP anzeigen</string>
     <string name="pref_display_ap_summ"></string>
     <string name="c_beam_rpc_url">http://10.0.1.27:4254/rpc/</string>
