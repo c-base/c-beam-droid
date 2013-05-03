@@ -5,15 +5,7 @@
     android:background="@drawable/bg_portrait"
     tools:context=".MainActivity" >
 
-    <TableLayout
-        android:id="@+id/TableLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/toggleMissionButton"
-        tools:context=".MissionDetailActivity" >
-    </TableLayout>
-
-    <ToggleButton
+     <ToggleButton
         android:id="@+id/toggleMissionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,5 +14,24 @@
         android:text="ToggleButton"
         android:textOff="@string/button_mission_start"
         android:textOn="@string/button_mission_end" />
+     
+    <ScrollView
+        android:id="@+id/scrollViewMission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/toggleMissionButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <TableLayout
+            android:id="@+id/TableLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            tools:context=".MissionDetailActivity" >
+        </TableLayout>
+    </ScrollView>
+
+   
 
 </RelativeLayout>
