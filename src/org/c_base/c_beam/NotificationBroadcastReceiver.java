@@ -13,11 +13,13 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if(action.equals("notification_cancelled"))
         {
-            System.out.println("fooooo");
-
+//        	gcmIntentService.clearMessages();
     		System.out.println(intent.getExtras().getInt("org.c_base.c_beam.message_id"));
-    		
         }
     }
+	
+	public void setGcmIntentService(GCMIntentService gcmIntentService) {
+		this.gcmIntentService = gcmIntentService;
+	}
 
 }
