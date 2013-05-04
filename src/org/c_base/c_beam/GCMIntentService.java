@@ -10,6 +10,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.c_base.c_beam.activity.MainActivity;
+import org.c_base.c_beam.activity.NotificationActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -26,6 +28,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 public class GCMIntentService extends GCMBaseIntentService {
 	private static HashMap<String,Notification> notifications = new HashMap<String,Notification>();
 	private static String boardingCache = "";
+	private static String etaCache = "";
 	
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -36,8 +39,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// TODO Auto-generated method stub
 		Log.i("GCM Error", arg1);
 	}
-	
-	
 
 	@Override
 	protected void onMessage(Context context, Intent arg1) {
@@ -47,27 +48,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		//notifications.get("foo").;
 
-		Log.i("GCM Message", arg1.getExtras().get("title").toString());
-		NotificationCompat.Builder mBuilder =
-				new NotificationCompat.Builder(this)
-		.setSmallIcon(R.drawable.ic_launcher)
-		.setContentTitle(arg1.getExtras().get("title").toString())
-		.setContentText(arg1.getExtras().get("text").toString());
-
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		// mId allows you to update the notification later on.
 		int id = (int) (Math.random()*10000000)+64;
 		if (title.equals("now boarding")) {
 			id = 1;
-			if (boardingCache.equals("")) { 
-				boardingCache = text;
-			} else {
-				boardingCache += ", " + text;
-			}
-			Log.i(TAG, boardingCache);
+			NotificationActivity.addBoardingNotification(text);
+//			if (boardingCache.equals("")) { 
+//				boardingCache = text;
+//			} else {
+//				boardingCache = text + ", " + boardingCache;
+//				text = boardingCache;
+//			}
+//			Log.i(TAG, boardingCache);
 		} else if (title.equals("ETA")) {
 			id = 2;
+			NotificationActivity.addETANotification(text);
+		} else if (title.equals("mission completed")) {
+			id = 3;
+			NotificationActivity.addMissionNotification(text);
 		} else if (title.equals("AES")) {
 			byte[] keyStart = "a1b2c3d4e5f6g7h8a1b2c3d4e5f6g7h8".getBytes();
 			KeyGenerator kgen = null;
@@ -92,34 +90,56 @@ public class GCMIntentService extends GCMBaseIntentService {
 			return;
 		}
 
-		Log.i("id", ""+id);
-		mBuilder.setAutoCancel(true);
-//		long[] l = new long[2];
-//		l[0] = 500;
-//		l[1] = 250;
-//		mBuilder.setVibrate(l);
-		mBuilder.setTicker(title+": "+text);
-		mBuilder.setLights(0x00ffff00, 1000, 1000);
-//		mBuilder.setSubText("subtext");
-//		mBuilder.setSmallIcon(R.drawable.ic_launcher);
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, NotificationActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
 		Intent deleteIntent = new Intent(this, NotificationBroadcastReceiver.class);
 	    deleteIntent.setAction("notification_cancelled");
 	    deleteIntent.putExtra("org.c_base.c_beam.message_id", id);
-	    mBuilder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+
+		NotificationCompat.Builder mBuilder =
+				new NotificationCompat.Builder(this)
+		.setSmallIcon(R.drawable.ic_launcher)
+		.setContentTitle(title)
+		.setContentText(text);
 		
-		//mBuilder.setDeleteIntent(pIntent);
-		mBuilder.setContentIntent(pIntent);
-		Notification notification = mBuilder.getNotification();
-		notifications.put("foo", notification);
-		//notification.flags = Notification.DEFAULT_ALL;
-		notification.flags = Notification.FLAG_SHOW_LIGHTS;
-		notification.flags = Notification.DEFAULT_LIGHTS;
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+//		mBuilder.setAutoCancel(true);
+//		mBuilder.setTicker(title+": "+text);
+//		mBuilder.setLights(0x00ffff00, 1000, 1000);
+//	    mBuilder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT));
+//	 
+//		mBuilder.setContentIntent(pIntent);
+//		RemoteViews expandedView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.expanded_view);
+//		expandedView.setTextViewText(R.id.title, title);
+//		expandedView.setTextViewText(R.id.text, text);
+//		Notification notification = mBuilder.getNotification();
+//		notification.bigContentView = expandedView;
+//
+//		//notification.flags = Notification.DEFAULT_ALL;
+//		notification.flags = Notification.FLAG_SHOW_LIGHTS;
+//		notification.flags = Notification.DEFAULT_LIGHTS;
+		
+		Notification notification = new Notification.Builder(getApplicationContext())
+	     .setContentTitle(title)
+	     .setContentText(text)
+	     .setTicker(title+": "+text)
+	     .setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+	     .setContentIntent(pIntent)
+	     .setSmallIcon(R.drawable.ic_launcher)
+//	     .setLargeIcon(R.drawable.ic_launcher)
+	     .setStyle(new Notification.InboxStyle()
+	         .addLine(text)
+//	         .addLine("bar")
+//	         .setContentTitle("")
+	         .setSummaryText(""))
+	     .build();
+		
+		notifications.put(title, notification);
 
 		mNotificationManager.notify(id, notification);
-
 	}
 
 	@Override
@@ -149,4 +169,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// TODO Auto-generated method stub
 		Log.i("GCM Unreg", arg1);
 	} 
+	
+	public void clearMessages() {
+		boardingCache = "";
+		etaCache = "";
+	}
+	
 }

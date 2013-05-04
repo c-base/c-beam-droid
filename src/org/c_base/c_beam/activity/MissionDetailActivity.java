@@ -80,8 +80,8 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
 	public void addData(Mission m) {
 		addRow("Mission:", m.getShort_description());
 		addRow("Status:", m.getStatus());
-		addRow("Aufgabe:", m.getDescription());
 		addRow("AP:", ""+m.getAp());
+		addRow("Aufgabe:", m.getDescription());
 	}
 
 	public void addRow(String label, String value) {

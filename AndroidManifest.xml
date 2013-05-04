@@ -34,7 +34,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -45,8 +44,7 @@
                     android:pathPrefix="/login"
                     android:scheme="http" />
             </intent-filter>
-            
-			<intent-filter>
+            <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -78,13 +76,13 @@
             android:name="org.c_base.c_beam.activity.MissionActivity"
             android:label="@string/title_activity_mission"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+            android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.activity.MissionActivity"
-            android:screenOrientation="portrait" 
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
-			<!-- 
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -190,8 +188,8 @@
         <activity
             android:name="org.c_base.c_beam.activity.MapActivity"
             android:label="@string/title_activity_map"
-            android:screenOrientation="portrait"
-            android:parentActivityName="org.c_base.c_beam.activity.MainActivity" >
+            android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
@@ -205,12 +203,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
-        
+
         <receiver android:name="org.c_base.c_beam.NotificationBroadcastReceiver" >
             <intent-filter>
                 <action android:name="notification_cancelled" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="org.c_base.c_beam.activity.NotificationActivity"
+            android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity"
+            android:label="@string/title_activity_notification" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
