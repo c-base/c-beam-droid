@@ -2,6 +2,12 @@ package org.c_base.c_beam.fragment;
 
 import java.util.ArrayList;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.activity.EventActivity;
+import org.c_base.c_beam.domain.Event;
+import org.c_base.c_beam.util.Helper;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,11 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.activity.EventActivity;
-import org.c_base.c_beam.util.Helper;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
 
 public class EventListFragment extends ListFragment {
 	ArrayList<Event> items = new ArrayList<Event>();
@@ -70,7 +71,7 @@ public class EventListFragment extends ListFragment {
 			this.context = context;
 			this.items = items;
 		}
-
+ 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);

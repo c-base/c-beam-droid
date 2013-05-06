@@ -1,7 +1,5 @@
 package org.c_base.c_beam;
 
-import org.c_base.c_beam.activity.NotificationActivity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +14,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         System.out.println(action);
         if(action.equals("notification_cancelled"))
         {
-        	NotificationActivity.clear();
-//        	gcmIntentService.clearMessages();
+//        	NotificationActivity.clear();
     		System.out.println(intent.getExtras().getInt("org.c_base.c_beam.message_id"));
         }
     }

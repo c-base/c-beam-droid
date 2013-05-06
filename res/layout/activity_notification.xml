@@ -10,16 +10,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_portrait"
         tools:context=".NotificationActivity" >
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button_delete_notifications"
-            tools:context=".NotificationActivity" >
-
-        </android.support.v4.view.ViewPager>
-
+        
         <Button
             android:id="@+id/button_delete_notifications"
             android:layout_width="wrap_content"
@@ -28,6 +19,18 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:text="@string/button_delete_notifications" />
+
+        <LinearLayout
+            android:id="@+id/notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_delete_notifications"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical" >
+
+        </LinearLayout>
         
     </RelativeLayout>
 
