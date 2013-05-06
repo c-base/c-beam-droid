@@ -214,11 +214,6 @@
             android:name="org.c_base.c_beam.activity.NotificationActivity"
             android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity"
             android:label="@string/title_activity_notification" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
