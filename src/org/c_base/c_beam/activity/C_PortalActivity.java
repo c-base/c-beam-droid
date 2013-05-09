@@ -72,13 +72,6 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_c_portal, menu);
-		return true;
-	}
-
-	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in

@@ -11,6 +11,7 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
@@ -30,9 +31,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -80,8 +85,6 @@ ActionBar.TabListener, OnClickListener {
 	private Handler handler = new Handler();
 	EditText text;
 
-	
-
 	C_beam c_beam = C_beam.getInstance();
 	
 	protected Runnable fred;
@@ -93,7 +96,6 @@ ActionBar.TabListener, OnClickListener {
 
 	TextView tvAp = null;
 	TextView tvUsername = null;
-
 
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
@@ -155,15 +157,18 @@ ActionBar.TabListener, OnClickListener {
 			tvAp.setVisibility(View.GONE);
 			tvUsername.setVisibility(View.GONE);
 		}
-		System.out.println(tvAp.getHeight());
 		setupGCM();
-
 		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processNfcIntent(getIntent());
 			toggleLogin();
 		}
 
 		initializeBroadcastReceiver();
 	}
+
+	void processNfcIntent(Intent intent) {
+        System.out.println(intent.getData());
+    }
 
 	public void onStart() {
 		Log.i(TAG, "onStart()");
@@ -182,7 +187,12 @@ ActionBar.TabListener, OnClickListener {
 
 	public void toggleLogin() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+//		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
+		if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+			showLogoutDialog();
+		} else {
+			showLoginDialog();
+		}
 	}
 	public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -297,12 +307,6 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -314,34 +318,6 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
 
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		if (item.getItemId() == R.id.menu_settings) {
-			Intent myIntent = new Intent(this, SettingsActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_login) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_logout) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_c_out) {
-			Intent myIntent = new Intent(this, C_outActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_map) {
-			Intent myIntent = new Intent(this, MapActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_ccorder) {
-			Intent myIntent = new Intent(this, CcorderActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_c_mission) {
-			Intent myIntent = new Intent(this, MissionActivity.class);
-			startActivityForResult(myIntent, 0);
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

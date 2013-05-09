@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pref_push"
-        android:summary="@string/pref_push_summ"
-        android:title="@string/pref_push" />
-
     <EditTextPreference
         android:defaultValue="bernd"
         android:key="pref_username"
@@ -15,14 +8,48 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="pref_push"
+        android:summary="@string/pref_push_summ"
+        android:title="@string/pref_push" />
+    
+    <PreferenceScreen
+        android:key="pref_push_settings"
+        android:persistent="false"
+        android:title="@string/pref_push_settings" >
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_push_missions"
+            android:summary="@string/pref_push_missions_summ"
+            android:title="@string/pref_push_missions" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_push_boarding"
+            android:summary="@string/pref_push_boarding_summ"
+            android:title="@string/pref_push_boarding" />
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_push_eta"
+            android:summary="@string/pref_push_eta_summ"
+            android:title="@string/pref_push_eta" />
+    </PreferenceScreen>
+    
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="pref_stats_enabled"
         android:summary="@string/pref_stats_enabled_summ"
         android:title="@string/pref_stats_enabled" />
+    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_display_ap"
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
+
+    
+
     <!--
     <EditTextPreference
         android:enabled="false"
@@ -57,7 +84,6 @@
         android:key="pref_c_theme"
         android:summary="@string/pref_c_theme_summ"
         android:title="@string/pref_c_theme" />
-    
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_fade_users"

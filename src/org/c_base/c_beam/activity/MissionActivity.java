@@ -33,7 +33,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,7 +46,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 @SuppressLint("NewApi")
 public class MissionActivity extends C_beamActivity implements
@@ -258,13 +256,6 @@ ActionBar.TabListener, OnClickListener {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
-
-	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// Hide some menu items when not connected to the crew network
 		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
@@ -273,40 +264,6 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
 
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		if (item.getItemId() == R.id.menu_settings) {
-			Intent myIntent = new Intent(this, SettingsActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_login) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_logout) {
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
-		} else if (item.getItemId() == R.id.menu_c_out) {
-			Intent myIntent = new Intent(this, C_outActivity.class);
-			startActivityForResult(myIntent, 0);
-		} else if (item.getItemId() == R.id.menu_map) {
-			Intent myIntent = new Intent(this, MapActivity.class);
-			startActivityForResult(myIntent, 0);
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

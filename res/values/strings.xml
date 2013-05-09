@@ -22,16 +22,26 @@
     <string name="title_map_section3"></string>
     <string name="title_map_section4"></string>
     <string name="hello_world">c-beam</string>
+    <string name="title_notification_mission">missionen</string>
+    <string name="title_notification_boarding">boarding</string>
+    <string name="title_notification_eta">ETA</string>
     <string name="menu_settings">einstellungen</string>
     <string name="title_activity_user">member</string>
     <string name="title_activity_mission">c-mission</string>
     <string name="title_activity_event">events</string>
     <string name="gcm_message">From GCM: you got message!</string>
     <string name="title_activity_settings">einstellungen</string>
+    <string name="pref_push_settings">push-einstellungen</string>
     <string name="pref_username">benutzername</string>
     <string name="pref_username_summ">dein c-base membername</string>
     <string name="pref_push_summ">push-nachrichten aktivieren (now boarding, ETA)</string>
     <string name="pref_push">push</string>
+    <string name="pref_push_missions_summ">push-nachrichten fu:r missionen activieren</string>
+    <string name="pref_push_missions">push missions</string>
+    <string name="pref_push_boarding_summ">push-nachrichten fu:r boarding activieren</string>
+    <string name="pref_push_boarding">push boarding</string>
+    <string name="pref_push_eta_summ">push-nachrichten fu:r ETA activieren</string>
+    <string name="pref_push_eta">push ETA</string>
     <string name="pref_display_ap">AP anzeigen</string>
     <string name="pref_display_ap_summ"></string>
     <string name="c_beam_rpc_url">http://10.0.1.27:4254/rpc/</string>
@@ -118,8 +128,23 @@
     <string name="pref_stats_enabled_summ">legt fest, ob AP für missionen gesammelt werden sollen.</string>
     <string name="title_activity_mission_detail">c-mission</string>
     <string name="menu_c_mission">c-mission</string>
+    <string name="menu_ab_out">ab_out</string>
     <string name="confirm_log_activity">soll die activita:t wirklich geloggt werden?</string>
     <string name="button_c_mission">c-mission</string>
     <string name="button_c_maps">c-maps</string>
-
+    <string name="label_about">About</string>
+    <string name="about_text">
+<![CDATA[
+		<p>
+		<strong>c-beam</strong> v%s<br>
+		by smile, cketti, keyboardsurfer ät c-base.org
+		</p><p>
+		The source code was released under the WTFPL, Version 2.0 and is available here:<br>
+		<a href="http://dev.c-base.org/c-beam-droid">http://dev.c-base.org/c-beam-droid</a>
+		</p>
+		]]>
+    </string>
+    <string name="title_activity_notification">benachrichtigungen</string>
+    <string name="button_delete_notifications">alle nachrichten lo:schen</string>
+	<string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
 </resources>

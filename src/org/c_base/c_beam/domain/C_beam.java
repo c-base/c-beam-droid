@@ -263,9 +263,7 @@ public class C_beam {
 			}
 			this.stats = statsList;
 			this.events = eventList;
-		} catch (JSONRPCException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -321,6 +319,23 @@ public class C_beam {
 		return u;
 	}
 
+	public synchronized User getCurrentUser() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", user);
+				u = new User(item);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return u;
+	}
+
+	
 	public ArrayList<Event> getEvents(){
 		return events;
 	}
@@ -425,7 +440,7 @@ public class C_beam {
 		String result = "";
 		try {
 			if (isInCrewNetwork()) {
-				result = c_beamClient.callString("mission_assign", user, id);
+				result = c_beamClient.callString("mission_complete", user, id);
 			}
 		} catch (JSONRPCException e) {
 			e.printStackTrace();
@@ -662,11 +677,7 @@ public class C_beam {
 					articleList.add(new Article(item));
 				}
 			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return articleList;
@@ -811,7 +822,7 @@ public class C_beam {
 		return false;
 	}
 
-	public void setStats_enabled(boolean stats_enabled) {
+	public void setStatsEnabled(boolean stats_enabled) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 		String user = sharedPref.getString(Settings.USERNAME, "bernd");
 		User u = null;
@@ -833,6 +844,67 @@ public class C_beam {
 		try {
 			if (isInCrewNetwork()) {
 				String result = c_beamClient.callString("logactivity", user, activity, ap);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public boolean isLoggedIn(String user) {
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", user);
+				u = new User(item);
+				return u.getStatus().equals("online");
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+
+	public void setPushMissions(Boolean newValue) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				String result = c_beamClient.callString("set_push_missions", user, newValue);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public void setPushBoarding(Boolean newValue) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				String result = c_beamClient.callString("set_push_boarding", user, newValue);
+			}
+		} catch (JSONRPCException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public void setPushETA(Boolean newValue) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		User u = null;
+		try {
+			if (isInCrewNetwork()) {
+				String result = c_beamClient.callString("set_push_eta", user, newValue);
 			}
 		} catch (JSONRPCException e) {
 			// TODO Auto-generated catch block

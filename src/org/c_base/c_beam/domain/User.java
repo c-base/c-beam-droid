@@ -19,6 +19,9 @@ public class User {
 	private int autologout;
 	private int autologout_in;
 	private boolean stats_enabled = false;
+	private boolean push_missions = false;
+	private boolean push_boarding = false;
+	private boolean push_eta = false;
 
 	public User(JSONObject item) {
 		super();
@@ -38,6 +41,9 @@ public class User {
 			setAutologout(item.getInt("autologout"));
 			setAutologout_in(item.getInt("autologout_in"));
 			stats_enabled = item.getBoolean("stats_enabled");
+			push_missions = item.getBoolean("push_missions");
+			push_boarding = item.getBoolean("push_boarding");
+			push_eta = item.getBoolean("push_eta");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -147,6 +153,24 @@ public class User {
 	}
 	public void setStats_enabled(boolean stats_enabled) {
 		this.stats_enabled = stats_enabled;
+	}
+	public boolean isPush_missions() {
+		return push_missions;
+	}
+	public void setPush_missions(boolean push_missions) {
+		this.push_missions = push_missions;
+	}
+	public boolean isPush_boarding() {
+		return push_boarding;
+	}
+	public void setPush_boarding(boolean push_boarding) {
+		this.push_boarding = push_boarding;
+	}
+	public boolean isPush_eta() {
+		return push_eta;
+	}
+	public void setPush_eta(boolean push_eta) {
+		this.push_eta = push_eta;
 	}
 
 }

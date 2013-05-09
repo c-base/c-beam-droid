@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <!-- 
+    <ImageView
+        android:id="@+id/imageBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitStart"
+        android:src="@drawable/bg_small" />
+	 -->
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="true"
+        android:background="@color/notification_icon"
+        android:scaleType="center"
+        android:src="@drawable/ic_launcher" />
+
+   <TextView
+       android:id="@+id/title"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       android:layout_toLeftOf="@+id/time"
+       android:layout_toRightOf="@+id/imageView1"
+       android:paddingLeft="8dp"
+       android:paddingRight="8dp"
+       android:paddingTop="8dp"
+       android:textColor="@color/white"
+       android:textSize="22sp"
+       android:textStyle="normal" />
+
+   <TextView
+       android:id="@+id/text"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_below="@id/title"
+       android:layout_toLeftOf="@+id/counter"
+       android:layout_toRightOf="@+id/imageView1"
+       android:paddingBottom="8dp"
+       android:paddingLeft="8dp"
+       android:paddingRight="8dp" 
+       android:textSize="16sp" />
+
+   <TextView
+       android:id="@+id/time"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBottom="@+id/title"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentTop="true"
+       android:padding="8dp"
+       android:text="00:00" />
+
+   <TextView
+       android:id="@+id/counter"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBottom="@+id/text"
+       android:layout_alignParentRight="true"
+       android:layout_alignTop="@+id/text"
+       android:padding="8dp"
+       android:text="1" />
+
+
+
+</RelativeLayout>
