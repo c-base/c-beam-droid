@@ -15,6 +15,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.c_base.c_beam.activity.NotificationActivity;
+import org.c_base.c_beam.util.NotificationsDataSource;
 
 import android.app.Notification;
 import android.app.Notification.InboxStyle;
@@ -30,6 +31,7 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 	private static HashMap<String,Notification> notifications = new HashMap<String,Notification>();
+	private NotificationsDataSource datasource;
 
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -89,7 +91,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 			}
 			return;
 		}
-		NotificationActivity.addNotification(text);
+		
+		
+//		NotificationActivity.addNotification(new org.c_base.c_beam.domain.Notification(text));
+		datasource = new NotificationsDataSource(this);
+	    datasource.open();
+		datasource.createNotification(text);
+		
+		
 		Intent intent = new Intent(this, NotificationActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -124,15 +133,17 @@ public class GCMIntentService extends GCMBaseIntentService {
 		//		notification.flags = Notification.DEFAULT_LIGHTS;
 
 		InboxStyle style = new Notification.InboxStyle();
-		ArrayList<String> notificationList = NotificationActivity.getNotificationList();
+//		ArrayList<org.c_base.c_beam.domain.Notification> notificationList = NotificationActivity.getNotificationList();
+		ArrayList<org.c_base.c_beam.domain.Notification> notificationList = datasource.getAllNotifications();
+		datasource.close();
 		if (notificationList.size() > 5) {
 			for(int i=0; i<5; i++) {
-				style.addLine(notificationList.get(i));
+				style.addLine(notificationList.get(i).toString());
 			}
 			style.setSummaryText("+" + (notificationList.size() - 5)+" more...");
 		} else {
-			for(String line: notificationList) {
-				style.addLine(line);
+			for(org.c_base.c_beam.domain.Notification line: notificationList) {
+				style.addLine(line.toString());
 			}
 		}
 
@@ -152,15 +163,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		NotificationManager mNotificationManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
 		mNotificationManager.notify(id, notification);
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		System.out.println("bar");
 	}
 
 	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {

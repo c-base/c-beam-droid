@@ -85,8 +85,6 @@ ActionBar.TabListener, OnClickListener {
 	private Handler handler = new Handler();
 	EditText text;
 
-	
-
 	C_beam c_beam = C_beam.getInstance();
 	
 	protected Runnable fred;
@@ -98,7 +96,6 @@ ActionBar.TabListener, OnClickListener {
 
 	TextView tvAp = null;
 	TextView tvUsername = null;
-
 
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
