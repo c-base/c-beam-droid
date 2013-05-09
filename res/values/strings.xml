@@ -147,4 +147,5 @@
     <string name="title_activity_notification">benachrichtigungen</string>
     <string name="button_delete_notifications">alle nachrichten lo:schen</string>
 	<string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
+	<string name="menu_c_corder">c-corder</string>
 </resources>

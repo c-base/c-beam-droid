@@ -94,6 +94,9 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		} else if (item.getItemId() == R.id.menu_c_mission) {
 			Intent myIntent = new Intent(this, MissionActivity.class);
 			startActivityForResult(myIntent, 0);
+		} else if (item.getItemId() == R.id.menu_c_corder) {
+			Intent myIntent = new Intent(this, CcorderActivity.class);
+			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_ab_out) {
 			new AboutDialogFragment().show(getSupportFragmentManager(), "about");
 		}

@@ -1,6 +1,5 @@
 package org.c_base.c_beam.util;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
