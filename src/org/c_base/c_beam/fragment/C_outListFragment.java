@@ -28,7 +28,8 @@ public class C_outListFragment extends ListFragment {
 	SharedPreferences sharedPref;
 
 	public C_outListFragment() {
-		c_beam = new C_beam(this.getActivity());
+		c_beam = C_beam.getInstance();
+		c_beam.setActivity(this.getActivity());
 	}
 
 	public void clear() {
@@ -36,14 +37,14 @@ public class C_outListFragment extends ListFragment {
 	}
 	public void addItem(String item) {
 		items.add(item);
-		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
-	// Override onCreateView() so we can use a custom empty view
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.list_view, null);
 	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -85,6 +86,4 @@ public class C_outListFragment extends ListFragment {
 			return view;
 		}
 	}
-
-
 }
