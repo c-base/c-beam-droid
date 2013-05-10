@@ -20,8 +20,8 @@ import android.util.Log;
 
 public class CubeRenderer implements GLSurfaceView.Renderer {  
 	private Square square;
-	private Context 	context;
-	
+	private Context context;
+
 	public CubeRenderer(boolean useTranslucentBackground, Context context) { 
 		mTranslucentBackground = useTranslucentBackground;   
 		mCube = new Cube();
@@ -35,29 +35,29 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);  
 		gl.glMatrixMode(GL10.GL_MODELVIEW);     
 		gl.glLoadIdentity();    
-		gl.glTranslatef(0, 0, -5.0f);  
-//		gl.glRotatef(mAngle,        0, 1, 0);  
-//		gl.glRotatef(mAngle*0.25f,  1, 0, 0);     
-//		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); 
-//		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);    
-//		mCube.draw(gl);
-		
-		
+		gl.glTranslatef(0, 0, -2.0f);  
+		gl.glRotatef(mAngle,        0, 1, 0);  
+		gl.glRotatef(mAngle*0.25f,  1, 0, 0);     
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); 
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);    
+		mCube.draw(gl);
+
+
 //		gl.glRotatef(mAngle*2.0f, 0, 1, 1);    
 //		gl.glTranslatef(0.5f, 0.5f, 0.5f);     
 //		mCube.draw(gl);     
 		mAngle += 1.2f;
-		
+
 		// clear Screen and Depth Buffer
-		square.draw(gl);			
+		//		square.draw(gl);			
 	}  
 	public void onSurfaceChanged(GL10 gl, int width, int height) {     
-//		gl.glViewport(0, 0, width, height);    
-//		float ratio = (float) width / height;     
-//		gl.glMatrixMode(GL10.GL_PROJECTION);       
-//		gl.glLoadIdentity();     
-//		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
-		
+		gl.glViewport(0, 0, width, height);    
+		float ratio = (float) width / height;     
+		gl.glMatrixMode(GL10.GL_PROJECTION);       
+		gl.glLoadIdentity();     
+		gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+
 		if(height == 0) { 						//Prevent A Divide By Zero By
 			height = 1; 						//Making Height Equal One
 		}
@@ -85,29 +85,29 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onSurfaceCreated(GL10 gl,
 			javax.microedition.khronos.egl.EGLConfig config) {
-//		gl.glDisable(GL10.GL_DITHER);     
-//		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);   
-//		if (mTranslucentBackground) {          
-//			gl.glClearColor(0,0,0,0);      
-//		} else {        
-//			gl.glClearColor(1,1,1,1);     
-//		}       
-//		gl.glEnable(GL10.GL_CULL_FACE);     
-//		gl.glShadeModel(GL10.GL_SMOOTH);     
-//		gl.glEnable(GL10.GL_DEPTH_TEST);
-		
+		gl.glDisable(GL10.GL_DITHER);     
+		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);   
+		if (mTranslucentBackground) {          
+			gl.glClearColor(0,0,0,0);      
+		} else {        
+			gl.glClearColor(1,1,1,1);     
+		}       
+		gl.glEnable(GL10.GL_CULL_FACE);     
+		gl.glShadeModel(GL10.GL_SMOOTH);     
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+
 		// Load the texture for the square
-				square.loadGLTexture(gl, this.context);
-				
-				gl.glEnable(GL10.GL_TEXTURE_2D);			//Enable Texture Mapping ( NEW )
-				gl.glShadeModel(GL10.GL_SMOOTH); 			//Enable Smooth Shading
-				gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f); 	//Black Background
-				gl.glClearDepthf(1.0f); 					//Depth Buffer Setup
-				gl.glEnable(GL10.GL_DEPTH_TEST); 			//Enables Depth Testing
-				gl.glDepthFunc(GL10.GL_LEQUAL); 			//The Type Of Depth Testing To Do
-				
-				//Really Nice Perspective Calculations
-				gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST); 
+		//				square.loadGLTexture(gl, this.context);
+		//				
+		//				gl.glEnable(GL10.GL_TEXTURE_2D);			//Enable Texture Mapping ( NEW )
+		//				gl.glShadeModel(GL10.GL_SMOOTH); 			//Enable Smooth Shading
+		//				gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f); 	//Black Background
+		//				gl.glClearDepthf(1.0f); 					//Depth Buffer Setup
+		//				gl.glEnable(GL10.GL_DEPTH_TEST); 			//Enables Depth Testing
+		//				gl.glDepthFunc(GL10.GL_LEQUAL); 			//The Type Of Depth Testing To Do
+
+		//Really Nice Perspective Calculations
+		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST); 
 	}
 
 }
@@ -135,14 +135,14 @@ class Cube{
 			1f,    1f,  1f,  0.0f,        
 			0f,    1f,  1f,  0.0f,        };    
 
-//	0f,    0f,  0f,  0.5f, 
-//	1f,    0f,  0f,  0.1f,    
-//	1f,	   1f,  0f,  0.5f,   
-//	0f,    1f,  0f,  0.1f,      
-//	0f,    0f,  1f,  0.1f,       
-//	1f,    0f,  1f,  0.2f,      
-//	1f,    1f,  1f,  0.1f,        
-//	0f,    1f,  1f,  0.1f,        };    
+	//	0f,    0f,  0f,  0.5f, 
+	//	1f,    0f,  0f,  0.1f,    
+	//	1f,	   1f,  0f,  0.5f,   
+	//	0f,    1f,  0f,  0.1f,      
+	//	0f,    0f,  1f,  0.1f,       
+	//	1f,    0f,  1f,  0.2f,      
+	//	1f,    1f,  1f,  0.1f,        
+	//	0f,    1f,  1f,  0.1f,        };    
 
 	byte indices[] = {          
 			0, 4, 5,    0, 5, 1,    
@@ -170,7 +170,8 @@ class Cube{
 		gl.glFrontFace(gl.GL_CW);     
 		gl.glVertexPointer(3, gl.GL_FIXED, 0, mVertexBuffer);  
 		gl.glColorPointer(4, gl.GL_FIXED, 0, mColorBuffer);     
-		gl.glDrawElements(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, mIndexBuffer);    } 
+		gl.glDrawElements(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, mIndexBuffer);    
+	} 
 
 	private IntBuffer   mVertexBuffer;  
 	private FloatBuffer   mColorBuffer;   
@@ -184,13 +185,13 @@ class Cube{
  *
  */
 class Square {
-	
+
 	private FloatBuffer vertexBuffer;	// buffer holding the vertices
 	private float vertices[] = {
 			-1.0f, -1.0f,  0.0f,		// V1 - bottom left
 			-1.0f,  1.0f,  0.0f,		// V2 - top left
-			 1.0f, -1.0f,  0.0f,		// V3 - bottom right
-			 1.0f,  1.0f,  0.0f			// V4 - top right
+			1.0f, -1.0f,  0.0f,		// V3 - bottom right
+			1.0f,  1.0f,  0.0f			// V4 - top right
 	};
 
 	private FloatBuffer textureBuffer;	// buffer holding the texture coordinates
@@ -201,7 +202,7 @@ class Square {
 			1.0f, 1.0f,		// top right	(V4)
 			1.0f, 0.0f		// bottom right	(V3)
 	};
-	
+
 	/** The texture pointer */
 	private int[] textures = new int[1];
 
@@ -209,16 +210,16 @@ class Square {
 		// a float has 4 bytes so we allocate for each coordinate 4 bytes
 		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
 		byteBuffer.order(ByteOrder.nativeOrder());
-		
+
 		// allocates the memory from the byte buffer
 		vertexBuffer = byteBuffer.asFloatBuffer();
-		
+
 		// fill the vertexBuffer with the vertices
 		vertexBuffer.put(vertices);
-		
+
 		// set the cursor position to the beginning of the buffer
 		vertexBuffer.position(0);
-		
+
 		byteBuffer = ByteBuffer.allocateDirect(texture.length * 4);
 		byteBuffer.order(ByteOrder.nativeOrder());
 		textureBuffer = byteBuffer.asFloatBuffer();
@@ -240,39 +241,39 @@ class Square {
 		gl.glGenTextures(1, textures, 0);
 		// ...and bind it to our array
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
-		
+
 		// create nearest filtered texture
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 
 		//Different possible texture parameters, e.g. GL10.GL_CLAMP_TO_EDGE
-//		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
-//		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
-		
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+
 		// Use Android GLUtils to specify a two-dimensional texture image from our bitmap 
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
-		
+
 		// Clean up
 		bitmap.recycle();
 	}
 
-	
+
 	/** The draw method for the square with the GL context */
 	public void draw(GL10 gl) {
 		// bind the previously generated texture
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
-		
+
 		// Point to our buffers
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		
+
 		// Set the face rotation
 		gl.glFrontFace(GL10.GL_CW);
-		
+
 		// Point to our vertex buffer
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-		
+
 		// Draw the vertices as triangle strip
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
 
