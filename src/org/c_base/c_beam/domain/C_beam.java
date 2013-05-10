@@ -42,7 +42,7 @@ public class C_beam {
 	Thread thread;
 	private ArrayList<ActivityLog> activitylog;
 
-	private boolean debug = true;
+	private boolean debug = false;
 
 	private static C_beam instance = new C_beam();
 
