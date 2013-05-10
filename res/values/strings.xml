@@ -132,7 +132,7 @@
     <string name="confirm_log_activity">soll die activita:t wirklich geloggt werden?</string>
     <string name="button_c_mission">c-mission</string>
     <string name="button_c_maps">c-maps</string>
-    <string name="label_about">About</string>
+    <string name="label_about">about</string>
     <string name="about_text">
 <![CDATA[
 		<p>
@@ -148,4 +148,5 @@
     <string name="button_delete_notifications">alle nachrichten lo:schen</string>
 	<string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
 	<string name="menu_c_corder">c-corder</string>
+	<string name="no_events">fu:r heute sind keine events eingetragen</string>
 </resources>

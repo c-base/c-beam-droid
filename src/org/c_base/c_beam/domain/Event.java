@@ -54,7 +54,11 @@ public class Event {
 
 	@Override
 	public String toString() {
-		return title + "("+start+"-"+end+")";
+		if (!start.isEmpty() || !end.isEmpty()) {
+			return title + " ("+start+"-"+end+")";
+		} else {
+			return title;
+		}
 	}
 
 	public String getStart() {

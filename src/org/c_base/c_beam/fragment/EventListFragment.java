@@ -61,7 +61,6 @@ public class EventListFragment extends ListFragment {
 
 	@SuppressWarnings("rawtypes")
 	public class EventAdapter extends ArrayAdapter {
-		private static final String TAG = "EventAdapter";
 		private ArrayList<Event> items;
 		private Context context;
 
@@ -75,7 +74,7 @@ public class EventListFragment extends ListFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
-			Event u = items.get(position);
+//			Event event = items.get(position);
 			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
 			Helper.setFont(getActivity(), view);
 			return view;

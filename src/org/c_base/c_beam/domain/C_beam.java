@@ -42,20 +42,18 @@ public class C_beam {
 	Thread thread;
 	private ArrayList<ActivityLog> activitylog;
 
-	private boolean debug = false;
+	private boolean debug = true;
 
 	private static C_beam instance = new C_beam();
 
-	public C_beam() {
+	private C_beam() {
 		if (debug) {
 			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-			c_beamClient.setConnectionTimeout(5000);
-			c_beamClient.setSoTimeout(5000);
 		} else {
 			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-			c_beamClient.setConnectionTimeout(5000);
-			c_beamClient.setSoTimeout(5000);
 		}
+		c_beamClient.setConnectionTimeout(5000);
+		c_beamClient.setSoTimeout(5000);
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
@@ -71,31 +69,10 @@ public class C_beam {
 	}
 
 	
-	public C_beam(Activity parent) {
-		this.activity = parent;
-		if (debug) {
-			//c_beamClient = JSONRPCClient.create("http://131.234.77.45:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-			c_beamClient.setConnectionTimeout(5000);
-			c_beamClient.setSoTimeout(5000);
-		} else {
-			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-			c_beamClient.setConnectionTimeout(5000);
-			c_beamClient.setSoTimeout(5000);
-		}
-		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
-		portalClient.setConnectionTimeout(5000);
-		portalClient.setSoTimeout(5000);
-
-		//		// Create new JSON-RPC 2.0 client session
-		//		try {
-		//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
-		//			portalSession.getOptions().trustAllCerts(true);
-		//		} catch (MalformedURLException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-	}
+//	public C_beam(Activity parent) {
+//		this();
+//		this.activity = parent;
+//	}
 	
 	public static C_beam getInstance() {
 		return instance;
@@ -152,25 +129,20 @@ public class C_beam {
 	}
 
 	public void updateLists() {
-		//		Log.i(TAG, "updateLists()");
-		updateData();
-		updateArticles();
-
-		onlineList.clear();
-		offlineList.clear();
-		etaList.clear();
-
-		for (User user: users) {
-			if (user.getStatus().equals("online")) {
-				onlineList.add(user);
-			}
-			if (user.getStatus().equals("eta")) {
-				etaList.add(user);
-			}
-			if (user.getStatus().equals("offline")) {
-				offlineList.add(user);
-			}
+		try {
+			JSONObject result = c_beamClient.callJSONObject("app_data");
+			updateUserLists(result.getJSONArray("user"));
+			updateEvents(result.getJSONArray("events"));
+			updateArtefacts(result.getJSONArray("artefacts"));
+			updateMissions(result.getJSONArray("missions"));
+			updateArticles(result.getJSONArray("articles"));
+			updateActivitylog(result.getJSONArray("activitylog"));
+			updateStats(result.getJSONArray("stats"));
+		} catch (Exception e) {
+//			e.printStackTrace();
+			Log.i(TAG, "updateLists failed");
 		}
+//		updateArticles();
 
 
 		//		String method = "list_articles";
@@ -199,72 +171,97 @@ public class C_beam {
 		//		}
 	}
 
-	private void updateData() {
-		Log.i(TAG, "updateData()");
-		try {
-			events = new ArrayList<Event>();
+	private void updateStats(JSONArray statsResult) throws JSONException {
+		ArrayList<User> statsList = new ArrayList<User>();
+		for (int i=0; i<statsResult.length(); i++) {
+			JSONObject item = statsResult.getJSONObject(i);
+			statsList.add(new User(item));
+		}
+		this.stats = statsList;
+	}
 
-			JSONObject result = c_beamClient.callJSONObject("app_data");
 
-			JSONArray userResult = result.getJSONArray("user");
-			JSONArray eventsResult = result.getJSONArray("events");
-			JSONArray artefactsResult = result.getJSONArray("artefacts");
-			JSONArray missionResult = result.getJSONArray("missions");
-			JSONArray activitylogResult = result.getJSONArray("activitylog");
-			JSONArray statsResult = result.getJSONArray("stats");
-			JSONArray articleResult = result.getJSONArray("articles");
+	private void updateActivitylog(JSONArray activitylogResult)
+			throws JSONException {
+		ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
+		for (int i=0; i<activitylogResult.length(); i++) {
+			JSONObject item = activitylogResult.getJSONObject(i);
+			activitylogList.add(new ActivityLog(item));
+		}
+		this.activitylog = activitylogList;
+	}
 
-			ArrayList<User> userList = new ArrayList<User>();
-			for (int i=0; i<userResult.length(); i++) {
-				JSONObject item = userResult.getJSONObject(i);
-				userList.add(new User(item));
+
+	private void updateArticles(JSONArray articleResult) throws JSONException {
+		ArrayList<Article> articleList = new ArrayList<Article>();
+		for (int i=0; i<articleResult.length(); i++) {
+			JSONObject item = articleResult.getJSONObject(i);
+			articleList.add(new Article(item));
+		}
+		this.articleList = articleList;
+	}
+
+
+	private void updateMissions(JSONArray missionResult) throws JSONException {
+		ArrayList<Mission> missionList = new ArrayList<Mission>();
+		for (int i=0; i<missionResult.length(); i++) {
+			JSONObject item = missionResult.getJSONObject(i);
+			missionList.add(new Mission(item));
+		}
+		this.missions = missionList;
+	}
+
+
+	private void updateArtefacts(JSONArray artefactsResult)
+			throws JSONException {
+		ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+		for (int i=0; i<artefactsResult.length(); i++) {
+			JSONObject item = artefactsResult.getJSONObject(i);
+			artefactList.add(new Artefact(item));
+		}
+		this.artefactList = artefactList;
+	}
+
+	private void updateEvents(JSONArray eventsResult)
+			throws JSONException {
+		ArrayList<Event> eventList = new ArrayList<Event>();
+		for (int i=0; i<eventsResult.length(); i++) {
+			JSONObject item = eventsResult.getJSONObject(i);
+			eventList.add(new Event(item));
+		}
+		if (eventList.size() == 0) {
+//			eventList.add(new Event(Resources.getSystem().getString(org.c_base.c_beam.R.string.no_events)));
+			eventList.add(new Event("fu:r heute sind keine events eingetragen"));
+		}
+		this.events = eventList;
+	}
+
+	private void updateUserLists(JSONArray userResult) throws JSONException {
+		ArrayList<User> userList = new ArrayList<User>();
+		for (int i=0; i<userResult.length(); i++) {
+			JSONObject item = userResult.getJSONObject(i);
+			userList.add(new User(item));
+		}
+		this.users = userList;
+		
+		onlineList.clear();
+		offlineList.clear();
+		etaList.clear();
+
+		for (User user: users) {
+			if (user.getStatus().equals("online")) {
+				onlineList.add(user);
 			}
-			this.users = userList;
-
-			ArrayList<Event> eventList = new ArrayList<Event>();
-			for (int i=0; i<eventsResult.length(); i++) {
-				JSONObject item = eventsResult.getJSONObject(i);
-				eventList.add(new Event(item));
+			if (user.getStatus().equals("eta")) {
+				etaList.add(user);
 			}
-			this.events = eventList;
-
-			ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-			for (int i=0; i<artefactsResult.length(); i++) {
-				JSONObject item = artefactsResult.getJSONObject(i);
-				artefactList.add(new Artefact(item));
+			if (user.getStatus().equals("offline")) {
+				offlineList.add(user);
 			}
-			this.artefactList = artefactList;
-
-			ArrayList<Mission> missionList = new ArrayList<Mission>();
-			for (int i=0; i<missionResult.length(); i++) {
-				JSONObject item = missionResult.getJSONObject(i);
-				missionList.add(new Mission(item));
-			}
-			this.missions = missionList;
-
-			ArrayList<Article> articleList = new ArrayList<Article>();
-			for (int i=0; i<articleResult.length(); i++) {
-				JSONObject item = articleResult.getJSONObject(i);
-				articleList.add(new Article(item));
-			}
-			this.articleList = articleList;
-
-			ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
-			for (int i=0; i<activitylogResult.length(); i++) {
-				JSONObject item = activitylogResult.getJSONObject(i);
-				activitylogList.add(new ActivityLog(item));
-			}
-			this.activitylog = activitylogList;
-
-			ArrayList<User> statsList = new ArrayList<User>();
-			for (int i=0; i<statsResult.length(); i++) {
-				JSONObject item = statsResult.getJSONObject(i);
-				statsList.add(new User(item));
-			}
-			this.stats = statsList;
-			this.events = eventList;
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		
+		if (onlineList.size() == 0 && etaList.size() == 0) {
+			onlineList.add(new User("Niemand da"));
 		}
 	}
 
@@ -305,32 +302,41 @@ public class C_beam {
 		return list;
 	}
 
-	public synchronized User getUser(int id) {
+	public User getUser(int id) {
+		for(User user: users) {
+			if (user.getId() == id) {
+				return user;
+			}
+		}
+		// TODO this can cause a NetworkOnMainThreadException, can it be replaced by the code above?
 		User u = null;
 		try {
 			if (isInCrewNetwork()) {
 				JSONObject item = c_beamClient.callJSONObject("get_user_by_id", id);
 				u = new User(item);
 			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			// c-beam call failed for some reason, we can continue and return null
 		}
 		return u;
 	}
 
-	public synchronized User getCurrentUser() {
+	public User getCurrentUser() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-		String user = sharedPref.getString(Settings.USERNAME, "bernd");
+		String username = sharedPref.getString(Settings.USERNAME, "bernd");
+		for(User user: users) {
+			if (user.getUsername().contentEquals(username)) {
+				return user;
+			}
+		}
 		User u = null;
 		try {
 			if (isInCrewNetwork()) {
-				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", user);
+				JSONObject item = c_beamClient.callJSONObject("get_user_by_name", username);
 				u = new User(item);
 			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			// c-beam call failed for some reason, we can continue and return null
 		}
 		return u;
 	}
@@ -339,83 +345,90 @@ public class C_beam {
 	public ArrayList<Event> getEvents(){
 		return events;
 	}
-	public synchronized ArrayList<Event> updateEvents() {
-		Log.i(TAG, "updateEvents()");
-		try {
-			events = new ArrayList<Event>();
-			JSONArray result = c_beamClient.callJSONArray("event_list");
-			for (int i=0; i<result.length(); i++) {
-				JSONObject item = result.getJSONObject(i);
-				events.add(new Event(item));
-			}
-			return events;
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return events;
-	}
+	
+//	public synchronized ArrayList<Event> updateEvents() {
+//		Log.i(TAG, "updateEvents()");
+//		try {
+//			events = new ArrayList<Event>();
+//			JSONArray result = c_beamClient.callJSONArray("event_list");
+//			for (int i=0; i<result.length(); i++) {
+//				JSONObject item = result.getJSONObject(i);
+//				events.add(new Event(item));
+//			}
+//			return events;
+//		} catch (JSONRPCException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return events;
+//	}
 
 	public synchronized ArrayList<Mission> getMissions() {
 		return missions;
 	}
-	public synchronized ArrayList<Mission> updateMissions() {
-		missions = new ArrayList<Mission>();
-
-		try {
-			if (isInCrewNetwork()) {
-				JSONArray result = c_beamClient.callJSONArray("mission_list");
-				for (int i=0; i<result.length(); i++) {
-					JSONObject item = result.getJSONObject(i);
-					missions.add(new Mission(item));
-				}
-			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return missions;
-	}
+	
+//	public synchronized ArrayList<Mission> updateMissions() {
+//		missions = new ArrayList<Mission>();
+//
+//		try {
+//			if (isInCrewNetwork()) {
+//				JSONArray result = c_beamClient.callJSONArray("mission_list");
+//				for (int i=0; i<result.length(); i++) {
+//					JSONObject item = result.getJSONObject(i);
+//					missions.add(new Mission(item));
+//				}
+//			}
+//		} catch (JSONRPCException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return missions;
+//	}
 
 	public synchronized ArrayList<ActivityLog> getActivityLog() {
 		return activitylog;
 	}
-	public synchronized ArrayList<ActivityLog> updateActivityLog() {
-		activitylog = new ArrayList<ActivityLog>();
 
-		try {
-			if (isInCrewNetwork()) {
-				JSONArray result = c_beamClient.callJSONArray("activitylog");
-				for (int i=0; i<result.length(); i++) {
-					JSONObject item = result.getJSONObject(i);
-					activitylog.add(new ActivityLog(item));
-				}
-			}
-		} catch (JSONRPCException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return activitylog;
-	}
+//	public synchronized ArrayList<ActivityLog> updateActivityLog() {
+//		activitylog = new ArrayList<ActivityLog>();
+//
+//		try {
+//			if (isInCrewNetwork()) {
+//				JSONArray result = c_beamClient.callJSONArray("activitylog");
+//				for (int i=0; i<result.length(); i++) {
+//					JSONObject item = result.getJSONObject(i);
+//					activitylog.add(new ActivityLog(item));
+//				}
+//			}
+//		} catch (JSONRPCException e) {
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		return activitylog;
+//	}
 
 	public synchronized Mission getMission(int id) {
+		for (Mission mission: missions) {
+			if (mission.getId() == id) {
+				return mission;
+			}
+		}
+
 		Mission m = null;
 		try {
 			if (isInCrewNetwork()) {
 				JSONObject item = c_beamClient.callJSONObject("mission_detail", id);
-				Log.i("item", item.toString());
 				m = new Mission(item);
-				Log.i("dn", m.toString());
 			}
-		} catch (JSONRPCException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			// c-beam call failed for some reason, we can continue and return null
 		}
 		return m;
 	}
@@ -462,29 +475,29 @@ public class C_beam {
 		return result;
 	}
 
-	private synchronized ArrayList<User> updateStats() {
-		ArrayList<User> list = new ArrayList<User>();
-
-		try {
-			if (isInCrewNetwork()) {
-				JSONArray result = c_beamClient.callJSONArray("stats_list");
-				for (int i=0; i<result.length(); i++) {
-					JSONObject item = result.getJSONObject(i);
-					list.add(new User(item));
-				}
-			}
-			stats = list;
-		} catch (JSONRPCException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+//	private synchronized ArrayList<User> updateStats() {
+//		ArrayList<User> list = new ArrayList<User>();
+//
+//		try {
+//			if (isInCrewNetwork()) {
+//				JSONArray result = c_beamClient.callJSONArray("stats_list");
+//				for (int i=0; i<result.length(); i++) {
+//					JSONObject item = result.getJSONObject(i);
+//					list.add(new User(item));
+//				}
+//			}
+//			stats = list;
+//		} catch (JSONRPCException e) {
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		return list;
+//	}
+	
 	public ArrayList<User> getStats() {
 		return stats;
 	}
-
 
 	public synchronized void register(String regId, String user) {
 		try {
@@ -666,46 +679,46 @@ public class C_beam {
 
 	}
 
-	public synchronized ArrayList<Article> updateArticles() {
-		articleList = new ArrayList<Article>();
-		try {
-			if (isInCrewNetwork()) {
-				JSONArray result = c_beamClient.callJSONObject("list_articles").getJSONArray("result");
-				for (int i=0; i<result.length(); i++) {
-					JSONObject item = result.getJSONObject(i);
-					//Log.i("articles", item.toString());
-					articleList.add(new Article(item));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return articleList;
-	}
+//	public synchronized ArrayList<Article> updateArticles() {
+//		articleList = new ArrayList<Article>();
+//		try {
+//			if (isInCrewNetwork()) {
+//				JSONArray result = c_beamClient.callJSONObject("list_articles").getJSONArray("result");
+//				for (int i=0; i<result.length(); i++) {
+//					JSONObject item = result.getJSONObject(i);
+//					//Log.i("articles", item.toString());
+//					articleList.add(new Article(item));
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return articleList;
+//	}
 
 	public ArrayList<Article> getArticles() {
 		return articleList;
 	}
 
-	public synchronized ArrayList<Artefact> updateArtefacts() {
-		artefactList = new ArrayList<Artefact>();
-		try {
-			if (isInCrewNetwork()) {
-				JSONArray result = c_beamClient.callJSONArray("artefact_list");
-				for (int i=0; i<result.length(); i++) {
-					JSONObject item = result.getJSONObject(i);
-					artefactList.add(new Artefact(item));
-				}
-			}
-		} catch (JSONRPCException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return artefactList;
-	}
+//	public synchronized ArrayList<Artefact> updateArtefacts() {
+//		artefactList = new ArrayList<Artefact>();
+//		try {
+//			if (isInCrewNetwork()) {
+//				JSONArray result = c_beamClient.callJSONArray("artefact_list");
+//				for (int i=0; i<result.length(); i++) {
+//					JSONObject item = result.getJSONObject(i);
+//					artefactList.add(new Artefact(item));
+//				}
+//			}
+//		} catch (JSONRPCException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return artefactList;
+//	}
 
 	public ArrayList<Artefact> getArtefacts() {
 		return artefactList;
