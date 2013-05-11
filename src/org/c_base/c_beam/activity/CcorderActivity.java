@@ -5,10 +5,7 @@ import java.io.IOException;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.util.CubeRenderer;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,27 +26,34 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 
 @SuppressLint("NewApi")
-public class CcorderActivity extends SherlockFragmentActivity implements Callback {
+public class CcorderActivity extends C_beamActivity implements Callback {
 	private Camera camera;
 	private SurfaceView mSurfaceView;
 	SurfaceHolder mSurfaceHolder;
-	private TouchSurfaceView mGLSurfaceView;
+	//	private TouchSurfaceView mGLSurfaceView;
+
+
+	View mVictimContainer;
+	View mVictim1;
+	View mVictim2;
+
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
 		public void onShutter() {
-			// TODO Auto-generated method stub
 			// No action to be perfomed on the Shutter callback.
 		}
 	};
 	PictureCallback raw = new PictureCallback(){
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-			// TODO Auto-generated method stub
 			// No action taken on the raw data. Only action taken on jpeg data.
 		}
 	};
@@ -64,23 +68,58 @@ public class CcorderActivity extends SherlockFragmentActivity implements Callbac
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-		//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_ccorder);
 
+		GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
+		ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
+		int index = parent.indexOfChild(glSurfaceView);
+		parent.removeView(glSurfaceView);
+		glSurfaceView = new TouchSurfaceView(this);
+		parent.addView(glSurfaceView, index);
 
-		mGLSurfaceView = new TouchSurfaceView(this); 
+		// Find the views whose visibility will change
+		mVictimContainer = findViewById(R.id.hidecontainer);
+		mVictim1 = findViewById(R.id.hideme1);
+		mVictim1.setOnClickListener(new HideMeListener(mVictim1));
+		mVictim2 = findViewById(R.id.hideme2);
+		mVictim2.setOnClickListener(new HideMeListener(mVictim2));
 
-		mSurfaceView = new SurfaceView(this);
-		addContentView(mSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
-		//		addContentView(mGLSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+		// Find our buttons
+		Button visibleButton = (Button) findViewById(R.id.vis);
+		Button invisibleButton = (Button) findViewById(R.id.invis);
+		Button goneButton = (Button) findViewById(R.id.gone);
 
-		DrawOnTop mDraw = new DrawOnTop(this);
-		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		
-		Scanbar scanbar = new Scanbar(this);
-		addContentView(scanbar, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-		int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
+		// Wire each button to a click listener
+		visibleButton.setOnClickListener(mVisibleListener);
+		invisibleButton.setOnClickListener(mInvisibleListener);
+		goneButton.setOnClickListener(mGoneListener);
+
+		//		mSurfaceView = new SurfaceView(this);
+		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+
+		//		addContentView(mSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+		//		addContentView(glSurfaceView, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT));
+		//
+		View grid = findViewById(R.id.grid); 
+		parent = (ViewGroup) grid.getParent();
+		index = parent.indexOfChild(grid);
+		parent.removeView(grid);
+		grid = new DrawOnTop(this);
+		parent.addView(grid, index);
+
+		//		DrawOnTop mDraw = new DrawOnTop(this);
+		//		addContentView(mDraw, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		//		
+		View scanbar = findViewById(R.id.scanbar); 
+		parent = (ViewGroup) scanbar.getParent();
+		index = parent.indexOfChild(scanbar);
+		parent.removeView(scanbar);
+		scanbar = new Scanbar(this);
+		parent.addView(scanbar, index);
+
+		//		Scanbar scanbar = new Scanbar(this);
+		//		addContentView(scanbar, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 340;
 		TranslateAnimation transAnimation= new TranslateAnimation(0, 0, 0, height);
 
 		transAnimation.setRepeatMode(2);
@@ -92,7 +131,8 @@ public class CcorderActivity extends SherlockFragmentActivity implements Callbac
 		mSurfaceHolder = mSurfaceView.getHolder();
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT|LayoutParams.FLAG_BLUR_BEHIND); 
+		//		mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT|LayoutParams.FLAG_BLUR_BEHIND); 
+		mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
 	}
 
 	@Override
@@ -233,4 +273,44 @@ public class CcorderActivity extends SherlockFragmentActivity implements Callbac
 			return true;
 		}
 	}
+
+	OnClickListener mVisibleListener = new OnClickListener() {
+		public void onClick(View v) {
+			mVictim1.setVisibility(View.VISIBLE);
+			mVictim2.setVisibility(View.VISIBLE);
+			mVictimContainer.setVisibility(View.VISIBLE);
+		}
+	};
+
+	OnClickListener mInvisibleListener = new OnClickListener() {
+		public void onClick(View v) {
+			mVictim1.setVisibility(View.INVISIBLE);
+			mVictim2.setVisibility(View.INVISIBLE);
+			mVictimContainer.setVisibility(View.INVISIBLE);
+		}
+	};
+
+	OnClickListener mGoneListener = new OnClickListener() {
+		public void onClick(View v) {
+			mVictim1.setVisibility(View.GONE);
+			mVictim2.setVisibility(View.GONE);
+			mVictimContainer.setVisibility(View.GONE);
+		}
+	};
+}
+
+class HideMeListener implements OnClickListener {
+
+
+
+	public HideMeListener(View mVictim1) {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+System.out.println("fooooo");
+	}
+
 }

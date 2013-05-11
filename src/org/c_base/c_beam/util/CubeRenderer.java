@@ -31,7 +31,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
 
 	public void onDrawFrame(GL10 gl) {  
-		Log.i("CubeRenderer", "draw");
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);  
 		gl.glMatrixMode(GL10.GL_MODELVIEW);     
 		gl.glLoadIdentity();    
