@@ -3,8 +3,10 @@ package org.c_base.c_beam.fragment;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,18 +21,20 @@ import org.c_base.c_beam.activity.BamActivity;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.util.Helper;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 
 
 @SuppressLint("ValidFragment")
 public class C_ontrolFragment extends Fragment {
-	View thisView;
-	ProgressBar input;
-	C_ontrolFragment cf = this;
-	AlertDialog pd;
-	AlertDialog bam;
-	int progress;
-	C_beam c_beam;
-	Fragment c_leuseFragment;
+	private View thisView;
+	private ProgressBar input;
+	private C_ontrolFragment cf = this;
+	private AlertDialog pd;
+	private AlertDialog bam;
+	private int progress;
+	private C_beam c_beam;
+	private Fragment c_leuseFragment;
+	private SharedPreferences sharedPref;
 
 	public C_ontrolFragment() {
 		this.c_beam = null;
@@ -46,6 +50,8 @@ public class C_ontrolFragment extends Fragment {
 			return null;
 		}
 
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		
 		View v = inflater.inflate(R.layout.fragment_c_ontrol, container, false);
 
 		TextView pattern = (TextView) v.findViewById(R.id.textView1);
@@ -53,10 +59,10 @@ public class C_ontrolFragment extends Fragment {
 
 		Button b = (Button) v.findViewById(R.id.button_self_destruct);
 
-//		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
-//		adb.setTitle("BAM!");
-//		adb.setPositiveButton("Danke", null);
-//		bam = adb.create();
+		//		AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+		//		adb.setTitle("BAM!");
+		//		adb.setPositiveButton("Danke", null);
+		//		bam = adb.create();
 
 		b.setOnClickListener(new OnClickListener() {
 			@Override
@@ -122,7 +128,7 @@ public class C_ontrolFragment extends Fragment {
 				throw new WTFException("I told you not to press the button...");
 			}
 		});
-		
+
 		ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
 		t.setOnClickListener(new OnClickListener() {
 			@Override
@@ -298,7 +304,9 @@ public class C_ontrolFragment extends Fragment {
 				c_beam.set_stripe_default();
 			}
 		});
-		/* */
+		
+//		Helper.setButtonStyle((ViewGroup) v);
+		
 		thisView = v;
 		return v;
 	}
@@ -306,6 +314,8 @@ public class C_ontrolFragment extends Fragment {
 		public WTFException(String message) {
 			super(message);
 		}
-		
+
 	}
+
+	
 }

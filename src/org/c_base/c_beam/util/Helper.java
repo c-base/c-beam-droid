@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
 import org.c_base.c_beam.R;
@@ -65,5 +68,28 @@ public class Helper {
 
 	public static void loadAllTitlePrefs(Context context,
 			ArrayList<Integer> appWidgetIds, ArrayList<String> texts) {
+	}
+	
+	public static final void setButtonStyle(ViewGroup mContainer)
+	{
+		if (mContainer == null) return;
+		final int mCount = mContainer.getChildCount();
+		// Loop through all of the children.
+		for (int i = 0; i < mCount; ++i)
+		{
+			final View mChild = mContainer.getChildAt(i);
+			if (mChild instanceof Button) {
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContainer.getContext());
+				if (sharedPref.getBoolean(Settings.C_THEME, true)) {
+					mChild.setBackgroundResource(R.drawable.button);
+				}
+				//				((TextView) mChild).setGravity(TextView.TEXT);
+			}
+			else if (mChild instanceof ViewGroup)
+			{
+				// Recursively attempt another ViewGroup.
+				setButtonStyle((ViewGroup) mChild);
+			}
+		}
 	}
 }
