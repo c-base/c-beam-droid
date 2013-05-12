@@ -8,11 +8,14 @@ import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
@@ -39,6 +42,7 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 	private ToggleButton toggleButtonScanner;
 	private ToggleButton toggleButtonGrid;
 	private Button buttonPhotons;
+	private MediaPlayer mp;
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
@@ -64,6 +68,9 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mp = MediaPlayer.create(this, R.raw.zap);
+		mp.start();
+		
 		setContentView(R.layout.activity_ccorder);
 
 		GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
@@ -113,6 +120,10 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 			
 			@Override
 			public void onClick(View v) {
+				if (mp != null) {
+					mp.seekTo(0);
+					mp.start();
+				}
 				ledon();
 				
 			}
@@ -144,6 +155,18 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
+		
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setTitle("c-corder reconstruction beta");
+		b.setMessage("der c-corder befindet sich noch in der frühen betaphase der reconstruction und unterstu:tct viele der urpsru:nglichen functionen noch nicht.\n\ndie wichtigste function ist aber bereits implementiert: leersaugen des accus.");
+		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		b.show();
+
 	}
 
 	@Override
