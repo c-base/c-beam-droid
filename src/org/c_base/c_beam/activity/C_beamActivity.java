@@ -14,7 +14,9 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -61,9 +63,11 @@ public class C_beamActivity extends SherlockFragmentActivity {
 			final View mChild = mContainer.getChildAt(i);
 			if (mChild instanceof TextView)
 			{
-				// Set the font if it is a TextView.
 				Helper.setFont(this, ((TextView) mChild));
-//				((TextView) mChild).setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
+			}
+			if (mChild instanceof Button) {
+				mChild.setBackgroundResource(R.drawable.button);
+//				((TextView) mChild).setGravity(TextView.TEXT);
 			}
 			else if (mChild instanceof ViewGroup)
 			{
