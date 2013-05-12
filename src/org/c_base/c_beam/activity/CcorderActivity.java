@@ -69,7 +69,6 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		super.onCreate(savedInstanceState);
 
 		mp = MediaPlayer.create(this, R.raw.zap);
-		mp.start();
 		
 		setContentView(R.layout.activity_ccorder);
 
@@ -124,7 +123,7 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 					mp.seekTo(0);
 					mp.start();
 				}
-				ledon();
+				ledflash();
 				
 			}
 		});
@@ -193,18 +192,13 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		camera.release();
 	}
 	
-	void ledon() {
+	void ledflash() {
 	    
 	    Parameters params = camera.getParameters();
-	    params.setFlashMode(Parameters.FLASH_MODE_ON);
+	    params.setFlashMode(Parameters.FLASH_MODE_TORCH);
 	    camera.setParameters(params);
-	    
-	    camera.startPreview();
-	}
-
-	void ledoff() {
-//	    camera.stopPreview();
-//	    camera.release();
+	    params.setFlashMode(Parameters.FLASH_MODE_OFF);
+	    camera.setParameters(params);
 	}
 
 	OnClickListener mVisibleListener = new OnClickListener() {
