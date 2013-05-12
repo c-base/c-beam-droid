@@ -36,7 +36,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		CheckBoxPreference push_boarding = (CheckBoxPreference) findPreference(Settings.PUSH_BOARDING);
 		CheckBoxPreference push_eta = (CheckBoxPreference) findPreference(Settings.PUSH_ETA);
 		
-		if (c_beam.isInCrewNetwork()) {
+		if (user != null && c_beam.isInCrewNetwork()) {
 			stats_enabled.setChecked(user.isStats_enabled());
 			push_missions.setChecked(user.isPush_missions());
 			push_boarding.setChecked(user.isPush_boarding());
