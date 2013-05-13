@@ -9,12 +9,17 @@ import org.c_base.c_beam.ccorder.TouchSurfaceView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -29,7 +34,7 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 @SuppressLint("NewApi")
-public class CcorderActivity extends C_beamActivity implements Callback {
+public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
 	private Camera camera;
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
@@ -42,7 +47,11 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 	private ToggleButton toggleButtonScanner;
 	private ToggleButton toggleButtonGrid;
 	private Button buttonPhotons;
-	private MediaPlayer mp;
+	private MediaPlayer zap;
+	private MediaPlayer scan;
+
+	private SensorManager mSensorManager;
+	private Sensor mSensor;
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
@@ -62,14 +71,18 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		public void onPictureTaken(byte[] data, Camera camera) {
 		}
 	};
-	
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mp = MediaPlayer.create(this, R.raw.zap);
-		
+		zap = MediaPlayer.create(this, R.raw.zap);
+		scan = MediaPlayer.create(this, R.raw.scan);
+
+		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
 		setContentView(R.layout.activity_ccorder);
 
 		GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
@@ -102,7 +115,7 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		});
 		toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
 		toggleButtonGrid.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				ToggleButton b = (ToggleButton) v;
@@ -113,18 +126,18 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 				}
 			}
 		});
-		
+
 		buttonPhotons = (Button) findViewById(R.id.hideme3);
 		buttonPhotons.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				if (mp != null) {
-					mp.seekTo(0);
-					mp.start();
+				if (zap != null) {
+					zap.seekTo(0);
+					zap.start();
 				}
 				ledflash();
-				
+
 			}
 		});
 
@@ -154,7 +167,7 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		mSurfaceHolder.addCallback(this);
 		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
-		
+
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
 		b.setTitle("c-corder reconstruction beta");
 		b.setMessage("der c-corder befindet sich noch in der frühen betaphase der reconstruction und unterstu:tct viele der urpsru:nglichen functionen noch nicht.\n\ndie wichtigste function ist aber bereits implementiert: leersaugen des accus.");
@@ -191,14 +204,14 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 		camera.stopPreview();
 		camera.release();
 	}
-	
+
 	void ledflash() {
-	    
-	    Parameters params = camera.getParameters();
-	    params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-	    camera.setParameters(params);
-	    params.setFlashMode(Parameters.FLASH_MODE_OFF);
-	    camera.setParameters(params);
+
+		Parameters params = camera.getParameters();
+		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+		camera.setParameters(params);
+		params.setFlashMode(Parameters.FLASH_MODE_OFF);
+		camera.setParameters(params);
 	}
 
 	OnClickListener mVisibleListener = new OnClickListener() {
@@ -212,11 +225,38 @@ public class CcorderActivity extends C_beamActivity implements Callback {
 
 	OnClickListener mInvisibleListener = new OnClickListener() {
 		public void onClick(View v) {
-//			toggleButtonScanner.setVisibility(View.INVISIBLE);
-//			toggleButtonGrid.setVisibility(View.INVISIBLE);
-//			buttonPhotons.setVisibility(View.INVISIBLE);
+			//			toggleButtonScanner.setVisibility(View.INVISIBLE);
+			//			toggleButtonGrid.setVisibility(View.INVISIBLE);
+			//			buttonPhotons.setVisibility(View.INVISIBLE);
 			mVictimContainer.setVisibility(View.INVISIBLE);
 		}
 	};
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		//		if (Math.abs(event.values[1]) > 10 || Math.abs(event.values[2]) > 10 || Math.abs(event.values[1] + event.values[2]) > 10)
+		if (Math.abs(event.values[1] + event.values[2]) > 6) {
+//			System.out.println(event.values[0] + "/" + event.values[1] + "/" + event.values[2]);
+			scan.start();
+		}
+
+	}
+
+	protected void onResume () {
+		super.onResume();
+		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
+	}
+
+	protected void onPause() {
+		super.onPause();
+		mSensorManager.unregisterListener(this, mSensor);
+	}
+
 }
 
