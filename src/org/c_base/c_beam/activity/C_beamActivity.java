@@ -16,13 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
- 
+
 public class C_beamActivity extends SherlockFragmentActivity {
 	ActionBar actionBar;
 	C_beam c_beam = C_beam.getInstance();
@@ -61,13 +60,13 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		for (int i = 0; i < mCount; ++i)
 		{
 			final View mChild = mContainer.getChildAt(i);
+			//			if (mChild instanceof Button) {
+			//				mChild.setBackgroundResource(R.drawable.button);
+			//				return;
+			//			}
 			if (mChild instanceof TextView)
 			{
 				Helper.setFont(this, ((TextView) mChild));
-			}
-			if (mChild instanceof Button) {
-				mChild.setBackgroundResource(R.drawable.button);
-//				((TextView) mChild).setGravity(TextView.TEXT);
 			}
 			else if (mChild instanceof ViewGroup)
 			{
@@ -76,7 +75,7 @@ public class C_beamActivity extends SherlockFragmentActivity {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
@@ -106,11 +105,27 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSherlock().getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean mIsOnline = c_beam.isInCrewNetwork();
+		// Hide some menu items when not connected to the crew network
+		try {
+			menu.findItem(R.id.menu_login).setVisible(mIsOnline);
+			menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
+			menu.findItem(R.id.menu_map).setVisible(mIsOnline);
+			menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+			menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
+		} catch (Exception e) {
+			// some menu item is missing
+		}
 		return true;
 	}
 
