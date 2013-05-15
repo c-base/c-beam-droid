@@ -6,9 +6,7 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.C_outListFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -16,8 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 public class C_outActivity extends C_beamActivity {
 	C_beam c_beam = C_beam.getInstance();
@@ -76,6 +72,7 @@ public class C_outActivity extends C_beamActivity {
 		final ViewGroup mContainer = (ViewGroup) findViewById(
 				android.R.id.content).getRootView();
 		setAppFont(mContainer);
+//		Helper.setButtonStyle(mContainer);
 		setupActionBar();
 	}
 	

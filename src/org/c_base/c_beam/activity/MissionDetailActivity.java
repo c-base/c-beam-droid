@@ -7,12 +7,10 @@ import org.c_base.c_beam.util.Helper;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,9 +19,6 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 public class MissionDetailActivity extends C_beamActivity implements OnClickListener {
 	protected static final String TAG = "MissionActivity";
@@ -72,6 +67,8 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
 			}
 			toggleMissionButton.setChecked(m.getStatus().equals("assigned") && isUserAssigned);
 		}
+		
+//		Helper.setButtonStyle((ViewGroup) findViewById(android.R.id.content));
 	}
 
 	/**
