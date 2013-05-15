@@ -68,16 +68,9 @@ public class C_beam {
 		//		}
 	}
 
-	
-//	public C_beam(Activity parent) {
-//		this();
-//		this.activity = parent;
-//	}
-	
 	public static C_beam getInstance() {
 		return instance;
 	}
-
 
 	public static void setInstance(C_beam instance) {
 		C_beam.instance = instance;
@@ -86,7 +79,6 @@ public class C_beam {
 	public Activity getActivity() {
 		return activity;
 	}
-
 
 	public void setActivity(Activity activity) {
 		this.activity = activity;
@@ -110,6 +102,7 @@ public class C_beam {
 		thread = new Thread(runnable);
 		thread.start();
 	}
+	
 	public boolean isInCrewNetwork() {
 		if (debug)
 			return true;
@@ -122,8 +115,6 @@ public class C_beam {
 		} else if (wifiManager.isWifiEnabled() && ip.startsWith("10.0.")) {
 			return true;
 		} else {
-			// TODO: Display message
-			Log.i(TAG, "not in crew network");
 			return false;
 		}
 	}
@@ -139,7 +130,6 @@ public class C_beam {
 			updateActivitylog(result.getJSONArray("activitylog"));
 			updateStats(result.getJSONArray("stats"));
 		} catch (Exception e) {
-//			e.printStackTrace();
 			Log.i(TAG, "updateLists failed");
 		}
 //		updateArticles();
@@ -894,7 +884,6 @@ public class C_beam {
 			e.printStackTrace();
 		}
 	}
-
 
 	public void setPushBoarding(Boolean newValue) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
