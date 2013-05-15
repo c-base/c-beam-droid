@@ -146,7 +146,16 @@
     </string>
     <string name="title_activity_notification">benachrichtigungen</string>
     <string name="button_delete_notifications">alle nachrichten lo:schen</string>
-	<string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
-	<string name="menu_c_corder">c-corder</string>
-	<string name="no_events">fu:r heute sind keine events eingetragen</string>
+    <string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
+    <string name="menu_c_corder">c-corder</string>
+    <string name="no_events">fu:r heute sind keine events eingetragen</string>
+    <string name="c_corder_warning_title">c-corder reconstruction beta</string>
+    <string name="c_corder_warning_text">
+<![CDATA[
+		<p>der c-corder befindet sich noch in der fru:hen betaphase der reconstruction und unterstu:tct 
+		viele der urpsru:nglichen functionen noch nicht.</p>
+		<p><font color=\"red\">die wichtigste function ist aber bereits implementiert: leersaugen des accus.</font></p>
+		<p>dance fu:r die beachtung der sicherheitshinweise.</p>
+		]]>
+	</string>
 </resources>
