@@ -7,6 +7,8 @@ import org.c_base.c_beam.ccorder.DrawOnTop;
 import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 
+import com.actionbarsherlock.view.Menu;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,11 +25,15 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -35,9 +41,11 @@ import android.widget.ToggleButton;
 
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
+	private static final String TAG = "CCorderActivity";
 	private Camera camera;
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
+	GLSurfaceView glSurfaceView;
 	//	private TouchSurfaceView mGLSurfaceView;
 
 	private View scanbar;
@@ -47,6 +55,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	private ToggleButton toggleButtonScanner;
 	private ToggleButton toggleButtonGrid;
 	private Button buttonPhotons;
+	private ToggleButton toggleButtonFilter;
 	private MediaPlayer zap;
 	private MediaPlayer scan;
 
@@ -69,6 +78,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	PictureCallback jpeg = new PictureCallback(){
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
+			// No action taken on the jpeg data yet.
 		}
 	};
 
@@ -85,7 +95,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 		setContentView(R.layout.activity_ccorder);
 
-		GLSurfaceView glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
+		glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
 		ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
 		int index = parent.indexOfChild(glSurfaceView);
 		parent.removeView(glSurfaceView);
@@ -113,6 +123,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 				}
 			}
 		});
+		
 		toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
 		toggleButtonGrid.setOnClickListener(new OnClickListener() {
 
@@ -128,23 +139,54 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		});
 
 		buttonPhotons = (Button) findViewById(R.id.hideme3);
-		buttonPhotons.setOnClickListener(new OnClickListener() {
+		buttonPhotons.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch ( event.getAction() ) {
+			    case MotionEvent.ACTION_DOWN:
+			    	if (zap != null) {
+						zap.seekTo(0);
+						zap.start();
+					}
+			    	ledOn();
+			    	break;
+			    case MotionEvent.ACTION_UP:
+			    	ledOff();
+			    	break;
+			    }
+				return false;
+			}
+		});
+		
+//		buttonPhotons.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				if (zap != null) {
+//					zap.seekTo(0);
+//					zap.start();
+//				}
+//				ledflash();
+//			}
+//		});
+		
+		toggleButtonFilter = (ToggleButton) findViewById(R.id.hideme4);
+		toggleButtonFilter.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				if (zap != null) {
-					zap.seekTo(0);
-					zap.start();
+				ToggleButton b = (ToggleButton) v;
+				if (b.isChecked()) {
+					glSurfaceView.setVisibility(View.VISIBLE);
+				} else {
+					glSurfaceView.setVisibility(View.INVISIBLE);
 				}
-				ledflash();
-
 			}
 		});
 
-		Button visibleButton = (Button) findViewById(R.id.vis);
+		ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
 		visibleButton.setOnClickListener(mVisibleListener);
-		Button invisibleButton = (Button) findViewById(R.id.invis);
-		invisibleButton.setOnClickListener(mInvisibleListener);
 
 		grid = findViewById(R.id.grid); 
 		parent = (ViewGroup) grid.getParent();
@@ -169,8 +211,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
 
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("c-corder reconstruction beta");
-		b.setMessage("der c-corder befindet sich noch in der frühen betaphase der reconstruction und unterstu:tct viele der urpsru:nglichen functionen noch nicht.\n\ndie wichtigste function ist aber bereits implementiert: leersaugen des accus.");
+		b.setTitle(R.string.c_corder_warning_title);
+		b.setMessage(Html.fromHtml(getString(R.string.c_corder_warning_text)));
 		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override
@@ -178,7 +220,19 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 			}
 		});
 		b.show();
+	}
 
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean mIsOnline = c_beam.isInCrewNetwork();
+		// Hide some menu items when not connected to the crew network
+		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
+		menu.findItem(R.id.menu_c_corder).setVisible(false);
+		return true;
 	}
 
 	@Override
@@ -191,6 +245,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Log.i(TAG, "starting cam");
 		camera.startPreview();
 	}
 
@@ -201,12 +256,23 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		Log.i(TAG, "stopping cam");
 		camera.stopPreview();
 		camera.release();
 	}
 
+	void ledOn() {
+		Parameters params = camera.getParameters();
+		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+		camera.setParameters(params);
+	}
+	
+	void ledOff() {
+		Parameters params = camera.getParameters();
+		params.setFlashMode(Parameters.FLASH_MODE_OFF);
+		camera.setParameters(params);
+	}
 	void ledflash() {
-
 		Parameters params = camera.getParameters();
 		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
 		camera.setParameters(params);
@@ -216,36 +282,35 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	OnClickListener mVisibleListener = new OnClickListener() {
 		public void onClick(View v) {
-			toggleButtonScanner.setVisibility(View.VISIBLE);
-			toggleButtonGrid.setVisibility(View.VISIBLE);
-			buttonPhotons.setVisibility(View.VISIBLE);
-			mVictimContainer.setVisibility(View.VISIBLE);
-		}
-	};
-
-	OnClickListener mInvisibleListener = new OnClickListener() {
-		public void onClick(View v) {
-			//			toggleButtonScanner.setVisibility(View.INVISIBLE);
-			//			toggleButtonGrid.setVisibility(View.INVISIBLE);
-			//			buttonPhotons.setVisibility(View.INVISIBLE);
-			mVictimContainer.setVisibility(View.INVISIBLE);
+			if (((ToggleButton) v).isChecked()) {
+				toggleButtonScanner.setVisibility(View.VISIBLE);
+				toggleButtonGrid.setVisibility(View.VISIBLE);
+				buttonPhotons.setVisibility(View.VISIBLE);
+				toggleButtonFilter.setVisibility(View.VISIBLE);
+				mVictimContainer.setVisibility(View.VISIBLE);
+			} else {
+				toggleButtonScanner.setVisibility(View.INVISIBLE);
+				toggleButtonGrid.setVisibility(View.INVISIBLE);
+				buttonPhotons.setVisibility(View.INVISIBLE);
+				toggleButtonFilter.setVisibility(View.INVISIBLE);
+				mVictimContainer.setVisibility(View.INVISIBLE);
+			}
 		}
 	};
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		//		if (Math.abs(event.values[1]) > 10 || Math.abs(event.values[2]) > 10 || Math.abs(event.values[1] + event.values[2]) > 10)
+		if (!toggleButtonScanner.isChecked())
+			return;
 		if (Math.abs(event.values[1] + event.values[2]) > 6) {
-//			System.out.println(event.values[0] + "/" + event.values[1] + "/" + event.values[2]);
+			scan.seekTo(0);
 			scan.start();
 		}
-
 	}
 
 	protected void onResume () {
