@@ -1,16 +1,17 @@
 package org.c_base.c_beam.activity;
 
+import org.c_base.c_beam.R;
+
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import com.actionbarsherlock.app.SherlockActivity;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import org.c_base.c_beam.R;
 
 
-public class BamActivity extends SherlockActivity {
+public class BamActivity extends C_beamActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,5 +53,5 @@ public class BamActivity extends SherlockActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
 }
