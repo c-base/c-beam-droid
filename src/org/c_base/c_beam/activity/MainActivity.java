@@ -189,7 +189,6 @@ ActionBar.TabListener, OnClickListener {
 
 	public void toggleLogin() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
 		if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
 			showLogoutDialog();
 		} else {
@@ -274,9 +273,7 @@ ActionBar.TabListener, OnClickListener {
 					artefacts.addItem(artefactList.get(i));
 			}
 		}
-
 		activitylog.updateLog(c_beam.getActivityLog());
-
 	}
 
 	public void startProgress() {
@@ -318,7 +315,6 @@ ActionBar.TabListener, OnClickListener {
 		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
-
 		return true;
 	}
 
