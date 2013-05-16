@@ -89,5 +89,24 @@
         android:key="pref_fade_users"
         android:summary="@string/pref_fade_users_summ"
         android:title="@string/pref_fade_users" />
+    
+    <PreferenceScreen
+        android:key="pref_expert_settings"
+        android:persistent="false"
+        android:title="@string/pref_expert_settings" >      
+          
+        <EditTextPreference
+            android:defaultValue="http://10.0.1.27"
+            android:key="pref_c_beam_url"
+            android:summary="@string/pref_c_beam_url_summ"
+            android:title="@string/pref_c_beam_url" />
+        
+        <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_debug_enabled"
+        android:summary="@string/pref_debug_enabled_summ"
+        android:title="@string/pref_debug_enabled" />
+        
+    </PreferenceScreen>
 
 </PreferenceScreen>

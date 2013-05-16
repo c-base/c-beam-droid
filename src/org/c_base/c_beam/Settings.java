@@ -13,4 +13,7 @@ public interface Settings {
 	public static final String PUSH_MISSIONS = "pref_push_missions";
 	public static final String PUSH_BOARDING = "pref_push_boarding";
 	public static final String PUSH_ETA = "pref_push_eta";
+	public static final String DEBUG_ENABLED = "pref_debug_enabled";
+	public static final String C_BEAM_URL = "pref_c_beam_url";
+	
 }

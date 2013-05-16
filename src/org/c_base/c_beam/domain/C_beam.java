@@ -104,10 +104,15 @@ public class C_beam {
 	}
 	
 	public boolean isInCrewNetwork() {
-		if (debug)
-			return true;
 		if (activity == null)
+			return false;
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		String username = sharedPref.getString(Settings.USERNAME, "bernd");
+		
+		if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false) || debug)
 			return true;
+		
 		WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
 		String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
 		if (wifiManager.isWifiEnabled() && ip.startsWith("42.42.") ) {

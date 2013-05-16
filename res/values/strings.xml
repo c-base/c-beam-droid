@@ -158,4 +158,9 @@
 		<p>dance fu:r die beachtung der sicherheitshinweise.</p>
 		]]>
 	</string>
+	<string name="pref_expert_settings">debug</string>
+	<string name="pref_debug_enabled">debug-modus</string>
+	<string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein</string>
+	<string name="pref_c_beam_url">c-beam url</string>
+	<string name="pref_c_beam_url_summ">diese einstellung sollte nur vera:ndert werden, wenn man weiss, was man tut.</string>
 </resources>
