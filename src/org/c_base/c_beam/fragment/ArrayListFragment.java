@@ -82,11 +82,8 @@ public class ArrayListFragment extends ListFragment {
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			String s = items.get(position);
-
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
-
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
-
 			view.setText(s);
 			return view;
 		}

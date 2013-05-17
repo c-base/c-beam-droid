@@ -81,8 +81,7 @@ public class NotificationListFragment extends ListFragment {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Notification s = items.get(position);
 
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
-
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 
 			view.setText(s.toString());

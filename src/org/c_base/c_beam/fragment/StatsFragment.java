@@ -79,7 +79,7 @@ public class StatsFragment extends ListFragment {
 			TextView v = (TextView) view.findViewById(R.id.statsAp);
 			User u = items.get(position);
 			v.setText(Integer.toString(u.getAp()));
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), v);
 			Helper.setFont(getActivity(), (TextView) view.findViewById(R.id.statsUsername));
 			return view;

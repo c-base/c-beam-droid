@@ -77,7 +77,7 @@ public class MissionListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Mission u = items.get(position);
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
+			Helper.setListItemStyle(view);
 			view.setPadding(25, 30, 25, 30);
 			Helper.setFont(getActivity(), view);
 			return view;

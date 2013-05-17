@@ -48,7 +48,6 @@ public class C_portalListFragment extends ListFragment {
 		adapter = new ArticleAdapter(getActivity(),
 				android.R.layout.simple_list_item_1, items);
 		setListAdapter(adapter);
-		getListView().setPadding(5, 5, 5, 5);
 		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 	}
 
@@ -78,8 +77,7 @@ public class C_portalListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Article u = items.get(position);
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
-			view.setPadding(25, 30, 25, 30);
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 			return view;
 		}

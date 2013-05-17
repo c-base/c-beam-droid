@@ -91,9 +91,7 @@ public class ArtefactListFragment extends ListFragment {
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			Artefact a = items.get(position);
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
-			//			view.setPadding(25, 5, 25, 5);
-			//			setFont(view);
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 			view.setText(a.getName());
 			return view;

@@ -89,8 +89,7 @@ public class UserListFragment extends ListFragment {
 			float alpha = u.getAutologout_in()/(float) u.getAutologout();
 
 //			if (fadeUsers) view.setAlpha(alpha);
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
-
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 
 			if (u.getStatus().equals("online"))

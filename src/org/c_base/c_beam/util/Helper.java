@@ -22,18 +22,18 @@ public class Helper {
 		Context context = view.getContext();
 
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-		String defaultFont = activity.getString(R.string.pref_font_default);
+		String defaultFont = context.getString(R.string.pref_font_default);
 		String font = sharedPref.getString(Settings.FONT, defaultFont);
 
 		int fontsize = Integer.parseInt(sharedPref.getString(Settings.FONT_SIZE, "20"));
 		if (font.equals("X-Scale")) {
 			view.setPadding(25, 10, 25, 25);
-			Typeface myTypeface = Typeface.createFromAsset(activity.getAssets(), "X-SCALE.TTF");
+			Typeface myTypeface = Typeface.createFromAsset(context.getAssets(), "X-SCALE.TTF");
 			view.setTypeface(myTypeface);
 			view.setTextSize(fontsize);
 		} else if (font.equals("Ceva")) {
 			view.setPadding(25, 25, 25, 25);
-			Typeface myTypeface = Typeface.createFromAsset(activity.getAssets(), "CEVA-CM.TTF");
+			Typeface myTypeface = Typeface.createFromAsset(context.getAssets(), "CEVA-CM.TTF");
 			view.setTypeface(myTypeface);
 			view.setTextSize(fontsize);
 		} else {
@@ -90,6 +90,14 @@ public class Helper {
 				// Recursively attempt another ViewGroup.
 				setButtonStyle((ViewGroup) mChild);
 			}
+		}
+	}
+
+	public static void setListItemStyle(View view) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+		if (sharedPref.getBoolean(Settings.C_THEME, true)) {
+			view.setBackgroundResource(R.drawable.listitembg);
+//			view.setBackgroundResource(R.drawable.button);
 		}
 	}
 }

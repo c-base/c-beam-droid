@@ -75,7 +75,7 @@ public class EventListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			TextView view = (TextView) super.getView(position, convertView, parent);
 //			Event event = items.get(position);
-			if (sharedPref.getBoolean(Settings.C_THEME, true)) view.setBackgroundResource(R.drawable.listitembg);
+			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 			return view;
 		}
