@@ -98,7 +98,6 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		mNotificationArea.setVisibility(View.VISIBLE);
 	}
 
-	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		return true;
 	}

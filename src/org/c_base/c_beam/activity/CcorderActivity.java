@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -224,6 +225,10 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+			menu.findItem(R.id.menu_c_corder).setVisible(false);
+		}
+		
 		boolean mIsOnline = c_beam.isInCrewNetwork();
 		// Hide some menu items when not connected to the crew network
 		menu.findItem(R.id.menu_login).setVisible(mIsOnline);

@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.wifi.WifiManager;
@@ -257,6 +258,9 @@ ActionBar.TabListener, OnClickListener {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+			menu.findItem(R.id.menu_c_corder).setVisible(false);
+		}
 		// Hide some menu items when not connected to the crew network
 		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
 		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
