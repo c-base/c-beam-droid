@@ -47,18 +47,28 @@ public class C_beam {
 	private static C_beam instance = new C_beam();
 
 	private C_beam() {
-		if (debug) {
-			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
-		} else {
-			c_beamClient = JSONRPCClient.create("http://10.0.1.27:4254/rpc/", JSONRPCParams.Versions.VERSION_2);
+		initC_beamClient();
+	}
+
+	/**
+	 * 
+	 */
+	private void initC_beamClient() {
+		String c_beamUrl = "http://10.0.1.27:4254/rpc/";
+	
+		if (activity != null) {
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+			c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, "http://10.0.1.27:4254/rpc/");
 		}
+		Log.i(TAG, "using c-beam url "+ c_beamUrl);
+		c_beamClient = JSONRPCClient.create(c_beamUrl, JSONRPCParams.Versions.VERSION_2);
 		c_beamClient.setConnectionTimeout(5000);
 		c_beamClient.setSoTimeout(5000);
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
-
-		//		// Create new JSON-RPC 2.0 client session
+		
+		// Create new JSON-RPC 2.0 client session
 		//		try {
 		//			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
 		//			portalSession.getOptions().trustAllCerts(true);
@@ -82,6 +92,7 @@ public class C_beam {
 
 	public void setActivity(Activity activity) {
 		this.activity = activity;
+		initC_beamClient();
 	}
 
 	public void startThread() {
@@ -136,6 +147,7 @@ public class C_beam {
 			updateStats(result.getJSONArray("stats"));
 		} catch (Exception e) {
 			Log.i(TAG, "updateLists failed");
+			e.printStackTrace();	
 		}
 //		updateArticles();
 
