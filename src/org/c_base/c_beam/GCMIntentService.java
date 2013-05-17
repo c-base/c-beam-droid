@@ -91,14 +91,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 			}
 			return;
 		}
-		
-		
-//		NotificationActivity.addNotification(new org.c_base.c_beam.domain.Notification(text));
+
 		datasource = new NotificationsDataSource(this);
-	    datasource.open();
+		datasource.open();
 		datasource.createNotification(text);
-		
-		
+
 		Intent intent = new Intent(this, NotificationActivity.class);
 		PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -132,38 +129,42 @@ public class GCMIntentService extends GCMBaseIntentService {
 		//		notification.flags = Notification.FLAG_SHOW_LIGHTS;
 		//		notification.flags = Notification.DEFAULT_LIGHTS;
 
-		InboxStyle style = new Notification.InboxStyle();
-//		ArrayList<org.c_base.c_beam.domain.Notification> notificationList = NotificationActivity.getNotificationList();
-		ArrayList<org.c_base.c_beam.domain.Notification> notificationList = datasource.getAllNotifications();
-		datasource.close();
-		if (notificationList.size() > 5) {
-			for(int i=0; i<5; i++) {
-				style.addLine(notificationList.get(i).toString());
+		try {
+			InboxStyle style = new Notification.InboxStyle();
+			//		ArrayList<org.c_base.c_beam.domain.Notification> notificationList = NotificationActivity.getNotificationList();
+			ArrayList<org.c_base.c_beam.domain.Notification> notificationList = datasource.getAllNotifications();
+			if (notificationList.size() > 5) {
+				for(int i=0; i<5; i++) {
+					style.addLine(notificationList.get(i).toString());
+				}
+				style.setSummaryText("+" + (notificationList.size() - 5)+" more...");
+			} else {
+				for(org.c_base.c_beam.domain.Notification line: notificationList) {
+					style.addLine(line.toString());
+				}
 			}
-			style.setSummaryText("+" + (notificationList.size() - 5)+" more...");
-		} else {
-			for(org.c_base.c_beam.domain.Notification line: notificationList) {
-				style.addLine(line.toString());
-			}
+
+			Notification notification = new Notification.Builder(getApplicationContext())
+			.setContentTitle("c-beam")
+			.setContentText(text)
+			.setAutoCancel(true)
+			.setSubText(null)
+			.setTicker(text)
+			.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT))
+			.setContentIntent(pIntent)
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setStyle(style)
+			.build();
+
+			notifications.put(title, notification);
+
+			NotificationManager mNotificationManager =
+					(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(id, notification);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		Notification notification = new Notification.Builder(getApplicationContext())
-		.setContentTitle("c-beam")
-		.setContentText(text)
-		.setAutoCancel(true)
-		.setSubText(null)
-		.setTicker(text)
-		.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT))
-		.setContentIntent(pIntent)
-		.setSmallIcon(R.drawable.ic_launcher)
-		.setStyle(style)
-		.build();
-
-		notifications.put(title, notification);
-
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(id, notification);
+		datasource.close();
 	}
 
 	@Override
