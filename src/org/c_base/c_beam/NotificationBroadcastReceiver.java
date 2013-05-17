@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
-	GCMIntentService gcmIntentService = null;
+//	GCMIntentService gcmIntentService = null;
 	
 	@Override
     public void onReceive(Context context, Intent intent)
@@ -19,8 +19,8 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         }
     }
 	
-	public void setGcmIntentService(GCMIntentService gcmIntentService) {
-		this.gcmIntentService = gcmIntentService;
-	}
+//	public void setGcmIntentService(GCMIntentService gcmIntentService) {
+//		this.gcmIntentService = gcmIntentService;
+//	}
 
 }
