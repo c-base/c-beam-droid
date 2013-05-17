@@ -8,6 +8,7 @@ import org.c_base.c_beam.util.Helper;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -118,11 +119,17 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		boolean mIsOnline = c_beam.isInCrewNetwork();
 		// Hide some menu items when not connected to the crew network
 		try {
+			if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+				menu.findItem(R.id.menu_c_corder).setVisible(false);
+			}
 			menu.findItem(R.id.menu_login).setVisible(mIsOnline);
 			menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
 			menu.findItem(R.id.menu_map).setVisible(mIsOnline);
 			menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
 			menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
+			
+			
+			
 		} catch (Exception e) {
 			// some menu item is missing
 		}
