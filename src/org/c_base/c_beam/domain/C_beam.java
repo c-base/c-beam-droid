@@ -93,6 +93,7 @@ public class C_beam {
 	public void setActivity(Activity activity) {
 		this.activity = activity;
 		initC_beamClient();
+//		Log.i(TAG, "activity was set to " + this.activity.toString());
 	}
 
 	public void startThread() {
@@ -115,8 +116,10 @@ public class C_beam {
 	}
 	
 	public boolean isInCrewNetwork() {
-		if (activity == null)
-			return false;
+		if (activity == null) {
+			Log.i(TAG, "no activity set");
+			return true;
+		}
 		
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
 		String username = sharedPref.getString(Settings.USERNAME, "bernd");
@@ -649,7 +652,9 @@ public class C_beam {
 		ArrayList<String> result = new ArrayList<String>();
 		try {
 			if (isInCrewNetwork()) {
+				System.out.println("calling sounds");
 				JSONObject res = c_beamClient.callJSONObject("sounds");
+				System.out.println("calling sounds done");
 				JSONArray items = res.getJSONArray("result");
 				for(int i=0; i<items.length();i++)
 					result.add(items.getString(i));
