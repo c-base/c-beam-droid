@@ -81,6 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
+                    android:gravity="center"
                     android:text="c_leusen-LED pattern:" />
 
                 <TableRow
