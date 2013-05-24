@@ -345,7 +345,6 @@ ActionBar.TabListener, OnClickListener {
 		super.onResume();
 
 		registerReceiver(mWifiReceiver, mWifiIntentFilter);
-
 		if (c_beam.isInCrewNetwork()) {
 			switchToOnlineMode();
 		} else {
@@ -662,7 +661,6 @@ ActionBar.TabListener, OnClickListener {
 	}
 
 	private void showOnlineView() {
-		mIsOnline = true;
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		mOfflineArea.setVisibility(View.GONE);
 		mCbeamArea.setVisibility(View.VISIBLE);
@@ -688,11 +686,11 @@ ActionBar.TabListener, OnClickListener {
 				if (state == previousState) {
 					return;
 				}
-
+				
 				if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
-					showOnlineView();
+					switchToOnlineMode();
 				} else if (mIsOnline) {
-					showOfflineView();
+					switchToOfflineMode();
 				}
 			}
 		}
