@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     tools:context=".MainActivity" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/info_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,9 +15,53 @@
             android:id="@+id/not_in_crew_network"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/timePicker1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
             android:text="@string/not_in_crew_network"
+            android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/eta_buttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button_set_eta"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="128dip"
+                android:text="@string/button_set_eta" />
+
+            <Button
+                android:id="@+id/button_reset_eta"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="128dip"
+                android:text="@string/button_reset_eta" />
+        </LinearLayout>
+
+        <TimePicker
+            android:id="@+id/timePicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/eta_buttons"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/cbeam_area"
@@ -105,7 +149,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/button_c_maps"
                 android:text="@string/button_c_mission" />
-
         </RelativeLayout>
     </RelativeLayout>
 

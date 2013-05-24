@@ -1,6 +1,7 @@
-	package org.c_base.c_beam.activity;
+package org.c_base.c_beam.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
@@ -11,7 +12,6 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
@@ -32,13 +32,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
-import android.nfc.NfcEvent;
-import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -47,19 +44,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 @SuppressLint("NewApi")
 public class MainActivity extends C_beamActivity implements
@@ -78,26 +76,29 @@ ActionBar.TabListener, OnClickListener {
 
 	private static final boolean debug = false;
 
-	ArrayList<Article> articleList;
-	ArrayList<Event> eventList;
+	private ArrayList<Article> articleList;
+	private ArrayList<Event> eventList;
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
 
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
 	private Handler handler = new Handler();
-	EditText text;
+	private EditText text;
 
-	C_beam c_beam = C_beam.getInstance();
-	
+	private C_beam c_beam = C_beam.getInstance();
+
 	protected Runnable fred;
-	private View mInfoArea;
+	private View mOfflineArea;
 	private View mCbeamArea;
 	private boolean mIsOnline = false;
 	private WifiBroadcastReceiver mWifiReceiver;
 	private IntentFilter mWifiIntentFilter;
 
-	TextView tvAp = null;
-	TextView tvUsername = null;
+	private TextView tvAp = null;
+	private TextView tvUsername = null;
+	private int defaultETA = 30;
+	private TimePicker timePicker;
+	private SharedPreferences sharedPref;
 
 	public void setOnline() {
 		if (android.os.Build.VERSION.SDK_INT > 13) {
@@ -123,28 +124,49 @@ ActionBar.TabListener, OnClickListener {
 
 		setContentView(R.layout.activity_main);
 
-		mCbeamArea = findViewById(R.id.cbeam_area);
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		setupOfflineArea();
+		//	    updateTimePicker();
+		//		setupActionBar();
+		setupCbeamArea();
+		setupGCM();
+		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+			processNfcIntent(getIntent());
+			toggleLogin();
+		}
+		initializeBroadcastReceiver();
+	}
 
-		mInfoArea = findViewById(R.id.info_area);
+	/**
+	 * 
+	 */
+	private void setupCbeamArea() {
+		mCbeamArea = findViewById(R.id.cbeam_area);
+		setupViewPager();
+		setupButtons();
+		setupAPDisplay();
+		//		Helper.setButtonStyle((ViewGroup) mCbeamArea);
+	}
+
+	/**
+	 * 
+	 */
+	private void setupOfflineArea() {
+		mOfflineArea = findViewById(R.id.info_area);
 		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
 		Helper.setFont(this, textView);
+		timePicker = (TimePicker) this.findViewById(R.id.timePicker1);
+		timePicker.setIs24HourView(true);
+		Button etaButton = (Button) findViewById(R.id.button_set_eta);
+		etaButton.setOnClickListener(this);
+		Button resetETAButton = (Button) findViewById(R.id.button_reset_eta);
+		resetETAButton.setOnClickListener(this);
+	}
 
-//		setupActionBar();
-		setupViewPager();
-
-		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
-		b.setOnClickListener(this);
-
-		Button buttonC_out = (Button) findViewById(R.id.buttonC_out);
-		buttonC_out.setOnClickListener(this);
-
-		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
-		button_c_maps.setOnClickListener(this);
-
-		Button button_c_mission = (Button) findViewById(R.id.button_c_mission);
-		button_c_mission.setOnClickListener(this);
-
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	/**
+	 * 
+	 */
+	private void setupAPDisplay() {
 		tvAp = (TextView) findViewById(R.id.textView_ap);
 		tvAp.setTextColor(Color.rgb(58, 182, 228));
 		tvUsername = (TextView) findViewById(R.id.textView_username);
@@ -159,19 +181,43 @@ ActionBar.TabListener, OnClickListener {
 			tvAp.setVisibility(View.GONE);
 			tvUsername.setVisibility(View.GONE);
 		}
-		setupGCM();
-		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-			processNfcIntent(getIntent());
-			toggleLogin();
-		}
+	}
 
-		initializeBroadcastReceiver();
-//		Helper.setButtonStyle((ViewGroup) mCbeamArea);
+	/**
+	 * 
+	 */
+	private void setupButtons() {
+		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
+		b.setOnClickListener(this);
+
+		Button buttonC_out = (Button) findViewById(R.id.buttonC_out);
+		buttonC_out.setOnClickListener(this);
+
+		Button button_c_maps = (Button) findViewById(R.id.button_c_maps);
+		button_c_maps.setOnClickListener(this);
+
+		Button button_c_mission = (Button) findViewById(R.id.button_c_mission);
+		button_c_mission.setOnClickListener(this);
+	}
+
+	/**
+	 * 
+	 */
+	private void updateTimePicker() {
+		Calendar rightNow = Calendar.getInstance();
+		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+		int currentMinute = rightNow.get(Calendar.MINUTE);
+		if (currentMinute + defaultETA > 60) {
+			currentHour++;
+		}
+		currentMinute += defaultETA;
+		timePicker.setCurrentHour(currentHour);
+		timePicker.setCurrentMinute(currentMinute);
 	}
 
 	void processNfcIntent(Intent intent) {
-        System.out.println(intent.getData());
-    }
+		System.out.println(intent.getData());
+	}
 
 	public void onStart() {
 		Log.i(TAG, "onStart()");
@@ -294,7 +340,7 @@ ActionBar.TabListener, OnClickListener {
 		handler.postDelayed(fred, firstThreadDelay );
 	}
 
-	protected void onResume () {
+	protected void onResume() {
 		Log.i(TAG, "onResume()");
 		super.onResume();
 
@@ -303,6 +349,7 @@ ActionBar.TabListener, OnClickListener {
 		if (c_beam.isInCrewNetwork()) {
 			switchToOnlineMode();
 		} else {
+			updateTimePicker();
 			switchToOfflineMode();
 		}
 	}
@@ -501,7 +548,49 @@ ActionBar.TabListener, OnClickListener {
 			startC_missionActivity();
 			break;
 		}
+		case R.id.button_set_eta: {
+			showETAConfirmationDialog();
+			break;
 		}
+		case R.id.button_reset_eta: {
+			showResetETAConfirmationDialog();
+			break;
+		}
+		}
+	}
+
+	private void showETAConfirmationDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.confirm_eta, getETA()));
+		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				new SetETATask().execute(getETA());
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+
+	private void showResetETAConfirmationDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getString(R.string.confirm_reset_eta));
+		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int whichButton) {
+				new SetETATask().execute("0");
+			}
+		});
+		builder.setNegativeButton(R.string.button_cancel, null);
+		builder.create().show();
+	}
+	/**
+	 * @return
+	 */
+	private String getETA() {
+		Integer currentMinute = timePicker.getCurrentMinute();
+		String eta = "" + timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
+		return eta;
 	}
 
 	private void startC_missionActivity() {
@@ -569,13 +658,13 @@ ActionBar.TabListener, OnClickListener {
 	private void showOfflineView() {
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		mCbeamArea.setVisibility(View.GONE);
-		mInfoArea.setVisibility(View.VISIBLE);
+		mOfflineArea.setVisibility(View.VISIBLE);
 	}
 
 	private void showOnlineView() {
 		mIsOnline = true;
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		mInfoArea.setVisibility(View.GONE);
+		mOfflineArea.setVisibility(View.GONE);
 		mCbeamArea.setVisibility(View.VISIBLE);
 	}
 
@@ -608,4 +697,33 @@ ActionBar.TabListener, OnClickListener {
 			}
 		}
 	}
+
+	private class SetETATask extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			return c_beam.set_eta(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+		}      
+
+		@Override
+		protected void onPostExecute(String result) {
+			System.out.println(result);
+			if (result.contentEquals("eta_set")) {
+				result = getText(R.string.eta_set).toString();
+			} else if (result.contentEquals("eta_removed")) {
+				result = getText(R.string.eta_removed).toString();
+			} else {
+				result = getText(R.string.eta_failure).toString();
+			}
+			Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		protected void onPreExecute() {
+		}
+
+		@Override
+		protected void onProgressUpdate(Void... values) {
+		}
+	}
+
 }
