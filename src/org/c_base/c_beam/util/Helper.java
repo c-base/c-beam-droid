@@ -41,7 +41,7 @@ public class Helper {
 			view.setTextSize(fontsize);
 		}
 
-		view.setGravity(Gravity.CENTER_VERTICAL);
+//		view.setGravity(Gravity.CENTER_VERTICAL);
 	}
 
 	// Write the prefix to the SharedPreferences object for this widget
