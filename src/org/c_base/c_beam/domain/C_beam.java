@@ -43,6 +43,7 @@ public class C_beam {
 	private ArrayList<ActivityLog> activitylog;
 
 	private boolean debug = false;
+	private JSONRPCClient etaClient;
 
 	private static C_beam instance = new C_beam();
 
@@ -67,6 +68,10 @@ public class C_beam {
 		portalClient = JSONRPCClient.create("https://c-portal.c-base.org/rpc/", JSONRPCParams.Versions.VERSION_2);
 		portalClient.setConnectionTimeout(5000);
 		portalClient.setSoTimeout(5000);
+		
+		etaClient = JSONRPCClient.create("http://shell.c-base.org:4255/rpc/", JSONRPCParams.Versions.VERSION_2);
+		etaClient.setConnectionTimeout(5000);
+		etaClient.setSoTimeout(5000);
 		
 		// Create new JSON-RPC 2.0 client session
 		//		try {
@@ -934,6 +939,18 @@ public class C_beam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String set_eta(String user, String eta) {
+		String result = "failure";
+		try {
+			result = etaClient.callJSONObject("eta", user, eta).getString("result");
+		} catch (JSONRPCException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
