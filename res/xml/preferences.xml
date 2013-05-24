@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <EditTextPreference
         android:defaultValue="bernd"
         android:key="pref_username"
@@ -11,44 +12,44 @@
         android:key="pref_push"
         android:summary="@string/pref_push_summ"
         android:title="@string/pref_push" />
-    
+
     <PreferenceScreen
         android:key="pref_push_settings"
         android:persistent="false"
         android:title="@string/pref_push_settings" >
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_push_missions"
             android:summary="@string/pref_push_missions_summ"
             android:title="@string/pref_push_missions" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_push_boarding"
             android:summary="@string/pref_push_boarding_summ"
             android:title="@string/pref_push_boarding" />
-        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_push_eta"
             android:summary="@string/pref_push_eta_summ"
             android:title="@string/pref_push_eta" />
     </PreferenceScreen>
-    
+
+    <EditTextPreference
+        android:defaultValue="30"
+        android:key="pref_default_eta"
+        android:summary="@string/pref_default_eta_summ"
+        android:title="@string/pref_default_eta" />
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_stats_enabled"
         android:summary="@string/pref_stats_enabled_summ"
         android:title="@string/pref_stats_enabled" />
-    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_display_ap"
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
-
-    
 
     <!--
     <EditTextPreference
@@ -89,24 +90,22 @@
         android:key="pref_fade_users"
         android:summary="@string/pref_fade_users_summ"
         android:title="@string/pref_fade_users" />
-    
+
     <PreferenceScreen
         android:key="pref_expert_settings"
         android:persistent="false"
-        android:title="@string/pref_expert_settings" >      
-          
+        android:title="@string/pref_expert_settings" >
         <EditTextPreference
             android:defaultValue="http://10.0.1.27:4254/rpc/"
             android:key="pref_c_beam_url"
             android:summary="@string/pref_c_beam_url_summ"
             android:title="@string/pref_c_beam_url" />
-        
+
         <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pref_debug_enabled"
-        android:summary="@string/pref_debug_enabled_summ"
-        android:title="@string/pref_debug_enabled" />
-        
+            android:defaultValue="false"
+            android:key="pref_debug_enabled"
+            android:summary="@string/pref_debug_enabled_summ"
+            android:title="@string/pref_debug_enabled" />
     </PreferenceScreen>
 
 </PreferenceScreen>

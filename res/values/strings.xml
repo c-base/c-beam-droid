@@ -167,6 +167,8 @@
 	<string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein</string>
 	<string name="pref_c_beam_url">c-beam url</string>
 	<string name="pref_c_beam_url_summ">diese einstellung sollte nur vera:ndert werden, wenn man weiss, was man tut.</string>
+	<string name="pref_default_eta">ETA</string>
+	<string name="pref_default_eta_summ">standardeinstellung für den ETA in minuten</string>
 	<string name="confirm_eta">ETA wird auf %s gesetzt.</string>
 	<string name="confirm_reset_eta">ETA wird gelo:scht.</string>
 	<string name="eta_failure">fehler beim setzen des ETA. bitte versuchen sie es spa:ter noch einmal.</string>
