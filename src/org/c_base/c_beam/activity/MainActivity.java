@@ -44,7 +44,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,7 +70,7 @@ ActionBar.TabListener, OnClickListener {
 	private static final int ACTIVITYLOG_FRAGMENT = 4;
 
 	private static final int threadDelay = 5000;
-	private static final int firstThreadDelay = 1000;
+	private static final int firstThreadDelay = 100;
 	private static final String TAG = "MainActivity";
 
 	private static final boolean debug = false;
@@ -117,6 +116,8 @@ ActionBar.TabListener, OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+        actionBar.setDisplayHomeAsUpEnabled(false);
+
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
@@ -125,6 +126,7 @@ ActionBar.TabListener, OnClickListener {
 		setContentView(R.layout.activity_main);
 
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
 		setupOfflineArea();
 		//	    updateTimePicker();
 		//		setupActionBar();
@@ -699,7 +701,7 @@ ActionBar.TabListener, OnClickListener {
 	private class SetETATask extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... params) {
-			return c_beam.set_eta(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+			return c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
 		}      
 
 		@Override
