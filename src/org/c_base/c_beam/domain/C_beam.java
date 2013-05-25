@@ -134,7 +134,7 @@ public class C_beam {
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
 
-    public void updateLists() {
+    private void updateLists() {
         try {
             JSONObject result = c_beamClient.callJSONObject("app_data");
             updateUserLists(result.getJSONArray("user"));
