@@ -67,7 +67,7 @@
     <string name="confirm_login">wirklich einloggen?</string>
     <string name="button_login">einloggen</string>
     <string name="button_cancel">abbrechen</string>
-    <string name="message_logout">du wirst ausgelogt, bitte warten...</string>
+    <string name="message_logout">du wirst ausgelogt, bitte warten…</string>
     <string name="confirm_logout">wirklich ausloggen?</string>
     <string name="button_logout">ausloggen</string>
     <string name="confirm_mission_start">mission wirklich starten?</string>
@@ -118,8 +118,8 @@
     <string name="set_username_message">bitte setze den benutzernamen auf deinen membernamen!</string>
     <string name="not_in_crew_network">nicht im crew-netz</string>
     <string name="self_destruct_thx">danke für den fisch.</string>
-    <string name="self_destruct_in_progress">erde wird abgesprengt, bitte warten...</string>
-    <string name="lift_off_title">we need to lift off...</string>
+    <string name="self_destruct_in_progress">erde wird abgesprengt, bitte warten…</string>
+    <string name="lift_off_title">we need to lift off…</string>
     <string name="lift_off_message">there\'s no time to explain!</string>
     <string name="button_ok">OK</string>
     <string name="button_oops">huch, verklickt</string>

@@ -321,7 +321,7 @@ ActionBar.TabListener, OnClickListener {
 
 				fragment = pages[position];
 			}
-			return (Fragment) fragment;
+			return fragment;
 		}
 
 		@Override

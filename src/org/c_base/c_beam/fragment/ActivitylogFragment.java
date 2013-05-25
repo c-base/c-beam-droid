@@ -16,9 +16,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class ActivitylogFragment extends Fragment {
-	private String logtail = "";
 
-	public ActivitylogFragment() {
+    public ActivitylogFragment() {
 	}
 
 	public void updateLog(ArrayList<ActivityLog> activitylogList) {
@@ -36,7 +35,7 @@ public class ActivitylogFragment extends Fragment {
 		tmp += "user@c-beam>";
 
 		if (!tv.getText().equals(tmp)) {
-			logtail = tmp;
+            String logtail = tmp;
 			tv.setTypeface(Typeface.MONOSPACE);
 			tv.setTextSize(10);
 			tv.setBackgroundColor(Color.BLACK);

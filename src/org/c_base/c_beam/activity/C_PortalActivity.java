@@ -143,7 +143,7 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 			} else {
 				fragment = pages[position];
 			}
-			return (Fragment) fragment;
+			return fragment;
 		}
 
 		@Override

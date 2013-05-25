@@ -305,18 +305,16 @@ ActionBar.TabListener, OnClickListener {
 		}
 
 		if(c_portal.isAdded()) {
-			ArrayList<Article> tmpList = c_beam.getArticles();
-			articleList = tmpList;
+			articleList = c_beam.getArticles();
 			c_portal.clear();
 			for(int i=0; i<articleList.size();i++)
 				c_portal.addItem(articleList.get(i));
 		}
 
 		if(artefacts.isAdded()) {
-			ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+			ArrayList<Artefact> artefactList;
 			artefactList = c_beam.getArtefacts();
 			if (artefactList.size() != artefacts.size()) {
-				//artefacts.setArrayList(artefactList);
 				artefacts.clear();
 				for(int i=0; i<artefactList.size();i++)
 					artefacts.addItem(artefactList.get(i));
@@ -429,7 +427,7 @@ ActionBar.TabListener, OnClickListener {
 
 				fragment = pages[position];
 			}
-			return (Fragment) fragment;
+			return fragment;
 		}
 
 		@Override

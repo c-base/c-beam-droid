@@ -19,7 +19,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class UserActivity extends C_beamActivity {
-	C_beam c_beam = C_beam.getInstance();;
+	C_beam c_beam = C_beam.getInstance();
 	TableLayout tl;
 	TableRow tr;
 	TextView labelTV,valueTV;
