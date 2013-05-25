@@ -100,6 +100,7 @@ public class C_beam {
         initC_beamClient();
     }
 
+
     public void startThread() {
         runnable = new Runnable() {
             @Override
