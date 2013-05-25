@@ -103,7 +103,11 @@ public class C_beamActivity extends SherlockFragmentActivity {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_ab_out) {
 			new AboutDialogFragment().show(getSupportFragmentManager(), "about");
-		}
+		} else if (item.getItemId() == android.R.id.home) {
+            Intent myIntent = new Intent(this, MainActivity.class);
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityForResult(myIntent, 0);
+        }
 		return super.onOptionsItemSelected(item);
 	}
 
