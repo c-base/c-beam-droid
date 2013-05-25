@@ -37,6 +37,7 @@
     <EditTextPreference
         android:defaultValue="30"
         android:key="pref_default_eta"
+        android:numeric="integer"
         android:summary="@string/pref_default_eta_summ"
         android:title="@string/pref_default_eta" />
 
