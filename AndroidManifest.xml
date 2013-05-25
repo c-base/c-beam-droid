@@ -156,6 +156,9 @@
             android:screenOrientation="portrait"
             android:taskAffinity="org.c_base.c_beam.activity.WebActivity"
             android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
         <activity
             android:name="org.c_base.c_beam.activity.ArtefactActivity"
@@ -199,7 +202,9 @@
             android:name="org.c_base.c_beam.activity.CcorderActivity"
             android:label="@string/title_activity_ccorder"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:taskAffinity="org.c_base.c_beam.activity.CcorderActivity" >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />
