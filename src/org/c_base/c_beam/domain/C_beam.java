@@ -4,10 +4,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
-import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
-import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
+//import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
+//import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
+//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
+//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
 import org.alexd.jsonrpc.JSONRPCParams;
@@ -163,57 +163,57 @@ public class C_beam {
         }
     }
 
-    public String testJsonRPC2() {
-
-        // Create new JSON-RPC 2.0 client session
-        //		try {
-        //			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
-        //			portalSession.getOptions().trustAllCerts(true);
-        //		} catch (MalformedURLException e) {
-        //			e.printStackTrace();
-        //		}
-
-        //		String method = "list_articles";
-        //		int requestID = 0;
-
-        //		try {
-        //			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
-        //
-        //		} catch (JSONRPCException e) {
-        //			// TODO Auto-generated catch block
-        //			e.printStackTrace();
-        //		}
-
-        URL serverURL = null;
-
-        try {
-            serverURL = new URL("http://10.0.1.27:4254/rpc/");
-
-        } catch (MalformedURLException e) {
-            // handle exception...
-        }
-
-// Create new JSON-RPC 2.0 client session
-        JSONRPC2Session mySession = new JSONRPC2Session(serverURL);
-
-        JSONRPC2Request request = new JSONRPC2Request("who", 0);
-        JSONRPC2Response response = null;
-        try {
-            response = mySession.send(request);
-
-        } catch (JSONRPC2SessionException e) {
-
-            System.err.println(e.getMessage());
-            // handle exception...
-        }
-
-        // Print response result / error
-        if (response.indicatesSuccess())
-            System.out.println(response.getResult());
-        else
-            System.out.println(response.getError().getMessage());
-        return "success";
-    }
+//    public String testJsonRPC2() {
+//
+//        // Create new JSON-RPC 2.0 client session
+//        //		try {
+//        //			portalSession = new JSONRPC2Session(new URL("https://c-portal.c-base.org/rpc/"));
+//        //			portalSession.getOptions().trustAllCerts(true);
+//        //		} catch (MalformedURLException e) {
+//        //			e.printStackTrace();
+//        //		}
+//
+//        //		String method = "list_articles";
+//        //		int requestID = 0;
+//
+//        //		try {
+//        //			Log.i(TAG,portalClient.callJSONArray("list_articles").toString());
+//        //
+//        //		} catch (JSONRPCException e) {
+//        //			// TODO Auto-generated catch block
+//        //			e.printStackTrace();
+//        //		}
+//
+//        URL serverURL = null;
+//
+//        try {
+//            serverURL = new URL("http://10.0.1.27:4254/rpc/");
+//
+//        } catch (MalformedURLException e) {
+//            // handle exception...
+//        }
+//
+//// Create new JSON-RPC 2.0 client session
+//        JSONRPC2Session mySession = new JSONRPC2Session(serverURL);
+//
+//        JSONRPC2Request request = new JSONRPC2Request("who", 0);
+//        JSONRPC2Response response = null;
+//        try {
+//            response = mySession.send(request);
+//
+//        } catch (JSONRPC2SessionException e) {
+//
+//            System.err.println(e.getMessage());
+//            // handle exception...
+//        }
+//
+//        // Print response result / error
+//        if (response.indicatesSuccess())
+//            System.out.println(response.getResult());
+//        else
+//            System.out.println(response.getError().getMessage());
+//        return "success";
+//    }
 
     private void updateStats(JSONArray statsResult) throws JSONException {
         ArrayList<User> statsList = new ArrayList<User>();
@@ -873,8 +873,12 @@ public class C_beam {
     public synchronized String call(String method, String param1) {
         String result = "failure";
         try {
-            Log.i(TAG, "calling " + method);
-            result = etaClient.callJSONObject(method, param1).getString("result");
+            if (isInCrewNetwork()) {
+                Log.i(TAG, "calling " + method);
+                result = etaClient.callJSONObject(method, param1).getString("result");
+            } else {
+                result = "not in crew network";
+            }
         } catch (JSONRPCException e) {
             e.printStackTrace();
         } catch (JSONException e) {
