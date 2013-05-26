@@ -2,6 +2,7 @@ package org.c_base.c_beam.activity;
 
 import java.io.IOException;
 
+import android.widget.TextView;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.ccorder.DrawOnTop;
 import org.c_base.c_beam.ccorder.Scanbar;
@@ -57,11 +58,14 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	private ToggleButton toggleButtonGrid;
 	private Button buttonPhotons;
 	private ToggleButton toggleButtonFilter;
+    private TextView textView1;
+    private TextView textView2;
 	private MediaPlayer zap;
 	private MediaPlayer scan;
 
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
+    private Sensor mGravitySensor;
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
@@ -93,6 +97,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
 		setContentView(R.layout.activity_ccorder);
 
@@ -189,6 +194,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
 		visibleButton.setOnClickListener(mVisibleListener);
 
+        textView1 = (TextView) findViewById(R.id.textView1);
+        textView2 = (TextView) findViewById(R.id.textView2);
 		grid = findViewById(R.id.grid); 
 		parent = (ViewGroup) grid.getParent();
 		index = parent.indexOfChild(grid);
@@ -312,20 +319,28 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	public void onSensorChanged(SensorEvent event) {
 		if (!toggleButtonScanner.isChecked())
 			return;
-		if (Math.abs(event.values[1] + event.values[2]) > 6) {
-			scan.seekTo(0);
-			scan.start();
-		}
+        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (Math.abs(event.values[1] + event.values[2]) > 6) {
+                scan.seekTo(0);
+                scan.start();
+            }
+        }
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
+            textView2.setText("magnetfeldY: " + event.values[2] + " uT");
+        }
 	}
 
 	protected void onResume () {
 		super.onResume();
 		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_UI);
 	}
 
 	protected void onPause() {
 		super.onPause();
 		mSensorManager.unregisterListener(this, mSensor);
+        mSensorManager.unregisterListener(this, mGravitySensor);
 	}
 
 }
