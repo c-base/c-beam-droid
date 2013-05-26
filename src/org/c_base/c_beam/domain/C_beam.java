@@ -2,9 +2,12 @@ package org.c_base.c_beam.domain;
 
 import java.util.ArrayList;
 
+import android.os.AsyncTask;
+import android.widget.Toast;
 import org.alexd.jsonrpc.JSONRPCClient;
 import org.alexd.jsonrpc.JSONRPCException;
 import org.alexd.jsonrpc.JSONRPCParams;
+import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +22,15 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 public class C_beam {
+
+    enum RESULTS {
+        SUCCESS("success"),
+        FAILURE("failure");
+        private final String stringValue;
+        private RESULTS(final String s) { stringValue = s; }
+        public String toString() { return stringValue; }
+    }
+
     private static final String TAG = "c-beam";
 
     private static final String C_BEAM_URL = "http://10.0.1.27:4254/rpc/";
@@ -68,15 +80,15 @@ public class C_beam {
         }
         Log.i(TAG, "using c-beam url "+ c_beamUrl);
         c_beamClient = JSONRPCClient.create(c_beamUrl, JSONRPCParams.Versions.VERSION_2);
-        c_beamClient.setConnectionTimeout(5000);
-        c_beamClient.setSoTimeout(5000);
+        c_beamClient.setConnectionTimeout(10000);
+        c_beamClient.setSoTimeout(10000);
         portalClient = JSONRPCClient.create(C_PORTAL_URL, JSONRPCParams.Versions.VERSION_2);
-        portalClient.setConnectionTimeout(5000);
-        portalClient.setSoTimeout(5000);
+        portalClient.setConnectionTimeout(10000);
+        portalClient.setSoTimeout(10000);
 
         etaClient = JSONRPCClient.create(ETA_URL, JSONRPCParams.Versions.VERSION_2);
-        etaClient.setConnectionTimeout(5000);
-        etaClient.setSoTimeout(5000);
+        etaClient.setConnectionTimeout(10000);
+        etaClient.setSoTimeout(10000);
 
         // Create new JSON-RPC 2.0 client session
         //		try {
@@ -148,7 +160,8 @@ public class C_beam {
             sleepTime = 5000;
         } catch (Exception e) {
             Log.i(TAG, "updateLists failed");
-            e.printStackTrace();
+            initC_beamClient();
+            //e.printStackTrace();
         }
 
 
@@ -285,13 +298,14 @@ public class C_beam {
         return users;
     }
 
-    public User getUser(int id) {
+    public synchronized User getUser(int id) {
         for(User user: users) {
             if (user.getId() == id) {
                 return user;
             }
         }
         // TODO this can cause a NetworkOnMainThreadException, can it be replaced by the code above?
+        Log.e(TAG, "user not in user list, doing an extra call");
         User u = null;
         try {
             if (isInCrewNetwork()) {
@@ -620,7 +634,7 @@ public class C_beam {
 
     }
 
-    public void hwstorage(boolean b) {
+    public synchronized void hwstorage(boolean b) {
         try {
             if (isInCrewNetwork())
                 Log.i("c-beam", "hw-storage");
@@ -631,13 +645,13 @@ public class C_beam {
         }
     }
 
-    public void stopThread() {
+    public synchronized void stopThread() {
         if (thread != null) {
             thread.interrupt();
         }
     }
 
-    public String set_stripe_pattern(int pattern) {
+    public synchronized String set_stripe_pattern(int pattern) {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
@@ -651,7 +665,7 @@ public class C_beam {
         return result;
     }
 
-    public String set_stripe_speed(int speed) {
+    public synchronized String set_stripe_speed(int speed) {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
@@ -665,7 +679,7 @@ public class C_beam {
         return result;
     }
 
-    public String set_stripe_offset(int offset) {
+    public synchronized String set_stripe_offset(int offset) {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
@@ -679,7 +693,7 @@ public class C_beam {
         return result;
     }
 
-    public String notbeleuchtung() {
+    public synchronized String notbeleuchtung() {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
@@ -693,7 +707,7 @@ public class C_beam {
         return result;
     }
 
-    public String set_stripe_default() {
+    public synchronized String set_stripe_default() {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
@@ -708,7 +722,7 @@ public class C_beam {
     }
 
 
-    public boolean isStatsEnabled() {
+    public synchronized boolean isStatsEnabled() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         User u;
@@ -724,7 +738,7 @@ public class C_beam {
         return false;
     }
 
-    public String setStatsEnabled(boolean stats_enabled) {
+    public synchronized String setStatsEnabled(boolean stats_enabled) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
@@ -740,7 +754,7 @@ public class C_beam {
         return result;
     }
 
-    public String logactivity(String activity, String ap_string) {
+    public synchronized String logactivity(String activity, String ap_string) {
         String result = "failure";
         int ap = Integer.parseInt(ap_string);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.activity);
@@ -757,7 +771,7 @@ public class C_beam {
         return result;
     }
 
-    public boolean isLoggedIn(String user) {
+    public synchronized boolean isLoggedIn(String user) {
         User u;
         try {
             if (isInCrewNetwork()) {
@@ -771,7 +785,7 @@ public class C_beam {
         return false;
     }
 
-    public String setPushMissions(Boolean newValue) {
+    public synchronized String setPushMissions(Boolean newValue) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
@@ -788,7 +802,7 @@ public class C_beam {
         return result;
     }
 
-    public String setPushBoarding(Boolean newValue) {
+    public synchronized String setPushBoarding(Boolean newValue) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
@@ -804,7 +818,7 @@ public class C_beam {
         return result;
     }
 
-    public String setPushETA(Boolean newValue) {
+    public synchronized String setPushETA(Boolean newValue) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
@@ -820,7 +834,7 @@ public class C_beam {
         return result;
     }
 
-    public String setETA(String user, String eta) {
+    public synchronized String setETA(String user, String eta) {
         String result = "failure";
         try {
             result = etaClient.callJSONObject("eta", user, eta).getString("result");
@@ -828,6 +842,33 @@ public class C_beam {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return result;
+    }
+
+    public synchronized String call(String method, String param1) {
+        String result = "failure";
+        try {
+            Log.i(TAG, "calling " + method);
+            result = etaClient.callJSONObject(method, param1).getString("result");
+        } catch (JSONRPCException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    public synchronized String call(String method, String param1, String param2) {
+        String result = "failure";
+        try {
+            Log.i(TAG, "calling " + method);
+            result = c_beamClient.callString(method, param1, param2);
+        } catch (JSONRPCException e) {
+            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
         }
         return result;
     }

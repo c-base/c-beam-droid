@@ -343,6 +343,7 @@ ActionBar.TabListener, OnClickListener {
 	protected void onResume() {
 		Log.i(TAG, "onResume()");
 		super.onResume();
+        c_beam.setActivity(this);
 
 		registerReceiver(mWifiReceiver, mWifiIntentFilter);
 		if (c_beam.isInCrewNetwork()) {
@@ -483,18 +484,18 @@ ActionBar.TabListener, OnClickListener {
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			Tab tab = actionBar.newTab();
 			tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-			System.out.println(mSectionsPagerAdapter.getPageTitle(i));
 			tab.setTabListener(this);
 			actionBar.addTab(tab);
 		}
 	}
 
 	private void setupGCM() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPref.getBoolean(Settings.PUSH, false)) {
-			String registrationId = GCMManager.getRegistrationId(this);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String registrationId = GCMManager.getRegistrationId(this);
 			String username = sharedPref.getString(Settings.USERNAME, "bernd");
-			c_beam.register_update(registrationId, username);
+            new C_beamTask().execute("gcm_update", username, registrationId);
+            //c_beam.register_update(registrationId, username);
 		}
 	}
 
@@ -640,6 +641,9 @@ ActionBar.TabListener, OnClickListener {
 	}
 
 	private void switchToOnlineMode() {
+        if(mIsOnline) {
+            return;
+        }
 		mIsOnline = true;
 		showOnlineView();
 		startNetworkingThreads();
@@ -723,5 +727,6 @@ ActionBar.TabListener, OnClickListener {
 		protected void onProgressUpdate(Void... values) {
 		}
 	}
+
 
 }

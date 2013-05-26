@@ -1,5 +1,7 @@
 package org.c_base.c_beam.activity;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
@@ -26,9 +28,10 @@ import com.actionbarsherlock.view.MenuItem;
 public class C_beamActivity extends SherlockFragmentActivity {
 	ActionBar actionBar;
 	C_beam c_beam = C_beam.getInstance();
+    private String TAG = "C_beamActivity";
 
 
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		c_beam.setActivity(this);
@@ -139,5 +142,44 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		}
 		return true;
 	}
+
+    protected void onResume() {
+        Log.i(TAG, "onResume()");
+        super.onResume();
+        c_beam.setActivity(this);
+    }
+
+    protected class C_beamTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            if (params.length == 2) {
+                return c_beam.call(params[0], params[1]);
+            } else if (params.length == 3) {
+                return c_beam.call(params[0], params[1], params[2]);
+            }
+            return "failure";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Log.i(TAG, result);
+//            if (result.contentEquals("eta_set")) {
+//                result = getText(R.string.eta_set).toString();
+//            } else if (result.contentEquals("eta_removed")) {
+//                result = getText(R.string.eta_removed).toString();
+//            } else {
+//                result = getText(R.string.eta_failure).toString();
+//            }
+            //Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
 
 }
