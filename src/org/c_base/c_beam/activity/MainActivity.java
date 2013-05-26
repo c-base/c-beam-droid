@@ -344,6 +344,7 @@ ActionBar.TabListener, OnClickListener {
 		Log.i(TAG, "onResume()");
 		super.onResume();
         c_beam.setActivity(this);
+        //c_beam.testJsonRPC2();
 
 		registerReceiver(mWifiReceiver, mWifiIntentFilter);
 		if (c_beam.isInCrewNetwork()) {
