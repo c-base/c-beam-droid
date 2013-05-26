@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone" >
+            android:visibility="visible" >
 
             <ToggleButton
                 android:id="@+id/hideme1"
@@ -109,13 +109,22 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textView1" android:layout_alignRight="@+id/hideme2"
                     android:layout_alignLeft="@+id/hideme1" android:padding="8dp"
-                    android:background="@drawable/button_32x32_med" android:textColor="#FFFF00"/>
+                    android:background="@drawable/button_32x32_med" android:textColor="#FFFF00"
+                    android:visibility="gone"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView2" android:layout_below="@+id/textView1"
                     android:layout_alignLeft="@+id/textView1" android:layout_alignRight="@+id/textView1"
-                    android:padding="8dp" android:background="@drawable/button_32x32_med" android:textColor="#FFFF00"/>
+                    android:padding="8dp" android:background="@drawable/button_32x32_med" android:textColor="#FFFF00"
+                    android:visibility="gone"/>
+
+            <com.androidplot.xy.XYPlot
+                    android:id="@+id/mySimpleXYPlot"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200px"
+                    androidPlot.title="magnetfeld" android:layout_below="@+id/textView2"
+                    android:layout_centerHorizontal="true" android:alpha="0.5"/>
 
         </RelativeLayout>
     </FrameLayout>

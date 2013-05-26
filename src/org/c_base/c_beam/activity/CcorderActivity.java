@@ -1,8 +1,13 @@
 package org.c_base.c_beam.activity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import android.graphics.Color;
 import android.widget.TextView;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.ccorder.DrawOnTop;
 import org.c_base.c_beam.ccorder.Scanbar;
@@ -66,6 +71,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
     private Sensor mGravitySensor;
+
+    private XYPlot mySimpleXYPlot;
+    private SimpleXYSeries seriesMagnetX;
+    private SimpleXYSeries seriesMagnetY;
+    private SimpleXYSeries seriesMagnetZ;
+
+    ArrayList<Number> series1Numbers = new ArrayList<Number>();
+    ArrayList<Number> series2Numbers = new ArrayList<Number>();
+
+    //Number[] series1Numbers = {1, 8, 5, 2, 7, 4};
+    //Number[] series2Numbers = {4, 6, 3, 8, 2, 10};
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
@@ -196,7 +212,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
         textView1 = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
-		grid = findViewById(R.id.grid); 
+        mySimpleXYPlot = (XYPlot) findViewById(R.id.mySimpleXYPlot);
+
+        plotData();
+
+        grid = findViewById(R.id.grid);
 		parent = (ViewGroup) grid.getParent();
 		index = parent.indexOfChild(grid);
 		parent.removeView(grid);
@@ -327,11 +347,57 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             textView1.setText("magnetfeldX: " + event.values[0] + " uT");
-            textView2.setText("magnetfeldY: " + event.values[2] + " uT");
+            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
+
+            if (seriesMagnetX.size() > 100) {
+                seriesMagnetX.removeFirst();
+            }
+            seriesMagnetX.addLast(null, event.values[0]);
+            if (seriesMagnetY.size() > 100) {
+                seriesMagnetY.removeFirst();
+            }
+            seriesMagnetY.addLast(null, event.values[1]);
+            if (seriesMagnetZ.size() > 100) {
+                seriesMagnetZ.removeFirst();
+            }
+            seriesMagnetZ.addLast(null, event.values[2]);
+
+            //plotData();
+            mySimpleXYPlot.redraw();
+
+
         }
 	}
 
-	protected void onResume () {
+    private void plotData() {
+        mySimpleXYPlot.clear();
+        // Turn the above arrays into XYSeries':
+        seriesMagnetX = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldX");
+        seriesMagnetY = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldY");
+        seriesMagnetZ = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldZ");
+
+        // Create a formatter to use for drawing a series using LineAndPointRenderer:
+        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(0, 0, 80));
+        series1Format.getFillPaint().setAlpha(150);
+
+        // add a new series' to the xyplot:
+        mySimpleXYPlot.addSeries(seriesMagnetX, series1Format);
+
+        LineAndPointFormatter series2Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(0, 80, 0));
+        series2Format.getFillPaint().setAlpha(150);
+        // same as above:
+        mySimpleXYPlot.addSeries(seriesMagnetY, series2Format);
+
+        LineAndPointFormatter series3Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(80, 0, 0));
+        series3Format.getFillPaint().setAlpha(150);
+        mySimpleXYPlot.addSeries(seriesMagnetZ, series3Format);
+
+        // reduce the number of range labels
+        mySimpleXYPlot.setTicksPerRangeLabel(3);
+
+    }
+
+    protected void onResume () {
 		super.onResume();
 		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_UI);
