@@ -128,8 +128,7 @@ ActionBar.TabListener, OnClickListener {
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
 		setupOfflineArea();
-		//	    updateTimePicker();
-		//		setupActionBar();
+	    updateTimePicker();
 		setupCbeamArea();
 		setupGCM();
 		if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
@@ -139,9 +138,6 @@ ActionBar.TabListener, OnClickListener {
 		initializeBroadcastReceiver();
 	}
 
-	/**
-	 * 
-	 */
 	private void setupCbeamArea() {
 		mCbeamArea = findViewById(R.id.cbeam_area);
 		setupViewPager();
@@ -150,9 +146,6 @@ ActionBar.TabListener, OnClickListener {
 		//		Helper.setButtonStyle((ViewGroup) mCbeamArea);
 	}
 
-	/**
-	 * 
-	 */
 	private void setupOfflineArea() {
 		mOfflineArea = findViewById(R.id.info_area);
 		TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
@@ -165,9 +158,6 @@ ActionBar.TabListener, OnClickListener {
 		resetETAButton.setOnClickListener(this);
 	}
 
-	/**
-	 * 
-	 */
 	private void setupAPDisplay() {
 		tvAp = (TextView) findViewById(R.id.textView_ap);
 		tvAp.setTextColor(Color.rgb(58, 182, 228));
@@ -185,9 +175,6 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	/**
-	 * 
-	 */
 	private void setupButtons() {
 		ToggleButton b = (ToggleButton) findViewById(R.id.toggleLogin);
 		b.setOnClickListener(this);
@@ -202,9 +189,6 @@ ActionBar.TabListener, OnClickListener {
 		button_c_mission.setOnClickListener(this);
 	}
 
-	/**
-	 * 
-	 */
 	private void updateTimePicker() {
 		Calendar rightNow = Calendar.getInstance();
 		int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
@@ -227,7 +211,6 @@ ActionBar.TabListener, OnClickListener {
 		startProgress();
 	}
 
-
 	@Override
 	protected void onPause() {
 		Log.i(TAG, "onPause()");
@@ -244,11 +227,13 @@ ActionBar.TabListener, OnClickListener {
 			showLoginDialog();
 		}
 	}
-	public void login() {
+
+    public void login() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
-	public void logout() {
+
+    public void logout() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 	}
@@ -373,8 +358,6 @@ ActionBar.TabListener, OnClickListener {
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
@@ -585,9 +568,7 @@ ActionBar.TabListener, OnClickListener {
 		builder.setNegativeButton(R.string.button_cancel, null);
 		builder.create().show();
 	}
-	/**
-	 * @return
-	 */
+
 	private String getETA() {
 		Integer currentMinute = timePicker.getCurrentMinute();
 		String eta = "" + timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
