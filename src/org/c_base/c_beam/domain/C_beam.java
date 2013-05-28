@@ -891,8 +891,12 @@ public class C_beam {
     public synchronized String call(String method, String param1, String param2) {
         String result = "failure";
         try {
-            Log.i(TAG, "calling " + method);
-            result = c_beamClient.callString(method, param1, param2);
+            if (isInCrewNetwork()) {
+                Log.i(TAG, "calling " + method);
+                result = c_beamClient.callString(method, param1, param2);
+            } else {
+                result = "not in crew network";
+            }
         } catch (JSONRPCException e) {
             e.printStackTrace();
 //        } catch (JSONException e) {
