@@ -11,43 +11,46 @@ import java.util.ArrayList;
 
 public class SensorPlot {
     private final XYPlot plot;
+    private SimpleXYSeries[] series;
+
     private SimpleXYSeries seriesX;
     private SimpleXYSeries seriesY;
     private SimpleXYSeries seriesZ;
 
-    public SensorPlot(String sensorName, XYPlot plot) {
-        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(0, 0, 80));
-        series1Format.getFillPaint().setAlpha(150);
-        LineAndPointFormatter series2Format = new LineAndPointFormatter(Color.rgb(0, 200, 0), null, Color.rgb(0, 80, 0));
-        series2Format.getFillPaint().setAlpha(150);
-        LineAndPointFormatter series3Format = new LineAndPointFormatter(Color.rgb(200, 0, 0), null, Color.rgb(80, 0, 0));
-        series3Format.getFillPaint().setAlpha(150);
+    private int[][] formatColors = {
+            {Color.rgb(0, 0, 200), Color.rgb(0, 0, 80)},
+            {Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)},
+            {Color.rgb(200, 0, 0), Color.rgb(80, 0, 0)},
+            {Color.rgb(200, 0, 200), Color.rgb(80, 0, 80)},
+            {Color.rgb(0, 200, 200), Color.rgb(0, 80, 80)},
+            {Color.rgb(200, 200, 0), Color.rgb(80, 80, 0)},
+            {Color.rgb(200, 200, 200), Color.rgb(80, 80, 80)}
+    };
 
+    public SensorPlot(String sensorName, String[] dimensions, XYPlot plot) {
         this.plot = plot;
         plot.setTitle(sensorName);
 
-        seriesX = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " X");
-        seriesY = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " Y");
-        seriesZ = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " Z");
-
-        plot.addSeries(seriesX, series1Format);
-        plot.addSeries(seriesY, series2Format);
-        plot.addSeries(seriesZ, series3Format);
+        series = new SimpleXYSeries[dimensions.length];
+        for (int i=0; i<dimensions.length; i++) {
+            series[i] = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " " + dimensions[i]);
+//            for (int j=0; j<100; j++) {
+//                series[i].addLast(null, 0);
+//            }
+            LineAndPointFormatter format = new LineAndPointFormatter(formatColors[i][0], null, formatColors[i][1]);
+            format.getFillPaint().setAlpha(150);
+            plot.addSeries(series[i], format);
+        }
     }
-    
+
     public void addEvent(SensorEvent event) {
-        if (seriesX.size() > 100) {
-            seriesX.removeFirst();
+        for (int i=0; i<series.length; i++) {
+            if (series[i].size() > 100) {
+                series[i].removeFirst();
+            }
+//            series[i].removeFirst();
+            series[i].addLast(null, event.values[i]);
         }
-        seriesX.addLast(null, event.values[0]);
-        if (seriesY.size() > 100) {
-            seriesY.removeFirst();
-        }
-        seriesY.addLast(null, event.values[1]);
-        if (seriesZ.size() > 100) {
-            seriesZ.removeFirst();
-        }
-        seriesZ.addLast(null, event.values[2]);
         plot.redraw();
     }
 }

@@ -3,14 +3,12 @@ package org.c_base.c_beam.activity;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import android.graphics.Color;
 import android.widget.TextView;
-import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.ccorder.DrawOnTop;
 import org.c_base.c_beam.ccorder.Scanbar;
+import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 
 import com.actionbarsherlock.view.Menu;
@@ -49,39 +47,30 @@ import android.widget.ToggleButton;
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
 	private static final String TAG = "CCorderActivity";
-	private Camera camera;
+    private Camera camera;
 	private SurfaceView mSurfaceView;
 	private SurfaceHolder mSurfaceHolder;
 	GLSurfaceView glSurfaceView;
 	//	private TouchSurfaceView mGLSurfaceView;
 
-	private View scanbar;
+	private View scanBar;
 	private View grid;
+    private View sensorPlotLayout;
 
 	private View mVictimContainer;
-	private ToggleButton toggleButtonScanner;
-	private ToggleButton toggleButtonGrid;
-	private Button buttonPhotons;
-	private ToggleButton toggleButtonFilter;
     private TextView textView1;
     private TextView textView2;
 	private MediaPlayer zap;
 	private MediaPlayer scan;
 
 	private SensorManager mSensorManager;
-	private Sensor mSensor;
-    private Sensor mGravitySensor;
 
-    private XYPlot mySimpleXYPlot;
-    private SimpleXYSeries seriesMagnetX;
-    private SimpleXYSeries seriesMagnetY;
-    private SimpleXYSeries seriesMagnetZ;
+    private SensorPlot magnetPlot;
+    private SensorPlot gravityPlot;
+    private SensorPlot accelerationPlot;
+    private SensorPlot gyroPlot;
 
-    ArrayList<Number> series1Numbers = new ArrayList<Number>();
-    ArrayList<Number> series2Numbers = new ArrayList<Number>();
-
-    //Number[] series1Numbers = {1, 8, 5, 2, 7, 4};
-    //Number[] series2Numbers = {4, 6, 3, 8, 2, 10};
+    ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
 	ShutterCallback shutter = new ShutterCallback(){
 		@Override
@@ -102,155 +91,199 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 			// No action taken on the jpeg data yet.
 		}
 	};
+    private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
+    private ToggleButton toggleButtonSensors;
+    private Sensor scannerSensor;
+    private ToggleButton toggleButtonScanner;
 
-
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		zap = MediaPlayer.create(this, R.raw.zap);
 		scan = MediaPlayer.create(this, R.raw.scan);
 
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        setContentView(R.layout.activity_ccorder);
 
-		setContentView(R.layout.activity_ccorder);
+        setupSensors();
+		setupGLSurfaceView();
+        setupControls();
+        setupPlotViews();
+        setupGrid();
+        setupScanBar();
+        setupSurfaceView();
 
-		glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
-		ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
-		int index = parent.indexOfChild(glSurfaceView);
-		parent.removeView(glSurfaceView);
-		glSurfaceView = new TouchSurfaceView(this);
-		parent.addView(glSurfaceView, index);
 
-		// Find the views whose visibility will change
-		mVictimContainer = findViewById(R.id.hidecontainer);
-		toggleButtonScanner = (ToggleButton) findViewById(R.id.hideme1);
-		toggleButtonScanner.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				ToggleButton b = (ToggleButton) v;
-				if (b.isChecked()) {
-					int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
-					TranslateAnimation transAnimation= new TranslateAnimation(0, 0, 0, height);
-					transAnimation.setRepeatMode(2);
-					transAnimation.setRepeatCount(-1);
-					transAnimation.setDuration(1000);
-					scanbar.startAnimation(transAnimation);
-				} else {
-					scanbar.clearAnimation();
-					scanbar.setVisibility(View.GONE);
-				}
-			}
-		});
-		
-		toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
-		toggleButtonGrid.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				ToggleButton b = (ToggleButton) v;
-				if (b.isChecked()) {
-					grid.setVisibility(View.VISIBLE);
-				} else {
-					grid.setVisibility(View.INVISIBLE);
-				}
-			}
-		});
-
-		buttonPhotons = (Button) findViewById(R.id.hideme3);
-		buttonPhotons.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch ( event.getAction() ) {
-			    case MotionEvent.ACTION_DOWN:
-			    	if (zap != null) {
-						zap.seekTo(0);
-						zap.start();
-					}
-			    	ledOn();
-			    	break;
-			    case MotionEvent.ACTION_UP:
-			    	ledOff();
-			    	break;
-			    }
-				return false;
-			}
-		});
-		
-//		buttonPhotons.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				if (zap != null) {
-//					zap.seekTo(0);
-//					zap.start();
-//				}
-//				ledflash();
-//			}
-//		});
-		
-		toggleButtonFilter = (ToggleButton) findViewById(R.id.hideme4);
-		toggleButtonFilter.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				ToggleButton b = (ToggleButton) v;
-				if (b.isChecked()) {
-					glSurfaceView.setVisibility(View.VISIBLE);
-				} else {
-					glSurfaceView.setVisibility(View.INVISIBLE);
-				}
-			}
-		});
-
-		ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
-		visibleButton.setOnClickListener(mVisibleListener);
-
-        textView1 = (TextView) findViewById(R.id.textView1);
-        textView2 = (TextView) findViewById(R.id.textView2);
-        mySimpleXYPlot = (XYPlot) findViewById(R.id.mySimpleXYPlot);
-
-        plotData();
-
-        grid = findViewById(R.id.grid);
-		parent = (ViewGroup) grid.getParent();
-		index = parent.indexOfChild(grid);
-		parent.removeView(grid);
-		grid = new DrawOnTop(this);
-		grid.setVisibility(View.INVISIBLE);
-		parent.addView(grid, index);
-
-		scanbar = findViewById(R.id.scanbar); 
-		parent = (ViewGroup) scanbar.getParent();
-		index = parent.indexOfChild(scanbar);
-		parent.removeView(scanbar);
-		scanbar = new Scanbar(this);
-		scanbar.setVisibility(View.INVISIBLE);
-		parent.addView(scanbar, index);
-
-		mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
-		mSurfaceHolder = mSurfaceView.getHolder();
-		mSurfaceHolder.addCallback(this);
-		mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
-
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle(R.string.c_corder_warning_title);
-		b.setMessage(Html.fromHtml(getString(R.string.c_corder_warning_text)));
-		b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-		b.show();
+        showWarningMessage();
 	}
 
-	@Override
+    private void setupSurfaceView() {
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+        mSurfaceHolder = mSurfaceView.getHolder();
+        mSurfaceHolder.addCallback(this);
+        mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
+    }
+
+    private void setupControls() {
+        // Find the views whose visibility will change
+        mVictimContainer = findViewById(R.id.hidecontainer);
+        toggleButtonScanner = (ToggleButton) findViewById(R.id.hideme1);
+        toggleButtonScanner.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ToggleButton b = (ToggleButton) v;
+                if (b.isChecked()) {
+                    int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
+                    TranslateAnimation transAnimation= new TranslateAnimation(0, 0, 0, height);
+                    transAnimation.setRepeatMode(2);
+                    transAnimation.setRepeatCount(-1);
+                    transAnimation.setDuration(1000);
+                    scanBar.startAnimation(transAnimation);
+                } else {
+                    scanBar.clearAnimation();
+                    scanBar.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        ToggleButton toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
+        toggleButtonGrid.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ToggleButton b = (ToggleButton) v;
+                if (b.isChecked()) {
+                    grid.setVisibility(View.VISIBLE);
+                } else {
+                    grid.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        Button buttonPhotons = (Button) findViewById(R.id.hideme3);
+        buttonPhotons.setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch ( event.getAction() ) {
+                case MotionEvent.ACTION_DOWN:
+                    if (zap != null) {
+                        zap.seekTo(0);
+                        zap.start();
+                    }
+                    ledOn();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    ledOff();
+                    break;
+                }
+                return false;
+            }
+        });
+
+        ToggleButton toggleButtonFilter = (ToggleButton) findViewById(R.id.hideme4);
+        toggleButtonFilter.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ToggleButton b = (ToggleButton) v;
+                if (b.isChecked()) {
+                    glSurfaceView.setVisibility(View.VISIBLE);
+                } else {
+                    glSurfaceView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        toggleButtonSensors = (ToggleButton) findViewById(R.id.hideme5);
+        toggleButtonSensors.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ToggleButton b = (ToggleButton) v;
+                if (b.isChecked()) {
+                    sensorPlotLayout.setVisibility(View.VISIBLE);
+                    
+                } else {
+                    sensorPlotLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
+        visibleButton.setOnClickListener(mVisibleListener);
+    }
+
+    private void setupGLSurfaceView() {
+        glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
+        ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
+        int index = parent.indexOfChild(glSurfaceView);
+        parent.removeView(glSurfaceView);
+        glSurfaceView = new TouchSurfaceView(this);
+        parent.addView(glSurfaceView, index);
+    }
+
+    private void setupPlotViews() {
+        textView1 = (TextView) findViewById(R.id.textView1);
+        textView2 = (TextView) findViewById(R.id.textView2);
+        magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot));
+        gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot2));
+        accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot3));
+        gyroPlot = new SensorPlot("gyroscope", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
+    }
+
+    private void setupGrid() {
+        ViewGroup parent;
+        int index;
+        grid = findViewById(R.id.grid);
+        parent = (ViewGroup) grid.getParent();
+        index = parent.indexOfChild(grid);
+        parent.removeView(grid);
+        grid = new DrawOnTop(this);
+        grid.setVisibility(View.INVISIBLE);
+        parent.addView(grid, index);
+    }
+
+    private void setupScanBar() {
+        ViewGroup parent;
+        int index;
+        scanBar = findViewById(R.id.scanbar);
+        parent = (ViewGroup) scanBar.getParent();
+        index = parent.indexOfChild(scanBar);
+        parent.removeView(scanBar);
+        scanBar = new Scanbar(this);
+        scanBar.setVisibility(View.INVISIBLE);
+        parent.addView(scanBar, index);
+    }
+
+    private void showWarningMessage() {
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle(R.string.c_corder_warning_title);
+        b.setMessage(Html.fromHtml(getString(R.string.c_corder_warning_text)));
+        b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        b.show();
+    }
+
+    private void setupSensors() {
+        sensorPlotLayout = findViewById(R.id.sensorPlotLayout);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+    }
+
+    @Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			menu.findItem(R.id.menu_c_corder).setVisible(false);
@@ -295,8 +328,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	void ledOn() {
 		Parameters params = camera.getParameters();
-		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
 		camera.setParameters(params);
+        //Log.i(TAG, ""+getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
 	}
 	
 	void ledOff() {
@@ -315,16 +349,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	OnClickListener mVisibleListener = new OnClickListener() {
 		public void onClick(View v) {
 			if (((ToggleButton) v).isChecked()) {
-				toggleButtonScanner.setVisibility(View.VISIBLE);
-				toggleButtonGrid.setVisibility(View.VISIBLE);
-				buttonPhotons.setVisibility(View.VISIBLE);
-				toggleButtonFilter.setVisibility(View.VISIBLE);
 				mVictimContainer.setVisibility(View.VISIBLE);
 			} else {
-				toggleButtonScanner.setVisibility(View.INVISIBLE);
-				toggleButtonGrid.setVisibility(View.INVISIBLE);
-				buttonPhotons.setVisibility(View.INVISIBLE);
-				toggleButtonFilter.setVisibility(View.INVISIBLE);
 				mVictimContainer.setVisibility(View.INVISIBLE);
 			}
 		}
@@ -337,77 +363,56 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (!toggleButtonScanner.isChecked())
-			return;
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if (Math.abs(event.values[1] + event.values[2]) > 6) {
+        if (toggleButtonScanner.isChecked() && event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (Math.abs(event.values[1] + event.values[2]) > 5) {
                 scan.seekTo(0);
                 scan.start();
             }
+            //accelerationPlot.addEvent(event);
         }
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
-            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
-
-            if (seriesMagnetX.size() > 100) {
-                seriesMagnetX.removeFirst();
+        if (toggleButtonSensors.isChecked()) {
+            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+    //            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
+    //            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
+                magnetPlot.addEvent(event);
             }
-            seriesMagnetX.addLast(null, event.values[0]);
-            if (seriesMagnetY.size() > 100) {
-                seriesMagnetY.removeFirst();
+            if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+                gravityPlot.addEvent(event);
             }
-            seriesMagnetY.addLast(null, event.values[1]);
-            if (seriesMagnetZ.size() > 100) {
-                seriesMagnetZ.removeFirst();
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                accelerationPlot.addEvent(event);
             }
-            seriesMagnetZ.addLast(null, event.values[2]);
-
-            //plotData();
-            mySimpleXYPlot.redraw();
-
-
+            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+                gyroPlot.addEvent(event);
+            }
+//            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+//                gyroPlot.addEvent(event);
+//            }
         }
-	}
-
-    private void plotData() {
-        mySimpleXYPlot.clear();
-        // Turn the above arrays into XYSeries':
-        seriesMagnetX = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldX");
-        seriesMagnetY = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldY");
-        seriesMagnetZ = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "magnetfeldZ");
-
-        // Create a formatter to use for drawing a series using LineAndPointRenderer:
-        LineAndPointFormatter series1Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(0, 0, 80));
-        series1Format.getFillPaint().setAlpha(150);
-
-        // add a new series' to the xyplot:
-        mySimpleXYPlot.addSeries(seriesMagnetX, series1Format);
-
-        LineAndPointFormatter series2Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(0, 80, 0));
-        series2Format.getFillPaint().setAlpha(150);
-        // same as above:
-        mySimpleXYPlot.addSeries(seriesMagnetY, series2Format);
-
-        LineAndPointFormatter series3Format = new LineAndPointFormatter(Color.rgb(0, 0, 200), null, Color.rgb(80, 0, 0));
-        series3Format.getFillPaint().setAlpha(150);
-        mySimpleXYPlot.addSeries(seriesMagnetZ, series3Format);
-
-        // reduce the number of range labels
-        mySimpleXYPlot.setTicksPerRangeLabel(3);
-
     }
 
     protected void onResume () {
 		super.onResume();
-		mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_UI);
-	}
+//        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
+        registerSensors();
+    }
 
-	protected void onPause() {
+    private void registerSensors() {
+        for (Sensor sensor: sensors) {
+            mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+        }
+    }
+
+    protected void onPause() {
 		super.onPause();
-		mSensorManager.unregisterListener(this, mSensor);
-        mSensorManager.unregisterListener(this, mGravitySensor);
-	}
+        unregisterSensors();
+    }
+
+    private void unregisterSensors() {
+        for (Sensor sensor: sensors) {
+            mSensorManager.unregisterListener(this, sensor);
+        }
+    }
 
 }
 
