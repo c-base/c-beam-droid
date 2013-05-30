@@ -13,30 +13,11 @@
         <RelativeLayout
             android:id="@+id/RelativeLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true">
 
-            <ToggleButton
-                android:id="@+id/toggleButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/button_liftoff"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/button_self_destruct"
-                android:text="Antenne"
-                android:textOff="Antenne aus"
-                android:textOn="Antenne an" />
-
-            <ToggleButton
-                android:id="@+id/toggleButtonBluewall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/toggleButton1"
-                android:layout_toRightOf="@+id/button_softwareverbrennung"
-                android:text="ToggleButton"
-                android:textOff="Darkwall"
-                android:textOn="Bluewall" />
-<!-- 
+            <!--
             <android.support.v7.widget.GridLayout
                 android:id="@+id/gridLayout1"
                 android:layout_width="wrap_content"
@@ -55,26 +36,91 @@
                 android:layout_alignBottom="@+id/button_self_destruct"
                 android:layout_alignParentRight="true"
                 android:text="von Erde abstossen" />
--->
-            <Button
-                android:id="@+id/button_softwareverbrennung"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/toggleButtonBluewall"
-                android:layout_alignBottom="@+id/toggleButtonBluewall"
-                android:layout_alignParentLeft="true"
-                android:text="Software-Endlager" />
+    -->
 
-           
+
+            <TableLayout
+                    android:id="@+id/buttonLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:gravity="center|center_horizontal"
+                    android:layout_centerHorizontal="true">
+
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                    <Button
+                        android:id="@+id/button_self_destruct"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="140dip"
+                        android:layout_height="wrap_content"
+
+                        android:text="Erde absprengen" />
+
+                    <Button
+                        android:id="@+id/button_liftoff"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="140dip"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_lift_off" />
+                </TableRow>
+
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                    <Button
+                        android:id="@+id/button_unlabeled"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Don&apos;t press" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Antenne"
+                        android:textOff="Antenne aus"
+                        android:textOn="Antenne an" />
+                </TableRow>
+
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                    <Button
+                        android:id="@+id/button_softwareverbrennung"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/toggleButtonBluewall"
+                        android:layout_alignBottom="@+id/toggleButtonBluewall"
+                        android:layout_alignParentLeft="true"
+                        android:text="Software-Endlager" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButtonBluewall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/toggleButton1"
+                        android:layout_toRightOf="@+id/button_softwareverbrennung"
+                        android:text="ToggleButton"
+                        android:textOff="Darkwall"
+                        android:textOn="Bluewall" />
+
+                </TableRow>
+            </TableLayout>
 
             <TableLayout
                 android:id="@+id/tableLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/button_softwareverbrennung"
                 android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal" >
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/buttonLayout">
 
                 <TextView
                     android:id="@+id/textView1"
@@ -163,11 +209,11 @@
                     <Button
                         android:id="@+id/button_emergency_lights"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="Notbeleuchtung" />
                 </TableRow>
- 
+
                 <TableRow
                     android:id="@+id/tableRow4"
                     android:layout_width="wrap_content"
@@ -285,47 +331,7 @@
                         android:text="+9" />
                 </TableRow>
 
-                <TableRow
-                    android:id="@+id/tableRow2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/tableRow3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                </TableRow>
             </TableLayout>
-
-            <Button
-                android:id="@+id/button_unlabeled"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/button_softwareverbrennung"
-                android:layout_alignParentLeft="true"
-                android:layout_alignRight="@id/button_softwareverbrennung"
-                android:text="Don&apos;t press" />
-            
-            <Button
-                android:id="@+id/button_liftoff"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@id/button_unlabeled"
-                android:text="@string/button_lift_off" />
-
-            <Button
-                android:id="@+id/button_self_destruct"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@id/button_liftoff"
-                android:text="Erde absprengen" />
 
         </RelativeLayout>
     </ScrollView>

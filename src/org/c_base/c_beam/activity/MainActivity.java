@@ -187,6 +187,9 @@ ActionBar.TabListener, OnClickListener {
 
 		Button button_c_mission = (Button) findViewById(R.id.button_c_mission);
 		button_c_mission.setOnClickListener(this);
+
+        Button button_toggle_rings = (Button) findViewById(R.id.button_toggle_rings);
+        button_toggle_rings.setOnClickListener(this);
 	}
 
 	private void updateTimePicker() {
@@ -512,14 +515,13 @@ ActionBar.TabListener, OnClickListener {
 	public void onClick(View view) {
 		switch (view.getId()) {
 		case R.id.toggleLogin: {
-			ToggleButton b = (ToggleButton) view;
-			if (b.isChecked()) {
-				showLoginDialog();
-			} else {
-				showLogoutDialog();
-			}
-			break;
-		}
+            if (((ToggleButton) view).isChecked()) {
+                showLoginDialog();
+            } else {
+                showLogoutDialog();
+            }
+            break;
+        }
 		case R.id.buttonC_out: {
 			startC_outActivity();
 			break;
@@ -532,6 +534,10 @@ ActionBar.TabListener, OnClickListener {
 			startC_missionActivity();
 			break;
 		}
+        case R.id.button_toggle_rings: {
+            toggleRings(((ToggleButton) view).isChecked());
+            break;
+        }
 		case R.id.button_set_eta: {
 			showETAConfirmationDialog();
 			break;
@@ -543,7 +549,16 @@ ActionBar.TabListener, OnClickListener {
 		}
 	}
 
-	private void showETAConfirmationDialog() {
+    private void toggleRings(Boolean state) {
+        Log.i(TAG, "toggleRings("+state+")");
+        if (state) {
+            findViewById(R.id.ringbuttons).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.ringbuttons).setVisibility(View.GONE);
+        }
+    }
+
+    private void showETAConfirmationDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getString(R.string.confirm_eta, getETA()));
 		builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {

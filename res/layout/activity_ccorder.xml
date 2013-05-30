@@ -139,13 +139,14 @@
                         android:layout_gravity="center"
                         android:background="@drawable/button"
                         android:text="foo"
-                        android:textOff="foo activieren"
-                        android:textOn="foo deactivieren"
+                        android:textOff="cam activieren"
+                        android:textOn="cam deactivieren"
                         android:id="@+id/hideme6"
                         android:layout_above="@+id/hideme5"
                         android:layout_toLeftOf="@+id/hideme2"
                         android:layout_toRightOf="@+id/hideme1"
-                        android:visibility="invisible"/>
+                        android:visibility="visible"
+                        android:checked="true"/>
 
                 <TextView
                         android:layout_width="wrap_content"

@@ -97,6 +97,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private String[] dimensionArrayLux = {"/ lux"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
+    private ToggleButton toggleButtonCam;
 
 
     @Override
@@ -210,9 +211,23 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 ToggleButton b = (ToggleButton) v;
                 if (b.isChecked()) {
                     sensorPlotLayout.setVisibility(View.VISIBLE);
-                    
+
                 } else {
                     sensorPlotLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        toggleButtonCam = (ToggleButton) findViewById(R.id.hideme6);
+        toggleButtonCam.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ToggleButton b = (ToggleButton) v;
+                if (b.isChecked()) {
+                    mSurfaceView.setVisibility(View.VISIBLE);
+                } else {
+                    mSurfaceView.setVisibility(View.INVISIBLE);
                 }
             }
         });

@@ -184,4 +184,6 @@
     <string name="button_cience">cience</string>
     <string name="button_carbon">carbon</string>
     <string name="button_clamp">clamp</string>
+    <string name="button_expand"><![CDATA[>]]></string>
+    <string name="button_collapse"><![CDATA[<]]></string>
 </resources>
