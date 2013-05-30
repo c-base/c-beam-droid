@@ -26,7 +26,6 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 public class C_beam {
-
     enum RESULTS {
         SUCCESS("success"),
         FAILURE("failure");
@@ -44,8 +43,6 @@ public class C_beam {
     private JSONRPCClient c_beamClient;
     private JSONRPCClient portalClient;
     private JSONRPCClient etaClient;
-
-    private Runnable runnable;
 
     private ArrayList<User> onlineList = new ArrayList<User>();
     private ArrayList<User> offlineList = new ArrayList<User>();
@@ -110,9 +107,8 @@ public class C_beam {
         initC_beamClient();
     }
 
-
     public void startThread() {
-        runnable = new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean stop = false;
@@ -125,8 +121,7 @@ public class C_beam {
                     }
                 }
             }
-        };
-        thread = new Thread(runnable);
+        });
         thread.start();
     }
 
@@ -223,7 +218,6 @@ public class C_beam {
         }
         this.stats = statsList;
     }
-
 
     private void updateActivitylog(JSONArray activitylogResult)
             throws JSONException {
@@ -361,7 +355,6 @@ public class C_beam {
         }
         return u;
     }
-
 
     public ArrayList<Event> getEvents(){
         return events;
@@ -534,6 +527,7 @@ public class C_beam {
             e.printStackTrace();
         }
     }
+
     public synchronized void force_logout(String user) {
         try {
             if (isInCrewNetwork()) {
@@ -647,6 +641,7 @@ public class C_beam {
         }
 
     }
+
     public synchronized void darkwall() {
         try {
             if (isInCrewNetwork())
@@ -744,7 +739,6 @@ public class C_beam {
         }
         return result;
     }
-
 
     public synchronized boolean isStatsEnabled() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -886,7 +880,6 @@ public class C_beam {
         }
         return result;
     }
-
 
     public synchronized String call(String method, String param1, String param2) {
         String result = "failure";
