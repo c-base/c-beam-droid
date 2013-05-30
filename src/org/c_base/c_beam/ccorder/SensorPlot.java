@@ -34,9 +34,9 @@ public class SensorPlot {
         series = new SimpleXYSeries[dimensions.length];
         for (int i=0; i<dimensions.length; i++) {
             series[i] = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " " + dimensions[i]);
-//            for (int j=0; j<100; j++) {
-//                series[i].addLast(null, 0);
-//            }
+            for (int j=0; j<100; j++) {
+                series[i].addLast(null, 0);
+            }
             LineAndPointFormatter format = new LineAndPointFormatter(formatColors[i][0], null, formatColors[i][1]);
             format.getFillPaint().setAlpha(150);
             plot.addSeries(series[i], format);
@@ -45,10 +45,10 @@ public class SensorPlot {
 
     public void addEvent(SensorEvent event) {
         for (int i=0; i<series.length; i++) {
-            if (series[i].size() > 100) {
-                series[i].removeFirst();
-            }
-//            series[i].removeFirst();
+//            if (series[i].size() > 100) {
+//                series[i].removeFirst();
+//            }
+            series[i].removeFirst();
             series[i].addLast(null, event.values[i]);
         }
         plot.redraw();

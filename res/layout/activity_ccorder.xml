@@ -29,7 +29,7 @@
 
     <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1" >
 
         <android.view.SurfaceView
@@ -144,7 +144,8 @@
                         android:id="@+id/hideme6"
                         android:layout_above="@+id/hideme5"
                         android:layout_toLeftOf="@+id/hideme2"
-                        android:layout_toRightOf="@+id/hideme1"/>
+                        android:layout_toRightOf="@+id/hideme1"
+                        android:visibility="invisible"/>
 
                 <TextView
                         android:layout_width="wrap_content"
@@ -182,18 +183,22 @@
                         android:id="@+id/mySimpleXYPlot"
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
-                        androidPlot.title="magnetfeld"
+                        androidPlot.title=""
+                        androidPlot.rangeLabel=""
+                        androidPlot.domainLabel=""
                         android:alpha="0.5"
                         android:layout_weight="1"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_below="@+id/hidecontainer"/>
+                        android:layout_below="@+id/hidecontainer" />
 
                 <com.androidplot.xy.XYPlot
                         android:id="@+id/mySimpleXYPlot2"
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
-                        androidPlot.title="foo"
+                        androidPlot.title=""
+                        androidPlot.rangeLabel=""
+                        androidPlot.domainLabel=""
                         android:alpha="0.5"
                         android:layout_weight="1"/>
 
@@ -202,6 +207,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
                         androidPlot.title="foo"
+                        androidPlot.rangeLabel=""
+                        androidPlot.domainLabel=""
                         android:alpha="0.5"
                         android:layout_alignParentLeft="true"
                         android:layout_weight="1"/>
@@ -210,10 +217,24 @@
                         android:id="@+id/mySimpleXYPlot4"
                         android:layout_width="fill_parent"
                         android:layout_height="0dp"
-                        androidPlot.title="foo"
+                        androidPlot.title=""
+                        androidPlot.rangeLabel=""
+                        androidPlot.domainLabel=""
                         android:alpha="0.5"
                         android:layout_alignParentLeft="true"
                         android:layout_weight="1"/>
+
+                <com.androidplot.xy.XYPlot
+                        android:id="@+id/mySimpleXYPlot5"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        androidPlot.title=""
+                        androidPlot.rangeLabel=""
+                        androidPlot.domainLabel=""
+                        android:alpha="0.5"
+                        android:layout_alignParentLeft="true"
+                        android:layout_weight="1"/>
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -232,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:text="c-ontrols anzeigen"
+                android:text="@string/button_show_controls"
                 android:textOff="c-ontrols anzeigen"
                 android:textOn="c-ontrols ausblenden" />
 

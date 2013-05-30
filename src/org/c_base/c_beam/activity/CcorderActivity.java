@@ -3,6 +3,7 @@ package org.c_base.c_beam.activity;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.androidplot.xy.XYPlot;
 import org.c_base.c_beam.R;
@@ -69,6 +70,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private SensorPlot gravityPlot;
     private SensorPlot accelerationPlot;
     private SensorPlot gyroPlot;
+    private SensorPlot lightPlot;
 
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
@@ -92,19 +94,18 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		}
 	};
     private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
+    private String[] dimensionArrayLux = {"/ lux"};
     private ToggleButton toggleButtonSensors;
-    private Sensor scannerSensor;
     private ToggleButton toggleButtonScanner;
+
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		zap = MediaPlayer.create(this, R.raw.zap);
-		scan = MediaPlayer.create(this, R.raw.scan);
-
         setContentView(R.layout.activity_ccorder);
 
+        setupSounds();
         setupSensors();
 		setupGLSurfaceView();
         setupControls();
@@ -113,10 +114,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupScanBar();
         setupSurfaceView();
 
-
-
         showWarningMessage();
 	}
+
+    private void setupSounds() {
+        zap = MediaPlayer.create(this, R.raw.zap);
+        scan = MediaPlayer.create(this, R.raw.scan);
+    }
 
     private void setupSurfaceView() {
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
@@ -229,10 +233,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private void setupPlotViews() {
         textView1 = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
+
+//        LinearLayout sensorPlotLayout = (LinearLayout) findViewById(R.id.sensorPlotLayout);
+//        XYPlot plot = new XYPlot(this, "foo");
+//        plot.setLayoutParams(LinearLayout);
+//        sensorPlotLayout.addView(plot);
+
         magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot));
         gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot2));
         accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot3));
-        gyroPlot = new SensorPlot("gyroscope", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
+        gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
+        lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, (XYPlot) findViewById(R.id.mySimpleXYPlot5));
     }
 
     private void setupGrid() {
@@ -281,6 +292,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
         sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
         sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
     @Override
@@ -385,9 +397,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                 gyroPlot.addEvent(event);
             }
-//            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-//                gyroPlot.addEvent(event);
-//            }
+            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+                lightPlot.addEvent(event);
+            }
         }
     }
 
