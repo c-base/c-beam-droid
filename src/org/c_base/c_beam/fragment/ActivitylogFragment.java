@@ -18,6 +18,7 @@ import android.widget.TextView;
 public class ActivitylogFragment extends Fragment {
 
     public ActivitylogFragment() {
+        super();
 	}
 
 	public void updateLog(ArrayList<ActivityLog> activitylogList) {

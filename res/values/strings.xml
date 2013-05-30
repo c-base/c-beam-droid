@@ -177,4 +177,11 @@
 	<string name="button_set_eta">ETA setzen</string>
 	<string name="button_reset_eta">ETA lo:schen</string>
     <string name="button_show_controls">c-ontrols anzeigen</string>
+    <string name="button_creactiv">creactiv</string>
+    <string name="button_core">core</string>
+    <string name="button_com">com</string>
+    <string name="button_culture">culture</string>
+    <string name="button_cience">cience</string>
+    <string name="button_carbon">carbon</string>
+    <string name="button_clamp">clamp</string>
 </resources>

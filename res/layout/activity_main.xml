@@ -152,4 +152,11 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <fragment
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:name="org.c_base.c_beam.fragment.RingButtonFragment"
+            android:id="@+id/fragment"
+            android:layout_gravity="right|center_vertical"/>
+
 </FrameLayout>

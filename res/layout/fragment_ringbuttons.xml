@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical">
+
+
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonClamp"
+                    android:src="@drawable/ring_clamp"
+                    android:contentDescription="@string/button_clamp"/>
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCarbon"
+                    android:src="@drawable/ring_carbon"
+                    android:contentDescription="@string/button_carbon"/>
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCience"
+                    android:src="@drawable/ring_cience"
+                    android:contentDescription="@string/button_cience"/>
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCreactiv"
+                    android:src="@drawable/ring_creactiv"
+                    android:contentDescription="@string/button_creactiv"/>
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCulture"
+                    android:src="@drawable/ring_culture"
+                    android:contentDescription="@string/button_culture"/>
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCom"
+                    android:src="@drawable/ring_com"
+                    android:contentDescription="@string/button_com"/>
+
+            <ImageButton
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/button"
+                    android:id="@+id/imageButtonCore"
+                    android:src="@drawable/ring_core"
+                    android:contentDescription="@string/button_core"/>
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
