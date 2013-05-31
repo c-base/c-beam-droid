@@ -70,47 +70,51 @@
         android:background="@drawable/bg_portrait"
         tools:context=".MainActivity" >
 
-        <TextView
-            android:id="@+id/textView_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/textView_ap"
-            android:background="@color/black_overlay"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="member:"
-            android:textSize="20sp" />
+        <RelativeLayout
+                android:id="@+id/ap_area"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black_overlay">
 
-        <TextView
-            android:id="@+id/textView_ap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/black_overlay"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="0 AP"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/textView_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="member:"
+                android:textSize="20sp"
+                android:layout_toLeftOf="@+id/textView_ap"/>
+
+            <TextView
+                android:id="@+id/textView_ap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="0 AP"
+                android:textSize="20sp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
 
         <FrameLayout
                 android:id="@+id/ringbuttons"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_gravity="right|center_vertical"
-                android:layout_alignParentLeft="false"
                 android:visibility="gone"
-                android:layout_alignParentEnd="false"
-                android:layout_below="@+id/textView_username"
+                android:background="@color/black_overlay"
                 android:layout_alignParentRight="true"
-                android:layout_above="@+id/main_buttons"
-                android:background="@color/black_overlay">
+                android:layout_below="@+id/ap_area"
+                android:layout_above="@+id/main_buttons">
 
             <fragment
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|bottom|right"
+                    android:layout_gravity="center_vertical|right"
                     android:name="org.c_base.c_beam.fragment.RingButtonFragment"
                     android:id="@+id/fragment" />
 
@@ -120,9 +124,9 @@
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/textView_username"
             tools:context=".MainActivity"
             android:layout_above="@+id/main_buttons"
+            android:layout_below="@+id/ap_area"
             android:layout_toLeftOf="@+id/ringbuttons">
         </android.support.v4.view.ViewPager>
 
@@ -131,7 +135,9 @@
             android:layout_width="wrap_content"
             android:layout_height="48dip"
             android:background="@color/black_overlay"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true">
 
             <Button
                 android:id="@+id/buttonC_out"
@@ -139,9 +145,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_tts"
-                android:layout_alignTop="@+id/button_c_maps"
-                android:layout_toRightOf="@+id/button_c_maps"
-                android:layout_toLeftOf="@+id/button_toggle_rings"/>
+                android:layout_alignBaseline="@+id/button_c_maps"
+                android:layout_alignBottom="@+id/button_c_maps"
+                android:layout_toLeftOf="@+id/button_toggle_rings"
+                    />
 
             <Button
                 android:id="@+id/button_c_maps"
@@ -149,8 +156,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_c_maps"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/button_c_mission"/>
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/buttonC_out"
+                android:visibility="gone"/>
 
             <ToggleButton
                 android:id="@+id/toggleLogin"
@@ -160,7 +168,8 @@
                 android:textOff="@string/offline"
                 android:textOn="@string/online"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/button_c_mission"/>
 
             <Button
                 android:id="@+id/button_c_mission"
@@ -168,19 +177,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_c_mission"
-                android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/toggleLogin"/>
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/button_c_maps"/>
 
             <ToggleButton
-                    android:layout_width="50dip"
+                    android:layout_width="48dip"
                     android:layout_height="wrap_content"
                     android:id="@+id/button_toggle_rings"
                     android:textOff="@string/button_expand"
                     android:textOn="@string/button_collapse"
-                    android:layout_alignTop="@+id/buttonC_out"
-                    android:layout_alignParentRight="true"/>
+                    android:visibility="visible"
+                    android:checked="false"
+                    android:layout_alignParentRight="true"
+                    />
 
         </RelativeLayout>
+
     </RelativeLayout>
 
 

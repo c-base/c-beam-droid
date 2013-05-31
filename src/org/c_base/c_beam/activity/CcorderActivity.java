@@ -378,7 +378,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 			if (((ToggleButton) v).isChecked()) {
 				mVictimContainer.setVisibility(View.VISIBLE);
 			} else {
-				mVictimContainer.setVisibility(View.INVISIBLE);
+				mVictimContainer.setVisibility(View.GONE);
 			}
 		}
 	};

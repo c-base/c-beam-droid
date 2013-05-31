@@ -231,6 +231,8 @@
             android:label="@string/title_activity_notification"
             android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity" >
         </activity>
+        <activity android:name=".activity.CoreActivity"/>
+        <activity android:name=".activity.ComActivity"/>
     </application>
 
 </manifest>
