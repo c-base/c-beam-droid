@@ -305,12 +305,21 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         sensorPlotLayout = findViewById(R.id.sensorPlotLayout);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
+            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
+        }
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
+            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        }
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE)) {
+            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+        }
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_LIGHT)) {
+            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
+        }
         sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
     }
 
     @Override

@@ -188,10 +188,7 @@
                         androidPlot.rangeLabel=""
                         androidPlot.domainLabel=""
                         android:alpha="0.5"
-                        android:layout_weight="1"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_below="@+id/hidecontainer" />
+                        android:layout_weight="1" />
 
                 <com.androidplot.xy.XYPlot
                         android:id="@+id/mySimpleXYPlot2"
