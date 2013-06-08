@@ -41,6 +41,9 @@ import java.util.ArrayList;
 public class ComActivity extends RingActivity implements
         ActionBar.TabListener {
     private static final int C_PORTAL_FRAGMENT = 0;
+    private static final int LOGBUCH_FRAGMENT = 1;
+    private static final int COREDUMP_FRAGMENT = 3;
+    private static final int CIMP_FRAGMENT = 2;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -234,6 +237,15 @@ public class ComActivity extends RingActivity implements
             if (pages[position] == null) {
                 if(position == C_PORTAL_FRAGMENT) {
                     fragment = new C_portalListFragment();
+                } else if(position == LOGBUCH_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.logbuch_url));
+                } else if(position == COREDUMP_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.coredump_url));
+                } else if(position == CIMP_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.cimp_url));
                 } else {
                     fragment = null;
                 }
@@ -248,7 +260,7 @@ public class ComActivity extends RingActivity implements
 
         @Override
         public int getCount() {
-            return 1;
+            return 3;
         }
 
         @Override
@@ -256,6 +268,13 @@ public class ComActivity extends RingActivity implements
             switch (position) {
                 case C_PORTAL_FRAGMENT:
                     return getString(R.string.title_com_section1).toUpperCase();
+                case LOGBUCH_FRAGMENT:
+                    return getString(R.string.title_com_section2).toUpperCase();
+                case CIMP_FRAGMENT:
+                    return getString(R.string.title_com_section3).toUpperCase();
+                case COREDUMP_FRAGMENT:
+                    return getString(R.string.title_com_section4).toUpperCase();
+
             }
             return null;
         }

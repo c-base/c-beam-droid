@@ -222,4 +222,10 @@
     <string name="menu_culture">culture</string>
     <string name="menu_creactiv">creactiv</string>
     <string name="menu_cience">cience</string>
+    <string name="title_com_section2">logbuch</string>
+    <string name="logbuch_url">http://logbuch.c-base.org/</string>
+    <string name="coredump_url">http://wiki.c-base.org/coredump/</string>
+    <string name="title_com_section3">cimp</string>
+    <string name="cimp_url">http://www.c-base.org/cv50f/core/init.html</string>
+    <string name="title_com_section4">coredump</string>
 </resources>
