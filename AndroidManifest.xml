@@ -231,8 +231,90 @@
             android:label="@string/title_activity_notification"
             android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity" >
         </activity>
-        <activity android:name=".activity.CoreActivity"/>
-        <activity android:name=".activity.ComActivity"/>
+
+        <activity
+                android:name="org.c_base.c_beam.activity.CoreActivity"
+                android:label="@string/title_activity_core"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+
+        <activity
+                android:name="org.c_base.c_beam.activity.ComActivity"
+                android:label="@string/title_activity_com"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        <activity
+                android:name="org.c_base.c_beam.activity.CienceActivity"
+                android:label="@string/title_activity_cience"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        <activity
+                android:name="org.c_base.c_beam.activity.ClampActivity"
+                android:label="@string/title_activity_clamp"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        <activity
+                android:name="org.c_base.c_beam.activity.CarbonActivity"
+                android:label="@string/title_activity_carbon"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        <activity
+                android:name="org.c_base.c_beam.activity.CreactivActivity"
+                android:label="@string/title_activity_creactiv"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+        <activity
+                android:name="org.c_base.c_beam.activity.CultureActivity"
+                android:label="@string/title_activity_culture"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+
+        <activity
+                android:name="org.c_base.c_beam.activity.RingActivity"
+                android:label="@string/title_activity_ring"
+                android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.c_base.c_beam.activity.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

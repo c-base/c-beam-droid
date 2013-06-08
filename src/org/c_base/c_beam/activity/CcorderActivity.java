@@ -63,6 +63,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private TextView textView2;
 	private MediaPlayer zap;
 	private MediaPlayer scan;
+    private MediaPlayer bleeps;
 
 	private SensorManager mSensorManager;
 
@@ -98,7 +99,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
-
+    private boolean mustRelease = false;
+    private boolean previewOn = false;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private void setupSounds() {
         zap = MediaPlayer.create(this, R.raw.zap);
         scan = MediaPlayer.create(this, R.raw.scan);
+        bleeps = MediaPlayer.create(this, R.raw.bleeps);
     }
 
     private void setupSurfaceView() {
@@ -338,22 +341,28 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 			e.printStackTrace();
 		}
 		Log.i(TAG, "starting cam");
-		camera.startPreview();
+        camera.startPreview();
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		camera = Camera.open();
+		//camera = Camera.open();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.i(TAG, "stopping cam");
-		camera.stopPreview();
-		camera.release();
+        if (camera != null) {
+            camera.stopPreview();
+        }
+		//camera.release();
+        //camera = null;
 	}
 
 	void ledOn() {
+//        if(mSurfaceView.getVisibility() != View.VISIBLE) {
+//            camera = Camera.open();
+//        }
 		Parameters params = camera.getParameters();
         params.setFlashMode(Parameters.FLASH_MODE_TORCH);
 		camera.setParameters(params);
@@ -361,10 +370,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 	}
 	
 	void ledOff() {
-		Parameters params = camera.getParameters();
+        Parameters params = camera.getParameters();
 		params.setFlashMode(Parameters.FLASH_MODE_OFF);
 		camera.setParameters(params);
-	}
+//        if(mSurfaceView.getVisibility() != View.VISIBLE) {
+//            camera.release();
+//        }
+    }
 	void ledflash() {
 		Parameters params = camera.getParameters();
 		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
@@ -390,12 +402,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-        if (toggleButtonScanner.isChecked() && event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if (Math.abs(event.values[1] + event.values[2]) > 5) {
-                scan.seekTo(0);
-                scan.start();
+        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (toggleButtonScanner.isChecked()) {
+                if (Math.abs(event.values[1] + event.values[2]) > 5) {
+                    scan.seekTo(0);
+                    scan.start();
+                }
+                //accelerationPlot.addEvent(event);
+            } else if (event.values[2] > 10) {
+                bleeps.seekTo(0);
+                bleeps.start();
             }
-            //accelerationPlot.addEvent(event);
         }
         if (toggleButtonSensors.isChecked()) {
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -422,6 +439,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 		super.onResume();
 //        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
+        camera = Camera.open();
     }
 
     private void registerSensors() {
@@ -433,6 +451,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     protected void onPause() {
 		super.onPause();
         unregisterSensors();
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 
     private void unregisterSensors() {

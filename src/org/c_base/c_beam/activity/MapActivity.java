@@ -117,22 +117,22 @@ public class MapActivity extends C_beamActivity implements
 			// below) with the page number as its lone argument.
 			Fragment fragment;
 			Bundle args = new Bundle();
-			if (position == 0) {
-				fragment = new C_portalWebViewFragment();
-				((C_portalWebViewFragment) fragment).setUrl("http://ijon.crew.c-base.org/interface/index.html");
-			} else if (position == 1) {
-				fragment = new C_portalWebViewFragment();
-				((C_portalWebViewFragment) fragment).setUrl("http://smile.crew.c-base.org/basemap/");
-			} else if (position == 2) {
-				fragment = new C_portalWebViewFragment();
-				((C_portalWebViewFragment) fragment).setUrl("https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A");
-			} else {
-				fragment = new DummySectionFragment();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-				fragment.setArguments(args);
-			}
+            if (position == 0) {
+                fragment = new C_portalWebViewFragment();
+                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+            } else if (position == 1) {
+                fragment = new C_portalWebViewFragment();
+                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+            } else if (position == 2) {
+                fragment = new C_portalWebViewFragment();
+                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+            } else {
+                fragment = new DummySectionFragment();
+                args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+                fragment.setArguments(args);
+            }
 
-			return fragment;
+            return fragment;
 		}
 
 		@Override

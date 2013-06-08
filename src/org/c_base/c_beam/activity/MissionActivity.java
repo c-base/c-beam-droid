@@ -84,18 +84,6 @@ ActionBar.TabListener, OnClickListener {
 	TextView tvAp = null;
 	TextView tvUsername = null;
 
-	public void setOnline() {
-		if (android.os.Build.VERSION.SDK_INT > 13) {
-			actionBar.setIcon(R.drawable.ic_launcher_c_beam_online);
-		}
-	}
-
-	public void setOffline() {
-		if (android.os.Build.VERSION.SDK_INT > 13) {
-			actionBar.setIcon(R.drawable.ic_launcher);
-		}
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -232,10 +220,6 @@ ActionBar.TabListener, OnClickListener {
 			@Override
 			public void run() {
 				updateLists();
-				if (c_beam.isInCrewNetwork())
-					setOnline();
-				else
-					setOffline();
 				handler.postDelayed(fred, threadDelay);
 			}
 

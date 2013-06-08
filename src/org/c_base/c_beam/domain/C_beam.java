@@ -123,6 +123,7 @@ public class C_beam {
             }
         });
         thread.start();
+        Log.i(TAG, "thread started");
     }
 
     public boolean isInCrewNetwork() {

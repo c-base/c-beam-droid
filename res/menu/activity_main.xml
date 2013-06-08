@@ -39,7 +39,49 @@
         android:orderInCategory="106"
         android:showAsAction="never"
         android:title="@string/menu_c_corder"/>
-    
+
+    <!--<item-->
+            <!--android:id="@+id/menu_clamp"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_clamp"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_carbon"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_carbon"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_cience"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_cience"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_creactiv"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_creactiv"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_culture"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_culture"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_com"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_com"/>-->
+
+    <!--<item-->
+            <!--android:id="@+id/menu_core"-->
+            <!--android:orderInCategory="150"-->
+            <!--android:showAsAction="always"-->
+            <!--android:title="@string/menu_core"/>-->
+
     <item
         android:id="@+id/menu_ab_out"
         android:orderInCategory="200"
