@@ -203,7 +203,7 @@
     <string name="title_core_section2">memberinterface</string>
     <string name="title_clamp_section1">c_nittstellen</string>
     <string name="title_clamp_section2">artefacte</string>
-    <string name="title_clamp_section3">u:bersicht</string>
+    <string name="title_clamp_section3">carte</string>
     <string name="title_clamp_section4">terra</string>
     <string name="www_cbo_url">http://www.c-base.org</string>
     <string name="title_clamp_section5">www</string>
@@ -228,4 +228,5 @@
     <string name="title_com_section3">cimp</string>
     <string name="cimp_url">http://www.c-base.org/cv50f/core/init.html</string>
     <string name="title_com_section4">coredump</string>
+    <string name="cbag_base_url">http://10.0.1.44</string>
 </resources>

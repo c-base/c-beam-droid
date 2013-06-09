@@ -37,7 +37,7 @@ public class ArtefactListFragment extends ListFragment {
 	public void addItem(Artefact item) {
 		//Log.d("ArtefactListFragment", "add: "+item);
 		items.add(item);
-		//((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
 	}
 
 	// Override onCreateView() so we can use a custom empty view

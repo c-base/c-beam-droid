@@ -381,11 +381,9 @@ public class MainActivity extends C_beamActivity implements
         if(artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
             artefactList = c_beam.getArtefacts();
-            if (artefactList.size() != artefacts.size()) {
-                artefacts.clear();
-                for(int i=0; i<artefactList.size();i++)
-                    artefacts.addItem(artefactList.get(i));
-            }
+            artefacts.clear();
+            for(Artefact artefact: artefactList)
+                artefacts.addItem(artefact);
         }
         activitylog.updateLog(c_beam.getActivityLog());
     }
