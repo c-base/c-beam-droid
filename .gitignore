@@ -48,3 +48,7 @@ Thumbs.db
 
 # backup files
 *.bak
+
+# Gradle
+.gradle
+build
