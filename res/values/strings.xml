@@ -229,4 +229,5 @@
     <string name="cimp_url">http://www.c-base.org/cv50f/core/init.html</string>
     <string name="title_com_section4">coredump</string>
     <string name="cbag_base_url">http://10.0.1.44</string>
+    <string name="title_ringinfo">ringe</string>
 </resources>

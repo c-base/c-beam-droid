@@ -19,6 +19,7 @@ import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
@@ -56,13 +57,14 @@ import com.actionbarsherlock.view.Menu;
 @SuppressLint("NewApi")
 public class MainActivity extends C_beamActivity implements
         ActionBar.TabListener, OnClickListener {
-    private static final int USER_FRAGMENT = 0;
-    private static final int C_PORTAL_FRAGMENT = 1;
-    private static final int ARTEFACTS_FRAGMENT = 6;
-    private static final int EVENTS_FRAGMENT = 5;
-    private static final int C_ONTROL_FRAGMENT = 2;
-    private static final int MISSION_FRAGMENT = 3;
-    private static final int ACTIVITYLOG_FRAGMENT = 4;
+    private static final int USER_FRAGMENT = 1;
+    private static final int C_PORTAL_FRAGMENT = 2;
+    private static final int ARTEFACTS_FRAGMENT = 7;
+    private static final int RINGINFO_FRAGMENT = 0;
+    private static final int EVENTS_FRAGMENT = 6;
+    private static final int C_ONTROL_FRAGMENT = 3;
+    private static final int MISSION_FRAGMENT = 4;
+    private static final int ACTIVITYLOG_FRAGMENT = 5;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 100;
@@ -479,6 +481,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = new MissionListFragment();
             } else if(position == ACTIVITYLOG_FRAGMENT) {
                 fragment = new ActivitylogFragment();
+            } else if(position == RINGINFO_FRAGMENT) {
+                fragment = new RinginfoFragment();
             } else {
                 fragment = null;
             }
@@ -493,7 +497,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 7;
+        return 8;
     }
 
     @Override
@@ -513,6 +517,8 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
                 return getString(R.string.title_missions);
             case ACTIVITYLOG_FRAGMENT:
                 return getString(R.string.title_activity);
+            case RINGINFO_FRAGMENT:
+                return getString(R.string.title_ringinfo);
         }
         return null;
     }

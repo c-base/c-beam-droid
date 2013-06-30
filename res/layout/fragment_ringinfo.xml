@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/ap_area"
+            android:layout_above="@+id/main_buttons"
+            android:visibility="visible">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/ap_area"
+                android:layout_above="@+id/main_buttons">
+
+
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_clamp"
+                        android:src="@drawable/ring_clamp"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"/>
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="clamp: Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der Raumstation."
+                        android:id="@+id/textView_clamp"
+                        android:padding="8dp"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/button_32x32_black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_carbon"
+                        android:src="@drawable/ring_carbon"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"
+                        />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="carbon: Das Logbuch der c-base. Es enthält die bisher bekannte Stationsgeschichte, den Rekonstruktionsverlauf, die Einträge der ursprünglichen Besatzung und des heutigen Forschungsteams."
+                        android:id="@+id/textView_carbon"
+                        android:padding="8dp"
+                        android:background="@drawable/button_32x32_black"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_cience"
+                        android:src="@drawable/ring_cience"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"
+                        />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="cience: Der wissenschaftliche Bereich. Seminare und Workshops von c wie c-base über C-Programmierung, Internetnutzung, Linux, Web Design bis Z wie Zukunftsforschung."
+                        android:id="@+id/textView_cience"
+                        android:padding="8dp"
+                        android:background="@drawable/button_32x32_black"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_creactiv"
+                        android:src="@drawable/ring_creactiv"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"
+                        />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="creativ: Der Focus für Kreativität und Phantasie. Die Crew bündelt ihre künstlerischen und technischen Visionen durch Aktionen und Projekte."
+                        android:id="@+id/textView_creactiv"
+                        android:padding="8dp"
+                        android:background="@drawable/button_32x32_black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_culture"
+                        android:src="@drawable/ring_culture"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"
+                        />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="culture: Der Veranstaltungssector. Die Konzeption und Durchführung von Ausstellungen, sportlichen Aktivitäten, Performance und Theather , Lesungen, Parties und vielem mehr auf der c-base findet hier Raum."
+                        android:id="@+id/textView_culture"
+                        android:background="@drawable/button_32x32_black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_com"
+                        android:src="@drawable/ring_com"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"/>
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView_com"
+                        android:padding="8dp"
+                        android:background="@drawable/button_32x32_black"
+                        android:text="com: Diskussions- und Präsentationsplattform. Kommunikation zwischen allen Ebenen und Bereichen der c-base schafft neue Ideen. Kommunikation auf Aussenmission eröffnet Kontaktmöglichkeiten jeder Art, die sowohl zur Erweiterung der Crew als auch zum Aufbau internationaler Kontakte führt."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/button_core"
+                        android:src="@drawable/ring_core"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/button"
+                        />
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView_core"
+                        android:padding="8dp"
+                        android:background="@drawable/button_32x32_black"
+                        android:text="core: Die Organisation. Der gemeinnützige c-base e.V. ist der Träger der sieben Arbeitsbereiche.  Das ständig wachsendes Rekonstruktionsteam aus Experten und Laien der verschiedensten wissenschaftlichen und kulturellen Gebiete - Die heutige Crew der c-base - trifft sich zum Ideenaustausch und zur weiteren Projektentwicklung in der Multimodulstation rs20. "/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
