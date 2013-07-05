@@ -230,4 +230,35 @@
     <string name="title_com_section4">coredump</string>
     <string name="cbag_base_url">http://10.0.1.44</string>
     <string name="title_ringinfo">ringe</string>
+    <string name="info_clamp">
+        clamp: Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der
+        Raumstation.
+    </string>
+    <string name="info_carbon">
+        carbon: Das Logbuch der c-base. Es enthält die bisher bekannte Stationsgeschichte, den
+        Rekonstruktionsverlauf, die Einträge der ursprünglichen Besatzung und des heutigen
+        Forschungsteams.
+    </string>
+    <string name="info_cience">
+        Der wissenschaftliche Bereich. Seminare und Workshops von c wie c-base über
+        C-Programmierung, Internetnutzung, Linux, Web Design bis Z wie Zukunftsforschung.
+    </string>
+    <string name="info_creactiv">
+        Der Focus für Kreativität und Phantasie. Die Crew bündelt ihre künstlerischen und
+        technischen Visionen durch Aktionen und Projekte.
+    </string>
+    <string name="info_culture">
+        Der Veranstaltungssector. Die Konzeption und Durchführung von Ausstellungen, sportlichen
+        Aktivitäten, Performance und Theather , Lesungen, Parties und vielem mehr auf der c-base
+        findet hier Raum.
+    </string>
+    <string name="info_com">
+        com: Diskussions- und Präsentationsplattform. Kommunikation zwischen
+        allen Ebenen und Bereichen der c-base schafft neue Ideen. Kommunikation auf Aussenmission
+        eröffnet Kontaktmöglichkeiten jeder Art, die sowohl zur Erweiterung der Crew als auch zum
+        Aufbau internationaler Kontakte führt.
+    </string>
+    <string name="info_core">
+        Die Organisation. Der gemeinnützige c-base e.V. ist der Träger der sieben Arbeitsbereiche.
+    </string>
 </resources>

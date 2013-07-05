@@ -4,6 +4,92 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/button_32x32_black"
+            android:visibility="visible">
+
+        <ImageView
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:id="@+id/imageView"
+                android:src="@drawable/ring_clamp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/button_32x32_gray"/>
+
+        <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/horizontalScrollView"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true">
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="foo"
+                        android:id="@+id/button"
+                        android:background="@drawable/button"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="New Button"
+                        android:id="@+id/button2"
+                        android:background="@drawable/button"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="New Button"
+                        android:id="@+id/button3"
+                        android:background="@drawable/button"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="New Button"
+                        android:id="@+id/button4"
+                        android:background="@drawable/button"/>
+
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="New Button"
+                        android:id="@+id/button5"
+                        android:background="@drawable/button"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scrollView2"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/imageView"
+                android:layout_alignTop="@+id/imageView"
+                android:layout_above="@+id/horizontalScrollView">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/info_com"
+                    android:id="@+id/textView"
+                    android:textSize="20dp"
+                    android:typeface="monospace"
+                    android:textColor="#ff33b6f6"
+                    android:paddingLeft="4dp"/>
+        </ScrollView>
+
+    </RelativeLayout>
+
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -21,7 +107,6 @@
                 android:layout_above="@+id/main_buttons">
 
 
-
             <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
@@ -34,14 +119,15 @@
                         android:scaleType="fitCenter"
                         android:background="@drawable/button"/>
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="clamp: Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der Raumstation."
-                        android:id="@+id/textView_clamp"
-                        android:padding="8dp"
-                        android:layout_alignParentEnd="true"
-                        android:background="@drawable/button_32x32_black"/>
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_clamp"
+                        android:id="@+id/button7"
+                        android:background="@drawable/button"
+                        android:typeface="monospace"
+                        android:textColor="#ff33b6f6"
+                        android:textSize="24dp"/>
 
             </LinearLayout>
 
@@ -58,14 +144,15 @@
                         android:background="@drawable/button"
                         />
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="carbon: Das Logbuch der c-base. Es enthält die bisher bekannte Stationsgeschichte, den Rekonstruktionsverlauf, die Einträge der ursprünglichen Besatzung und des heutigen Forschungsteams."
-                        android:id="@+id/textView_carbon"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_black"
-                        />
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_carbon"
+                        android:id="@+id/button6"
+                        android:background="@drawable/button"
+                        android:typeface="monospace"
+                        android:textSize="24dp"
+                        android:textColor="#ff33b6f6"/>
 
             </LinearLayout>
 
@@ -82,14 +169,15 @@
                         android:background="@drawable/button"
                         />
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="cience: Der wissenschaftliche Bereich. Seminare und Workshops von c wie c-base über C-Programmierung, Internetnutzung, Linux, Web Design bis Z wie Zukunftsforschung."
-                        android:id="@+id/textView_cience"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_black"
-                        />
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_cience"
+                        android:id="@+id/button8"
+                        android:typeface="monospace"
+                        android:textColor="#ff33b6f6"
+                        android:textSize="24dp"
+                        android:background="@drawable/button"/>
 
             </LinearLayout>
 
@@ -106,13 +194,15 @@
                         android:background="@drawable/button"
                         />
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="creativ: Der Focus für Kreativität und Phantasie. Die Crew bündelt ihre künstlerischen und technischen Visionen durch Aktionen und Projekte."
-                        android:id="@+id/textView_creactiv"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_black"/>
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_creactiv"
+                        android:id="@+id/button9"
+                        android:textSize="24dp"
+                        android:textColor="#ff33b6f6"
+                        android:typeface="monospace"
+                        android:background="@drawable/button"/>
 
             </LinearLayout>
 
@@ -129,12 +219,15 @@
                         android:background="@drawable/button"
                         />
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="culture: Der Veranstaltungssector. Die Konzeption und Durchführung von Ausstellungen, sportlichen Aktivitäten, Performance und Theather , Lesungen, Parties und vielem mehr auf der c-base findet hier Raum."
-                        android:id="@+id/textView_culture"
-                        android:background="@drawable/button_32x32_black"/>
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_culture"
+                        android:id="@+id/button10"
+                        android:textColor="#ff33b6f6"
+                        android:textSize="24dp"
+                        android:typeface="monospace"
+                        android:background="@drawable/button"/>
 
             </LinearLayout>
 
@@ -151,13 +244,15 @@
                         android:scaleType="fitCenter"
                         android:background="@drawable/button"/>
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView_com"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_black"
-                        android:text="com: Diskussions- und Präsentationsplattform. Kommunikation zwischen allen Ebenen und Bereichen der c-base schafft neue Ideen. Kommunikation auf Aussenmission eröffnet Kontaktmöglichkeiten jeder Art, die sowohl zur Erweiterung der Crew als auch zum Aufbau internationaler Kontakte führt."/>
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_com"
+                        android:id="@+id/button11"
+                        android:typeface="monospace"
+                        android:textSize="24dp"
+                        android:textColor="#ff33b6f6"
+                        android:background="@drawable/button"/>
 
             </LinearLayout>
 
@@ -174,13 +269,16 @@
                         android:background="@drawable/button"
                         />
 
-                <TextView
+                <Button
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView_core"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_black"
-                        android:text="core: Die Organisation. Der gemeinnützige c-base e.V. ist der Träger der sieben Arbeitsbereiche.  Das ständig wachsendes Rekonstruktionsteam aus Experten und Laien der verschiedensten wissenschaftlichen und kulturellen Gebiete - Die heutige Crew der c-base - trifft sich zum Ideenaustausch und zur weiteren Projektentwicklung in der Multimodulstation rs20. "/>
+                        android:layout_height="fill_parent"
+                        android:text="@string/button_core"
+                        android:id="@+id/button12"
+                        android:textColor="#ff33b6f6"
+                        android:textSize="24dp"
+                        android:typeface="monospace"
+                        android:background="@drawable/button"/>
+
             </LinearLayout>
 
         </LinearLayout>
