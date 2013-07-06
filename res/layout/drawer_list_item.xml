@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
 <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:background="@drawable/button">
 
--->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:id="@+id/drawer_list_item_textview"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -17,9 +15,30 @@
           android:paddingRight="16dp"
           android:textColor="#fff"
           android:minHeight="?android:attr/listPreferredItemHeightSmall"
-          android:background="@drawable/button"
           android:typeface="monospace"
-          android:textSize="24dp"/>
-    <!--android:background="?android:attr/activatedBackgroundIndicator"-->
-<!--</RelativeLayout>-->
+          android:textSize="24dp"
+          android:layout_alignParentTop="true"
+          android:layout_toLeftOf="@+id/toggleButton"
+          android:layout_toRightOf="@+id/drawer_ring_imageView"/>
+    <!-- android:background="?android:attr/activatedBackgroundIndicator" -->
 
+    <ToggleButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="New ToggleButton"
+            android:id="@+id/toggleButton"
+            android:layout_alignTop="@+id/drawer_list_item_textview"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button"
+            android:textOff="&gt;"
+            android:textOn="&lt;"
+            android:visibility="gone"/>
+
+    <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/drawer_ring_imageView"
+            android:layout_below="@+id/toggleButton"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ring_clamp"/>
+</RelativeLayout>
