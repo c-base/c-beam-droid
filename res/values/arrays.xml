@@ -9,4 +9,14 @@
         <item>com</item>
         <item>core</item>
     </string-array>
+
+    <array name="drawer_images_array">
+        <item>@drawable/ring_clamp</item>
+        <item>@drawable/ring_carbon</item>
+        <item>@drawable/ring_cience</item>
+        <item>@drawable/ring_creactiv</item>
+        <item>@drawable/ring_culture</item>
+        <item>@drawable/ring_com</item>
+        <item>@drawable/ring_core</item>
+    </array>
 </resources>
