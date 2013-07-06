@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="drawer_items_array">
+        <item>clamp</item>
+        <item>carbon</item>
+        <item>cience</item>
+        <item>creactiv</item>
+        <item>culture</item>
+        <item>com</item>
+        <item>core</item>
+    </string-array>
+</resources>

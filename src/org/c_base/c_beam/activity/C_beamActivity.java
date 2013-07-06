@@ -37,7 +37,7 @@ public class C_beamActivity extends SherlockFragmentActivity {
 		c_beam.setActivity(this);
 		actionBar = getSupportActionBar();
 
-		setupActionBar();
+		//setupActionBar();
 	}
 
 	protected void setupActionBar() {

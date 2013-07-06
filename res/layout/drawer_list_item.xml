@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/button">
+
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/drawer_list_item_textview"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceListItemSmall"
+          android:gravity="center_vertical"
+          android:paddingLeft="16dp"
+          android:paddingRight="16dp"
+          android:textColor="#fff"
+          android:minHeight="?android:attr/listPreferredItemHeightSmall"
+          android:background="@drawable/button"
+          android:typeface="monospace"
+          android:textSize="24dp"/>
+    <!--android:background="?android:attr/activatedBackgroundIndicator"-->
+<!--</RelativeLayout>-->
+

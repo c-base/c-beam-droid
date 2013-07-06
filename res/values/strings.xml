@@ -261,4 +261,6 @@
     <string name="info_core">
         Die Organisation. Der gemeinnützige c-base e.V. ist der Träger der sieben Arbeitsbereiche.
     </string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
 </resources>

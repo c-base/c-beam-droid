@@ -8,8 +8,9 @@
     <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="200dp"
-            android:background="@drawable/button_32x32_black"
-            android:visibility="visible">
+            android:background="@color/black_overlay"
+            android:visibility="visible"
+            android:focusable="false">
 
         <ImageView
                 android:layout_width="50dip"
@@ -75,7 +76,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/imageView"
                 android:layout_alignTop="@+id/imageView"
-                android:layout_above="@+id/horizontalScrollView">
+                android:layout_above="@+id/horizontalScrollView"
+                android:paddingBottom="4dp">
 
             <TextView
                     android:layout_width="wrap_content"

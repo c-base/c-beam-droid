@@ -93,8 +93,10 @@ public class RingActivity extends C_beamActivity {
             }
         });
 
-        setupRingButtons();
+        //setupRingButtons();
     }
+
+
 
     private void setupRingButtons() {
         ((ToggleButton) findViewById(R.id.button_toggle_rings)).setOnClickListener(new View.OnClickListener() {
