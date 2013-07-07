@@ -1,6 +1,9 @@
 package org.c_base.c_beam.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -18,16 +21,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
+import org.c_base.c_beam.domain.Ring;
+import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.util.Helper;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 /**
@@ -68,6 +78,7 @@ public class ClampActivity extends RingActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private TypedArray mDrawerImages;
 
 
     @Override
@@ -122,12 +133,18 @@ public class ClampActivity extends RingActivity implements
     private void setupNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setBackgroundColor(Color.argb(120,0,0,0));
 
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
+        mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
 
+        ArrayList<Ring> mRings = new ArrayList<Ring>();
+        for(int i=0; i<mDrawerItems.length; i++) {
+            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        }
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mDrawerItems));
+        mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
+                R.id.drawer_list_item_textview, mRings));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -135,22 +152,13 @@ public class ClampActivity extends RingActivity implements
         mTitle = mDrawerTitle = getTitle();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-        ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.drawable.ic_drawer, R.string.drawer_open,R.string.drawer_close) {
+            @Override
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                // TODO Auto-generated method stub
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mTitle);
             }
         };
 
@@ -308,6 +316,7 @@ public class ClampActivity extends RingActivity implements
 
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
+
         /*
         // Create a new fragment and specify the planet to show based on position
         Fragment fragment = new PlanetFragment();
@@ -323,15 +332,17 @@ public class ClampActivity extends RingActivity implements
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawer.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawer(mDrawer);
         */
+        setTitle(mDrawerItems[position]);
+        System.out.println(mDrawerItems[position]);
+
     }
 
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(mTitle);
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -343,6 +354,35 @@ public class ClampActivity extends RingActivity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
+    public class RingAdapter extends ArrayAdapter {
+        private static final String TAG = "UserAdapter";
+        private ArrayList<Ring> items;
+        private Context context;
+
+        @SuppressWarnings("unchecked")
+        public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
+            super(context, itemLayout, textViewResourceId, items);
+            this.context = context;
+            this.items = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final View listview = super.getView(position, convertView, parent);
+
+            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            Ring r = items.get(position);
+
+            //Helper.setListItemStyle(view);
+            //Helper.setFont(getActivity(), view);
+            textView.setText(r.getName());
+
+            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            b.setImageDrawable(r.getImage());
+            return listview;
+        }
+
+    }
 
 
 }
