@@ -77,11 +77,19 @@
                 android:background="@drawable/bg_portrait"
                 tools:context=".MainActivity" >
 
+            <com.viewpagerindicator.TitlePageIndicator
+                    android:id="@+id/titles"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/abs__background_holo_dark"/>
+
             <RelativeLayout
                     android:id="@+id/ap_area"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/black_overlay">
+                    android:background="@color/black_overlay"
+                    android:layout_below="@+id/titles">
 
                 <TextView
                         android:id="@+id/textView_username"

@@ -2,6 +2,7 @@ package org.c_base.c_beam.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,8 +26,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -51,6 +55,12 @@ public class ClampActivity extends RingActivity implements
     private static final int BLUEPRINT_MAP_FRAGMENT = 2;
     private static final int GOOGLE_MAP_FRAGMENT = 3;
     private static final int WWW_CBO_FRAGMENT = 4;
+
+    enum RING {
+        CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
+    }
+
+    private RING currentRing = RING.CLAMP;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -88,7 +98,7 @@ public class ClampActivity extends RingActivity implements
         setContentView(R.layout.activity_ring);
 
         // Set up the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         // Show the Up button in the action bar.
         //actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -97,32 +107,7 @@ public class ClampActivity extends RingActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(
                 getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager
-                .setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        actionBar.setSelectedNavigationItem(position);
-                    }
-                });
-
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(actionBar.newTab()
-                    .setText(mSectionsPagerAdapter.getPageTitle(i))
-                    .setTabListener(this));
-        }
-
+        setupViewPager();
         setupNavigationDrawer();
 
         setupOfflineArea();
@@ -133,13 +118,13 @@ public class ClampActivity extends RingActivity implements
     private void setupNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setBackgroundColor(Color.argb(120,0,0,0));
+        mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
 
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
         mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
 
         ArrayList<Ring> mRings = new ArrayList<Ring>();
-        for(int i=0; i<mDrawerItems.length; i++) {
+        for (int i = 0; i < mDrawerItems.length; i++) {
             mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
         }
 
@@ -153,7 +138,7 @@ public class ClampActivity extends RingActivity implements
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,R.drawable.ic_drawer, R.string.drawer_open,R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
@@ -164,6 +149,7 @@ public class ClampActivity extends RingActivity implements
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.openDrawer(Gravity.LEFT);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -179,23 +165,83 @@ public class ClampActivity extends RingActivity implements
             }
 
         };
-        handler.postDelayed(fred, firstThreadDelay );
+        handler.postDelayed(fred, firstThreadDelay);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+//        if (mDrawerToggle.onOptionsItemSelected(item)) {
+//            return true;
+//        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
 
     public void updateLists() {
         Log.i(TAG, "updateLists()");
         ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
-        if(artefacts.isAdded()) {
+        if (artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
             artefactList = c_beam.getArtefacts();
             if (artefactList.size() != artefacts.size()) {
                 artefacts.clear();
-                for(int i=0; i<artefactList.size();i++)
+                for (int i = 0; i < artefactList.size(); i++)
                     artefacts.addItem(artefactList.get(i));
             }
         }
 
+    }
+
+    private void setupViewPager() {
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the app.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        setupViewPagerIndicator();
+//        setupActionBarTabs();
+    }
+
+    private void setupViewPagerIndicator() {
+        //Bind the title indicator to the adapter
+        TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
+        titleIndicator.setViewPager(mViewPager);
+
+        Helper.setFont(titleIndicator);
+
+        // When swiping between different sections, select the corresponding
+        // tab. We can also use ActionBar.Tab#select() to do this if we have
+        // a reference to the Tab.titleIndicator.setOnPageChangeListener(mPageChangeListener);
+        titleIndicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                try {
+                    actionBar.setSelectedNavigationItem(position);
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     @Override
@@ -256,6 +302,8 @@ public class ClampActivity extends RingActivity implements
             return fragment;
         }
 
+
+
         @Override
         public int getCount() {
             // Show 3 total pages.
@@ -314,7 +362,9 @@ public class ClampActivity extends RingActivity implements
         }
     }
 
-    /** Swaps fragments in the main content view */
+    /**
+     * Swaps fragments in the main content view
+     */
     private void selectItem(int position) {
 
         /*

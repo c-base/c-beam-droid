@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.viewpagerindicator.TitlePageIndicator;
+
 import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -100,4 +103,29 @@ public class Helper {
 //			view.setBackgroundResource(R.drawable.button);
 		}
 	}
+
+    public static void setFont(TitlePageIndicator view) {
+        Context context = view.getContext();
+
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		String defaultFont = context.getString(R.string.pref_font_default);
+		String font = sharedPref.getString(Settings.FONT, defaultFont);
+
+		int fontsize = Integer.parseInt(sharedPref.getString(Settings.FONT_SIZE, "20"));
+        fontsize += 10; // required for whatever reason :/
+		if (font.equals("X-Scale")) {
+			view.setPadding(25, 10, 25, 25);
+			Typeface myTypeface = Typeface.createFromAsset(context.getAssets(), "X-SCALE.TTF");
+			view.setTypeface(myTypeface);
+			view.setTextSize(fontsize);
+		} else if (font.equals("Ceva")) {
+			view.setPadding(25, 25, 25, 25);
+			Typeface myTypeface = Typeface.createFromAsset(context.getAssets(), "CEVA-CM.TTF");
+			view.setTypeface(myTypeface);
+			view.setTextSize(fontsize);
+		} else {
+			view.setPadding(25, 25, 25, 25);
+			view.setTextSize(fontsize);
+		}
+    }
 }

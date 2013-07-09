@@ -258,7 +258,7 @@ public class RingActivity extends C_beamActivity {
     }
 
     private void showOnlineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mOfflineArea.setVisibility(View.GONE);
         mCbeamArea.setVisibility(View.VISIBLE);
     }

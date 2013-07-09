@@ -1,104 +1,115 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context=".MainActivity" >
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             tools:context=".MainActivity" >
 
     <RelativeLayout
-        android:id="@+id/info_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone" >
+            android:id="@+id/info_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone" >
 
         <TextView
-            android:id="@+id/not_in_crew_network"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/timePicker1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:text="@string/not_in_crew_network"
-            android:textAlignment="center"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:id="@+id/not_in_crew_network"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/timePicker1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/not_in_crew_network"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
-            android:id="@+id/eta_buttons"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
+                android:id="@+id/eta_buttons"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="fill_horizontal"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/button_set_eta"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="128dip"
-                android:text="@string/button_set_eta" />
+                    android:id="@+id/button_set_eta"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="128dip"
+                    android:text="@string/button_set_eta" />
 
             <Button
-                android:id="@+id/button_reset_eta"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="128dip"
-                android:text="@string/button_reset_eta" />
+                    android:id="@+id/button_reset_eta"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="128dip"
+                    android:text="@string/button_reset_eta" />
         </LinearLayout>
 
         <TimePicker
-            android:id="@+id/timePicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/eta_buttons"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true" />
+                android:id="@+id/timePicker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/eta_buttons"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/cbeam_area"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_portrait"
-        tools:context=".MainActivity" >
+            android:id="@+id/cbeam_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_portrait"
+            tools:context=".MainActivity" >
+
+        <com.viewpagerindicator.TitlePageIndicator
+                android:id="@+id/titles"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_toRightOf="@+id/ringbuttons"
+                android:layout_alignParentTop="true"
+                android:background="@color/abs__background_holo_dark"/>
 
         <RelativeLayout
                 android:id="@+id/ap_area"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/black_overlay">
+                android:background="@color/black_overlay"
+                android:layout_below="@+id/titles">
 
             <TextView
-                android:id="@+id/textView_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:text="member:"
-                android:textSize="20sp"
-                android:layout_toLeftOf="@+id/textView_ap"/>
+                    android:id="@+id/textView_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:text="member:"
+                    android:textSize="20sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"/>
 
             <TextView
-                android:id="@+id/textView_ap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:text="0 AP"
-                android:textSize="20sp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"/>
+                    android:id="@+id/textView_ap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:text="0 AP"
+                    android:textSize="20sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"/>
 
         </RelativeLayout>
+
+
 
         <FrameLayout
                 android:id="@+id/ringbuttons"
@@ -121,64 +132,64 @@
         </FrameLayout>
 
         <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity"
-            android:layout_above="@+id/main_buttons"
-            android:layout_below="@+id/ap_area"
-            android:layout_toLeftOf="@+id/ringbuttons">
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity"
+                android:layout_above="@+id/main_buttons"
+                android:layout_toLeftOf="@+id/ringbuttons"
+                android:layout_below="@+id/ap_area">
         </android.support.v4.view.ViewPager>
 
         <RelativeLayout
-            android:id="@+id/main_buttons"
-            android:layout_width="wrap_content"
-            android:layout_height="48dip"
-            android:background="@color/black_overlay"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentLeft="true">
+                android:id="@+id/main_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="48dip"
+                android:background="@color/black_overlay"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true">
 
             <Button
-                android:id="@+id/buttonC_out"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_tts"
-                android:layout_alignBaseline="@+id/button_c_maps"
-                android:layout_alignBottom="@+id/button_c_maps"
-                android:layout_toLeftOf="@+id/button_toggle_rings"
+                    android:id="@+id/buttonC_out"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_tts"
+                    android:layout_alignBaseline="@+id/button_c_maps"
+                    android:layout_alignBottom="@+id/button_c_maps"
+                    android:layout_toLeftOf="@+id/button_toggle_rings"
                     />
 
             <Button
-                android:id="@+id/button_c_maps"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_c_maps"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/buttonC_out"
-                android:visibility="gone"/>
+                    android:id="@+id/button_c_maps"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_c_maps"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/buttonC_out"
+                    android:visibility="gone"/>
 
             <ToggleButton
-                android:id="@+id/toggleLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="100dp"
-                android:textOff="@string/offline"
-                android:textOn="@string/online"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/button_c_mission"/>
+                    android:id="@+id/toggleLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="100dp"
+                    android:textOff="@string/offline"
+                    android:textOn="@string/online"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/button_c_mission"/>
 
             <Button
-                android:id="@+id/button_c_mission"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/button_c_mission"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/button_c_maps"/>
+                    android:id="@+id/button_c_mission"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_c_mission"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/button_c_maps"/>
 
             <ToggleButton
                     android:layout_width="48dip"
@@ -194,7 +205,6 @@
         </RelativeLayout>
 
     </RelativeLayout>
-
 
 
 </FrameLayout>

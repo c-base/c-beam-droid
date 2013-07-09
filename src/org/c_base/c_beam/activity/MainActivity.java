@@ -53,6 +53,7 @@ import android.view.View.OnClickListener;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
+import com.viewpagerindicator.TitlePageIndicator;
 
 @SuppressLint("NewApi")
 public class MainActivity extends C_beamActivity implements
@@ -119,6 +120,8 @@ public class MainActivity extends C_beamActivity implements
             processNfcIntent(getIntent());
             toggleLogin();
         }
+
+
         initializeBroadcastReceiver();
     }
 
@@ -275,12 +278,13 @@ public class MainActivity extends C_beamActivity implements
 
     private void updateTimePicker() {
         Calendar rightNow = Calendar.getInstance();
+        rightNow.add(Calendar.MINUTE, defaultETA);
         int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
         int currentMinute = rightNow.get(Calendar.MINUTE);
-        if (currentMinute + defaultETA > 60) {
-            currentHour++;
-        }
-        currentMinute += defaultETA;
+        //if (currentMinute + defaultETA > 60) {
+            //currentHour++;
+        //}
+        //currentMinute += defaultETA;
         timePicker.setCurrentHour(currentHour);
         timePicker.setCurrentMinute(currentMinute);
     }
@@ -533,10 +537,30 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        setupViewPagerIndicator();
+//        setupActionBarTabs();
+    }
+
+    private void setupActionBarTabs() {
+        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+            Tab tab = actionBar.newTab();
+            tab.setText(mSectionsPagerAdapter.getPageTitle(i));
+            tab.setTabListener(this);
+            actionBar.addTab(tab);
+        }
+    }
+
+    private void setupViewPagerIndicator() {
+        //Bind the title indicator to the adapter
+        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        titleIndicator.setViewPager(mViewPager);
+
+        Helper.setFont(titleIndicator);
+
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        // a reference to the Tab.titleIndicator.setOnPageChangeListener(mPageChangeListener);
+        titleIndicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 try {
@@ -546,13 +570,6 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
                 }
             }
         });
-
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            Tab tab = actionBar.newTab();
-            tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-            tab.setTabListener(this);
-            actionBar.addTab(tab);
-        }
     }
 
     private void setupGCM() {
@@ -717,7 +734,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     private void showOnlineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mOfflineArea.setVisibility(View.GONE);
         mCbeamArea.setVisibility(View.VISIBLE);
     }
