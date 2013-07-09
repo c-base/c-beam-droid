@@ -3,7 +3,14 @@ package org.c_base.c_beam.activity;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.*;
+
 import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -12,6 +19,7 @@ import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
@@ -53,19 +61,20 @@ import android.view.View.OnClickListener;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
 @SuppressLint("NewApi")
-public class MainActivity extends C_beamActivity implements
+public class MainActivity extends RingActivity implements
         ActionBar.TabListener, OnClickListener {
-    private static final int USER_FRAGMENT = 1;
-    private static final int C_PORTAL_FRAGMENT = 2;
-    private static final int ARTEFACTS_FRAGMENT = 7;
-    private static final int RINGINFO_FRAGMENT = 0;
-    private static final int EVENTS_FRAGMENT = 6;
-    private static final int C_ONTROL_FRAGMENT = 3;
-    private static final int MISSION_FRAGMENT = 4;
-    private static final int ACTIVITYLOG_FRAGMENT = 5;
+    private static final int USER_FRAGMENT = 0;
+    private static final int C_PORTAL_FRAGMENT = 1;
+    private static final int ARTEFACTS_FRAGMENT = 6;
+    private static final int RINGINFO_FRAGMENT = 7;
+    private static final int EVENTS_FRAGMENT = 5;
+    private static final int C_ONTROL_FRAGMENT = 2;
+    private static final int MISSION_FRAGMENT = 3;
+    private static final int ACTIVITYLOG_FRAGMENT = 4;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 100;
@@ -77,6 +86,7 @@ public class MainActivity extends C_beamActivity implements
     private ArrayList<Event> eventList;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private DrawerLayout mDrawerLayout;
 
     private ViewPager mViewPager;
     private Handler handler = new Handler();
@@ -96,12 +106,17 @@ public class MainActivity extends C_beamActivity implements
     private int defaultETA = 30;
     private TimePicker timePicker;
     private SharedPreferences sharedPref;
+    private ListView mDrawerList;
+    private String[] mDrawerItems;
+    private TypedArray mDrawerImages;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar = getSupportActionBar();
+        //actionBar.setDisplayHomeAsUpEnabled(false);
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -114,26 +129,26 @@ public class MainActivity extends C_beamActivity implements
         defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
         setupOfflineArea();
         updateTimePicker();
+        setupActionBar();
         setupCbeamArea();
         setupGCM();
         if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processNfcIntent(getIntent());
             toggleLogin();
         }
-
-
         initializeBroadcastReceiver();
     }
 
-    private void setupCbeamArea() {
+    protected void setupCbeamArea() {
         mCbeamArea = findViewById(R.id.cbeam_area);
         setupViewPager();
         setupButtons();
         setupAPDisplay();
+        setupNavigationDrawer();
         //		Helper.setButtonStyle((ViewGroup) mCbeamArea);
     }
 
-    private void setupOfflineArea() {
+    protected void setupOfflineArea() {
         mOfflineArea = findViewById(R.id.info_area);
         TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
@@ -203,7 +218,7 @@ public class MainActivity extends C_beamActivity implements
             }
         });
 
-        setupRingButtons();
+        //setupRingButtons();
     }
 
     private void setupRingButtons() {
@@ -282,7 +297,7 @@ public class MainActivity extends C_beamActivity implements
         int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
         int currentMinute = rightNow.get(Calendar.MINUTE);
         //if (currentMinute + defaultETA > 60) {
-            //currentHour++;
+        //currentHour++;
         //}
         //currentMinute += defaultETA;
         timePicker.setCurrentHour(currentHour);
@@ -340,13 +355,13 @@ public class MainActivity extends C_beamActivity implements
 
         ArrayList<User> userList = c_beam.getUsers();
         ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
-        for (User user: userList) {
-            if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+        for (User user : userList) {
+            if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
-                    if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp()+" AP");
+                    if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(user.getAp() + " AP");
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
@@ -355,40 +370,40 @@ public class MainActivity extends C_beamActivity implements
         }
         if (online.isAdded()) {
             online.clear();
-            for(int i=0; i<onlineList.size();i++)
+            for (int i = 0; i < onlineList.size(); i++)
                 online.addItem(onlineList.get(i));
-            for(int i=0; i<etaList.size();i++)
+            for (int i = 0; i < etaList.size(); i++)
                 online.addItem(etaList.get(i));
         }
-        if (events.isAdded()){
+        if (events.isAdded()) {
             eventList = c_beam.getEvents();
             events.clear();
             if (eventList != null) {
-                for(int i=0; i<eventList.size();i++)
+                for (int i = 0; i < eventList.size(); i++)
                     events.addItem(eventList.get(i));
             }
         }
 
-        if (missions.isAdded()){
+        if (missions.isAdded()) {
             ArrayList<Mission> missionList = new ArrayList<Mission>();
             missionList = c_beam.getMissions();
             missions.clear();
-            for(int i=0; i<missionList.size();i++)
+            for (int i = 0; i < missionList.size(); i++)
                 missions.addItem(missionList.get(i));
         }
 
-        if(c_portal.isAdded()) {
+        if (c_portal.isAdded()) {
             articleList = c_beam.getArticles();
             c_portal.clear();
-            for(int i=0; i<articleList.size();i++)
+            for (int i = 0; i < articleList.size(); i++)
                 c_portal.addItem(articleList.get(i));
         }
 
-        if(artefacts.isAdded()) {
+        if (artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
             artefactList = c_beam.getArtefacts();
             artefacts.clear();
-            for(Artefact artefact: artefactList)
+            for (Artefact artefact : artefactList)
                 artefacts.addItem(artefact);
         }
         activitylog.updateLog(c_beam.getActivityLog());
@@ -404,7 +419,7 @@ public class MainActivity extends C_beamActivity implements
             }
 
         };
-        handler.postDelayed(fred, firstThreadDelay );
+        handler.postDelayed(fred, firstThreadDelay);
     }
 
     protected void onResume() {
@@ -422,6 +437,11 @@ public class MainActivity extends C_beamActivity implements
         }
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getSupportActionBar().setTitle(mTitle);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -453,80 +473,81 @@ public class MainActivity extends C_beamActivity implements
                                 FragmentTransaction fragmentTransaction) {
     }
 
-/**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
- * one of the sections/tabs/pages.
- */
-public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-    Fragment[] pages;
-    public SectionsPagerAdapter(FragmentManager fm) {
-        super(fm);
-        pages = new Fragment[getCount()];
-    }
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+        Fragment[] pages;
 
-    @Override
-    public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a DummySectionFragment (defined as a static inner class
-        // below) with the page number as its lone argument.
-        Fragment fragment;
-        if (pages[position] == null) {
-            if(position == USER_FRAGMENT) {
-                fragment = new UserListFragment();
-            } else if(position == C_PORTAL_FRAGMENT) {
-                fragment = new C_portalListFragment();
-            } else if(position == ARTEFACTS_FRAGMENT) {
-                fragment = new ArtefactListFragment();
-            } else if(position == EVENTS_FRAGMENT) {
-                fragment = new EventListFragment();
-            } else if(position == C_ONTROL_FRAGMENT) {
-                fragment = new C_ontrolFragment(c_beam);
-            } else if(position == MISSION_FRAGMENT) {
-                fragment = new MissionListFragment();
-            } else if(position == ACTIVITYLOG_FRAGMENT) {
-                fragment = new ActivitylogFragment();
-            } else if(position == RINGINFO_FRAGMENT) {
-                fragment = new RinginfoFragment();
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+            pages = new Fragment[getCount()];
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a DummySectionFragment (defined as a static inner class
+            // below) with the page number as its lone argument.
+            Fragment fragment;
+            if (pages[position] == null) {
+                if (position == USER_FRAGMENT) {
+                    fragment = new UserListFragment();
+                } else if (position == C_PORTAL_FRAGMENT) {
+                    fragment = new C_portalListFragment();
+                } else if (position == ARTEFACTS_FRAGMENT) {
+                    fragment = new ArtefactListFragment();
+                } else if (position == EVENTS_FRAGMENT) {
+                    fragment = new EventListFragment();
+                } else if (position == C_ONTROL_FRAGMENT) {
+                    fragment = new C_ontrolFragment(c_beam);
+                } else if (position == MISSION_FRAGMENT) {
+                    fragment = new MissionListFragment();
+                } else if (position == ACTIVITYLOG_FRAGMENT) {
+                    fragment = new ActivitylogFragment();
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment();
+                } else {
+                    fragment = null;
+                }
+                fragment.setArguments(new Bundle());
+                pages[position] = fragment;
             } else {
-                fragment = null;
+
+                fragment = pages[position];
             }
-            fragment.setArguments(new Bundle());
-            pages[position] = fragment;
-        } else {
-
-            fragment = pages[position];
+            return fragment;
         }
-        return fragment;
-    }
 
-    @Override
-    public int getCount() {
-        return 8;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case USER_FRAGMENT:
-                return getString(R.string.title_users);
-            case C_PORTAL_FRAGMENT:
-                return getString(R.string.title_c_portal);
-            case ARTEFACTS_FRAGMENT:
-                return getString(R.string.title_artefacts);
-            case EVENTS_FRAGMENT:
-                return getString(R.string.title_events);
-            case C_ONTROL_FRAGMENT:
-                return getString(R.string.title_c_ontrol);
-            case MISSION_FRAGMENT:
-                return getString(R.string.title_missions);
-            case ACTIVITYLOG_FRAGMENT:
-                return getString(R.string.title_activity);
-            case RINGINFO_FRAGMENT:
-                return getString(R.string.title_ringinfo);
+        @Override
+        public int getCount() {
+            return 8;
         }
-        return null;
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case USER_FRAGMENT:
+                    return getString(R.string.title_users);
+                case C_PORTAL_FRAGMENT:
+                    return getString(R.string.title_c_portal);
+                case ARTEFACTS_FRAGMENT:
+                    return getString(R.string.title_artefacts);
+                case EVENTS_FRAGMENT:
+                    return getString(R.string.title_events);
+                case C_ONTROL_FRAGMENT:
+                    return getString(R.string.title_c_ontrol);
+                case MISSION_FRAGMENT:
+                    return getString(R.string.title_missions);
+                case ACTIVITYLOG_FRAGMENT:
+                    return getString(R.string.title_activity);
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo);
+            }
+            return null;
+        }
     }
-}
 
     private void setupViewPager() {
         // Create the adapter that will return a fragment for each of the three
@@ -551,25 +572,74 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     private void setupViewPagerIndicator() {
-        //Bind the title indicator to the adapter
-        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
         titleIndicator.setViewPager(mViewPager);
-
         Helper.setFont(titleIndicator);
+    }
 
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.titleIndicator.setOnPageChangeListener(mPageChangeListener);
-        titleIndicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+    private void setupNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
+
+        mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
+        mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
+
+        ArrayList<Ring> mRings = new ArrayList<Ring>();
+        for (int i = 0; i < mDrawerItems.length; i++) {
+            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        }
+
+        mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
+                R.id.drawer_list_item_textview, mRings));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mTitle = getTitle();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
-            public void onPageSelected(int position) {
-                try {
-                    actionBar.setSelectedNavigationItem(position);
-                } catch (Exception e) {
-
-                }
+            public void onDrawerOpened(View drawerView) {
+                // TODO Auto-generated method stub
+                super.onDrawerOpened(drawerView);
+                actionBar.setTitle(mTitle);
             }
-        });
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.openDrawer(Gravity.LEFT);
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        //if (mDrawerToggle.onOptionsItemSelected(item)) {
+            //return true;
+        //}
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupGCM() {
@@ -622,7 +692,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     private void toggleRings(Boolean state) {
-        Log.i(TAG, "toggleRings("+state+")");
+        Log.i(TAG, "toggleRings(" + state + ")");
         if (state) {
             findViewById(R.id.ringbuttons).setVisibility(View.VISIBLE);
         } else {
@@ -710,7 +780,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     private void switchToOnlineMode() {
-        if(mIsOnline) {
+        if (mIsOnline) {
             return;
         }
         mIsOnline = true;
@@ -728,7 +798,7 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     private void showOfflineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mCbeamArea.setVisibility(View.GONE);
         mOfflineArea.setVisibility(View.VISIBLE);
     }
@@ -745,57 +815,122 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
 
-class WifiBroadcastReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (debug) {
-            showOnlineView();
-            return;
-        }
-        if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-            int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-            int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
-
-            if (state == previousState) {
+    class WifiBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (debug) {
+                showOnlineView();
                 return;
             }
+            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+                int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+                int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
 
-            if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
-                switchToOnlineMode();
-            } else if (mIsOnline) {
-                switchToOfflineMode();
+                if (state == previousState) {
+                    return;
+                }
+
+                if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
+                    switchToOnlineMode();
+                } else if (mIsOnline) {
+                    switchToOfflineMode();
+                }
             }
         }
     }
-}
 
-private class SetETATask extends AsyncTask<String, Void, String> {
-    @Override
-    protected String doInBackground(String... params) {
-        return c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+    /**
+     * Swaps fragments in the main content view
+     */
+    private void selectItem(int position) {
+
+        /*
+        // Create a new fragment and specify the planet to show based on position
+        Fragment fragment = new PlanetFragment();
+        Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawer.setItemChecked(position, true);
+        mDrawerLayout.closeDrawer(mDrawer);
+        */
+        setTitle(mDrawerItems[position]);
+        System.out.println(mDrawerItems[position]);
+
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        System.out.println(result);
-        if (result.contentEquals("eta_set")) {
-            result = getText(R.string.eta_set).toString();
-        } else if (result.contentEquals("eta_removed")) {
-            result = getText(R.string.eta_removed).toString();
-        } else {
-            result = getText(R.string.eta_failure).toString();
+    private class SetETATask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            return c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
         }
-        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+
+        @Override
+        protected void onPostExecute(String result) {
+            System.out.println(result);
+            if (result.contentEquals("eta_set")) {
+                result = getText(R.string.eta_set).toString();
+            } else if (result.contentEquals("eta_removed")) {
+                result = getText(R.string.eta_removed).toString();
+            } else {
+                result = getText(R.string.eta_failure).toString();
+            }
+            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 
-    @Override
-    protected void onPreExecute() {
+    public class RingAdapter extends ArrayAdapter {
+        private static final String TAG = "UserAdapter";
+        private ArrayList<Ring> items;
+        private Context context;
+
+        @SuppressWarnings("unchecked")
+        public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
+            super(context, itemLayout, textViewResourceId, items);
+            this.context = context;
+            this.items = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final View listview = super.getView(position, convertView, parent);
+
+            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            Ring r = items.get(position);
+
+            //Helper.setListItemStyle(view);
+            //Helper.setFont(getActivity(), view);
+            textView.setText(r.getName());
+
+            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            b.setImageDrawable(r.getImage());
+            return listview;
+        }
+
     }
 
-    @Override
-    protected void onProgressUpdate(Void... values) {
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            selectItem(position);
+        }
     }
-}
+
 
 
 }
