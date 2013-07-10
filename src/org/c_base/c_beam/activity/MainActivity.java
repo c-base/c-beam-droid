@@ -632,13 +632,18 @@ public class MainActivity extends RingActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        //if (mDrawerToggle.onOptionsItemSelected(item)) {
-            //return true;
-        //}
-        // Handle your other action bar items...
+        // Handle the event for ActionBarDrawerToggle and return true to cancel propagation
+        if (item.getItemId() == android.R.id.home){
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+                mDrawerLayout.closeDrawer(mDrawerList);
+            } else {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }
 
+            mDrawerToggle.syncState();
+            return true;
+        }
+        // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
 
