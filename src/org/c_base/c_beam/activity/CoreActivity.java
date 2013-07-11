@@ -46,7 +46,7 @@ public class CoreActivity extends RingActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_core);
+        setContentView(R.layout.activity_main);
 
         // Set up the action bar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);

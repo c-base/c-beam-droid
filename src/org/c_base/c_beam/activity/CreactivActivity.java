@@ -87,7 +87,7 @@ public class CreactivActivity  extends RingActivity implements
 //            StrictMode.setThreadPolicy(policy);
 //        }
 
-        setContentView(R.layout.activity_creactiv);
+        setContentView(R.layout.activity_main);
 
         mCbeamArea = findViewById(R.id.cbeam_area);
 

@@ -82,7 +82,7 @@ public class CarbonActivity extends RingActivity implements
 //            StrictMode.setThreadPolicy(policy);
 //        }
 
-        setContentView(R.layout.activity_carbon);
+        setContentView(R.layout.activity_main);
 
         mCbeamArea = findViewById(R.id.cbeam_area);
 
