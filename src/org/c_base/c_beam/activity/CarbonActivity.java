@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * Created by smile on 2013-05-31.
  */
 public class CarbonActivity extends RingActivity implements
-        ActionBar.TabListener, View.OnClickListener {
+        View.OnClickListener {
     private static final int USERLIST_FRAGMENT = 0;
     private static final int ETALIST_FRAGMENT = 1;
 
@@ -64,55 +64,25 @@ public class CarbonActivity extends RingActivity implements
     EditText text;
 
     protected Runnable fred;
-    private View mInfoArea;
-    private View mCbeamArea;
-    private boolean mIsOnline = false;
-    private WifiBroadcastReceiver mWifiReceiver;
-    private IntentFilter mWifiIntentFilter;
-
-    TextView tvAp = null;
-    TextView tvUsername = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (android.os.Build.VERSION.SDK_INT > 9) {
-//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//            StrictMode.setThreadPolicy(policy);
-//        }
-
         setContentView(R.layout.activity_main);
 
         mCbeamArea = findViewById(R.id.cbeam_area);
 
+        setupOfflineArea();
         setupCbeamArea();
-
-
-        mInfoArea = findViewById(R.id.info_area);
-        TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
-        Helper.setFont(this, textView);
-
         setupActionBar();
         setupViewPager();
+        setupActivityLogger();
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        tvAp = (TextView) findViewById(R.id.textView_ap);
-        tvAp.setTextColor(Color.rgb(58, 182, 228));
-        tvUsername = (TextView) findViewById(R.id.textView_username);
-        tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
-        tvUsername.setTextColor(Color.rgb(58, 182, 228));
-        Helper.setFont(this, tvUsername);
-        Helper.setFont(this, tvAp);
-        boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
-        if (!displayAp) {
-            tvUsername.setHeight(0);
-            tvAp.setHeight(0);
-        }
+        initializeBroadcastReceiver();
+    }
 
-        //		TextView labelAp = (TextView) findViewById(R.id.label_ap);
-        //		Helper.setFont(this, labelAp);
-
+    private void setupActivityLogger() {
         activity_text = (EditText) findViewById(R.id.edit_log_activity);
         activity_ap = (EditText) findViewById(R.id.edit_log_activity_ap);
         TextWatcher tw = new TextWatcher() {
@@ -130,8 +100,6 @@ public class CarbonActivity extends RingActivity implements
                 //		    	  enableSubmitIfReady();
             }
         };
-
-        initializeBroadcastReceiver();
     }
 
     private void enableSubmitIfReady() {
@@ -141,36 +109,6 @@ public class CarbonActivity extends RingActivity implements
             button_log_activity.setEnabled(false);
         }
 
-    }
-
-    public void onStart() {
-        Log.i(TAG, "onStart()");
-        super.onStart();
-        startProgress();
-    }
-
-
-    @Override
-    protected void onPause() {
-        Log.i(TAG, "onPause()");
-        unregisterReceiver(mWifiReceiver);
-        stopNetworkingThreads();
-        super.onPause();
-    }
-
-
-
-    public void startProgress() {
-        // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
-        };
-        handler.postDelayed(fred, firstThreadDelay );
     }
 
     public void updateLists() {
@@ -210,19 +148,6 @@ public class CarbonActivity extends RingActivity implements
         }
     }
 
-    protected void onResume () {
-        Log.i(TAG, "onResume()");
-        super.onResume();
-
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
-
-        if (c_beam.isInCrewNetwork()) {
-            switchToOnlineMode();
-        } else {
-            switchToOfflineMode();
-        }
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -235,24 +160,6 @@ public class CarbonActivity extends RingActivity implements
         menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
 
         return true;
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab,
-                              FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
     }
 
     /**
@@ -329,14 +236,7 @@ public class CarbonActivity extends RingActivity implements
             }
         });
 
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            ActionBar.Tab tab = actionBar.newTab();
-            TextView t = new TextView(getApplicationContext());
-            t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-            tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-            tab.setTabListener(this);
-            actionBar.addTab(tab);
-        }
+        setupViewPagerIndicator(mViewPager);
     }
 
     @Override
@@ -372,67 +272,4 @@ public class CarbonActivity extends RingActivity implements
 
     }
 
-    private void switchToOfflineMode() {
-        mIsOnline = false;
-        showOfflineView();
-        stopNetworkingThreads();
-    }
-
-    private void switchToOnlineMode() {
-        mIsOnline = true;
-        showOnlineView();
-        startNetworkingThreads();
-    }
-
-    private void startNetworkingThreads() {
-        c_beam.startThread();
-        updateLists();
-    }
-
-    private void stopNetworkingThreads() {
-        c_beam.stopThread();
-    }
-
-    private void showOfflineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mCbeamArea.setVisibility(View.GONE);
-        mInfoArea.setVisibility(View.VISIBLE);
-    }
-
-    private void showOnlineView() {
-        mIsOnline = true;
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        mInfoArea.setVisibility(View.GONE);
-        mCbeamArea.setVisibility(View.VISIBLE);
-    }
-
-    private void initializeBroadcastReceiver() {
-        mWifiReceiver = new WifiBroadcastReceiver();
-        mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-    }
-
-
-    class WifiBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (debug) {
-                showOnlineView();
-                return;
-            }
-            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-                int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-                int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
-
-                if (state == previousState) {
-                    return;
-                }
-
-                if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
-                    showOnlineView();
-                } else if (mIsOnline) {
-                    showOfflineView();
-                }
-            }
-        }
-    }
 }

@@ -3,19 +3,34 @@ package org.c_base.c_beam.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
+import com.viewpagerindicator.TitlePageIndicator;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.util.Helper;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by smile on 2013-05-31.
@@ -30,18 +45,28 @@ public class RingActivity extends C_beamActivity {
     protected C_beam c_beam = C_beam.getInstance();
 
     protected Runnable fred;
+    private Handler handler = new Handler();
 
-    private View mOfflineArea;
-    private View mCbeamArea;
-    private boolean mIsOnline = false;
-    private WifiBroadcastReceiver mWifiReceiver;
-    private IntentFilter mWifiIntentFilter;
+    protected View mOfflineArea;
+    protected View mCbeamArea;
+    protected boolean mIsOnline = false;
+    protected WifiBroadcastReceiver mWifiReceiver;
+    protected IntentFilter mWifiIntentFilter;
 
-    private TextView tvAp = null;
-    private TextView tvUsername = null;
+    protected TextView tvAp = null;
+    protected TextView tvUsername = null;
     private int defaultETA = 30;
-    private TimePicker timePicker;
+    protected TimePicker timePicker;
     private SharedPreferences sharedPref;
+
+    protected String[] mDrawerItems;
+    protected TypedArray mDrawerImages;
+    private ListView mDrawerList;
+
+    protected DrawerLayout mDrawerLayout;
+    protected ActionBarDrawerToggle mDrawerToggle;
+
+    protected CharSequence mTitle;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +74,6 @@ public class RingActivity extends C_beamActivity {
         //setContentView(R.layout.activity_ring);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
-
     }
 
     protected void setupCbeamArea() {
@@ -57,10 +81,11 @@ public class RingActivity extends C_beamActivity {
 //        setupViewPager();
         setupButtons();
         setupAPDisplay();
+        setupNavigationDrawer();
         //		Helper.setButtonStyle((ViewGroup) mCbeamArea);
     }
 
-    private void setupButtons() {
+    protected void setupButtons() {
         ((ToggleButton) findViewById(R.id.toggleLogin)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,94 +121,6 @@ public class RingActivity extends C_beamActivity {
         //setupRingButtons();
     }
 
-
-
-    private void setupRingButtons() {
-        ((ToggleButton) findViewById(R.id.button_toggle_rings)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleRings(((ToggleButton) view).isChecked());
-            }
-        });
-
-        if (this instanceof ClampActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonClamp)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonClamp)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(ClampActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof CarbonActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCarbon)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCarbon)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(CarbonActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof CienceActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCience)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCience)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(CcorderActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof CreactivActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCreactiv)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCreactiv)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(CreactivActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof CultureActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCulture)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCulture)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(CultureActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof ComActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCom)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCom)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(ComActivity.class);
-                }
-            });
-        }
-
-        if (this instanceof CoreActivity) {
-            ((ImageButton) findViewById(R.id.imageButtonCore)).setEnabled(false);
-        } else {
-            ((ImageButton) findViewById(R.id.imageButtonCore)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(CoreActivity.class);
-                }
-            });
-        }
-    }
-
     private void startActivity(Class activityClass) {
         Log.i(TAG, "startActivity");
         Intent myIntent = new Intent(this, activityClass);
@@ -210,7 +147,7 @@ public class RingActivity extends C_beamActivity {
         });
     }
 
-    private void setupAPDisplay() {
+    protected void setupAPDisplay() {
         tvAp = (TextView) findViewById(R.id.textView_ap);
         tvAp.setTextColor(Color.rgb(58, 182, 228));
         tvUsername = (TextView) findViewById(R.id.textView_username);
@@ -227,13 +164,21 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
-    private void switchToOfflineMode() {
+
+
+    protected void setupViewPagerIndicator(ViewPager mViewPager) {
+        TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
+        titleIndicator.setViewPager(mViewPager);
+        Helper.setFont(titleIndicator);
+    }
+
+    protected void switchToOfflineMode() {
         mIsOnline = false;
         showOfflineView();
         stopNetworkingThreads();
     }
 
-    private void switchToOnlineMode() {
+    protected void switchToOnlineMode() {
         if(mIsOnline) {
             return;
         }
@@ -244,10 +189,10 @@ public class RingActivity extends C_beamActivity {
 
     private void startNetworkingThreads() {
         c_beam.startThread();
-        updateLists();
+        //updateLists();
     }
 
-    private void stopNetworkingThreads() {
+    protected void stopNetworkingThreads() {
         c_beam.stopThread();
     }
 
@@ -300,7 +245,7 @@ public class RingActivity extends C_beamActivity {
         startActivityForResult(myIntent, 0);
     }
 
-    private void showLoginDialog() {
+    protected void showLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm_login);
         builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener() {
@@ -313,7 +258,7 @@ public class RingActivity extends C_beamActivity {
         builder.create().show();
     }
 
-    private void showLogoutDialog() {
+    protected void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm_logout);
         builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener() {
@@ -326,12 +271,12 @@ public class RingActivity extends C_beamActivity {
         builder.create().show();
     }
 
-    private void startC_outActivity() {
+    protected void startC_outActivity() {
         Intent myIntent = new Intent(this, C_outActivity.class);
         startActivityForResult(myIntent, 0);
     }
 
-    private void startC_mapsActivity() {
+    protected void startC_mapsActivity() {
         Intent myIntent = new Intent(this, MapActivity.class);
         startActivityForResult(myIntent, 0);
     }
@@ -373,6 +318,189 @@ public class RingActivity extends C_beamActivity {
 
     }
 
+    protected void updateTimePicker() {
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.add(Calendar.MINUTE, defaultETA);
+        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = rightNow.get(Calendar.MINUTE);
+        timePicker.setCurrentHour(currentHour);
+        timePicker.setCurrentMinute(currentMinute);
+    }
+
+    protected void setupNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
+
+        mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
+        mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
+
+        ArrayList<Ring> mRings = new ArrayList<Ring>();
+        for (int i = 0; i < mDrawerItems.length; i++) {
+            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        }
+
+        mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
+                R.id.drawer_list_item_textview, mRings));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mTitle = getTitle();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // TODO Auto-generated method stub
+                super.onDrawerOpened(drawerView);
+                actionBar.setTitle(mTitle);
+                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        if(!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
+            mDrawerLayout.openDrawer(Gravity.LEFT);
+        }
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    public void startProgress() {
+        // Do something long
+        fred = new Runnable() {
+            @Override
+            public void run() {
+                updateLists();
+                handler.postDelayed(fred, threadDelay);
+            }
+
+        };
+        handler.postDelayed(fred, firstThreadDelay);
+    }
+
+    public void onStart() {
+        Log.i(TAG, "onStart()");
+        super.onStart();
+        startProgress();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, "onPause()");
+        unregisterReceiver(mWifiReceiver);
+        stopNetworkingThreads();
+        super.onPause();
+    }
+
+    protected void onResume() {
+        Log.i(TAG, "onResume()");
+        super.onResume();
+        c_beam.setActivity(this);
+        //c_beam.testJsonRPC2();
+
+        registerReceiver(mWifiReceiver, mWifiIntentFilter);
+        if (c_beam.isInCrewNetwork()) {
+            switchToOnlineMode();
+        } else {
+            updateTimePicker();
+            switchToOfflineMode();
+        }
+    }
+
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the event for ActionBarDrawerToggle and return true to cancel propagation
+        if (item.getItemId() == android.R.id.home){
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+                mDrawerLayout.closeDrawer(mDrawerList);
+            } else {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }
+
+            mDrawerToggle.syncState();
+            return true;
+        }
+        // Handle your other action bar items...
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Swaps fragments in the main content view
+     */
+    private void selectItem(int position) {
+
+        /*
+        // Create a new fragment and specify the planet to show based on position
+        Fragment fragment = new PlanetFragment();
+        Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawer.setItemChecked(position, true);
+        mDrawerLayout.closeDrawer(mDrawer);
+        */
+        setTitle(mDrawerItems[position]);
+        System.out.println(mDrawerItems[position]);
+
+
+        switch (position) {
+            case 0:
+                startActivity(ClampActivity.class);
+                break;
+            case 1:
+                startActivity(CarbonActivity.class);
+                break;
+            case 2:
+                startActivity(CcorderActivity.class);
+                break;
+            case 3:
+                startActivity(CreactivActivity.class);
+                break;
+            case 4:
+                startActivity(CultureActivity.class);
+                break;
+            case 5:
+                startActivity(ComActivity.class);
+                break;
+            case 6:
+                startActivity(CoreActivity.class);
+                break;
+        }
+    }
+
+    protected class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
     class WifiBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -397,7 +525,7 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
-    private class SetETATask extends AsyncTask<String, Void, String> {
+    protected class SetETATask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             return c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
@@ -425,5 +553,40 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
+
+    protected void initializeBroadcastReceiver() {
+        mWifiReceiver = new WifiBroadcastReceiver();
+        mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+    }
+
+    protected class RingAdapter extends ArrayAdapter {
+        private static final String TAG = "UserAdapter";
+        private ArrayList<Ring> items;
+        private Context context;
+
+        @SuppressWarnings("unchecked")
+        public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
+            super(context, itemLayout, textViewResourceId, items);
+            this.context = context;
+            this.items = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final View listview = super.getView(position, convertView, parent);
+
+            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            Ring r = items.get(position);
+
+            //Helper.setListItemStyle(view);
+            //Helper.setFont(getActivity(), view);
+            textView.setText(r.getName());
+
+            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            b.setImageDrawable(r.getImage());
+            return listview;
+        }
+
+    }
 
 }

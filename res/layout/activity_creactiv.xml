@@ -1,236 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             tools:context=".ComActivity" >
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 tools:context=".ComActivity" >
 
-    <RelativeLayout
-            android:id="@+id/info_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone" >
-
-        <TextView
-                android:id="@+id/not_in_crew_network"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/timePicker1"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+        <RelativeLayout
+                android:id="@+id/info_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="@string/not_in_crew_network"
-                android:textAlignment="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:visibility="gone" >
 
-        <LinearLayout
-                android:id="@+id/eta_buttons"
+            <TextView
+                    android:id="@+id/not_in_crew_network"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/timePicker1"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/not_in_crew_network"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <LinearLayout
+                    android:id="@+id/eta_buttons"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="fill_horizontal"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal" >
+
+                <Button
+                        android:id="@+id/button_set_eta"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="128dip"
+                        android:text="@string/button_set_eta" />
+
+                <Button
+                        android:id="@+id/button_reset_eta"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="128dip"
+                        android:text="@string/button_reset_eta" />
+            </LinearLayout>
+
+            <TimePicker
+                    android:id="@+id/timePicker1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/eta_buttons"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+                android:id="@+id/cbeam_area"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_portrait"
+                tools:context=".MainActivity" >
+
+        <com.viewpagerindicator.TitlePageIndicator
+                android:id="@+id/titles"
+                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="fill_horizontal"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal" >
-
-            <Button
-                    android:id="@+id/button_set_eta"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="128dip"
-                    android:text="@string/button_set_eta" />
-
-            <Button
-                    android:id="@+id/button_reset_eta"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="128dip"
-                    android:text="@string/button_reset_eta" />
-        </LinearLayout>
-
-        <TimePicker
-                android:id="@+id/timePicker1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/eta_buttons"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true" />
-    </RelativeLayout>
-
-    <RelativeLayout
-            android:id="@+id/cbeam_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_portrait"
-            tools:context=".MainActivity" >
+                android:layout_alignParentTop="true"
+                android:background="@color/abs__background_holo_dark"/>
 
         <RelativeLayout
                 android:id="@+id/ap_area"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/black_overlay">
-
-            <TextView
-                    android:id="@+id/textView_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:text="member:"
-                    android:textSize="20sp"
-                    android:layout_toLeftOf="@+id/textView_ap"/>
-
-            <TextView
-                    android:id="@+id/textView_ap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:text="0 AP"
-                    android:textSize="20sp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"/>
-
-        </RelativeLayout>
-
-        <FrameLayout
-                android:id="@+id/ringbuttons"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right|center_vertical"
-                android:visibility="visible"
                 android:background="@color/black_overlay"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/ap_area"
-                android:layout_above="@+id/main_buttons">
+                android:layout_below="@+id/titles">
 
-            <fragment
+                <TextView
+                        android:id="@+id/textView_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:text="member:"
+                        android:textSize="20sp"
+                        android:layout_toLeftOf="@+id/textView_ap"/>
+
+                <TextView
+                        android:id="@+id/textView_ap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:text="0 AP"
+                        android:textSize="20sp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".MainActivity"
+                    android:layout_below="@+id/ap_area"
+                    android:layout_above="@+id/activity_logger">
+            </android.support.v4.view.ViewPager>
+
+            <RelativeLayout
+                    android:id="@+id/main_buttons"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
-                    android:name="org.c_base.c_beam.fragment.RingButtonFragment"
-                    android:id="@+id/fragment" />
-
-        </FrameLayout>
-
-        <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".MainActivity"
-                android:layout_below="@+id/ap_area"
-                android:layout_toLeftOf="@+id/ringbuttons"
-                android:layout_above="@+id/activity_logger">
-        </android.support.v4.view.ViewPager>
-
-        <RelativeLayout
-                android:id="@+id/main_buttons"
-                android:layout_width="wrap_content"
-                android:layout_height="48dip"
-                android:background="@color/black_overlay"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentLeft="true">
-
-            <Button
-                    android:id="@+id/buttonC_out"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_tts"
-                    android:layout_alignBaseline="@+id/button_c_maps"
-                    android:layout_alignBottom="@+id/button_c_maps"
-                    android:layout_toLeftOf="@+id/button_toggle_rings"
-                    />
-
-            <Button
-                    android:id="@+id/button_c_maps"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_c_maps"
-                    android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/buttonC_out"
-                    android:visibility="gone"/>
-
-            <ToggleButton
-                    android:id="@+id/toggleLogin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="100dp"
-                    android:textOff="@string/offline"
-                    android:textOn="@string/online"
+                    android:layout_height="48dip"
+                    android:background="@color/black_overlay"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@+id/button_c_mission"/>
-
-            <Button
-                    android:id="@+id/button_c_mission"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_c_mission"
-                    android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/button_c_maps"/>
-
-            <ToggleButton
-                    android:layout_width="48dip"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/button_toggle_rings"
-                    android:textOff="@string/button_expand"
-                    android:textOn="@string/button_collapse"
-                    android:visibility="visible"
-                    android:checked="true"
                     android:layout_alignParentRight="true"
-                    />
+                    android:layout_alignParentLeft="true">
+
+                <Button
+                        android:id="@+id/buttonC_out"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_tts"
+                        android:layout_below="@+id/button_c_maps"
+                        android:layout_alignParentRight="true"/>
+
+                <Button
+                        android:id="@+id/button_c_maps"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_c_maps"
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@+id/buttonC_out"
+                        android:visibility="gone"/>
+
+                <ToggleButton
+                        android:id="@+id/toggleLogin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        android:textOff="@string/offline"
+                        android:textOn="@string/online"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@+id/button_c_mission"/>
+
+                <Button
+                        android:id="@+id/button_c_mission"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_c_mission"
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@+id/button_c_maps"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                    android:id="@+id/activity_logger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/main_buttons"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/black_overlay">
+
+                <EditText
+                        android:id="@+id/edit_log_activity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="activita:t" >
+                    <requestFocus />
+                </EditText>
+
+                <EditText
+                        android:id="@+id/edit_log_activity_ap"
+                        android:layout_width="46dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.24"
+                        android:ems="10"
+                        android:hint="100"
+                        android:inputType="number" />
+
+                <Button
+                        android:id="@+id/button_log_activity"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="activita:t loggen" />
+            </LinearLayout>
 
         </RelativeLayout>
 
-        <LinearLayout
-                android:id="@+id/activity_logger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/main_buttons"
-                android:layout_alignParentLeft="true"
-                android:background="@color/black_overlay"
-                android:layout_toLeftOf="@+id/ringbuttons">
+    </FrameLayout>
+    <ListView android:id="@+id/left_drawer"
+              android:layout_width="240dp"
+              android:layout_height="match_parent"
+              android:layout_gravity="start"
+              android:choiceMode="singleChoice"
+              android:divider="@android:color/transparent"
+              android:dividerHeight="0dp"
+              android:background="#111"/>
 
-            <EditText
-                    android:id="@+id/edit_log_activity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="activita:t" >
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                    android:id="@+id/edit_log_activity_ap"
-                    android:layout_width="46dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.24"
-                    android:ems="10"
-                    android:hint="100"
-                    android:inputType="number" />
-
-            <Button
-                    android:id="@+id/button_log_activity"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="activita:t loggen" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</FrameLayout>
+</android.support.v4.widget.DrawerLayout>

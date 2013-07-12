@@ -77,10 +77,10 @@ public class CultureActivity extends RingActivity implements
 
         mCbeamArea = findViewById(R.id.cbeam_area);
 
+        setupOfflineArea();
         setupCbeamArea();
 
 
-        mInfoArea = findViewById(R.id.info_area);
         TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
 
@@ -101,40 +101,7 @@ public class CultureActivity extends RingActivity implements
             tvAp.setHeight(0);
         }
 
-        //		TextView labelAp = (TextView) findViewById(R.id.label_ap);
-        //		Helper.setFont(this, labelAp);
-
         initializeBroadcastReceiver();
-    }
-
-    public void onStart() {
-        Log.i(TAG, "onStart()");
-        super.onStart();
-        startProgress();
-    }
-
-
-    @Override
-    protected void onPause() {
-        Log.i(TAG, "onPause()");
-        unregisterReceiver(mWifiReceiver);
-        stopNetworkingThreads();
-        super.onPause();
-    }
-
-
-
-    public void startProgress() {
-        // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
-        };
-        handler.postDelayed(fred, firstThreadDelay );
     }
 
     public void updateLists() {
@@ -165,19 +132,6 @@ public class CultureActivity extends RingActivity implements
                 for(int i=0; i<eventList.size();i++)
                     events.addItem(eventList.get(i));
             }
-        }
-    }
-
-    protected void onResume () {
-        Log.i(TAG, "onResume()");
-        super.onResume();
-
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
-
-        if (c_beam.isInCrewNetwork()) {
-            switchToOnlineMode();
-        } else {
-            switchToOfflineMode();
         }
     }
 
@@ -283,77 +237,7 @@ public class CultureActivity extends RingActivity implements
             }
         });
 
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            ActionBar.Tab tab = actionBar.newTab();
-            TextView t = new TextView(getApplicationContext());
-            t.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
-            tab.setText(mSectionsPagerAdapter.getPageTitle(i));
-            tab.setTabListener(this);
-            actionBar.addTab(tab);
-        }
+        setupViewPagerIndicator(mViewPager);
     }
 
-    private void switchToOfflineMode() {
-        mIsOnline = false;
-        showOfflineView();
-        stopNetworkingThreads();
-    }
-
-    private void switchToOnlineMode() {
-        mIsOnline = true;
-        showOnlineView();
-        startNetworkingThreads();
-    }
-
-    private void startNetworkingThreads() {
-        c_beam.startThread();
-        updateLists();
-    }
-
-    private void stopNetworkingThreads() {
-        c_beam.stopThread();
-    }
-
-    private void showOfflineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mCbeamArea.setVisibility(View.GONE);
-        mInfoArea.setVisibility(View.VISIBLE);
-    }
-
-    private void showOnlineView() {
-        mIsOnline = true;
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        mInfoArea.setVisibility(View.GONE);
-        mCbeamArea.setVisibility(View.VISIBLE);
-    }
-
-    private void initializeBroadcastReceiver() {
-        mWifiReceiver = new WifiBroadcastReceiver();
-        mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
-    }
-
-
-    class WifiBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (debug) {
-                showOnlineView();
-                return;
-            }
-            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-                int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-                int previousState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, -1);
-
-                if (state == previousState) {
-                    return;
-                }
-
-                if (state == WifiManager.WIFI_STATE_ENABLED && c_beam.isInCrewNetwork()) {
-                    showOnlineView();
-                } else if (mIsOnline) {
-                    showOfflineView();
-                }
-            }
-        }
-    }
 }

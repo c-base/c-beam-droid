@@ -136,8 +136,7 @@
                         android:text="@string/button_tts"
                         android:layout_alignBaseline="@+id/button_c_maps"
                         android:layout_alignBottom="@+id/button_c_maps"
-                        android:layout_toLeftOf="@+id/button_toggle_rings"
-                        />
+                        android:layout_alignParentRight="true"/>
 
                 <Button
                         android:id="@+id/button_c_maps"
@@ -169,16 +168,6 @@
                         android:layout_alignParentTop="true"
                         android:layout_toLeftOf="@+id/button_c_maps"/>
 
-                <ToggleButton
-                        android:layout_width="48dip"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/button_toggle_rings"
-                        android:textOff="@string/button_expand"
-                        android:textOn="@string/button_collapse"
-                        android:visibility="visible"
-                        android:checked="false"
-                        android:layout_alignParentRight="true"
-                        />
 
             </RelativeLayout>
 

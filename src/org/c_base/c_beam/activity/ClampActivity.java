@@ -2,11 +2,14 @@ package org.c_base.c_beam.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -39,6 +43,7 @@ import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
 import java.text.NumberFormat;
@@ -47,8 +52,7 @@ import java.util.ArrayList;
 /**
  * Created by smile on 2013-05-31.
  */
-public class ClampActivity extends RingActivity implements
-        ActionBar.TabListener {
+public class ClampActivity extends RingActivity {
 
     private static final int INTERFACE_MAP_FRAGMENT = 0;
     private static final int ARTEFACTS_FRAGMENT = 1;
@@ -90,6 +94,8 @@ public class ClampActivity extends RingActivity implements
     private CharSequence mTitle;
     private TypedArray mDrawerImages;
 
+    private WifiBroadcastReceiver mWifiReceiver;
+    private IntentFilter mWifiIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,93 +115,39 @@ public class ClampActivity extends RingActivity implements
 
         setupViewPager();
         setupNavigationDrawer();
-
         setupOfflineArea();
-//        updateTimePicker();
         setupCbeamArea();
+
+        initializeBroadcastReceiver();
     }
 
-    private void setupNavigationDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
-
-        mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
-        mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
-
-        ArrayList<Ring> mRings = new ArrayList<Ring>();
-        for (int i = 0; i < mDrawerItems.length; i++) {
-            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
-        }
-
-        mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
-                R.id.drawer_list_item_textview, mRings));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-
-        mTitle = mDrawerTitle = getTitle();
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                // TODO Auto-generated method stub
-                super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(mTitle);
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerLayout.openDrawer(Gravity.LEFT);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+    public void onStart() {
+        Log.i(TAG, "onStart()");
+        super.onStart();
+        startProgress();
     }
-
-    public void startProgress() {
-        // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
-        };
-        handler.postDelayed(fred, firstThreadDelay);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-//        if (mDrawerToggle.onOptionsItemSelected(item)) {
-//            return true;
-//        }
-        // Handle your other action bar items...
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void updateLists() {
+        ArrayList<User> userList = c_beam.getUsers();
+        ArrayList<User> onlineList = c_beam.getOnlineList();
+        ArrayList<User> etaList = c_beam.getEtaList();
+        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Log.i(TAG, "updateLists()");
+        for (User user: userList) {
+            if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+                if (button != null) {
+                    button.setChecked(user.getStatus().equals("online"));
+                    button.setEnabled(true);
+                    if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(user.getAp()+" AP");
+                        tvAp.setVisibility(View.VISIBLE);
+                        tvUsername.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
+
         ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
         if (artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
@@ -218,48 +170,8 @@ public class ClampActivity extends RingActivity implements
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        setupViewPagerIndicator();
+        setupViewPagerIndicator(mViewPager);
 //        setupActionBarTabs();
-    }
-
-    private void setupViewPagerIndicator() {
-        //Bind the title indicator to the adapter
-        TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
-        titleIndicator.setViewPager(mViewPager);
-
-        Helper.setFont(titleIndicator);
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.titleIndicator.setOnPageChangeListener(mPageChangeListener);
-        titleIndicator.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                try {
-                    actionBar.setSelectedNavigationItem(position);
-                } catch (Exception e) {
-
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab,
-                              FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
     }
 
     /**
@@ -294,15 +206,11 @@ public class ClampActivity extends RingActivity implements
                 fragment = new C_portalWebViewFragment();
                 ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
             } else {
-                fragment = new DummySectionFragment();
-                args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-                fragment.setArguments(args);
+                fragment = null;
             }
 
             return fragment;
         }
-
-
 
         @Override
         public int getCount() {
@@ -327,112 +235,5 @@ public class ClampActivity extends RingActivity implements
             return null;
         }
     }
-
-    /**
-     * A dummy fragment representing a section of the app, but that simply
-     * displays dummy text.
-     */
-    public static class DummySectionFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        public DummySectionFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            // Create a new TextView and set its text to the fragment's section
-            // number argument value.
-            TextView textView = new TextView(getActivity());
-            textView.setGravity(Gravity.CENTER);
-            textView.setText(Integer.toString(getArguments().getInt(
-                    ARG_SECTION_NUMBER)));
-            return textView;
-        }
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
-    /**
-     * Swaps fragments in the main content view
-     */
-    private void selectItem(int position) {
-
-        /*
-        // Create a new fragment and specify the planet to show based on position
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .commit();
-
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawer.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawer);
-        */
-        setTitle(mDrawerItems[position]);
-        System.out.println(mDrawerItems[position]);
-
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
-    }
-
-    /* Called whenever we call invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    public class RingAdapter extends ArrayAdapter {
-        private static final String TAG = "UserAdapter";
-        private ArrayList<Ring> items;
-        private Context context;
-
-        @SuppressWarnings("unchecked")
-        public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
-            super(context, itemLayout, textViewResourceId, items);
-            this.context = context;
-            this.items = items;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final View listview = super.getView(position, convertView, parent);
-
-            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
-            Ring r = items.get(position);
-
-            //Helper.setListItemStyle(view);
-            //Helper.setFont(getActivity(), view);
-            textView.setText(r.getName());
-
-            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
-            b.setImageDrawable(r.getImage());
-            return listview;
-        }
-
-    }
-
 
 }

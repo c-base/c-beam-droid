@@ -16,5 +16,6 @@ public interface Settings {
 	public static final String DEBUG_ENABLED = "pref_debug_enabled";
 	public static final String C_BEAM_URL = "pref_c_beam_url";
 	public static final String DEFAULT_ETA = "pref_default_eta";
+    public static final String USER_DISCOVERED_NAVDRAWER =  "pref_user_discovered_navdrawer";
 	
 }

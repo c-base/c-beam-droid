@@ -1,260 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2007 The Android Open Source Project
 
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-  
-          http://www.apache.org/licenses/LICENSE-2.0
-  
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
--->
+<android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-<!-- Demonstrates changing view visibility. See corresponding Java code. -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical" >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical" >
+        <!--
+             Here is where we put the SurfaceView, in a frame so that we can
+             stack other views on top of it.
+        -->
 
-    <!--
-         Here is where we put the SurfaceView, in a frame so that we can
-         stack other views on top of it.
-    -->
-
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-        <android.view.SurfaceView
-                android:id="@+id/surfaceview"
+        <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="0dp"
+                android:layout_weight="1" >
 
-        <android.opengl.GLSurfaceView
-                android:id="@+id/glsurfaceview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <android.view.SurfaceView
+                    android:id="@+id/surfaceview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-        <android.view.View
-                android:id="@+id/scanbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <android.opengl.GLSurfaceView
+                    android:id="@+id/glsurfaceview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-        <android.view.View
-                android:id="@+id/grid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <android.view.View
+                    android:id="@+id/scanbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-        <RelativeLayout
-                android:id="@+id/outercontainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="visible" >
+            <android.view.View
+                    android:id="@+id/grid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
             <RelativeLayout
-                    android:id="@+id/hidecontainer"
+                    android:id="@+id/outercontainer"
                     android:layout_width="match_parent"
-                    android:layout_height="100dip"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="invisible"
-                    android:layout_alignParentBottom="true">
+                    android:visibility="visible" >
 
-                <ToggleButton
-                        android:id="@+id/hideme1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:text="scanner activieren"
-                        android:textOff="scanner activieren"
-                        android:textOn="scanner deactivieren"
-                        android:visibility="visible"
-                        android:layout_above="@+id/hideme5"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignRight="@+id/hideme3"/>
+                <RelativeLayout
+                        android:id="@+id/hidecontainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dip"
+                        android:orientation="vertical"
+                        android:visibility="invisible"
+                        android:layout_alignParentBottom="true">
 
-                <ToggleButton
-                        android:id="@+id/hideme2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:text="grid activieren"
-                        android:textOff="grid activieren"
-                        android:textOn="grid deactivieren"
-                        android:visibility="visible"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignLeft="@+id/hideme4"/>
+                    <ToggleButton
+                            android:id="@+id/hideme1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:text="scanner activieren"
+                            android:textOff="scanner activieren"
+                            android:textOn="scanner deactivieren"
+                            android:visibility="visible"
+                            android:layout_above="@+id/hideme5"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignRight="@+id/hideme3"/>
 
-                <Button
-                        android:id="@+id/hideme3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:text="photonen abfeuern"
-                        android:visibility="visible"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"/>
+                    <ToggleButton
+                            android:id="@+id/hideme2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:text="grid activieren"
+                            android:textOff="grid activieren"
+                            android:textOn="grid deactivieren"
+                            android:visibility="visible"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignLeft="@+id/hideme4"/>
 
-                <ToggleButton
-                        android:id="@+id/hideme4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:checked="true"
-                        android:text="filt0r activieren"
-                        android:textOff="filt0r activieren"
-                        android:textOn="filt0r deactivieren"
-                        android:layout_above="@+id/hideme2"
-                        android:layout_alignParentRight="true"/>
+                    <Button
+                            android:id="@+id/hideme3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:text="photonen abfeuern"
+                            android:visibility="visible"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"/>
 
-                <ToggleButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:text="sensoren"
-                        android:textOff="sensoren activieren"
-                        android:textOn="sensoren deactivieren"
-                        android:id="@+id/hideme5"
+                    <ToggleButton
+                            android:id="@+id/hideme4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:checked="true"
+                            android:text="filt0r activieren"
+                            android:textOff="filt0r activieren"
+                            android:textOn="filt0r deactivieren"
+                            android:layout_above="@+id/hideme2"
+                            android:layout_alignParentRight="true"/>
 
-                        android:layout_alignParentBottom="true"
-                        android:layout_toRightOf="@+id/hideme1"
-                        android:layout_toLeftOf="@+id/hideme2"/>
+                    <ToggleButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:text="sensoren"
+                            android:textOff="sensoren activieren"
+                            android:textOn="sensoren deactivieren"
+                            android:id="@+id/hideme5"
 
-                <ToggleButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button"
-                        android:text="foo"
-                        android:textOff="cam activieren"
-                        android:textOn="cam deactivieren"
-                        android:id="@+id/hideme6"
-                        android:layout_above="@+id/hideme5"
-                        android:layout_toLeftOf="@+id/hideme2"
-                        android:layout_toRightOf="@+id/hideme1"
-                        android:visibility="visible"
-                        android:checked="true"/>
+                            android:layout_alignParentBottom="true"
+                            android:layout_toRightOf="@+id/hideme1"
+                            android:layout_toLeftOf="@+id/hideme2"/>
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView1"
-                        android:layout_alignRight="@+id/hideme2"
-                        android:layout_alignLeft="@+id/hideme1"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_med"
-                        android:textColor="#FFFF00"
-                        android:visibility="gone"/>
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView2"
-                        android:layout_below="@+id/textView1"
-                        android:layout_alignLeft="@+id/textView1"
-                        android:layout_alignRight="@+id/textView1"
-                        android:padding="8dp"
-                        android:background="@drawable/button_32x32_med"
-                        android:textColor="#FFFF00"
-                        android:visibility="gone"/>
+                    <ToggleButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button"
+                            android:text="foo"
+                            android:textOff="cam activieren"
+                            android:textOn="cam deactivieren"
+                            android:id="@+id/hideme6"
+                            android:layout_above="@+id/hideme5"
+                            android:layout_toLeftOf="@+id/hideme2"
+                            android:layout_toRightOf="@+id/hideme1"
+                            android:visibility="visible"
+                            android:checked="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView1"
+                            android:layout_alignRight="@+id/hideme2"
+                            android:layout_alignLeft="@+id/hideme1"
+                            android:padding="8dp"
+                            android:background="@drawable/button_32x32_med"
+                            android:textColor="#FFFF00"
+                            android:visibility="gone"/>
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView2"
+                            android:layout_below="@+id/textView1"
+                            android:layout_alignLeft="@+id/textView1"
+                            android:layout_alignRight="@+id/textView1"
+                            android:padding="8dp"
+                            android:background="@drawable/button_32x32_med"
+                            android:textColor="#FFFF00"
+                            android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/sensorPlotLayout"
+                        android:layout_above="@+id/hidecontainer"
+                        android:visibility="invisible">
+
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title=""
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_weight="1" />
+
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title=""
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_weight="1"/>
+
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title="foo"
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_alignParentLeft="true"
+                            android:layout_weight="1"/>
+
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title=""
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_alignParentLeft="true"
+                            android:layout_weight="1"/>
+
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot5"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title=""
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_alignParentLeft="true"
+                            android:layout_weight="1"/>
+
+                </LinearLayout>
 
             </RelativeLayout>
+        </FrameLayout>
 
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/sensorPlotLayout"
-                    android:layout_above="@+id/hidecontainer"
-                    android:visibility="invisible">
+        <RelativeLayout
+                android:id="@+id/RelativeLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal" >
 
-                <com.androidplot.xy.XYPlot
-                        android:id="@+id/mySimpleXYPlot"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        androidPlot.title=""
-                        androidPlot.rangeLabel=""
-                        androidPlot.domainLabel=""
-                        android:alpha="0.5"
-                        android:layout_weight="1" />
-
-                <com.androidplot.xy.XYPlot
-                        android:id="@+id/mySimpleXYPlot2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        androidPlot.title=""
-                        androidPlot.rangeLabel=""
-                        androidPlot.domainLabel=""
-                        android:alpha="0.5"
-                        android:layout_weight="1"/>
-
-                <com.androidplot.xy.XYPlot
-                        android:id="@+id/mySimpleXYPlot3"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        androidPlot.title="foo"
-                        androidPlot.rangeLabel=""
-                        androidPlot.domainLabel=""
-                        android:alpha="0.5"
-                        android:layout_alignParentLeft="true"
-                        android:layout_weight="1"/>
-
-                <com.androidplot.xy.XYPlot
-                        android:id="@+id/mySimpleXYPlot4"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        androidPlot.title=""
-                        androidPlot.rangeLabel=""
-                        androidPlot.domainLabel=""
-                        android:alpha="0.5"
-                        android:layout_alignParentLeft="true"
-                        android:layout_weight="1"/>
-
-                <com.androidplot.xy.XYPlot
-                        android:id="@+id/mySimpleXYPlot5"
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
-                        androidPlot.title=""
-                        androidPlot.rangeLabel=""
-                        androidPlot.domainLabel=""
-                        android:alpha="0.5"
-                        android:layout_alignParentLeft="true"
-                        android:layout_weight="1"/>
-
-            </LinearLayout>
+            <ToggleButton
+                    android:id="@+id/vis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/button_show_controls"
+                    android:textOff="c-ontrols anzeigen"
+                    android:textOn="c-ontrols ausblenden" />
 
         </RelativeLayout>
-    </FrameLayout>
 
-    <RelativeLayout
-            android:id="@+id/RelativeLayout1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal" >
+    </LinearLayout>
 
-        <ToggleButton
-                android:id="@+id/vis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/button_show_controls"
-                android:textOff="c-ontrols anzeigen"
-                android:textOn="c-ontrols ausblenden" />
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+              android:layout_width="240dp"
+              android:layout_height="match_parent"
+              android:layout_gravity="start"
+              android:choiceMode="singleChoice"
+              android:divider="@android:color/transparent"
+              android:dividerHeight="0dp"
+              android:background="#111"/>
 
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

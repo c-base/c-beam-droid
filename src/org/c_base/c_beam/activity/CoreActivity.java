@@ -1,7 +1,9 @@
 package org.c_base.c_beam.activity;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,16 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
 import com.actionbarsherlock.app.ActionBar;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.UserListFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by smile on 2013-05-31.
  */
-public class CoreActivity extends RingActivity implements
-        ActionBar.TabListener {
+public class CoreActivity extends RingActivity {
 
     private static final int CONTROL_FRAGMENT = 0;
     private static final int MEMBERINTERFACE_FRAGMENT = 1;
@@ -48,15 +56,38 @@ public class CoreActivity extends RingActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set up the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        // Show the Up button in the action bar.
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        setupOfflineArea();
+        setupViewPager();
+        setupCbeamArea();
+        initializeBroadcastReceiver();
 
+    }
+
+    public void updateLists() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        ArrayList<User> userList = c_beam.getUsers();
+
+        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        for (User user: userList) {
+            if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+                if (button != null) {
+                    button.setChecked(user.getStatus().equals("online"));
+                    button.setEnabled(true);
+                    if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(user.getAp()+" AP");
+                        tvAp.setVisibility(View.VISIBLE);
+                        tvUsername.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setupViewPager() {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(
-                getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -65,48 +96,18 @@ public class CoreActivity extends RingActivity implements
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager
-                .setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        actionBar.setSelectedNavigationItem(position);
-                    }
-                });
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                try {
+                    actionBar.setSelectedNavigationItem(position);
+                } catch (Exception e) {
 
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(actionBar.newTab()
-                    .setText(mSectionsPagerAdapter.getPageTitle(i))
-                    .setTabListener(this));
-        }
+                }
+            }
+        });
 
-        setupOfflineArea();
-//        updateTimePicker();
-        setupCbeamArea();
-
-
-    }
-
-    @Override
-    public void onTabSelected(ActionBar.Tab tab,
-                              FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab,
-                                FragmentTransaction fragmentTransaction) {
+        setupViewPagerIndicator(mViewPager);
     }
 
     /**
@@ -148,7 +149,6 @@ public class CoreActivity extends RingActivity implements
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 4;
         }
 

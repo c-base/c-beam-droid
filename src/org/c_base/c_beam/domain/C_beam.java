@@ -21,9 +21,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.widget.Toast;
 
 public class C_beam {
     enum RESULTS {
@@ -512,38 +514,28 @@ public class C_beam {
     }
 
     public synchronized void force_login(String user) {
-        try {
-            if (isInCrewNetwork()) {
-                c_beamClient.call("force_login", user);
-                for(int i=0;i<offlineList.size();i++) {
-                    if (offlineList.get(i).getUsername().equals(user)) {
-                        offlineList.get(i).setStatus("online");
-                        onlineList.add(offlineList.get(i));
-                        offlineList.remove(i);
-                    }
+        if (isInCrewNetwork()) {
+            callAsync("force_login", user);
+            for(int i=0;i<offlineList.size();i++) {
+                if (offlineList.get(i).getUsername().equals(user)) {
+                    offlineList.get(i).setStatus("online");
+                    onlineList.add(offlineList.get(i));
+                    offlineList.remove(i);
                 }
             }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
     public synchronized void force_logout(String user) {
-        try {
-            if (isInCrewNetwork()) {
-                c_beamClient.call("force_logout", user);
-                for(int i=0;i<onlineList.size();i++) {
-                    if (onlineList.get(i).getUsername().equals(user)) {
-                        onlineList.get(i).setStatus("offline");
-                        offlineList.add(onlineList.get(i));
-                        onlineList.remove(i);
-                    }
+        if (isInCrewNetwork()) {
+            callAsync("force_logout", user);
+            for(int i=0;i<onlineList.size();i++) {
+                if (onlineList.get(i).getUsername().equals(user)) {
+                    onlineList.get(i).setStatus("offline");
+                    offlineList.add(onlineList.get(i));
+                    onlineList.remove(i);
                 }
             }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
@@ -897,6 +889,47 @@ public class C_beam {
 //            e.printStackTrace();
         }
         return result;
+    }
+
+    public void callAsync(String method, String param) {
+        RPCCallTask rpcCallTask = new RPCCallTask();
+        String[] params = new String[2];
+        params[0] = method;
+        params[1] = param;
+        rpcCallTask.execute(params);
+    }
+
+    public class RPCCallTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                c_beamClient.call(params[0], params[1]);
+            } catch (JSONRPCException e) {
+                e.printStackTrace();
+            }
+            return "foo"; //c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            /*System.out.println(result);
+            if (result.contentEquals("eta_set")) {
+                result = getText(R.string.eta_set).toString();
+            } else if (result.contentEquals("eta_removed")) {
+                result = getText(R.string.eta_removed).toString();
+            } else {
+                result = getText(R.string.eta_failure).toString();
+            }
+            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();*/
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 
 }
