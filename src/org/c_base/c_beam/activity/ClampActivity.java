@@ -77,8 +77,6 @@ public class ClampActivity extends RingActivity {
 
     public void updateLists() {
         ArrayList<User> userList = c_beam.getUsers();
-        ArrayList<User> onlineList = c_beam.getOnlineList();
-        ArrayList<User> etaList = c_beam.getEtaList();
         ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Log.i(TAG, "updateLists()");
@@ -100,11 +98,9 @@ public class ClampActivity extends RingActivity {
         if (artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
             artefactList = c_beam.getArtefacts();
-            if (artefactList.size() != artefacts.size()) {
-                artefacts.clear();
-                for (int i = 0; i < artefactList.size(); i++)
-                    artefacts.addItem(artefactList.get(i));
-            }
+            artefacts.clear();
+            for (Artefact artefact : artefactList)
+                artefacts.addItem(artefact);
         }
 
     }
@@ -127,9 +123,11 @@ public class ClampActivity extends RingActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        Fragment[] pages;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            pages = new Fragment[getCount()];
         }
 
         @Override
@@ -138,27 +136,32 @@ public class ClampActivity extends RingActivity {
             // Return a DummySectionFragment (defined as a static inner class
             // below) with the page number as its lone argument.
             Fragment fragment;
-            Bundle args = new Bundle();
-            if (position == INTERFACE_MAP_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
-            } else if (position == BLUEPRINT_MAP_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
-            } else if (position == ARTEFACTS_FRAGMENT) {
-                fragment = new ArtefactListFragment();
-            } else if (position == GOOGLE_MAP_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
-            } else if (position == WWW_CBO_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
-            } else if (position == RINGINFO_FRAGMENT) {
-                fragment = new RinginfoFragment("clamp");
+            if (pages[position] == null) {
+                if (position == INTERFACE_MAP_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+                } else if (position == BLUEPRINT_MAP_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+                } else if (position == ARTEFACTS_FRAGMENT) {
+                    fragment = new ArtefactListFragment();
+                } else if (position == GOOGLE_MAP_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+                } else if (position == WWW_CBO_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("clamp");
+                } else {
+                    fragment = null;
+                }
+                fragment.setArguments(new Bundle());
+                pages[position] = fragment;
             } else {
-                fragment = null;
-            }
 
+                fragment = pages[position];
+            }
             return fragment;
         }
 

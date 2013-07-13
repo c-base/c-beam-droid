@@ -94,8 +94,11 @@ public class CoreActivity extends RingActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        private final Fragment[] pages;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            pages = new Fragment[getCount()];
         }
 
         @Override
@@ -104,24 +107,27 @@ public class CoreActivity extends RingActivity {
             // Return a DummySectionFragment (defined as a static inner class
             // below) with the page number as its lone argument.
             Fragment fragment;
-            Bundle args = new Bundle();
-            if (position == CONTROL_FRAGMENT) {
-                fragment = new C_ontrolFragment(c_beam);
-            } else if (position == MEMBERINTERFACE_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
-            } else if (position == HYPERBLAST_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
-            } else if (position == MEGABLAST_FRAGMENT) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
-            } else if (position == RINGINFO_FRAGMENT) {
-                fragment = new RinginfoFragment("core");
+            if (pages[position] == null) {
+                if (position == CONTROL_FRAGMENT) {
+                    fragment = new C_ontrolFragment(c_beam);
+                } else if (position == MEMBERINTERFACE_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
+                } else if (position == HYPERBLAST_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
+                } else if (position == MEGABLAST_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("core");
+                } else {
+                    fragment = null;
+                }
             } else {
-                fragment = null;
-            }
 
+                fragment = pages[position];
+            }
             return fragment;
         }
 
