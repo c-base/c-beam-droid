@@ -23,7 +23,7 @@ import org.c_base.c_beam.Settings;
 
 public class C_outListFragment extends ListFragment {
 	ArrayList<String> items = new ArrayList<String>();
-	ListAdapter adapter;
+	ArrayAdapter adapter;
 	C_beam c_beam;
 	SharedPreferences sharedPref;
 
@@ -37,6 +37,7 @@ public class C_outListFragment extends ListFragment {
 	}
 	public void addItem(String item) {
 		items.add(item);
+        adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class C_outListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.i("FragmentList", "Item clicked: " + items.get((int) id));
 		c_beam.play(items.get((int) id));
-		Toast.makeText(v.getContext(), R.string.c_out_sound_played, Toast.LENGTH_LONG).show();
+		//Toast.makeText(v.getContext(), R.string.c_out_sound_played, Toast.LENGTH_LONG).show();
 	}
 
 	@SuppressWarnings("rawtypes")

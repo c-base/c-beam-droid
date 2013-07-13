@@ -312,15 +312,7 @@ public class MainActivity extends RingActivity {
         }
     }
 
-    private void setupGCM() {
-        if (sharedPref.getBoolean(Settings.PUSH, false)) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            String registrationId = GCMManager.getRegistrationId(this);
-            String username = sharedPref.getString(Settings.USERNAME, "bernd");
-            new C_beamTask().execute("gcm_update", username, registrationId);
-            //c_beam.register_update(registrationId, username);
-        }
-    }
+
 
     private boolean checkUserName() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);

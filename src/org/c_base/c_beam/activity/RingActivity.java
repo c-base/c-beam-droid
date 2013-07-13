@@ -23,6 +23,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
+import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
@@ -367,6 +368,16 @@ public class RingActivity extends C_beamActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+    }
+
+    protected void setupGCM() {
+        if (sharedPref.getBoolean(Settings.PUSH, false)) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String registrationId = GCMManager.getRegistrationId(this);
+            String username = sharedPref.getString(Settings.USERNAME, "bernd");
+            new C_beamTask().execute("gcm_update", username, registrationId);
+            //c_beam.register_update(registrationId, username);
+        }
     }
 
     @Override

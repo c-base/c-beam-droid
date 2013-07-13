@@ -148,7 +148,7 @@ public class C_ontrolFragment extends Fragment {
 		b.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				c_beam.hwstorage(true);
+				c_beam.hwstorage();
 			}
 		});
 		/* */

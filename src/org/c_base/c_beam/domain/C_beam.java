@@ -28,6 +28,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class C_beam {
+    private ArrayList<String> sounds = new ArrayList<String>();
+
     enum RESULTS {
         SUCCESS("success"),
         FAILURE("failure");
@@ -153,9 +155,11 @@ public class C_beam {
             updateArticles(result.getJSONArray("articles"));
             updateActivitylog(result.getJSONArray("activitylog"));
             updateStats(result.getJSONArray("stats"));
+            updateSounds(result.getJSONArray("sounds"));
             sleepTime = 5000;
         } catch (Exception e) {
             Log.i(TAG, "updateLists failed");
+            e.printStackTrace();
             initC_beamClient();
             //e.printStackTrace();
         }
@@ -272,6 +276,19 @@ public class C_beam {
             eventList.add(new Event("fu:r heute sind keine events eingetragen"));
         }
         this.events = eventList;
+    }
+
+    private void updateSounds(JSONArray soundsResult)
+            throws JSONException {
+        ArrayList<String> soundList = new ArrayList<String>();
+        for (int i=0; i<soundsResult.length(); i++) {
+            soundList.add(soundsResult.getString(i));
+
+        }
+        if (soundList.size() == 0) {
+            soundList.add("hilfe, die sounds sind weg");
+        }
+        this.sounds = soundList;
     }
 
     private void updateUserLists(JSONArray userResult) throws JSONException {
@@ -394,12 +411,9 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callString("mission_assign", user, id);
-            }
-        } catch (JSONRPCException e) {
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callString("mission_assign", user, id);
+            callAsync("mission_assign", user, ""+id);
         }
         return result;
     }
@@ -408,12 +422,8 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callString("mission_complete", user, id);
-            }
-        } catch (JSONRPCException e) {
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            callAsync("mission_complete", user, ""+id);
         }
         return result;
     }
@@ -422,12 +432,8 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callString("mission_cancel", user, id);
-            }
-        } catch (JSONRPCException e) {
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            callAsync("mission_cancel", user, ""+id);
         }
         return result;
     }
@@ -466,50 +472,9 @@ public class C_beam {
         return result;
     }
 
-    public synchronized void login(String user) {
-        try {
-            if (isInCrewNetwork()) {
-                c_beamClient.call("login", user);
-                for(int i=0;i<offlineList.size();i++) {
-                    if (offlineList.get(i).getUsername().equals(user)) {
-                        offlineList.get(i).setStatus("online");
-                        onlineList.add(offlineList.get(i));
-                        offlineList.remove(i);
-                    }
-                }
-            }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public synchronized void logout(String user) {
-        try {
-            if (isInCrewNetwork()) {
-                c_beamClient.call("logout", user);
-                for(int i=0;i<onlineList.size();i++) {
-                    if (onlineList.get(i).getUsername().equals(user)) {
-                        onlineList.get(i).setStatus("offline");
-                        offlineList.add(onlineList.get(i));
-                        onlineList.remove(i);
-                    }
-                }
-            }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public synchronized void toggleLogin(String user) {
-        try {
-            if (isInCrewNetwork()) {
-                c_beamClient.call("tagevent", user);
-            }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            callAsync("tagevent", user);
         }
     }
 
@@ -552,67 +517,32 @@ public class C_beam {
     }
 
     public synchronized void tts(String text) {
-        try {
             Log.d(TAG,"tts("+text+")");
             if (isInCrewNetwork())
-                c_beamClient.call("tts", "julia", text);
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+                callAsync("tts", "julia", text);
     }
 
     public synchronized void r2d2(String text) {
-        try {
-            Log.d(TAG,"r2d2("+text+")");
-            if (isInCrewNetwork())
-                c_beamClient.call("tts", "r2d2", text);
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Log.d(TAG,"r2d2("+text+")");
+        if (isInCrewNetwork()) {
+            callAsync("tts", "r2d2", text);
         }
     }
 
     public synchronized ArrayList<String> getSounds() {
-        ArrayList<String> result = new ArrayList<String>();
-        try {
-            if (isInCrewNetwork()) {
-                System.out.println("calling sounds");
-                JSONObject res = c_beamClient.callJSONObject("sounds");
-                System.out.println("calling sounds done");
-                JSONArray items = res.getJSONArray("result");
-                for(int i=0; i<items.length();i++)
-                    result.add(items.getString(i));
-            }
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return result;
+        return sounds;
     }
 
     public synchronized void play(String sound) {
-        try {
-            Log.i(TAG,"play("+sound+")");
-            if (isInCrewNetwork())
-                c_beamClient.call("play", sound);
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        Log.i(TAG,"play("+sound+")");
+        if (isInCrewNetwork())
+            callAsync("play", sound);
     }
 
     public synchronized void announce(String text) {
-        try {
-            Log.i(TAG,"announce("+text+")");
-            if (isInCrewNetwork())
-                c_beamClient.call("announce", text);
-        } catch (JSONRPCException e) {
-            e.printStackTrace();
-        }
+        Log.i(TAG, "announce(" + text + ")");
+        if (isInCrewNetwork())
+            callAsync("announce", text);
 
     }
 
@@ -625,35 +555,22 @@ public class C_beam {
     }
 
     public synchronized void bluewall() {
-        try {
-            if (isInCrewNetwork())
-                c_beamClient.callJSONObject("bluewall");
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            callAsync("bluewall");
         }
 
     }
 
     public synchronized void darkwall() {
-        try {
-            if (isInCrewNetwork())
-                c_beamClient.callJSONObject("darkwall");
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (isInCrewNetwork()) {
+            callAsync("darkwall");
         }
-
     }
 
-    public synchronized void hwstorage(boolean b) {
-        try {
-            if (isInCrewNetwork())
-                Log.i("c-beam", "hw-storage");
-            c_beamClient.callJSONObject("hwstorage", b);
-        } catch (JSONRPCException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+    public synchronized void hwstorage() {
+        if (isInCrewNetwork()) {
+            callAsync("hwstorage");
         }
     }
 
@@ -665,70 +582,41 @@ public class C_beam {
 
     public synchronized String set_stripe_pattern(int pattern) {
         String result = "failure";
-        try {
             if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_stripe_pattern", pattern).getString("result");
+                //result = c_beamClient.callJSONObject("set_stripe_pattern", pattern).getString("result");
+                callAsync("set_stripe_pattern", String.valueOf(pattern));
             }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
-        }
         return result;
     }
 
     public synchronized String set_stripe_speed(int speed) {
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_stripe_speed", speed).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            callAsync("set_stripe_speed", String.valueOf(speed));
         }
         return result;
     }
 
     public synchronized String set_stripe_offset(int offset) {
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_stripe_offset", offset).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            callAsync("set_stripe_offset", String.valueOf(offset));
         }
         return result;
     }
 
     public synchronized String notbeleuchtung() {
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("notbeleuchtung").getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            callAsync("notbeleuchtung");
         }
         return result;
     }
 
     public synchronized String set_stripe_default() {
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_pattern_default").getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            callAsync("set_pattern_default");
         }
         return result;
     }
@@ -770,14 +658,9 @@ public class C_beam {
         int ap = Integer.parseInt(ap_string);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("logactivity", user, activity, ap).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callJSONObject("logactivity", user, activity, ap).getString("result");
+            callAsync("logactivity", user, activity, ""+ap);
         }
         return result;
     }
@@ -891,6 +774,25 @@ public class C_beam {
         return result;
     }
 
+    public void callAsync(String method, String param1, String param2, String param3) {
+        RPCCallTask rpcCallTask = new RPCCallTask();
+        String[] params = new String[4];
+        params[0] = method;
+        params[1] = param1;
+        params[2] = param2;
+        params[3] = param3;
+        rpcCallTask.execute(params);
+    }
+
+    public void callAsync(String method, String param1, String param2) {
+        RPCCallTask rpcCallTask = new RPCCallTask();
+        String[] params = new String[3];
+        params[0] = method;
+        params[1] = param1;
+        params[2] = param2;
+        rpcCallTask.execute(params);
+    }
+
     public void callAsync(String method, String param) {
         RPCCallTask rpcCallTask = new RPCCallTask();
         String[] params = new String[2];
@@ -898,16 +800,34 @@ public class C_beam {
         params[1] = param;
         rpcCallTask.execute(params);
     }
+    private void callAsync(String method) {
+        RPCCallTask rpcCallTask = new RPCCallTask();
+        String[] params = new String[1];
+        params[0] = method;
+        rpcCallTask.execute(params);
+    }
 
     public class RPCCallTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
+            String result = "failed";
             try {
-                c_beamClient.call(params[0], params[1]);
+                if (params.length == 1) {
+                    result = c_beamClient.callJSONObject(params[0]).getString("result");
+                } else if (params.length == 2) {
+                    result = c_beamClient.callJSONObject(params[0], params[1]).getString("result");
+                } else if(params.length == 3) {
+                    result = c_beamClient.callString(params[0], params[1], params[2]);
+                } else if(params.length == 4) {
+                    result = c_beamClient.callString(params[0], params[1], params[2], params[3]);
+                }
             } catch (JSONRPCException e) {
                 e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            return "foo"; //c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+
+            return result; //c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
         }
 
         @Override
@@ -919,8 +839,8 @@ public class C_beam {
                 result = getText(R.string.eta_removed).toString();
             } else {
                 result = getText(R.string.eta_failure).toString();
-            }
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();*/
+            }*/
+            Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
         }
 
         @Override

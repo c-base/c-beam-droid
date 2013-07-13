@@ -88,10 +88,10 @@ public class C_beamActivity extends SherlockFragmentActivity {
 			startActivityForResult(myIntent, 0);
 		} else if (item.getItemId() == R.id.menu_login) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.login(sharedPref.getString(Settings.USERNAME, "bernd"));
+			c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_logout) {
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-			c_beam.logout(sharedPref.getString(Settings.USERNAME, "bernd"));
+			c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
 		} else if (item.getItemId() == R.id.menu_c_out) {
 			Intent myIntent = new Intent(this, C_outActivity.class);
 			startActivityForResult(myIntent, 0);
