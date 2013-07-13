@@ -41,8 +41,9 @@ import java.util.ArrayList;
 public class ComActivity extends RingActivity {
     private static final int C_PORTAL_FRAGMENT = 0;
     private static final int LOGBUCH_FRAGMENT = 1;
-    private static final int COREDUMP_FRAGMENT = 3;
+    private static final int COREDUMP_FRAGMENT = 4;
     private static final int CIMP_FRAGMENT = 2;
+    private static final int RINGINFO_FRAGMENT = 3;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -148,6 +149,8 @@ public class ComActivity extends RingActivity {
                 } else if(position == CIMP_FRAGMENT) {
                     fragment = new C_portalWebViewFragment();
                     ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.cimp_url));
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("com");
                 } else {
                     fragment = null;
                 }
@@ -162,7 +165,7 @@ public class ComActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -176,7 +179,8 @@ public class ComActivity extends RingActivity {
                     return getString(R.string.title_com_section3).toUpperCase();
                 case COREDUMP_FRAGMENT:
                     return getString(R.string.title_com_section4).toUpperCase();
-
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
             }
             return null;
         }

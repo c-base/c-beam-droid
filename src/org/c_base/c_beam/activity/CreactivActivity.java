@@ -35,6 +35,7 @@ import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.fragment.StatsFragment;
 import org.c_base.c_beam.util.Helper;
 
@@ -48,6 +49,7 @@ public class CreactivActivity  extends RingActivity implements
     private static final int MISSIONLIST_FRAGMENT = 0;
     private static final int STATS_FRAGMENT = 2;
     private static final int ACTIVITYLOG_FRAGMENT = 1;
+    private static final int RINGINFO_FRAGMENT = 3;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -221,7 +223,7 @@ public class CreactivActivity  extends RingActivity implements
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a DummySectionFragment (defined as a static inner class
-            // below) with the page number as its lone argument.
+            // below) wit    private static final int ACTIVITYLOG_FRAGMENT = 1;h the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
                 if(position == MISSIONLIST_FRAGMENT) {
@@ -230,6 +232,8 @@ public class CreactivActivity  extends RingActivity implements
                     fragment = new StatsFragment();
                 } else if(position == ACTIVITYLOG_FRAGMENT) {
                     fragment = new ActivitylogFragment();
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("creactiv");
                 } else {
                     fragment = null;
                 }
@@ -244,7 +248,7 @@ public class CreactivActivity  extends RingActivity implements
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -256,6 +260,8 @@ public class CreactivActivity  extends RingActivity implements
                     return getString(R.string.title_stats).toUpperCase();
                 case ACTIVITYLOG_FRAGMENT:
                     return getString(R.string.title_activity).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
             }
             return null;
         }

@@ -43,6 +43,7 @@ import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
 import org.c_base.c_beam.util.Helper;
 
@@ -58,7 +59,9 @@ public class ClampActivity extends RingActivity {
     private static final int ARTEFACTS_FRAGMENT = 1;
     private static final int BLUEPRINT_MAP_FRAGMENT = 2;
     private static final int GOOGLE_MAP_FRAGMENT = 3;
-    private static final int WWW_CBO_FRAGMENT = 4;
+    private static final int WWW_CBO_FRAGMENT = 5;
+    private static final int RINGINFO_FRAGMENT = 4;
+
 
     enum RING {
         CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
@@ -205,6 +208,8 @@ public class ClampActivity extends RingActivity {
             } else if (position == WWW_CBO_FRAGMENT) {
                 fragment = new C_portalWebViewFragment();
                 ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
+            } else if (position == RINGINFO_FRAGMENT) {
+                fragment = new RinginfoFragment("clamp");
             } else {
                 fragment = null;
             }
@@ -215,7 +220,7 @@ public class ClampActivity extends RingActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 5;
         }
 
         @Override
@@ -229,8 +234,11 @@ public class ClampActivity extends RingActivity {
                     return getString(R.string.title_clamp_section3).toUpperCase();
                 case 3:
                     return getString(R.string.title_clamp_section4).toUpperCase();
-                case 4:
+                case WWW_CBO_FRAGMENT:
                     return getString(R.string.title_clamp_section5).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
+
             }
             return null;
         }

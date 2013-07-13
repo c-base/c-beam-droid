@@ -22,6 +22,7 @@ import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class CoreActivity extends RingActivity {
     private static final int MEMBERINTERFACE_FRAGMENT = 1;
     private static final int HYPERBLAST_FRAGMENT = 2;
     private static final int MEGABLAST_FRAGMENT = 3;
+    private static final int RINGINFO_FRAGMENT = 4;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -138,6 +140,8 @@ public class CoreActivity extends RingActivity {
             } else if (position == MEGABLAST_FRAGMENT) {
                 fragment = new C_portalWebViewFragment();
                 ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
+            } else if (position == RINGINFO_FRAGMENT) {
+                fragment = new RinginfoFragment("core");
             } else {
                 fragment = new DummySectionFragment();
                 args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
@@ -149,7 +153,7 @@ public class CoreActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -163,6 +167,8 @@ public class CoreActivity extends RingActivity {
                     return getString(R.string.title_core_section3).toUpperCase();
                 case 3:
                     return getString(R.string.title_core_section4).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
 
             }
             return null;

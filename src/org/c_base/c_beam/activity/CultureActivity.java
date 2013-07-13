@@ -27,6 +27,7 @@ import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.util.Helper;
 
 import java.util.ArrayList;
@@ -37,7 +38,8 @@ import java.util.ArrayList;
 public class CultureActivity extends RingActivity implements
         ActionBar.TabListener {
     private static final int EVENTS_TODAY_FRAGMENT = 0;
-    private static final int EVENTS_MONTH_FRAGMENT = 1;
+    private static final int EVENTS_MONTH_FRAGMENT = 2;
+    private static final int RINGINFO_FRAGMENT = 1;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -45,24 +47,12 @@ public class CultureActivity extends RingActivity implements
 
     private static final boolean debug = false;
 
-    ArrayList<Article> articleList;
     ArrayList<Event> eventList;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     ViewPager mViewPager;
-    private Handler handler = new Handler();
     EditText text;
-
-    protected Runnable fred;
-    private View mInfoArea;
-    private View mCbeamArea;
-    private boolean mIsOnline = false;
-    private WifiBroadcastReceiver mWifiReceiver;
-    private IntentFilter mWifiIntentFilter;
-
-    TextView tvAp = null;
-    TextView tvUsername = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +76,6 @@ public class CultureActivity extends RingActivity implements
 
         setupActionBar();
         setupViewPager();
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        tvAp = (TextView) findViewById(R.id.textView_ap);
-        tvAp.setTextColor(Color.rgb(58, 182, 228));
-        tvUsername = (TextView) findViewById(R.id.textView_username);
-        tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
-        tvUsername.setTextColor(Color.rgb(58, 182, 228));
-        Helper.setFont(this, tvUsername);
-        Helper.setFont(this, tvAp);
-        boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
-        if (!displayAp) {
-            tvUsername.setHeight(0);
-            tvAp.setHeight(0);
-        }
 
         initializeBroadcastReceiver();
     }
@@ -187,6 +163,8 @@ public class CultureActivity extends RingActivity implements
             if (pages[position] == null) {
                 if(position == EVENTS_TODAY_FRAGMENT) {
                     fragment = new EventListFragment();
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("culture");
                 } else {
                     fragment = null;
                 }
@@ -201,7 +179,7 @@ public class CultureActivity extends RingActivity implements
 
         @Override
         public int getCount() {
-            return 1;
+            return 2;
         }
 
         @Override
@@ -209,6 +187,8 @@ public class CultureActivity extends RingActivity implements
             switch (position) {
                 case EVENTS_TODAY_FRAGMENT:
                     return getString(R.string.title_culture_section1).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
             }
             return null;
         }

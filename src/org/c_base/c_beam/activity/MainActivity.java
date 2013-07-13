@@ -270,7 +270,7 @@ public class MainActivity extends RingActivity {
                 } else if (position == ACTIVITYLOG_FRAGMENT) {
                     fragment = new ActivitylogFragment();
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment();
+                    fragment = new RinginfoFragment("clamp");
                 } else {
                     fragment = null;
                 }

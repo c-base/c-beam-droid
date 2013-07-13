@@ -43,6 +43,7 @@ public class CarbonActivity extends RingActivity implements
         View.OnClickListener {
     private static final int USERLIST_FRAGMENT = 0;
     private static final int ETALIST_FRAGMENT = 1;
+    private static final int RINGINFO_FRAGMENT = 2;
 
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 1000;
@@ -184,6 +185,8 @@ public class CarbonActivity extends RingActivity implements
                     fragment = new UserListFragment();
                 } else if(position == ETALIST_FRAGMENT) {
                     fragment = new UserListFragment();
+                } else if (position == RINGINFO_FRAGMENT) {
+                    fragment = new RinginfoFragment("carbon");
                 } else {
                     fragment = null;
                 }
@@ -198,7 +201,7 @@ public class CarbonActivity extends RingActivity implements
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -208,6 +211,8 @@ public class CarbonActivity extends RingActivity implements
                     return getString(R.string.title_carbon_section1).toUpperCase();
                 case ETALIST_FRAGMENT:
                     return getString(R.string.title_carbon_section2).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
             }
             return null;
         }

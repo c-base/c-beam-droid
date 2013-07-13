@@ -229,13 +229,13 @@
     <string name="cimp_url">http://www.c-base.org/cv50f/core/init.html</string>
     <string name="title_com_section4">coredump</string>
     <string name="cbag_base_url">http://10.0.1.44</string>
-    <string name="title_ringinfo">ringe</string>
+    <string name="title_ringinfo">ringinfo</string>
     <string name="info_clamp">
-        clamp: Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der
+        Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der
         Raumstation.
     </string>
     <string name="info_carbon">
-        carbon: Das Logbuch der c-base. Es enthält die bisher bekannte Stationsgeschichte, den
+        Das Logbuch der c-base. Es enthält die bisher bekannte Stationsgeschichte, den
         Rekonstruktionsverlauf, die Einträge der ursprünglichen Besatzung und des heutigen
         Forschungsteams.
     </string>
@@ -253,7 +253,7 @@
         findet hier Raum.
     </string>
     <string name="info_com">
-        com: Diskussions- und Präsentationsplattform. Kommunikation zwischen
+        Diskussions- und Präsentationsplattform. Kommunikation zwischen
         allen Ebenen und Bereichen der c-base schafft neue Ideen. Kommunikation auf Aussenmission
         eröffnet Kontaktmöglichkeiten jeder Art, die sowohl zur Erweiterung der Crew als auch zum
         Aufbau internationaler Kontakte führt.
