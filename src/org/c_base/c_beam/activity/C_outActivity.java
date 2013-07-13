@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class C_outActivity extends C_beamActivity {
-	C_beam c_beam = C_beam.getInstance();
-	EditText et;
-	
-	ActionBar actionBar;
+    C_beam c_beam = C_beam.getInstance();
+    EditText et;
+
+    ActionBar actionBar;
     private Runnable fred;
     private Handler handler = new Handler();
     private long threadDelay = 5000;
@@ -50,55 +50,55 @@ public class C_outActivity extends C_beamActivity {
     private C_outListFragment c_outList;
 
     @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.activity_c_out);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		c_outList = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
+        setContentView(R.layout.activity_c_out);
 
-		et = (EditText) findViewById(R.id.c_outEditText);
+        c_outList = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 
-		Button b = (Button) findViewById(R.id.button_announce);
-		b.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String text = et.getText().toString();
-				if (text.length() != 0) {
-					c_beam.announce(text);
-				}
-			}
-		});
+        et = (EditText) findViewById(R.id.c_outEditText);
 
-		b = (Button) findViewById(R.id.button_r2d2);
-		b.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String text = et.getText().toString();
-				if (text.length() != 0) {
-					c_beam.r2d2(text);
-				}
-			}
-		});
+        Button b = (Button) findViewById(R.id.button_announce);
+        b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = et.getText().toString();
+                if (text.length() != 0) {
+                    c_beam.announce(text);
+                }
+            }
+        });
 
-		b = (Button) findViewById(R.id.button_tts);
-		b.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String text = et.getText().toString();
-				if (text.length() != 0) {
-					c_beam.tts(text);
-				}
-			}
-		});
-		
-		final ViewGroup mContainer = (ViewGroup) findViewById(
-				android.R.id.content).getRootView();
-		setAppFont(mContainer);
+        b = (Button) findViewById(R.id.button_r2d2);
+        b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = et.getText().toString();
+                if (text.length() != 0) {
+                    c_beam.r2d2(text);
+                }
+            }
+        });
+
+        b = (Button) findViewById(R.id.button_tts);
+        b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = et.getText().toString();
+                if (text.length() != 0) {
+                    c_beam.tts(text);
+                }
+            }
+        });
+
+        final ViewGroup mContainer = (ViewGroup) findViewById(
+                android.R.id.content).getRootView();
+        setAppFont(mContainer);
 //		Helper.setButtonStyle(mContainer);
-		setupActionBar();
+        setupActionBar();
         initializeBroadcastReceiver();
-	}
+    }
 
     public void startProgress() {
         // Do something long
@@ -114,14 +114,14 @@ public class C_outActivity extends C_beamActivity {
     }
 
     private void updateLists() {
-            ArrayList<String> sounds = c_beam.getSounds();
+        ArrayList<String> sounds = c_beam.getSounds();
 
-            if (c_outList != null && c_outList.isAdded()) {
-                c_outList.clear();
-                for(int i=0; i<sounds.size();i++) {
-                    c_outList.addItem(sounds.get(i));
-                }
+        if (c_outList != null && c_outList.isAdded()) {
+            c_outList.clear();
+            for (int i = 0; i < sounds.size(); i++) {
+                c_outList.addItem(sounds.get(i));
             }
+        }
     }
 
     public void onStart() {
@@ -167,7 +167,7 @@ public class C_outActivity extends C_beamActivity {
     }
 
     protected void switchToOnlineMode() {
-        if(mIsOnline) {
+        if (mIsOnline) {
             return;
         }
         mIsOnline = true;
@@ -265,7 +265,6 @@ public class C_outActivity extends C_beamActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println(result);
             if (result.contentEquals("eta_set")) {
                 result = getText(R.string.eta_set).toString();
             } else if (result.contentEquals("eta_removed")) {

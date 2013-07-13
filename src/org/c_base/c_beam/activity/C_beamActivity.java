@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +134,6 @@ public class C_beamActivity extends SherlockFragmentActivity {
     }
 
     protected void onResume() {
-        Log.i(TAG, "onResume()");
         super.onResume();
         c_beam.setActivity(this);
     }
@@ -153,7 +151,6 @@ public class C_beamActivity extends SherlockFragmentActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.i(TAG, result);
 //            if (result.contentEquals("eta_set")) {
 //                result = getText(R.string.eta_set).toString();
 //            } else if (result.contentEquals("eta_removed")) {

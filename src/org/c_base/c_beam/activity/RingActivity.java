@@ -18,7 +18,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,7 +175,6 @@ public class RingActivity extends C_beamActivity {
     }
 
 
-
     protected void setupViewPagerIndicator(ViewPager mViewPager) {
         TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
         titleIndicator.setViewPager(mViewPager);
@@ -190,7 +188,7 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void switchToOnlineMode() {
-        if(mIsOnline) {
+        if (mIsOnline) {
             return;
         }
         mIsOnline = true;
@@ -354,7 +352,7 @@ public class RingActivity extends C_beamActivity {
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        if(!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
+        if (!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
 
@@ -395,21 +393,18 @@ public class RingActivity extends C_beamActivity {
     }
 
     public void onStart() {
-        Log.i(TAG, "onStart()");
         super.onStart();
         startProgress();
     }
 
     @Override
     protected void onPause() {
-        Log.i(TAG, "onPause()");
         unregisterReceiver(mWifiReceiver);
         stopNetworkingThreads();
         super.onPause();
     }
 
     protected void onResume() {
-        Log.i(TAG, "onResume()");
         super.onResume();
         c_beam.setActivity(this);
         //c_beam.testJsonRPC2();
@@ -432,8 +427,8 @@ public class RingActivity extends C_beamActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle the event for ActionBarDrawerToggle and return true to cancel propagation
-        if (item.getItemId() == android.R.id.home){
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+        if (item.getItemId() == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
                 mDrawerLayout.closeDrawer(mDrawerList);
             } else {
                 mDrawerLayout.openDrawer(mDrawerList);
@@ -469,8 +464,6 @@ public class RingActivity extends C_beamActivity {
         mDrawerLayout.closeDrawer(mDrawer);
         */
         setTitle(mDrawerItems[position]);
-        System.out.println(mDrawerItems[position]);
-
 
         switch (position) {
             case 0:
@@ -536,7 +529,6 @@ public class RingActivity extends C_beamActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println(result);
             if (result.contentEquals("eta_set")) {
                 result = getText(R.string.eta_set).toString();
             } else if (result.contentEquals("eta_removed")) {

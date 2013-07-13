@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
@@ -79,7 +78,6 @@ public class ClampActivity extends RingActivity {
         ArrayList<User> userList = c_beam.getUsers();
         ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.i(TAG, "updateLists()");
         for (User user : userList) {
             if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {

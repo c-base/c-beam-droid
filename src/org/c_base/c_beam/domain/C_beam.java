@@ -1,22 +1,5 @@
 package org.c_base.c_beam.domain;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-
-//import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
-//import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
-//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
-//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
-import org.alexd.jsonrpc.JSONRPCClient;
-import org.alexd.jsonrpc.JSONRPCException;
-import org.alexd.jsonrpc.JSONRPCParams;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,6 +10,21 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.alexd.jsonrpc.JSONRPCClient;
+import org.alexd.jsonrpc.JSONRPCException;
+import org.alexd.jsonrpc.JSONRPCParams;
+import org.c_base.c_beam.Settings;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+//import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
+//import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
+//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
+//import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
+
 public class C_beam {
     private ArrayList<String> sounds = new ArrayList<String>();
 
@@ -34,8 +32,14 @@ public class C_beam {
         SUCCESS("success"),
         FAILURE("failure");
         private final String stringValue;
-        private RESULTS(final String s) { stringValue = s; }
-        public String toString() { return stringValue; }
+
+        private RESULTS(final String s) {
+            stringValue = s;
+        }
+
+        public String toString() {
+            return stringValue;
+        }
     }
 
     private static final String TAG = "c-beam";
@@ -83,7 +87,6 @@ public class C_beam {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
             c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
         }
-        Log.i(TAG, "using c-beam url "+ c_beamUrl);
         c_beamClient = JSONRPCClient.create(c_beamUrl, JSONRPCParams.Versions.VERSION_2);
         c_beamClient.setConnectionTimeout(10000);
         c_beamClient.setSoTimeout(10000);
@@ -116,7 +119,7 @@ public class C_beam {
             @Override
             public void run() {
                 boolean stop = false;
-                while(!stop) {
+                while (!stop) {
                     updateLists();
                     try {
                         Thread.sleep(sleepTime);
@@ -127,12 +130,11 @@ public class C_beam {
             }
         });
         thread.start();
-        Log.i(TAG, "thread started");
     }
 
     public boolean isInCrewNetwork() {
         if (activity == null) {
-            Log.i(TAG, "no activity set");
+            Log.e(TAG, "no activity set");
             return true;
         }
 
@@ -158,7 +160,7 @@ public class C_beam {
             updateSounds(result.getJSONArray("sounds"));
             sleepTime = 5000;
         } catch (Exception e) {
-            Log.i(TAG, "updateLists failed");
+            Log.e(TAG, "updateLists failed");
             e.printStackTrace();
             initC_beamClient();
             //e.printStackTrace();
@@ -219,7 +221,7 @@ public class C_beam {
 
     private void updateStats(JSONArray statsResult) throws JSONException {
         ArrayList<User> statsList = new ArrayList<User>();
-        for (int i=0; i<statsResult.length(); i++) {
+        for (int i = 0; i < statsResult.length(); i++) {
             JSONObject item = statsResult.getJSONObject(i);
             statsList.add(new User(item));
         }
@@ -229,7 +231,7 @@ public class C_beam {
     private void updateActivitylog(JSONArray activitylogResult)
             throws JSONException {
         ArrayList<ActivityLog> activitylogList = new ArrayList<ActivityLog>();
-        for (int i=0; i<activitylogResult.length(); i++) {
+        for (int i = 0; i < activitylogResult.length(); i++) {
             JSONObject item = activitylogResult.getJSONObject(i);
             activitylogList.add(new ActivityLog(item));
         }
@@ -238,7 +240,7 @@ public class C_beam {
 
     private void updateArticles(JSONArray articleResult) throws JSONException {
         ArrayList<Article> articleList = new ArrayList<Article>();
-        for (int i=0; i<articleResult.length(); i++) {
+        for (int i = 0; i < articleResult.length(); i++) {
             JSONObject item = articleResult.getJSONObject(i);
             articleList.add(new Article(item));
         }
@@ -247,7 +249,7 @@ public class C_beam {
 
     private void updateMissions(JSONArray missionResult) throws JSONException {
         ArrayList<Mission> missionList = new ArrayList<Mission>();
-        for (int i=0; i<missionResult.length(); i++) {
+        for (int i = 0; i < missionResult.length(); i++) {
             JSONObject item = missionResult.getJSONObject(i);
             missionList.add(new Mission(item));
         }
@@ -257,7 +259,7 @@ public class C_beam {
     private void updateArtefacts(JSONArray artefactsResult)
             throws JSONException {
         ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-        for (int i=0; i<artefactsResult.length(); i++) {
+        for (int i = 0; i < artefactsResult.length(); i++) {
             JSONObject item = artefactsResult.getJSONObject(i);
             artefactList.add(new Artefact(item));
         }
@@ -267,12 +269,12 @@ public class C_beam {
     private void updateEvents(JSONArray eventsResult)
             throws JSONException {
         ArrayList<Event> eventList = new ArrayList<Event>();
-        for (int i=0; i<eventsResult.length(); i++) {
+        for (int i = 0; i < eventsResult.length(); i++) {
             JSONObject item = eventsResult.getJSONObject(i);
             eventList.add(new Event(item));
         }
         if (eventList.size() == 0) {
-			//eventList.add(new Event(activity.getString(R.string.no_events)));
+            //eventList.add(new Event(activity.getString(R.string.no_events)));
             eventList.add(new Event("fu:r heute sind keine events eingetragen"));
         }
         this.events = eventList;
@@ -281,7 +283,7 @@ public class C_beam {
     private void updateSounds(JSONArray soundsResult)
             throws JSONException {
         ArrayList<String> soundList = new ArrayList<String>();
-        for (int i=0; i<soundsResult.length(); i++) {
+        for (int i = 0; i < soundsResult.length(); i++) {
             soundList.add(soundsResult.getString(i));
 
         }
@@ -293,7 +295,7 @@ public class C_beam {
 
     private void updateUserLists(JSONArray userResult) throws JSONException {
         ArrayList<User> userList = new ArrayList<User>();
-        for (int i=0; i<userResult.length(); i++) {
+        for (int i = 0; i < userResult.length(); i++) {
             JSONObject item = userResult.getJSONObject(i);
             userList.add(new User(item));
         }
@@ -303,7 +305,7 @@ public class C_beam {
         offlineList.clear();
         etaList.clear();
 
-        for (User user: users) {
+        for (User user : users) {
             if (user.getStatus().equals("online")) {
                 onlineList.add(user);
             }
@@ -337,7 +339,7 @@ public class C_beam {
     }
 
     public synchronized User getUser(int id) {
-        for(User user: users) {
+        for (User user : users) {
             if (user.getId() == id) {
                 return user;
             }
@@ -359,7 +361,7 @@ public class C_beam {
     public User getCurrentUser() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String username = sharedPref.getString(Settings.USERNAME, "bernd");
-        for(User user: users) {
+        for (User user : users) {
             if (user.getUsername().contentEquals(username)) {
                 return user;
             }
@@ -376,7 +378,7 @@ public class C_beam {
         return u;
     }
 
-    public ArrayList<Event> getEvents(){
+    public ArrayList<Event> getEvents() {
         return events;
     }
 
@@ -389,7 +391,7 @@ public class C_beam {
     }
 
     public synchronized Mission getMission(int id) {
-        for (Mission mission: missions) {
+        for (Mission mission : missions) {
             if (mission.getId() == id) {
                 return mission;
             }
@@ -413,7 +415,7 @@ public class C_beam {
         String result = "";
         if (isInCrewNetwork()) {
             //result = c_beamClient.callString("mission_assign", user, id);
-            callAsync("mission_assign", user, ""+id);
+            callAsync("mission_assign", user, "" + id);
         }
         return result;
     }
@@ -423,7 +425,7 @@ public class C_beam {
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
         if (isInCrewNetwork()) {
-            callAsync("mission_complete", user, ""+id);
+            callAsync("mission_complete", user, "" + id);
         }
         return result;
     }
@@ -433,7 +435,7 @@ public class C_beam {
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
         if (isInCrewNetwork()) {
-            callAsync("mission_cancel", user, ""+id);
+            callAsync("mission_cancel", user, "" + id);
         }
         return result;
     }
@@ -446,7 +448,6 @@ public class C_beam {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
-                Log.i(TAG, "register: "+user+":"+regId);
                 result = c_beamClient.callJSONObject("gcm_register", user, regId).getString("result");
             }
         } catch (JSONRPCException e) {
@@ -461,7 +462,6 @@ public class C_beam {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
-                Log.i(TAG, "registerUpdate("+user+", " +regId+")");
                 result = c_beamClient.callJSONObject("gcm_update", user, regId).getString("result");
             }
         } catch (JSONRPCException e) {
@@ -481,7 +481,7 @@ public class C_beam {
     public synchronized void force_login(String user) {
         if (isInCrewNetwork()) {
             callAsync("force_login", user);
-            for(int i=0;i<offlineList.size();i++) {
+            for (int i = 0; i < offlineList.size(); i++) {
                 if (offlineList.get(i).getUsername().equals(user)) {
                     offlineList.get(i).setStatus("online");
                     onlineList.add(offlineList.get(i));
@@ -494,7 +494,7 @@ public class C_beam {
     public synchronized void force_logout(String user) {
         if (isInCrewNetwork()) {
             callAsync("force_logout", user);
-            for(int i=0;i<onlineList.size();i++) {
+            for (int i = 0; i < onlineList.size(); i++) {
                 if (onlineList.get(i).getUsername().equals(user)) {
                     onlineList.get(i).setStatus("offline");
                     offlineList.add(onlineList.get(i));
@@ -517,13 +517,11 @@ public class C_beam {
     }
 
     public synchronized void tts(String text) {
-            Log.d(TAG,"tts("+text+")");
-            if (isInCrewNetwork())
-                callAsync("tts", "julia", text);
+        if (isInCrewNetwork())
+            callAsync("tts", "julia", text);
     }
 
     public synchronized void r2d2(String text) {
-        Log.d(TAG,"r2d2("+text+")");
         if (isInCrewNetwork()) {
             callAsync("tts", "r2d2", text);
         }
@@ -534,13 +532,11 @@ public class C_beam {
     }
 
     public synchronized void play(String sound) {
-        Log.i(TAG,"play("+sound+")");
         if (isInCrewNetwork())
             callAsync("play", sound);
     }
 
     public synchronized void announce(String text) {
-        Log.i(TAG, "announce(" + text + ")");
         if (isInCrewNetwork())
             callAsync("announce", text);
 
@@ -582,10 +578,10 @@ public class C_beam {
 
     public synchronized String set_stripe_pattern(int pattern) {
         String result = "failure";
-            if (isInCrewNetwork()) {
-                //result = c_beamClient.callJSONObject("set_stripe_pattern", pattern).getString("result");
-                callAsync("set_stripe_pattern", String.valueOf(pattern));
-            }
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callJSONObject("set_stripe_pattern", pattern).getString("result");
+            callAsync("set_stripe_pattern", String.valueOf(pattern));
+        }
         return result;
     }
 
@@ -660,7 +656,7 @@ public class C_beam {
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         if (isInCrewNetwork()) {
             //result = c_beamClient.callJSONObject("logactivity", user, activity, ap).getString("result");
-            callAsync("logactivity", user, activity, ""+ap);
+            callAsync("logactivity", user, activity, "" + ap);
         }
         return result;
     }
@@ -744,7 +740,6 @@ public class C_beam {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
-                Log.i(TAG, "calling " + method);
                 result = etaClient.callJSONObject(method, param1).getString("result");
             } else {
                 result = "not in crew network";
@@ -761,7 +756,6 @@ public class C_beam {
         String result = "failure";
         try {
             if (isInCrewNetwork()) {
-                Log.i(TAG, "calling " + method);
                 result = c_beamClient.callString(method, param1, param2);
             } else {
                 result = "not in crew network";
@@ -800,6 +794,7 @@ public class C_beam {
         params[1] = param;
         rpcCallTask.execute(params);
     }
+
     private void callAsync(String method) {
         RPCCallTask rpcCallTask = new RPCCallTask();
         String[] params = new String[1];
@@ -816,9 +811,9 @@ public class C_beam {
                     result = c_beamClient.callJSONObject(params[0]).getString("result");
                 } else if (params.length == 2) {
                     result = c_beamClient.callJSONObject(params[0], params[1]).getString("result");
-                } else if(params.length == 3) {
+                } else if (params.length == 3) {
                     result = c_beamClient.callString(params[0], params[1], params[2]);
-                } else if(params.length == 4) {
+                } else if (params.length == 4) {
                     result = c_beamClient.callString(params[0], params[1], params[2], params[3]);
                 }
             } catch (JSONRPCException e) {

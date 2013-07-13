@@ -87,7 +87,6 @@ public class MainActivity extends RingActivity {
     }
 
     void processNfcIntent(Intent intent) {
-        System.out.println(intent.getData());
     }
 
     private boolean checkUserName() {
@@ -279,7 +278,6 @@ public class MainActivity extends RingActivity {
             return null;
         }
     }
-
 
 
 }

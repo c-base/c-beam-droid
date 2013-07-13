@@ -18,7 +18,6 @@ import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -46,25 +45,25 @@ import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
-	private static final String TAG = "CCorderActivity";
+    private static final String TAG = "CCorderActivity";
     private Camera camera;
-	private SurfaceView mSurfaceView;
-	private SurfaceHolder mSurfaceHolder;
-	GLSurfaceView glSurfaceView;
-	//	private TouchSurfaceView mGLSurfaceView;
+    private SurfaceView mSurfaceView;
+    private SurfaceHolder mSurfaceHolder;
+    GLSurfaceView glSurfaceView;
+    //	private TouchSurfaceView mGLSurfaceView;
 
-	private View scanBar;
-	private View grid;
+    private View scanBar;
+    private View grid;
     private View sensorPlotLayout;
 
-	private View mVictimContainer;
+    private View mVictimContainer;
     private TextView textView1;
     private TextView textView2;
-	private MediaPlayer zap;
-	private MediaPlayer scan;
+    private MediaPlayer zap;
+    private MediaPlayer scan;
     private MediaPlayer bleeps;
 
-	private SensorManager mSensorManager;
+    private SensorManager mSensorManager;
 
     private SensorPlot magnetPlot;
     private SensorPlot gravityPlot;
@@ -74,25 +73,25 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
-	ShutterCallback shutter = new ShutterCallback(){
-		@Override
-		public void onShutter() {
-			// No action to be perfomed on the Shutter callback.
-		}
-	};
-	PictureCallback raw = new PictureCallback(){
-		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {
-			// No action taken on the raw data. Only action taken on jpeg data.
-		}
-	};
+    ShutterCallback shutter = new ShutterCallback() {
+        @Override
+        public void onShutter() {
+            // No action to be perfomed on the Shutter callback.
+        }
+    };
+    PictureCallback raw = new PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            // No action taken on the raw data. Only action taken on jpeg data.
+        }
+    };
 
-	PictureCallback jpeg = new PictureCallback(){
-		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {
-			// No action taken on the jpeg data yet.
-		}
-	};
+    PictureCallback jpeg = new PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            // No action taken on the jpeg data yet.
+        }
+    };
     private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
     private String[] dimensionArrayLux = {"/ lux"};
     private ToggleButton toggleButtonSensors;
@@ -102,14 +101,14 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private boolean previewOn = false;
 
     @Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_ccorder);
 
         setupSounds();
         setupSensors();
-		setupGLSurfaceView();
+        setupGLSurfaceView();
         setupControls();
         setupPlotViews();
         setupGrid();
@@ -117,7 +116,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupSurfaceView();
 
         showWarningMessage();
-	}
+    }
 
     private void setupSounds() {
         zap = MediaPlayer.create(this, R.raw.zap);
@@ -144,7 +143,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 ToggleButton b = (ToggleButton) v;
                 if (b.isChecked()) {
                     int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
-                    TranslateAnimation transAnimation= new TranslateAnimation(0, 0, 0, height);
+                    TranslateAnimation transAnimation = new TranslateAnimation(0, 0, 0, height);
                     transAnimation.setRepeatMode(2);
                     transAnimation.setRepeatCount(-1);
                     transAnimation.setDuration(1000);
@@ -175,17 +174,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch ( event.getAction() ) {
-                case MotionEvent.ACTION_DOWN:
-                    if (zap != null) {
-                        zap.seekTo(0);
-                        zap.start();
-                    }
-                    ledOn();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    ledOff();
-                    break;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (zap != null) {
+                            zap.seekTo(0);
+                            zap.start();
+                        }
+                        ledOn();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ledOff();
+                        break;
                 }
                 return false;
             }
@@ -322,94 +321,92 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     @Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			menu.findItem(R.id.menu_c_corder).setVisible(false);
-		}
-		
-		boolean mIsOnline = c_beam.isInCrewNetwork();
-		// Hide some menu items when not connected to the crew network
-		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_c_corder).setVisible(false);
-		return true;
-	}
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            menu.findItem(R.id.menu_c_corder).setVisible(false);
+        }
 
-	@Override
-	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-		Camera.Parameters p = camera.getParameters();
-		p.setPreviewSize(arg2, arg3);
-		try {
-			camera.setPreviewDisplay(arg0);
-			camera.setDisplayOrientation(90);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Log.i(TAG, "starting cam");
+        boolean mIsOnline = c_beam.isInCrewNetwork();
+        // Hide some menu items when not connected to the crew network
+        menu.findItem(R.id.menu_login).setVisible(mIsOnline);
+        menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
+        menu.findItem(R.id.menu_map).setVisible(mIsOnline);
+        menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
+        menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
+        menu.findItem(R.id.menu_c_corder).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+        Camera.Parameters p = camera.getParameters();
+        p.setPreviewSize(arg2, arg3);
+        try {
+            camera.setPreviewDisplay(arg0);
+            camera.setDisplayOrientation(90);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         camera.startPreview();
-	}
+    }
 
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		//camera = Camera.open();
-	}
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        //camera = Camera.open();
+    }
 
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.i(TAG, "stopping cam");
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
         if (camera != null) {
             camera.stopPreview();
         }
-		//camera.release();
+        //camera.release();
         //camera = null;
-	}
+    }
 
-	void ledOn() {
+    void ledOn() {
 //        if(mSurfaceView.getVisibility() != View.VISIBLE) {
 //            camera = Camera.open();
 //        }
-		Parameters params = camera.getParameters();
-        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-		camera.setParameters(params);
-        //Log.i(TAG, ""+getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH));
-	}
-	
-	void ledOff() {
         Parameters params = camera.getParameters();
-		params.setFlashMode(Parameters.FLASH_MODE_OFF);
-		camera.setParameters(params);
+        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+        camera.setParameters(params);
+    }
+
+    void ledOff() {
+        Parameters params = camera.getParameters();
+        params.setFlashMode(Parameters.FLASH_MODE_OFF);
+        camera.setParameters(params);
 //        if(mSurfaceView.getVisibility() != View.VISIBLE) {
 //            camera.release();
 //        }
     }
-	void ledflash() {
-		Parameters params = camera.getParameters();
-		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-		camera.setParameters(params);
-		params.setFlashMode(Parameters.FLASH_MODE_OFF);
-		camera.setParameters(params);
-	}
 
-	OnClickListener mVisibleListener = new OnClickListener() {
-		public void onClick(View v) {
-			if (((ToggleButton) v).isChecked()) {
-				mVictimContainer.setVisibility(View.VISIBLE);
-			} else {
-				mVictimContainer.setVisibility(View.GONE);
-			}
-		}
-	};
+    void ledflash() {
+        Parameters params = camera.getParameters();
+        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+        camera.setParameters(params);
+        params.setFlashMode(Parameters.FLASH_MODE_OFF);
+        camera.setParameters(params);
+    }
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-	}
+    OnClickListener mVisibleListener = new OnClickListener() {
+        public void onClick(View v) {
+            if (((ToggleButton) v).isChecked()) {
+                mVictimContainer.setVisibility(View.VISIBLE);
+            } else {
+                mVictimContainer.setVisibility(View.GONE);
+            }
+        }
+    };
 
-	@Override
-	public void onSensorChanged(SensorEvent event) {
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
             if (toggleButtonScanner.isChecked()) {
                 if (Math.abs(event.values[1] + event.values[2]) > 5) {
@@ -424,8 +421,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
         if (toggleButtonSensors.isChecked()) {
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-    //            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
-    //            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
+                //            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
+                //            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
                 magnetPlot.addEvent(event);
             }
             if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
@@ -443,21 +440,21 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
-    protected void onResume () {
-		super.onResume();
+    protected void onResume() {
+        super.onResume();
 //        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
         camera = Camera.open();
     }
 
     private void registerSensors() {
-        for (Sensor sensor: sensors) {
+        for (Sensor sensor : sensors) {
             mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
         }
     }
 
     protected void onPause() {
-		super.onPause();
+        super.onPause();
         unregisterSensors();
         camera.stopPreview();
         camera.release();
@@ -465,7 +462,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void unregisterSensors() {
-        for (Sensor sensor: sensors) {
+        for (Sensor sensor : sensors) {
             mSensorManager.unregisterListener(this, sensor);
         }
     }

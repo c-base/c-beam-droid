@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -260,7 +259,6 @@ public class CreactivActivity extends RingActivity implements
     }
 
     private void logActivity() {
-        Log.i("FOO", activity_text.getText().toString());
         c_beam.logactivity(activity_text.getText().toString(), activity_ap.getText().toString());
     }
 
