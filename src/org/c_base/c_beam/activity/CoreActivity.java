@@ -1,13 +1,11 @@
 package org.c_base.c_beam.activity;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,14 +14,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.ActionBar;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 import org.c_base.c_beam.fragment.RinginfoFragment;
-import org.c_base.c_beam.fragment.UserListFragment;
 
 import java.util.ArrayList;
 

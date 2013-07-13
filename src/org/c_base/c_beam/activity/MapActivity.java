@@ -1,15 +1,11 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,8 +14,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
 @SuppressLint("NewApi")
 public class MapActivity extends C_beamActivity implements

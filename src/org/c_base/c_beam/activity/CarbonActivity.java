@@ -1,38 +1,33 @@
 package org.c_base.c_beam.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.*;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.ToggleButton;
-import com.actionbarsherlock.app.ActionBar;
+
 import com.actionbarsherlock.view.Menu;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.*;
-import org.c_base.c_beam.util.Helper;
+import org.c_base.c_beam.fragment.RinginfoFragment;
+import org.c_base.c_beam.fragment.UserListFragment;
 
 import java.util.ArrayList;
 

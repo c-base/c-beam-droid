@@ -1,10 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Mission;
-import org.c_base.c_beam.util.Helper;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -19,6 +14,11 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.util.Helper;
 
 public class MissionDetailActivity extends C_beamActivity implements OnClickListener {
 	protected static final String TAG = "MissionActivity";

@@ -23,7 +23,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
 import com.actionbarsherlock.app.SherlockActivity;
+
 import org.c_base.c_beam.util.Helper;
 
 // Need the following import to get access to the app resources, since this

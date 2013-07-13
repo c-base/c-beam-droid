@@ -272,7 +272,7 @@ public class C_beam {
             eventList.add(new Event(item));
         }
         if (eventList.size() == 0) {
-//			eventList.add(new Event(Resources.getSystem().getString(org.c_base.c_beam.R.string.no_events)));
+			//eventList.add(new Event(activity.getString(R.string.no_events)));
             eventList.add(new Event("fu:r heute sind keine events eingetragen"));
         }
         this.events = eventList;

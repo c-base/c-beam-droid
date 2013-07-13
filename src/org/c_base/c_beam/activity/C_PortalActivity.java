@@ -1,9 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.fragment.ArrayListFragment;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
-
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -17,8 +13,11 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.fragment.ArrayListFragment;
+import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
 public class C_PortalActivity extends C_beamActivity implements ActionBar.TabListener {
 

@@ -1,39 +1,16 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.domain.Mission;
-import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.ActivitylogFragment;
-import org.c_base.c_beam.fragment.MissionListFragment;
-import org.c_base.c_beam.fragment.StatsFragment;
-import org.c_base.c_beam.util.Helper;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,11 +19,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.view.Menu;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.Mission;
+import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.fragment.ActivitylogFragment;
+import org.c_base.c_beam.fragment.MissionListFragment;
+import org.c_base.c_beam.fragment.StatsFragment;
+
+import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class MissionActivity extends RingActivity implements

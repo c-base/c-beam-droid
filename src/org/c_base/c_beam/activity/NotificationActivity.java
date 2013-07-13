@@ -1,12 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.Notification;
-import org.c_base.c_beam.fragment.NotificationListFragment;
-import org.c_base.c_beam.util.NotificationsDataSource;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,6 +11,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.actionbarsherlock.view.Menu;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.Notification;
+import org.c_base.c_beam.fragment.NotificationListFragment;
+import org.c_base.c_beam.util.NotificationsDataSource;
+
+import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class NotificationActivity extends C_beamActivity implements OnClickListener {

@@ -1,16 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.ResourceBundle;
-
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.C_outListFragment;
-import org.c_base.c_beam.fragment.UserListFragment;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,8 +11,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -31,9 +18,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.fragment.C_outListFragment;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class C_outActivity extends C_beamActivity {
 	C_beam c_beam = C_beam.getInstance();

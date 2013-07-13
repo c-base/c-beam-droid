@@ -1,17 +1,25 @@
 package org.c_base.c_beam.activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.nfc.NfcAdapter;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ToggleButton;
 
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.*;
+import com.actionbarsherlock.view.Menu;
 
-import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
@@ -19,7 +27,6 @@ import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
-import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
@@ -29,39 +36,10 @@ import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
 import org.c_base.c_beam.fragment.RinginfoFragment;
 import org.c_base.c_beam.fragment.UserListFragment;
-import org.c_base.c_beam.util.Helper;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.net.wifi.WifiManager;
-import android.nfc.NfcAdapter;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.StrictMode;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import java.util.ArrayList;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.viewpagerindicator.TitlePageIndicator;
-
-import static org.c_base.c_beam.domain.C_beam.*;
+import static org.c_base.c_beam.domain.C_beam.getInstance;
 
 @SuppressLint("NewApi")
 public class MainActivity extends RingActivity {

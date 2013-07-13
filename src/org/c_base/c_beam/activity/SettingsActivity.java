@@ -1,11 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.GCMManager;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.User;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -13,6 +7,12 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
+import org.c_base.c_beam.GCMManager;
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.User;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 	

@@ -1,6 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 /**

@@ -1,10 +1,10 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.R;
-
 import android.os.Bundle;
 
 import com.actionbarsherlock.view.Menu;
+
+import org.c_base.c_beam.R;
 
 public class EventActivity extends C_beamActivity {
 

@@ -1,19 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.androidplot.xy.XYPlot;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.ccorder.DrawOnTop;
-import org.c_base.c_beam.ccorder.Scanbar;
-import org.c_base.c_beam.ccorder.SensorPlot;
-import org.c_base.c_beam.ccorder.TouchSurfaceView;
-
-import com.actionbarsherlock.view.Menu;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -33,9 +19,9 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,7 +29,20 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.actionbarsherlock.view.Menu;
+import com.androidplot.xy.XYPlot;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.ccorder.DrawOnTop;
+import org.c_base.c_beam.ccorder.Scanbar;
+import org.c_base.c_beam.ccorder.SensorPlot;
+import org.c_base.c_beam.ccorder.TouchSurfaceView;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {

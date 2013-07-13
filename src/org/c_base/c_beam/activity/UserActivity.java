@@ -1,13 +1,7 @@
 package org.c_base.c_beam.activity;
 
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.domain.User;
-
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TableLayout;
@@ -15,8 +9,9 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.domain.User;
 
 public class UserActivity extends C_beamActivity {
 	C_beam c_beam = C_beam.getInstance();

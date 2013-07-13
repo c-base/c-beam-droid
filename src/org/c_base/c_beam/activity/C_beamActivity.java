@@ -1,29 +1,28 @@
 package org.c_base.c_beam.activity;
 
-import android.os.AsyncTask;
-import android.util.Log;
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.fragment.AboutDialogFragment;
-import org.c_base.c_beam.util.Helper;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.fragment.AboutDialogFragment;
+import org.c_base.c_beam.util.Helper;
 
 public class C_beamActivity extends SherlockFragmentActivity {
 	ActionBar actionBar;
