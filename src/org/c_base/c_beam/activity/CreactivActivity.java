@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /**
  * Created by smile on 2013-05-31.
  */
-public class CreactivActivity  extends RingActivity implements
+public class CreactivActivity extends RingActivity implements
         View.OnClickListener {
     private static final int MISSIONLIST_FRAGMENT = 0;
     private static final int STATS_FRAGMENT = 2;
@@ -54,11 +54,6 @@ public class CreactivActivity  extends RingActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (android.os.Build.VERSION.SDK_INT > 9) {
-//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//            StrictMode.setThreadPolicy(policy);
-//        }
 
         setContentView(R.layout.activity_creactiv);
 
@@ -87,9 +82,6 @@ public class CreactivActivity  extends RingActivity implements
             tvAp.setHeight(0);
         }
 
-        //		TextView labelAp = (TextView) findViewById(R.id.label_ap);
-        //		Helper.setFont(this, labelAp);
-
         activity_text = (EditText) findViewById(R.id.edit_log_activity);
         activity_ap = (EditText) findViewById(R.id.edit_log_activity_ap);
         TextWatcher tw = new TextWatcher() {
@@ -104,7 +96,6 @@ public class CreactivActivity  extends RingActivity implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //		    	  enableSubmitIfReady();
             }
         };
         activity_text.addTextChangedListener(tw);
@@ -113,8 +104,6 @@ public class CreactivActivity  extends RingActivity implements
         button_log_activity = (Button) findViewById(R.id.button_log_activity);
         button_log_activity.setOnClickListener(this);
         button_log_activity.setEnabled(false);
-
-
 
         initializeBroadcastReceiver();
     }
@@ -136,29 +125,29 @@ public class CreactivActivity  extends RingActivity implements
 
         ArrayList<User> userList = c_beam.getUsers();
         ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
-        for (User user: userList) {
-            if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+        for (User user : userList) {
+            if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
-                    if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp()+" AP");
+                    if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(user.getAp() + " AP");
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
                 }
             }
         }
-        if (missions.isAdded()){
+        if (missions.isAdded()) {
             ArrayList<Mission> missionList = new ArrayList<Mission>();
             missionList = c_beam.getMissions();
             missions.clear();
-            for(int i=0; i<missionList.size();i++)
+            for (int i = 0; i < missionList.size(); i++)
                 missions.addItem(missionList.get(i));
         }
-        if(stats.isAdded()) {
+        if (stats.isAdded()) {
             stats.clear();
-            for(User user: c_beam.getStats())
+            for (User user : c_beam.getStats())
                 stats.addItem(user);
         }
         activitylog.updateLog(c_beam.getActivityLog());
@@ -166,6 +155,7 @@ public class CreactivActivity  extends RingActivity implements
 
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] pages;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
             pages = new Fragment[getCount()];
@@ -178,11 +168,11 @@ public class CreactivActivity  extends RingActivity implements
             // below) wit    private static final int ACTIVITYLOG_FRAGMENT = 1;h the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if(position == MISSIONLIST_FRAGMENT) {
+                if (position == MISSIONLIST_FRAGMENT) {
                     fragment = new MissionListFragment();
-                } else if(position == STATS_FRAGMENT) {
+                } else if (position == STATS_FRAGMENT) {
                     fragment = new StatsFragment();
-                } else if(position == ACTIVITYLOG_FRAGMENT) {
+                } else if (position == ACTIVITYLOG_FRAGMENT) {
                     fragment = new ActivitylogFragment();
                 } else if (position == RINGINFO_FRAGMENT) {
                     fragment = new RinginfoFragment("creactiv");
@@ -249,7 +239,6 @@ public class CreactivActivity  extends RingActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_log_activity: {
-                //			Button b = (Button) view;
                 showLogActivityDialog();
                 break;
             }
@@ -271,11 +260,8 @@ public class CreactivActivity  extends RingActivity implements
     }
 
     private void logActivity() {
-//		String activity_text = ((EditText) findViewById(R.id.edit_log_activity)).getText().toString();
         Log.i("FOO", activity_text.getText().toString());
         c_beam.logactivity(activity_text.getText().toString(), activity_ap.getText().toString());
-        // TODO Auto-generated method stub
-
     }
 
 }
