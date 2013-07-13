@@ -32,7 +32,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -50,6 +49,11 @@ import java.util.Calendar;
  * Created by smile on 2013-05-31.
  */
 public class RingActivity extends C_beamActivity {
+
+    enum RING {
+        CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
+    }
+
     private static final int threadDelay = 5000;
     private static final int firstThreadDelay = 100;
     private static final String TAG = "RingActivity";
@@ -92,11 +96,9 @@ public class RingActivity extends C_beamActivity {
 
     protected void setupCbeamArea() {
         mCbeamArea = findViewById(R.id.cbeam_area);
-//        setupViewPager();
         setupButtons();
         setupAPDisplay();
         setupNavigationDrawer();
-        //		Helper.setButtonStyle((ViewGroup) mCbeamArea);
     }
 
     protected void setupButtons() {
@@ -131,12 +133,9 @@ public class RingActivity extends C_beamActivity {
                 startC_mapsActivity();
             }
         });
-
-        //setupRingButtons();
     }
 
     private void startActivity(Class activityClass) {
-        Log.i(TAG, "startActivity");
         Intent myIntent = new Intent(this, activityClass);
         startActivityForResult(myIntent, 0);
     }
@@ -171,8 +170,6 @@ public class RingActivity extends C_beamActivity {
         Helper.setFont(this, tvAp);
         boolean displayAp = sharedPref.getBoolean(Settings.DISPLAY_AP, true);
         if (!displayAp || tvAp.getText().equals("0 AP")) {
-            //			tvUsername.setHeight(0);
-            //			tvAp.setHeight(0);
             tvAp.setVisibility(View.GONE);
             tvUsername.setVisibility(View.GONE);
         }
@@ -203,7 +200,6 @@ public class RingActivity extends C_beamActivity {
 
     private void startNetworkingThreads() {
         c_beam.startThread();
-        //updateLists();
     }
 
     protected void stopNetworkingThreads() {
@@ -211,13 +207,11 @@ public class RingActivity extends C_beamActivity {
     }
 
     private void showOfflineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         mCbeamArea.setVisibility(View.GONE);
         mOfflineArea.setVisibility(View.VISIBLE);
     }
 
     private void showOnlineView() {
-        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mOfflineArea.setVisibility(View.GONE);
         mCbeamArea.setVisibility(View.VISIBLE);
     }
@@ -314,20 +308,6 @@ public class RingActivity extends C_beamActivity {
         c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
     }
 
-    private void toggleRings(Boolean state) {
-        Log.i(TAG, "toggleRings(" + state + ")");
-        if (state) {
-            findViewById(R.id.ringbuttons).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.ringbuttons).setVisibility(View.GONE);
-        }
-    }
-
-    private void startClampActivity() {
-        Intent myIntent = new Intent(getApplicationContext(), ClampActivity.class);
-        startActivityForResult(myIntent, 0);
-    }
-
     protected void updateLists() {
 
     }
@@ -393,6 +373,7 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -441,8 +422,6 @@ public class RingActivity extends C_beamActivity {
             switchToOfflineMode();
         }
     }
-
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -577,7 +556,6 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
-
     protected void initializeBroadcastReceiver() {
         mWifiReceiver = new WifiBroadcastReceiver();
         mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -602,8 +580,6 @@ public class RingActivity extends C_beamActivity {
             TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
             Ring r = items.get(position);
 
-            //Helper.setListItemStyle(view);
-            //Helper.setFont(getActivity(), view);
             textView.setText(r.getName());
 
             ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);

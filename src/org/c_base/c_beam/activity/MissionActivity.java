@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,8 +18,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -39,22 +36,12 @@ public class MissionActivity extends RingActivity implements
 	private static final int STATS_FRAGMENT = 2;
 	private static final int ACTIVITYLOG_FRAGMENT = 1;
 
-	private static final int threadDelay = 5000;
-	private static final int firstThreadDelay = 1000;
-	private static final String TAG = "MissionActivity";
-
 	private EditText activity_text;
 	private EditText activity_ap;
 	private Button button_log_activity;
 
-	private static final boolean debug = false;
-
-	SectionsPagerAdapter mSectionsPagerAdapter;
-
-	ViewPager mViewPager;
-	EditText text;
-
-	protected Runnable fred;
+    ViewPager mViewPager;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,18 +92,6 @@ public class MissionActivity extends RingActivity implements
 		}
 
 	}
-	public void toggleLogin() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.toggleLogin(sharedPref.getString(Settings.USERNAME, "bernd"));
-	}
-	public void login() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
-	}
-	public void logout() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
-	}
 
 	public void updateLists() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -143,20 +118,6 @@ public class MissionActivity extends RingActivity implements
 				stats.addItem(user);
 		}
 		activitylog.updateLog(c_beam.getActivityLog());
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			menu.findItem(R.id.menu_c_corder).setVisible(false);
-		}
-		// Hide some menu items when not connected to the crew network
-		menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-		menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-
-		return true;
 	}
 
 	/**

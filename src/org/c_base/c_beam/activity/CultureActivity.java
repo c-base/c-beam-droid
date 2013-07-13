@@ -1,7 +1,6 @@
 package org.c_base.c_beam.activity;
 
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -10,12 +9,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -36,18 +33,10 @@ public class CultureActivity extends RingActivity implements
     private static final int EVENTS_MONTH_FRAGMENT = 2;
     private static final int RINGINFO_FRAGMENT = 1;
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 1000;
-    private static final String TAG = "CultureActivity";
-
-    private static final boolean debug = false;
-
     ArrayList<Event> eventList;
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
     ViewPager mViewPager;
-    EditText text;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,20 +96,6 @@ public class CultureActivity extends RingActivity implements
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            menu.findItem(R.id.menu_c_corder).setVisible(false);
-        }
-        // Hide some menu items when not connected to the crew network
-        menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-
-        return true;
-    }
-
-    @Override
     public void onTabSelected(ActionBar.Tab tab,
                               FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
@@ -138,10 +113,6 @@ public class CultureActivity extends RingActivity implements
                                 FragmentTransaction fragmentTransaction) {
     }
 
-    /**
-     * A {@link android.support.v4.app.FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] pages;
         public SectionsPagerAdapter(FragmentManager fm) {

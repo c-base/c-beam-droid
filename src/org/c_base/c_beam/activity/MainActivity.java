@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,10 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ToggleButton;
-
-import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -52,30 +48,14 @@ public class MainActivity extends RingActivity {
     private static final int MISSION_FRAGMENT = 3;
     private static final int ACTIVITYLOG_FRAGMENT = 4;
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 100;
-    private static final String TAG = "MainActivity";
-
-    private static final boolean debug = false;
-
     private ArrayList<Article> articleList;
     private ArrayList<Event> eventList;
-
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-
-    private EditText text;
-
     private C_beam c_beam = getInstance();
-
-    protected Runnable fred;
-    private boolean mIsOnline = false;
-
-    private int defaultETA = 30;
     private SharedPreferences sharedPref;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +65,6 @@ public class MainActivity extends RingActivity {
         setContentView(R.layout.activity_main);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
 
         setupOfflineArea();
         setupActionBar();
@@ -93,16 +72,47 @@ public class MainActivity extends RingActivity {
         setupViewPager();
         setupGCM();
 
-        if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processNfcIntent(getIntent());
-            toggleLogin();
-        }
+        checkNfc();
 
         initializeBroadcastReceiver();
     }
 
+
+    protected void checkNfc() {
+
+        if (checkUserName() && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processNfcIntent(getIntent());
+            toggleLogin();
+        }
+    }
+
     void processNfcIntent(Intent intent) {
         System.out.println(intent.getData());
+    }
+
+    private boolean checkUserName() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String defaultUsername = "bernd";
+        String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
+
+        if (user.equals(defaultUsername) || user.length() == 0) {
+            AlertDialog.Builder b = new AlertDialog.Builder(this);
+            b.setTitle(R.string.set_username_title);
+            b.setMessage(R.string.set_username_message);
+            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivityForResult(myIntent, 0);
+                }
+            });
+            b.show();
+            return false;
+        }
+
+        return true;
     }
 
     public void toggleLogin() {
@@ -180,26 +190,6 @@ public class MainActivity extends RingActivity {
                 artefacts.addItem(artefact);
         }
         activitylog.updateLog(c_beam.getActivityLog());
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            menu.findItem(R.id.menu_c_corder).setVisible(false);
-        }
-        // Hide some menu items when not connected to the crew network
-        menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_c_mission).setVisible(mIsOnline);
-        return true;
     }
 
     protected void setupViewPager() {
@@ -291,30 +281,5 @@ public class MainActivity extends RingActivity {
     }
 
 
-
-    private boolean checkUserName() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String defaultUsername = "bernd";
-        String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
-
-        if (user.equals(defaultUsername) || user.length() == 0) {
-            AlertDialog.Builder b = new AlertDialog.Builder(this);
-            b.setTitle(R.string.set_username_title);
-            b.setMessage(R.string.set_username_message);
-            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivityForResult(myIntent, 0);
-                }
-            });
-            b.show();
-            return false;
-        }
-
-        return true;
-    }
 
 }

@@ -1,20 +1,14 @@
 package org.c_base.c_beam.activity;
 
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
@@ -39,18 +33,9 @@ public class ClampActivity extends RingActivity {
     private static final int WWW_CBO_FRAGMENT = 5;
     private static final int RINGINFO_FRAGMENT = 4;
 
-
-    enum RING {
-        CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
-    }
-
     private RING currentRing = RING.CLAMP;
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 1000;
     private static final String TAG = "ClampActivity";
-    private Handler handler = new Handler();
-    protected Runnable fred;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -66,20 +51,9 @@ public class ClampActivity extends RingActivity {
      * The {@link android.support.v4.view.ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private String[] mDrawerItems;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private TypedArray mDrawerImages;
-
-    private WifiBroadcastReceiver mWifiReceiver;
-    private IntentFilter mWifiIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -101,12 +75,6 @@ public class ClampActivity extends RingActivity {
         initializeBroadcastReceiver();
     }
 
-    public void onStart() {
-        Log.i(TAG, "onStart()");
-        super.onStart();
-        startProgress();
-    }
-
     public void updateLists() {
         ArrayList<User> userList = c_beam.getUsers();
         ArrayList<User> onlineList = c_beam.getOnlineList();
@@ -114,13 +82,13 @@ public class ClampActivity extends RingActivity {
         ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         Log.i(TAG, "updateLists()");
-        for (User user: userList) {
-            if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
+        for (User user : userList) {
+            if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
-                    if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp()+" AP");
+                    if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(user.getAp() + " AP");
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }

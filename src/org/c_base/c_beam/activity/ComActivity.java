@@ -1,24 +1,18 @@
 package org.c_base.c_beam.activity;
 
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ToggleButton;
-
-import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
@@ -36,23 +30,10 @@ public class ComActivity extends RingActivity {
     private static final int CIMP_FRAGMENT = 2;
     private static final int RINGINFO_FRAGMENT = 3;
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 1000;
-    private static final String TAG = "CarbonActivity";
-
-    private static final boolean debug = false;
-
     ArrayList<Article> articleList;
-    ArrayList<Event> eventList;
-
-    SectionsPagerAdapter mSectionsPagerAdapter;
 
     ViewPager mViewPager;
-    private Handler handler = new Handler();
-    EditText text;
-
-    protected Runnable fred;
-    private View mInfoArea;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +76,6 @@ public class ComActivity extends RingActivity {
             for(int i=0; i<articleList.size();i++)
                 c_portal.addItem(articleList.get(i));
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            menu.findItem(R.id.menu_c_corder).setVisible(false);
-        }
-        // Hide some menu items when not connected to the crew network
-        menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-
-        return true;
     }
 
     /**

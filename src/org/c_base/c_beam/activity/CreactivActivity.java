@@ -2,12 +2,9 @@ package org.c_base.c_beam.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,12 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.view.Menu;
-
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Article;
-import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
@@ -48,34 +41,15 @@ public class CreactivActivity  extends RingActivity implements
     private static final int ACTIVITYLOG_FRAGMENT = 1;
     private static final int RINGINFO_FRAGMENT = 3;
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 1000;
-    private static final String TAG = "MissionActivity";
-
     private EditText activity_text;
     private EditText activity_ap;
     private Button button_log_activity;
 
-    private static final boolean debug = false;
-
-    ArrayList<Article> articleList;
-    ArrayList<Event> eventList;
-
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
-    private Handler handler = new Handler();
-    EditText text;
-
-    protected Runnable fred;
-    private View mInfoArea;
-    private View mCbeamArea;
-    private boolean mIsOnline = false;
-    private WifiBroadcastReceiver mWifiReceiver;
-    private IntentFilter mWifiIntentFilter;
-
-    TextView tvAp = null;
-    TextView tvUsername = null;
     private ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    private TextView tvAp = null;
+    private TextView tvUsername = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +68,6 @@ public class CreactivActivity  extends RingActivity implements
         setupCbeamArea();
         setupViewPager();
 
-        mInfoArea = findViewById(R.id.info_area);
         TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
 
@@ -191,24 +164,6 @@ public class CreactivActivity  extends RingActivity implements
         activitylog.updateLog(c_beam.getActivityLog());
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            menu.findItem(R.id.menu_c_corder).setVisible(false);
-        }
-        // Hide some menu items when not connected to the crew network
-        menu.findItem(R.id.menu_login).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_logout).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_map).setVisible(mIsOnline);
-        menu.findItem(R.id.menu_c_out).setVisible(mIsOnline);
-
-        return true;
-    }
-
-    /**
-     * A {@link android.support.v4.app.FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] pages;
         public SectionsPagerAdapter(FragmentManager fm) {
