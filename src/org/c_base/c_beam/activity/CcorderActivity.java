@@ -4,7 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -17,7 +21,11 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -27,18 +35,25 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.androidplot.xy.XYPlot;
 
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.ccorder.DrawOnTop;
 import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
+import org.c_base.c_beam.domain.Ring;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,6 +86,15 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private SensorPlot gyroPlot;
     private SensorPlot lightPlot;
 
+    protected String[] mDrawerItems;
+    protected TypedArray mDrawerImages;
+    private ListView mDrawerList;
+
+    protected DrawerLayout mDrawerLayout;
+    protected ActionBarDrawerToggle mDrawerToggle;
+
+    protected CharSequence mTitle;
+
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
     ShutterCallback shutter = new ShutterCallback() {
@@ -99,12 +123,15 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private ToggleButton toggleButtonCam;
     private boolean mustRelease = false;
     private boolean previewOn = false;
+    private SharedPreferences sharedPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_ccorder);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         setupSounds();
         setupSensors();
@@ -114,8 +141,53 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupGrid();
         setupScanBar();
         setupSurfaceView();
+        setupActionBar();
+        setupNavigationDrawer();
+
 
         showWarningMessage();
+    }
+
+    protected void setupNavigationDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
+
+        mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
+        mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
+
+        ArrayList<Ring> mRings = new ArrayList<Ring>();
+        for (int i = 0; i < mDrawerItems.length; i++) {
+            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        }
+
+        mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
+                R.id.drawer_list_item_textview, mRings));
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mTitle = getTitle();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // TODO Auto-generated method stub
+                super.onDrawerOpened(drawerView);
+                actionBar.setTitle(mTitle);
+                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        if (!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
+            mDrawerLayout.openDrawer(Gravity.LEFT);
+        }
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
     }
 
     private void setupSounds() {
@@ -465,6 +537,117 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         for (Sensor sensor : sensors) {
             mSensorManager.unregisterListener(this, sensor);
         }
+    }
+
+    protected class RingAdapter extends ArrayAdapter {
+        private static final String TAG = "UserAdapter";
+        private ArrayList<Ring> items;
+        private Context context;
+
+        @SuppressWarnings("unchecked")
+        public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
+            super(context, itemLayout, textViewResourceId, items);
+            this.context = context;
+            this.items = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final View listview = super.getView(position, convertView, parent);
+
+            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            Ring r = items.get(position);
+
+            textView.setText(r.getName());
+
+            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            b.setImageDrawable(r.getImage());
+            return listview;
+        }
+
+    }
+
+    protected class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position) {
+
+        /*
+        // Create a new fragment and specify the planet to show based on position
+        Fragment fragment = new PlanetFragment();
+        Bundle args = new Bundle();
+        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        fragment.setArguments(args);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+        mDrawer.setItemChecked(position, true);
+        mDrawerLayout.closeDrawer(mDrawer);
+        */
+        setTitle(mDrawerItems[position]);
+
+        switch (position) {
+            case 0:
+                startActivity(ClampActivity.class);
+                break;
+            case 1:
+                startActivity(CarbonActivity.class);
+                break;
+            case 2:
+                startActivity(CcorderActivity.class);
+                break;
+            case 3:
+                startActivity(CreactivActivity.class);
+                break;
+            case 4:
+                startActivity(CultureActivity.class);
+                break;
+            case 5:
+                startActivity(ComActivity.class);
+                break;
+            case 6:
+                startActivity(CoreActivity.class);
+                break;
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle the event for ActionBarDrawerToggle and return true to cancel propagation
+        if (item.getItemId() == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                mDrawerLayout.closeDrawer(mDrawerList);
+            } else {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }
+
+            mDrawerToggle.syncState();
+            return true;
+        }
+        // Handle your other action bar items...
+        return super.onOptionsItemSelected(item);
     }
 
 }

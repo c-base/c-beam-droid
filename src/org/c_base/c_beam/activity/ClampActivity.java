@@ -56,11 +56,6 @@ public class ClampActivity extends RingActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set up the action bar.
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        // Show the Up button in the action bar.
-        //actionBar.setDisplayHomeAsUpEnabled(true);
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
         mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -69,6 +64,7 @@ public class ClampActivity extends RingActivity {
         setupViewPager();
         setupNavigationDrawer();
         setupOfflineArea();
+        setupActionBar();
         setupCbeamArea();
 
         initializeBroadcastReceiver();
@@ -113,7 +109,6 @@ public class ClampActivity extends RingActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         setupViewPagerIndicator(mViewPager);
-//        setupActionBarTabs();
     }
 
     /**

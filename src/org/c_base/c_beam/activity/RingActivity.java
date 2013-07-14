@@ -134,10 +134,6 @@ public class RingActivity extends C_beamActivity {
         });
     }
 
-    private void startActivity(Class activityClass) {
-        Intent myIntent = new Intent(this, activityClass);
-        startActivityForResult(myIntent, 0);
-    }
 
     protected void setupOfflineArea() {
         mOfflineArea = findViewById(R.id.info_area);
@@ -288,7 +284,6 @@ public class RingActivity extends C_beamActivity {
     }
 
     public void toggleLogin() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
             showLogoutDialog();
         } else {

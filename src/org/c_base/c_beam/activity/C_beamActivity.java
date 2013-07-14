@@ -138,6 +138,11 @@ public class C_beamActivity extends SherlockFragmentActivity {
         c_beam.setActivity(this);
     }
 
+    protected void startActivity(Class activityClass) {
+        Intent myIntent = new Intent(this, activityClass);
+        startActivityForResult(myIntent, 0);
+    }
+
     protected class C_beamTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
