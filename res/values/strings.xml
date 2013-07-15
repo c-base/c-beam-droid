@@ -91,13 +91,20 @@
         <item>mission abgebrochen</item>
         <item>huch, verklickt!</item>
     </string-array>
+    <string-array name="login_choices_array">
+        <item>anmelden</item>
+        <item>abmelden</item>
+        <item>abbrechen</item>
+    </string-array>
 
     <string name="pref_font_summ">schriftart</string>
     <string name="pref_font">schriftart der app auswählen</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="title_activity_map">c-maps</string>
-    <string name="pref_fade_users_summ">verblassen entspricht der wahrscheinlichkeit, dass sich $member noch an bord befindet</string>
+    <string name="pref_fade_users_summ">verblassen entspricht der wahrscheinlichkeit, dass sich
+        $member noch an bord befindet
+    </string>
     <string name="pref_fade_users">membernamen verblassen</string>
     <string name="pref_c_theme_summ"></string>
     <string name="pref_c_theme">c-theme aktivieren</string>
@@ -115,7 +122,8 @@
     <string name="pref_password_summ">Your c-base member password</string>
     <string name="title_activity_ccorder">c-corder</string>
     <string name="set_username_title">benutzername setzen</string>
-    <string name="set_username_message">bitte setze den benutzernamen auf deinen membernamen!</string>
+    <string name="set_username_message">bitte setze den benutzernamen auf deinen membernamen!
+    </string>
     <string name="not_in_crew_network">nicht im crew-netz</string>
     <string name="self_destruct_thx">danke für den fisch.</string>
     <string name="self_destruct_in_progress">erde wird abgesprengt, bitte warten…</string>
@@ -125,7 +133,8 @@
     <string name="button_oops">huch, verklickt</string>
     <string name="action_settings">einstellungen</string>
     <string name="pref_stats_enabled">c-game aktiv</string>
-    <string name="pref_stats_enabled_summ">legt fest, ob AP für missionen gesammelt werden sollen.</string>
+    <string name="pref_stats_enabled_summ">legt fest, ob AP für missionen gesammelt werden sollen.
+    </string>
     <string name="title_activity_mission_detail">c-mission</string>
     <string name="menu_c_mission">c-mission</string>
     <string name="menu_ab_out">ab_out</string>
@@ -134,7 +143,7 @@
     <string name="button_c_maps">c-maps</string>
     <string name="label_about">about</string>
     <string name="about_text">
-<![CDATA[
+        <![CDATA[
 		<p>
 		<strong>c-beam</strong> v%s<br>
 		by smile, cketti, keyboardsurfer ät c-base.org
@@ -155,27 +164,32 @@
     <string name="no_events">fu:r heute sind keine events eingetragen</string>
     <string name="c_corder_warning_title">c-corder reconstruction beta</string>
     <string name="c_corder_warning_text">
-<![CDATA[
+        <![CDATA[
 		<p>der c-corder befindet sich noch in der fru:hen betaphase der reconstruction und unterstu:tct 
 		viele der urpsru:nglichen functionen noch nicht.</p>
 		<p><font color=\"red\">die wichtigste function ist aber bereits implementiert: leersaugen des accus.</font></p>
 		<p>dance fu:r die beachtung der sicherheitshinweise.</p>
 		]]>
-	</string>
-	<string name="pref_expert_settings">debug</string>
-	<string name="pref_debug_enabled">debug-modus</string>
-	<string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein</string>
-	<string name="pref_c_beam_url">c-beam url</string>
-	<string name="pref_c_beam_url_summ">diese einstellung sollte nur vera:ndert werden, wenn man weiss, was man tut.</string>
-	<string name="pref_default_eta">ETA</string>
-	<string name="pref_default_eta_summ">standardeinstellung für den ETA in minuten</string>
-	<string name="confirm_eta">ETA wird auf %s gesetzt.</string>
-	<string name="confirm_reset_eta">ETA wird gelo:scht.</string>
-	<string name="eta_failure">fehler beim setzen des ETA. bitte versuchen sie es spa:ter noch einmal.</string>
-	<string name="eta_set">ETA wurde erfolgreich gesetzt.</string>
-	<string name="eta_removed">ETA wurde erfolgreich entfernt.</string>
-	<string name="button_set_eta">ETA setzen</string>
-	<string name="button_reset_eta">ETA lo:schen</string>
+    </string>
+    <string name="pref_expert_settings">debug</string>
+    <string name="pref_debug_enabled">debug-modus</string>
+    <string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein
+    </string>
+    <string name="pref_c_beam_url">c-beam url</string>
+    <string name="pref_c_beam_url_summ">diese einstellung sollte nur vera:ndert werden, wenn man
+        weiss, was man tut.
+    </string>
+    <string name="pref_default_eta">ETA</string>
+    <string name="pref_default_eta_summ">standardeinstellung für den ETA in minuten</string>
+    <string name="confirm_eta">ETA wird auf %s gesetzt.</string>
+    <string name="confirm_reset_eta">ETA wird gelo:scht.</string>
+    <string name="eta_failure">fehler beim setzen des ETA. bitte versuchen sie es spa:ter noch
+        einmal.
+    </string>
+    <string name="eta_set">ETA wurde erfolgreich gesetzt.</string>
+    <string name="eta_removed">ETA wurde erfolgreich entfernt.</string>
+    <string name="button_set_eta">ETA setzen</string>
+    <string name="button_reset_eta">ETA lo:schen</string>
     <string name="button_show_controls">c-ontrols anzeigen</string>
     <string name="button_creactiv">creactiv</string>
     <string name="button_core">core</string>
@@ -263,4 +277,8 @@
     </string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="toggle_login_title">an-/abmelden</string>
+    <string name="activitylogger_input_activity">activita:t</string>
+    <string name="activitylogger_label_ap">AP:</string>
+    <string name="activitylogger_button_log_activity">loggen</string>
 </resources>
