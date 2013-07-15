@@ -260,6 +260,27 @@ public class RingActivity extends C_beamActivity {
         builder.create().show();
     }
 
+    protected void showLoginLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.toggle_login_title);
+        builder.setItems(R.array.login_choices_array, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                switch (whichButton) {
+                    case 0: // mission complete
+                        login();
+                        break;
+                    case 1: // mission cancelled
+                        logout();
+                        break;
+                    case 2: // oops
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
     protected void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm_logout);
