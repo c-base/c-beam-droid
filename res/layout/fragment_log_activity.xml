@@ -14,9 +14,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="activita:t" >
+            android:hint="@string/activitylogger_input_activity">
 
-            <requestFocus />
+        <requestFocus />
         </EditText>
 
         <TextView
@@ -24,9 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="AP:" />
+            android:text="@string/activitylogger_label_ap"/>
 
-        <EditText
+     <EditText
             android:id="@+id/editText2"
             android:layout_width="46dp"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="loggen" />
+            android:text="@string/activitylogger_button_log_activity"/>
 
-    </LinearLayout>
+ </LinearLayout>
 </LinearLayout>
