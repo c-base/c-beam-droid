@@ -115,12 +115,15 @@ public class MainActivity extends RingActivity {
     }
 
     public void toggleLogin() {
+        showLoginLogoutDialog();
+        /*
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
             showLogoutDialog();
         } else {
             showLoginDialog();
         }
+        */
     }
 
     public void updateLists() {
