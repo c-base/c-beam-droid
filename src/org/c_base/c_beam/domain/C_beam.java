@@ -808,17 +808,15 @@ public class C_beam {
             String result = "failed";
             try {
                 if (params.length == 1) {
-                    result = c_beamClient.callJSONObject(params[0]).getString("result");
+                    result = c_beamClient.callString(params[0]);
                 } else if (params.length == 2) {
-                    result = c_beamClient.callJSONObject(params[0], params[1]).getString("result");
+                    result = c_beamClient.callString(params[0], params[1]);
                 } else if (params.length == 3) {
                     result = c_beamClient.callString(params[0], params[1], params[2]);
                 } else if (params.length == 4) {
                     result = c_beamClient.callString(params[0], params[1], params[2], params[3]);
                 }
             } catch (JSONRPCException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
