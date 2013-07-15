@@ -114,11 +114,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:context=".MainActivity"
-                    android:layout_above="@+id/main_buttons"
                     android:layout_below="@+id/ap_area"
-                    android:layout_toLeftOf="@+id/ringbuttons">
+                    android:layout_toLeftOf="@+id/ringbuttons"
+                    android:layout_above="@+id/fragment">
             </android.support.v4.view.ViewPager>
 
+            <fragment
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="org.c_base.c_beam.fragment.MainButtonFragment"
+                    android:id="@+id/fragment"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
+                    />
+
+            <!--
             <RelativeLayout
                     android:id="@+id/main_buttons"
                     android:layout_width="wrap_content"
@@ -126,7 +137,8 @@
                     android:background="@color/black_overlay"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentLeft="true">
+                    android:layout_alignParentLeft="true"
+                    android:visibility="gone">
 
                 <Button
                         android:id="@+id/buttonC_out"
@@ -170,6 +182,7 @@
 
 
             </RelativeLayout>
+               -->
 
         </RelativeLayout>
 
