@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/main_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="48dip"
+                android:background="@color/black_overlay">
+
+    <Button
+            android:id="@+id/buttonC_out"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_tts"
+            android:layout_alignParentRight="true"/>
+
+    <Button
+            android:id="@+id/button_c_maps"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_c_maps"
+            android:layout_toLeftOf="@+id/buttonC_out"
+            android:visibility="gone"/>
+
+    <ToggleButton
+            android:id="@+id/toggleLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:textOff="@string/offline"
+            android:textOn="@string/online"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/button_c_mission"/>
+
+    <Button
+            android:id="@+id/button_c_mission"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_c_mission"
+            android:layout_toLeftOf="@+id/button_c_maps"/>
+
+
+</RelativeLayout>
+
