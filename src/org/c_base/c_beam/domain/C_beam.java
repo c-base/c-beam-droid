@@ -637,14 +637,10 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_stats_enabled", user, stats_enabled).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callJSONObject("set_stats_enabled", user, stats_enabled).getString("result");
+            callAsync("set_stats_enabled", user, "" + stats_enabled);
+            getCurrentUser().setStats_enabled(stats_enabled);
         }
         return result;
     }
@@ -679,15 +675,11 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                //String result = c_beamClient.callString("set_push_missions", user, newValue);
-                result = c_beamClient.callJSONObject("set_push_missions", user, newValue).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            //String result = c_beamClient.callString("set_push_missions", user, newValue);
+            //result = c_beamClient.callJSONObject("set_push_missions", user, newValue).getString("result");
+            callAsync("set_push_missions", user, "" + newValue);
+            getCurrentUser().setPush_missions(newValue);
         }
         return result;
     }
@@ -696,14 +688,10 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_push_boarding", user, newValue).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callJSONObject("set_push_boarding", user, newValue).getString("result");
+            callAsync("set_push_boarding", user, "" + newValue);
+            getCurrentUser().setPush_boarding(newValue);
         }
         return result;
     }
@@ -712,14 +700,10 @@ public class C_beam {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
-        try {
-            if (isInCrewNetwork()) {
-                result = c_beamClient.callJSONObject("set_push_eta", user, newValue).getString("result");
-            }
-        } catch (JSONRPCException e) {
-            result = "JSONRPCException";
-        } catch (JSONException e) {
-            result = "JSONException";
+        if (isInCrewNetwork()) {
+            //result = c_beamClient.callJSONObject("set_push_eta", user, newValue).getString("result");
+            callAsync("set_push_eta", user, "" + newValue);
+            getCurrentUser().setPush_eta(newValue);
         }
         return result;
     }
