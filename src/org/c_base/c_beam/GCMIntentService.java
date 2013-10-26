@@ -70,13 +70,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			nuText = timestamp + ": " + title + ": " + text;
 			text = nuText;
 		} else if (title.equals("ETA")) {
-			Matcher matcher = ETA_PATTERN.matcher(text);
-			if (matcher.matches()) {
-				String member = matcher.group(1);
-				String eta = matcher.group(2);
-
-				NotificationBroadcast.sendEtaBroadcast(context, member, eta, today);
-			}
+			sendEtaBroadcast(context, today, text);
 
 			id = 1;
 			nuText = timestamp + ": " + title + " " + text;
@@ -182,6 +176,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 			e.printStackTrace();
 		}
 		datasource.close();
+	}
+
+	private void sendEtaBroadcast(Context context, Date today, String text) {
+		Matcher matcher = ETA_PATTERN.matcher(text);
+		if (matcher.matches()) {
+			String member = matcher.group(1);
+			String eta = matcher.group(2).replaceFirst("^(\\d{2})(\\d{2})$", "$1:$2");
+
+			NotificationBroadcast.sendEtaBroadcast(context, member, eta, today);
+		}
 	}
 
 	@Override
