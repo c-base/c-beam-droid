@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.Notification;
+import org.c_base.c_beam.extension.NotificationBroadcast;
 import org.c_base.c_beam.fragment.NotificationListFragment;
 import org.c_base.c_beam.util.NotificationsDataSource;
 
@@ -35,10 +36,10 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		super.onCreate(savedInstanceState);
 
 		datasource = new NotificationsDataSource(this);
-	    datasource.open();
-	    
-	    notificationList = datasource.getAllNotifications();
-		
+		datasource.open();
+
+		notificationList = datasource.getAllNotifications();
+
 		if (notificationList.size() == 0) {
 			notificationList.add(new Notification(Notification.NO_MESSAGES));
 		}
@@ -50,13 +51,13 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		setContentView(R.layout.activity_notification);
 
 		mNotificationArea = findViewById(R.id.notification_area);
-		
+
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.add(R.id.notifications, new NotificationListFragment(notificationList));
 		ft.commit();
 
 		setupActionBar();
-		
+
 		Button buttonDeleteNotifications = (Button) findViewById(R.id.button_delete_notifications);
 		buttonDeleteNotifications.setOnClickListener(new OnClickListener() {
 
@@ -65,6 +66,8 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 				showConfirmation();
 			}
 		});
+
+		NotificationBroadcast.sendReadBroadcast(this);
 	}
 
 	public void onStart() {
@@ -106,7 +109,7 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 	protected void onStop() {
 		super.onStop();
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		// do nothing on click
