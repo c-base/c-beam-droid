@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -15,6 +17,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.c_base.c_beam.activity.NotificationActivity;
+import org.c_base.c_beam.extension.NotificationBroadcast;
 import org.c_base.c_beam.util.NotificationsDataSource;
 
 import android.app.Notification;
@@ -30,8 +33,12 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 
 public class GCMIntentService extends GCMBaseIntentService {
+	private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
+
 	private static HashMap<String,Notification> notifications = new HashMap<String,Notification>();
+
 	private NotificationsDataSource datasource;
+
 
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -46,7 +53,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context context, Intent arg1) {
 		DateFormat df = new SimpleDateFormat("HH:mm");
-		Date today = Calendar.getInstance().getTime();        
+		Date today = Calendar.getInstance().getTime();
 		String timestamp = df.format(today);
 		// TODO Auto-generated method stub
 		String title = arg1.getExtras().get("title").toString();
@@ -57,10 +64,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 		int id = (int) (Math.random()*10000000)+64;
 		ArrayList<String> lines = new ArrayList<String>();
 		if (title.equals("now boarding")) {
+			NotificationBroadcast.sendBoardingBroadcast(context, text, today);
+
 			id = 1;
 			nuText = timestamp + ": " + title + ": " + text;
 			text = nuText;
 		} else if (title.equals("ETA")) {
+			sendEtaBroadcast(context, today, text);
+
 			id = 1;
 			nuText = timestamp + ": " + title + " " + text;
 			text = nuText;
@@ -81,7 +92,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			sr.setSeed(keyStart);
 			kgen.init(256, sr); // 192 and 256 bits may not be available
 			SecretKey skey = kgen.generateKey();
-			byte[] key = skey.getEncoded();    
+			byte[] key = skey.getEncoded();
 			try {
 				byte[] decryptedData = decrypt(key,text.getBytes());
 				Log.i("Decrypt", ""+decryptedData);
@@ -113,7 +124,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		//	    mBuilder.setTicker(text);
 		//		mBuilder.setLights(0x00ffff00, 1000, 1000);
 		//	    mBuilder.setDeleteIntent(PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT));
-		//	 
+		//
 		//		mBuilder.setContentIntent(pIntent);
 		//		RemoteViews expandedView = new RemoteViews(getApplicationContext().getPackageName(), R.layout.expanded_view);
 		//		String boardingText = "";
@@ -167,6 +178,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		datasource.close();
 	}
 
+	private void sendEtaBroadcast(Context context, Date today, String text) {
+		Matcher matcher = ETA_PATTERN.matcher(text);
+		if (matcher.matches()) {
+			String member = matcher.group(1);
+			String eta = matcher.group(2).replaceFirst("^(\\d{2})(\\d{2})$", "$1:$2");
+
+			NotificationBroadcast.sendEtaBroadcast(context, member, eta, today);
+		}
+	}
+
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
@@ -191,6 +212,5 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onUnregistered(Context context, String arg1) {
 		// TODO Auto-generated method stub
 		Log.i("GCM Unreg", arg1);
-	} 
-
+	}
 }

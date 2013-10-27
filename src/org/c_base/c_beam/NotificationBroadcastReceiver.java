@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import org.c_base.c_beam.extension.NotificationBroadcast;
+
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 //	GCMIntentService gcmIntentService = null;
 
@@ -13,6 +15,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         System.out.println(action);
         if (action.equals("notification_cancelled")) {
 //        	NotificationActivity.clear();
+            NotificationBroadcast.sendCancelledBroadcast(context);
         }
     }
 

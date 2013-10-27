@@ -26,6 +26,12 @@
 
     <uses-permission android:name="org.c_base.c_beam.permission.C2D_MESSAGE" />
 
+    <permission
+            android:name="org.c_base.c_beam.permission.NOTIFICATION"
+            android:protectionLevel="normal" />
+
+    <uses-permission android:name="org.c_base.c_beam.permission.NOTIFICATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -121,7 +127,7 @@
         <service android:name="org.c_base.c_beam.GCMIntentService" />
 
         <!--
-        Currently not working 
+        Currently not working
         <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
