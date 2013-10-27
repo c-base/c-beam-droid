@@ -44,7 +44,7 @@
     <string name="pref_push_eta">push ETA</string>
     <string name="pref_display_ap">AP anzeigen</string>
     <string name="pref_display_ap_summ"></string>
-    <string name="c_beam_rpc_url">http://10.0.1.27:4254/rpc/</string>
+    <string name="c_beam_rpc_url">http://c-beam.cbrp3.c-base.org:4254/rpc/</string>
     <string name="menu_login">einloggen</string>
     <string name="menu_logout">ausloggen</string>
     <string name="title_activity_main_activity2">MainActivity2</string>

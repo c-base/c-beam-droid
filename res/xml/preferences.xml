@@ -97,7 +97,7 @@
         android:persistent="false"
         android:title="@string/pref_expert_settings" >
         <EditTextPreference
-            android:defaultValue="http://10.0.1.27:4254/rpc/"
+            android:defaultValue="http://c-beam.cbrp3.c-base.org:4254/rpc/"
             android:key="pref_c_beam_url"
             android:summary="@string/pref_c_beam_url_summ"
             android:title="@string/pref_c_beam_url" />
