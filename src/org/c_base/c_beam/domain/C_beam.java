@@ -85,7 +85,9 @@ public class C_beam {
 
         if (activity != null) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-            c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
+            if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false)) {
+                c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
+            }
         }
         c_beamClient = JSONRPCClient.create(c_beamUrl, JSONRPCParams.Versions.VERSION_2);
         c_beamClient.setConnectionTimeout(10000);
