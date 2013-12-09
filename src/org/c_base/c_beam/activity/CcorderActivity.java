@@ -411,15 +411,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     @Override
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-        Camera.Parameters p = camera.getParameters();
-        p.setPreviewSize(arg2, arg3);
-        try {
-            camera.setPreviewDisplay(arg0);
-            camera.setDisplayOrientation(90);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (camera != null) {
+            Camera.Parameters p = camera.getParameters();
+            p.setPreviewSize(arg2, arg3);
+            try {
+                camera.setPreviewDisplay(arg0);
+                camera.setDisplayOrientation(90);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            camera.startPreview();
         }
-        camera.startPreview();
     }
 
     @Override
