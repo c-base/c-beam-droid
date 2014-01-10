@@ -235,7 +235,8 @@
         <activity
             android:name="org.c_base.c_beam.activity.NotificationActivity"
             android:label="@string/title_activity_notification"
-            android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity" >
+            android:taskAffinity="org.c_base.c_beam.activity.NotificationActivity"
+            android:exported="true">
         </activity>
 
         <activity
