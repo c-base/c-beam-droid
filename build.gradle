@@ -4,28 +4,23 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.7.+'
+    classpath 'com.android.tools.build:gradle:0.11.+'
   }
 }
 
 apply plugin: 'android'
 
+repositories {
+  mavenCentral()
+}
+
 dependencies {
-  compile project(':libraries:actionbarsherlock')
-  compile project(':libraries:viewpagerindicator')
+  compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+  compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1'
   compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
   compileSdkVersion 19
-  buildToolsVersion '19'
-
-  sourceSets {
-    main {
-      manifest.srcFile 'AndroidManifest.xml'
-      java.srcDirs = ['src']
-      res.srcDirs = ['res']
-      assets.srcDirs = ['assets']
-    }
-  }
+  buildToolsVersion '19.1'
 }
