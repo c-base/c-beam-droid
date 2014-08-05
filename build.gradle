@@ -1,26 +1,26 @@
 buildscript {
-  repositories {
-    mavenCentral()
-  }
+    repositories {
+        mavenCentral()
+    }
 
-  dependencies {
-      classpath 'com.android.tools.build:gradle:0.12.2'
-  }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.2'
+    }
 }
 
 apply plugin: 'android'
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
-  compileSdkVersion 19
+    compileSdkVersion 19
     buildToolsVersion '20.0.0'
 }
