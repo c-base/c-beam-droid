@@ -21,6 +21,7 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -61,6 +62,7 @@ import java.util.ArrayList;
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
     private static final String TAG = "CCorderActivity";
+    public static final int SLOWPLOTS_UPDATE_INTERVAL = 100;
     private Camera camera;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
@@ -85,6 +87,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private SensorPlot accelerationPlot;
     private SensorPlot gyroPlot;
     private SensorPlot lightPlot;
+    private SensorPlot temperaturePlot;
+
+    private SensorEvent lastLightEvent;
+    private SensorEvent lastTemperatureEvent;
+
+    private Handler handler = new Handler();
 
     protected String[] mDrawerItems;
     protected TypedArray mDrawerImages;
@@ -118,12 +126,29 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     };
     private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
     private String[] dimensionArrayLux = {"/ lux"};
+    private String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
     private boolean mustRelease = false;
     private boolean previewOn = false;
     private SharedPreferences sharedPref;
+    private Runnable updateSlowPlotsCallbacks = new Runnable() {
+        @Override
+        public void run() {
+            updateSlowPlots();
+            handler.postDelayed(this, SLOWPLOTS_UPDATE_INTERVAL);
+        }
+    };
+
+    private void updateSlowPlots() {
+        if (lastLightEvent != null) {
+            lightPlot.addEvent(lastLightEvent);
+        }
+        if (lastTemperatureEvent != null) {
+            temperaturePlot.addEvent(lastTemperatureEvent);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -332,6 +357,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot3));
         gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
         lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, (XYPlot) findViewById(R.id.mySimpleXYPlot5));
+        temperaturePlot = new SensorPlot("C_trahlungsintensität (300GHz - 400THz)", dimensionArrayTemp, (XYPlot) findViewById(R.id.mySimpleXYPlot6));
     }
 
     private void setupGrid() {
@@ -389,7 +415,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_LIGHT)) {
             sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
         }
+        // it seems there is no PackageManager.FEATURE_SENSOR_MAGNETIC_FIELD
         sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
+        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE));
     }
 
     @Override
@@ -508,8 +536,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
                 gyroPlot.addEvent(event);
             }
+
             if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-                lightPlot.addEvent(event);
+                lastLightEvent = event;
+            }
+
+            if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
+                lastTemperatureEvent = event;
             }
         }
     }
@@ -518,7 +551,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         super.onResume();
 //        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
+        startTimerForSlowPlots();
         camera = Camera.open();
+    }
+
+    private void startTimerForSlowPlots() {
+        handler.postDelayed(updateSlowPlotsCallbacks, SLOWPLOTS_UPDATE_INTERVAL);
     }
 
     private void registerSensors() {
@@ -533,6 +571,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         camera.stopPreview();
         camera.release();
         camera = null;
+        handler.removeCallbacks(updateSlowPlotsCallbacks);
     }
 
     private void unregisterSensors() {

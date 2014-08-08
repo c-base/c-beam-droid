@@ -222,6 +222,16 @@
                             android:layout_alignParentLeft="true"
                             android:layout_weight="1"/>
 
+                    <com.androidplot.xy.XYPlot
+                            android:id="@+id/mySimpleXYPlot6"
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dp"
+                            androidPlot.title=""
+                            androidPlot.rangeLabel=""
+                            androidPlot.domainLabel=""
+                            android:alpha="0.5"
+                            android:layout_alignParentLeft="true"
+                            android:layout_weight="1"/>
                 </LinearLayout>
 
             </RelativeLayout>
