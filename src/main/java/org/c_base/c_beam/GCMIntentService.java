@@ -51,23 +51,22 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-        Date today = Calendar.getInstance().getTime();
-        //String timestamp = DATE_FORMAT.format(today);
+		Date today = Calendar.getInstance().getTime();
+		String timestamp = DATE_FORMAT.format(today);
 
-        String title = intent.getExtras().getString("title");
-        String text = intent.getExtras().getString("text");
-        String timestamp = intent.getExtras().getString("timestamp");
+		String title = intent.getExtras().getString("title");
+		String text = intent.getExtras().getString("text");
 
-        String notificationText;
-        if (title.equals("now boarding")) {
-            NotificationBroadcast.sendBoardingBroadcast(context, text, today);
-            notificationText = timestamp + ": " + title + ": " + text;
-        } else if (title.equals("ETA")) {
-            sendEtaBroadcast(context, text, today);
-            notificationText = timestamp + ": " + title + " " + text;
-        } else if (title.equals("mission completed")) {
-            notificationText = timestamp + ": " + text;
-        } else {
+		String notificationText;
+		if (title.equals("now boarding")) {
+			NotificationBroadcast.sendBoardingBroadcast(context, text, today);
+			notificationText = timestamp + ": " + title + ": " + text;
+		} else if (title.equals("ETA")) {
+			sendEtaBroadcast(context, today, text);
+			notificationText = timestamp + ": " + title + " " + text;
+		} else if (title.equals("mission completed")) {
+			notificationText = timestamp + ": " + text;
+		} else {
             Log.d(LOG_TAG, "Unknown notification message received: " + title);
             return;
         }
@@ -126,7 +125,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         dataSource.close();
     }
 
-    private void sendEtaBroadcast(Context context, String text,  Date today) {
+    private void sendEtaBroadcast(Context context, Date today, String text) {
 		Matcher matcher = ETA_PATTERN.matcher(text);
 		if (matcher.matches()) {
 			String member = matcher.group(1);
