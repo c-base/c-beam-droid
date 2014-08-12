@@ -473,7 +473,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         Parameters params = camera.getParameters();
         params.setFlashMode(Parameters.FLASH_MODE_TORCH);
         camera.setParameters(params);
-        Log.d(TAG, "ledOn");
+        //Log.d(TAG, "ledOn " + System.currentTimeMillis());
     }
 
     void ledOff() {
@@ -483,7 +483,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 //        if(mSurfaceView.getVisibility() != View.VISIBLE) {
 //            camera.release();
 //        }
-        Log.d(TAG, "ledOff");
+        //Log.d(TAG, "ledOff" + System.currentTimeMillis());
     }
 
     void ledflash() {
