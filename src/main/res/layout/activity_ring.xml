@@ -115,7 +115,7 @@
                     android:layout_height="match_parent"
                     tools:context=".MainActivity"
                     android:layout_below="@+id/ap_area"
-                    android:layout_toLeftOf="@+id/ringbuttons"
+
                     android:layout_above="@+id/fragment">
             </android.support.v4.view.ViewPager>
 

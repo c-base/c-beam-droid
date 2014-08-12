@@ -53,7 +53,9 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		mNotificationArea = findViewById(R.id.notification_area);
 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.add(R.id.notifications, new NotificationListFragment(notificationList));
+        NotificationListFragment nlf = new NotificationListFragment();
+        nlf.setItems(notificationList);
+		ft.add(R.id.notifications, nlf);
 		ft.commit();
 
 		setupActionBar();

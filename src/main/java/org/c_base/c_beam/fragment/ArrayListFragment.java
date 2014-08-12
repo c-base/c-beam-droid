@@ -29,9 +29,9 @@ public class ArrayListFragment extends ListFragment {
 
     }
 
-    public ArrayListFragment(ArrayList<String> items) {
-        this.items = items;
-    }
+//    public ArrayListFragment(ArrayList<String> items) {
+//        this.items = items;
+//    }
 
     public void clear() {
         items.clear();

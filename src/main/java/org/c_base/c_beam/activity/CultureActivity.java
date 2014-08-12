@@ -130,7 +130,8 @@ public class CultureActivity extends RingActivity implements
                 if(position == EVENTS_TODAY_FRAGMENT) {
                     fragment = new EventListFragment();
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment("culture");
+                    fragment = new RinginfoFragment();
+                    ((RinginfoFragment) fragment).setRing("culture");
                 } else {
                     fragment = null;
                 }

@@ -26,11 +26,16 @@ public class NotificationListFragment extends ListFragment {
 
     SharedPreferences sharedPref;
 
+
     public NotificationListFragment() {
 
     }
 
-    public NotificationListFragment(ArrayList<Notification> items) {
+//    public NotificationListFragment(ArrayList<Notification> items) {
+//        this.items = items;
+//    }
+
+    public void setItems(ArrayList<Notification> items) {
         this.items = items;
     }
 

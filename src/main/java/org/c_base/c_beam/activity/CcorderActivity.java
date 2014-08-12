@@ -43,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.util.Log;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -169,7 +170,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupActionBar();
         setupNavigationDrawer();
 
-
         showWarningMessage();
     }
 
@@ -273,11 +273,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        ledOn();
                         if (zap != null) {
                             zap.seekTo(0);
                             zap.start();
                         }
-                        ledOn();
                         break;
                     case MotionEvent.ACTION_UP:
                         ledOff();
@@ -473,6 +473,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         Parameters params = camera.getParameters();
         params.setFlashMode(Parameters.FLASH_MODE_TORCH);
         camera.setParameters(params);
+        Log.d(TAG, "ledOn");
     }
 
     void ledOff() {
@@ -482,6 +483,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 //        if(mSurfaceView.getVisibility() != View.VISIBLE) {
 //            camera.release();
 //        }
+        Log.d(TAG, "ledOff");
     }
 
     void ledflash() {

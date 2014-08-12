@@ -12,9 +12,13 @@ import org.c_base.c_beam.R;
 
 public class RinginfoFragment extends Fragment {
     private String ring = "core";
-    public RinginfoFragment(String ring) {
-        this.ring = ring;
 
+    public RinginfoFragment() {
+    }
+
+
+    public void setRing(String ring) {
+        this.ring = ring;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

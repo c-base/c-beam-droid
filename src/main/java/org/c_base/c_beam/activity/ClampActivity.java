@@ -145,7 +145,8 @@ public class ClampActivity extends RingActivity {
                     fragment = new C_portalWebViewFragment();
                     ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment("clamp");
+                    fragment = new RinginfoFragment();
+                    ((RinginfoFragment) fragment).setRing("clamp");
                 } else {
                     fragment = null;
                 }

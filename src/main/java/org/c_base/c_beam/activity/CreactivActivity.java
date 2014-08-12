@@ -174,7 +174,8 @@ public class CreactivActivity extends RingActivity implements
                 } else if (position == ACTIVITYLOG_FRAGMENT) {
                     fragment = new ActivitylogFragment();
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment("creactiv");
+                    fragment = new RinginfoFragment();
+                    ((RinginfoFragment) fragment).setRing("creactiv");
                 } else {
                     fragment = null;
                 }

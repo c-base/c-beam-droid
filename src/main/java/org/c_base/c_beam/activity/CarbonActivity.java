@@ -107,7 +107,8 @@ public class CarbonActivity extends RingActivity {
                 } else if(position == ETALIST_FRAGMENT) {
                     fragment = new UserListFragment();
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment("carbon");
+                    fragment = new RinginfoFragment();
+                    ((RinginfoFragment) fragment).setRing("carbon");
                 } else {
                     fragment = null;
                 }

@@ -121,7 +121,8 @@ public class CoreActivity extends RingActivity {
                     fragment = new C_portalWebViewFragment();
                     ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
                 } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment("core");
+                    fragment = new RinginfoFragment();
+                    ((RinginfoFragment) fragment).setRing("core");
                 } else {
                     fragment = null;
                 }
