@@ -281,4 +281,5 @@
     <string name="activitylogger_input_activity">activita:t</string>
     <string name="activitylogger_label_ap">AP:</string>
     <string name="activitylogger_button_log_activity">loggen</string>
+    <string name="connection_to_server_failed">Could not connect to MQTT server</string>
 </resources>

@@ -19,20 +19,35 @@ public class NotificationBroadcast {
 	public static final String NOTIFICATION_PERMISSION = "org.c_base.c_beam.permission.NOTIFICATION";
 
 
-	public static void sendBoardingBroadcast(Context context, String member, Date date) {
+	public static void sendBoardingBroadcast(Context context, String member, String timestamp) {
 		Intent intent = new Intent(ACTION_BOARDING);
 		intent.putExtra(EXTRA_MEMBER, member);
-		intent.putExtra(EXTRA_TIMESTAMP, date.getTime());
+		intent.putExtra(EXTRA_TIMESTAMP, timestamp);
 		context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
 	}
 
-	public static void sendEtaBroadcast(Context context, String member, String eta, Date date) {
+    public static void sendBoardingBroadcast(Context context, String member, Date timestamp) {
+        Intent intent = new Intent(ACTION_BOARDING);
+        intent.putExtra(EXTRA_MEMBER, member);
+        intent.putExtra(EXTRA_TIMESTAMP, timestamp);
+        context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
+    }
+
+	public static void sendEtaBroadcast(Context context, String member, String eta, String timestamp) {
 		Intent intent = new Intent(ACTION_ETA);
 		intent.putExtra(EXTRA_MEMBER, member);
 		intent.putExtra(EXTRA_ETA, eta);
-		intent.putExtra(EXTRA_TIMESTAMP, date.getTime());
+		intent.putExtra(EXTRA_TIMESTAMP, timestamp);
 		context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
 	}
+
+    public static void sendEtaBroadcast(Context context, String member, String eta, Date timestamp) {
+        Intent intent = new Intent(ACTION_ETA);
+        intent.putExtra(EXTRA_MEMBER, member);
+        intent.putExtra(EXTRA_ETA, eta);
+        intent.putExtra(EXTRA_TIMESTAMP, timestamp);
+        context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
+    }
 
 	public static void sendReadBroadcast(Context context) {
 		Intent intent = new Intent(ACTION_READ);

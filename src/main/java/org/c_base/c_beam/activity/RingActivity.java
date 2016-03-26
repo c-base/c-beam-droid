@@ -34,11 +34,13 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
+import org.c_base.c_beam.CbeamApplication;
 import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Ring;
+import org.c_base.c_beam.mqtt.MqttManager;
 import org.c_base.c_beam.util.Helper;
 
 import java.util.ArrayList;
@@ -48,6 +50,8 @@ import java.util.Calendar;
  * Created by smile on 2013-05-31.
  */
 public class RingActivity extends C_beamActivity {
+
+    private MqttManager mqttConnection;
 
     enum RING {
         CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
@@ -98,6 +102,8 @@ public class RingActivity extends C_beamActivity {
         setupButtons();
         setupAPDisplay();
         setupNavigationDrawer();
+
+        startMqttConnection(this);
     }
 
     protected void setupButtons() {
@@ -181,6 +187,7 @@ public class RingActivity extends C_beamActivity {
         mIsOnline = false;
         showOfflineView();
         stopNetworkingThreads();
+        mqttConnection.crewNetworkDisconnected();
     }
 
     protected void switchToOnlineMode() {
@@ -190,6 +197,7 @@ public class RingActivity extends C_beamActivity {
         mIsOnline = true;
         showOnlineView();
         startNetworkingThreads();
+        mqttConnection.crewNetworkConencted();
     }
 
     private void startNetworkingThreads() {
@@ -595,6 +603,12 @@ public class RingActivity extends C_beamActivity {
             return listview;
         }
 
+    }
+
+    private void startMqttConnection(Context context) {
+        CbeamApplication app = CbeamApplication.getInstance(context);
+        mqttConnection = app.getMqttManager();
+        mqttConnection.startConnection();
     }
 
 }

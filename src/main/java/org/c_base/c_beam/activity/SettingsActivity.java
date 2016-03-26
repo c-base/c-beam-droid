@@ -13,10 +13,17 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.util.BooleanLock;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
-	
-	C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
+
+    public static final String KEY_PREF_MQTT_USER = "pref_key_mqtt_user";
+    public static final String KEY_PREF_MQTT_PASSWORD = "pref_key_mqtt_password";
+    public static final String KEY_PREF_MQTT_URI = "pref_key_mqtt_uri";
+    public static final String KEY_PREF_MQTT_TLS = "pref_key_mqtt_tls";
+    public static final String KEY_PREF_DEFAULT_URL = "pref_key_default_url";
+
+    C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
