@@ -651,7 +651,6 @@ public class C_beam {
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
         if (isInCrewNetwork()) {
-            //result = c_beamClient.callJSONObject("set_stats_enabled", user, stats_enabled).getString("result");
             Map<String, String> params = new HashMap<String, String>();
             params.put("user", user);
             params.put("is_enabled", String.valueOf(stats_enabled));
@@ -742,7 +741,6 @@ public class C_beam {
     public synchronized String call(String method, String param1_name, String param1_value) {
         String result = "failure";
         if (isInCrewNetwork()) {
-            result = "failure";
             Map<String, Object> params = new HashMap<String, Object>();
             params.put(param1_name, param1_value);
             result = (String) ((JSONObject) c_beamCall(method, params)).get("result");
@@ -812,14 +810,6 @@ public class C_beam {
 
         @Override
         protected void onPostExecute(String result) {
-            /*System.out.println(result);
-            if (result.contentEquals("eta_set")) {
-                result = getText(R.string.eta_set).toString();
-            } else if (result.contentEquals("eta_removed")) {
-                result = getText(R.string.eta_removed).toString();
-            } else {
-                result = getText(R.string.eta_failure).toString();
-            }*/
             Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
         }
 

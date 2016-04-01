@@ -212,7 +212,10 @@ public class RingActivity extends C_beamActivity {
 
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
-        String eta = "" + timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
+        Integer currentHour = timePicker.getCurrentHour();
+        String eta = "" +
+                (currentHour < 10 ? "0" : "") + currentHour +
+                (currentMinute < 10 ? "0" : "") + currentMinute;
         return eta;
     }
 
