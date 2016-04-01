@@ -1,7 +1,6 @@
 package org.c_base.c_beam.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.minidev.json.JSONObject;
 
 public class Article {
 	private int id;
@@ -11,18 +10,13 @@ public class Article {
 
 	public Article(JSONObject item) {
 		super();
-		try {
-			//id = item.getString("id");	
-			JSONObject fields = item.getJSONObject("fields");
-			this.id = item.getInt("pk");
-			
-			this.title = fields.getString("title");
-			this.articleAbstract = fields.getString("abstract");
-			this.body = fields.getString("body");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//id = item.getString("id");
+		JSONObject fields = (JSONObject) item.get("fields");
+		this.id = (int) item.get("pk");
+
+		this.title = (String) fields.get("title");
+		this.articleAbstract = (String) fields.get("abstract");
+		this.body = (String) fields.get("body");
 	}
 
 	public Article(String title) {

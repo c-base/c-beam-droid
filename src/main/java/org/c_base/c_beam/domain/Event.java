@@ -1,7 +1,6 @@
 package org.c_base.c_beam.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.minidev.json.JSONObject;
 
 public class Event {
 	protected int id = 0;
@@ -32,16 +31,11 @@ public class Event {
 
 	public Event(JSONObject item) {
 		super();
-		try {
-//			id = item.getInt("id");	
-			title = item.getString("title");
-			description = item.getString("description");
-			start = item.getString("start");
-			end = item.getString("end");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//			id = item.getInt("id");
+		title = (String) item.get("title");
+		description = (String) item.get("description");
+		start = (String) item.get("start");
+		end = (String) item.get("end");
 	}
 
 	public int getId() {

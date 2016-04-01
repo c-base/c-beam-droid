@@ -382,7 +382,7 @@ public class RingActivity extends C_beamActivity {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             String registrationId = GCMManager.getRegistrationId(this);
             String username = sharedPref.getString(Settings.USERNAME, "bernd");
-            new C_beamTask().execute("gcm_update", username, registrationId);
+            new C_beamTask().execute("gcm_update", "user", username, "regid", registrationId);
             //c_beam.register_update(registrationId, username);
         }
     }

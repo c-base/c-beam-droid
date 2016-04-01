@@ -1,8 +1,5 @@
 package org.c_base.c_beam.fragment;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,11 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import org.c_base.c_beam.util.Helper;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.activity.UserActivity;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.util.Helper;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
 
 public class UserListFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
@@ -86,7 +87,7 @@ public class UserListFragment extends ListFragment {
 			defaultFormat.setMinimumFractionDigits(1);
 			TextView view = (TextView) super.getView(position, convertView, parent);
 			User u = items.get(position);
-			float alpha = u.getAutologout_in()/(float) u.getAutologout();
+			double alpha = u.getAutologout_in() / (float) u.getAutologout();
 
 //			if (fadeUsers) view.setAlpha(alpha);
 			Helper.setListItemStyle(view);

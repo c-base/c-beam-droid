@@ -18,6 +18,8 @@ dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.thetransactioncompany:jsonrpc2-base:1.38'
+    compile 'com.thetransactioncompany:jsonrpc2-client:1.16.4'
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
