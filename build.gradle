@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.android.tools.build:gradle:1.5.0'
     }
 }
 
@@ -22,9 +22,14 @@ dependencies {
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:prov:1.51.0.0'
     compile 'com.madgag.spongycastle:pkix:1.51.0.0'
+    compile 'com.thetransactioncompany:jsonrpc2-base:1.38'
+    compile 'com.thetransactioncompany:jsonrpc2-client:1.16.4'
+    //compile "com.google.android.gms:play-services-gcm:8.4.0"
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.3'
+    //useLibrary 'org.apache.http.legacy'
 }

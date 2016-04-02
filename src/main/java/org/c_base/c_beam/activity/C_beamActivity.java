@@ -146,10 +146,10 @@ public class C_beamActivity extends SherlockFragmentActivity {
     protected class C_beamTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            if (params.length == 2) {
-                return c_beam.call(params[0], params[1]);
-            } else if (params.length == 3) {
+            if (params.length == 3) {
                 return c_beam.call(params[0], params[1], params[2]);
+            } else if (params.length == 5) {
+                return c_beam.call(params[0], params[1], params[2], params[3], params[4]);
             }
             return "failure";
         }

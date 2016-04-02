@@ -220,7 +220,10 @@ public class RingActivity extends C_beamActivity {
 
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
-        String eta = "" + timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
+        Integer currentHour = timePicker.getCurrentHour();
+        String eta = "" +
+                (currentHour < 10 ? "0" : "") + currentHour +
+                (currentMinute < 10 ? "0" : "") + currentMinute;
         return eta;
     }
 
@@ -390,7 +393,7 @@ public class RingActivity extends C_beamActivity {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             String registrationId = GCMManager.getRegistrationId(this);
             String username = sharedPref.getString(Settings.USERNAME, "bernd");
-            new C_beamTask().execute("gcm_update", username, registrationId);
+            new C_beamTask().execute("gcm_update", "user", username, "regid", registrationId);
             //c_beam.register_update(registrationId, username);
         }
     }

@@ -1,40 +1,34 @@
 package org.c_base.c_beam.domain;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+
 import java.sql.Date;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class Mission {
-	private int id = 0;
+	private long id = 0;
 	private String short_description = "";
 	private String description = ""; 
 	private String status = "unknown";
 	private Date created_on = null;
-	private int ap = 0;
+	private long ap = 0;
 	private ArrayList<String> assigned_to;
 	//private User assigned_to = null;
 	
 	public Mission(JSONObject item) {
-		try {
-			
-			id = item.getInt("id");
-			short_description = item.getString("short_description");
-			status = item.getString("status");
-			description = item.getString("description");
-			ap = item.getInt("ap");
-			JSONArray tmp = item.getJSONArray("assigned_to");
-			assigned_to = new ArrayList<String>();
-			for (int i=0; i<tmp.length(); i++) {
-				assigned_to.add(tmp.getString(i));
-			}
-			//created_on = Date.valueOf(item.getString("created_on"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		id = (long) item.get("id");
+		short_description = (String) item.get("short_description");
+		status = (String) item.get("status");
+		description = (String) item.get("description");
+		ap = (long) item.get("ap");
+		JSONArray tmp = (JSONArray) item.get("assigned_to");
+		assigned_to = new ArrayList<String>();
+		for (int i = 0; i < tmp.size(); i++) {
+			assigned_to.add((String) tmp.get(i));
 		}
+		//created_on = Date.valueOf(item.getString("created_on"));
 	}
 	
 	@Override
@@ -61,7 +55,7 @@ public class Mission {
 		this.status = status;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -69,8 +63,7 @@ public class Mission {
 		this.id = id;
 	}
 
-	public int getAp() {
-		// TODO Auto-generated method stub
+	public long getAp() {
 		return this.ap;
 	}
 
@@ -90,7 +83,7 @@ public class Mission {
 		this.assigned_to = assigned_to;
 	}
 
-	public void setAp(int ap) {
+	public void setAp(long ap) {
 		this.ap = ap;
 	}
 	

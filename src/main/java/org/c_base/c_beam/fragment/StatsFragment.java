@@ -1,14 +1,5 @@
 package org.c_base.c_beam.fragment;
 
-import java.util.ArrayList;
-
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.activity.EventActivity;
-import org.c_base.c_beam.activity.UserActivity;
-import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.util.Helper;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +13,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.activity.UserActivity;
+import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.util.Helper;
+
+import java.util.ArrayList;
 
 public class StatsFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
@@ -78,7 +77,7 @@ public class StatsFragment extends ListFragment {
 			View view = super.getView(position, convertView, parent);
 			TextView v = (TextView) view.findViewById(R.id.statsAp);
 			User u = items.get(position);
-			v.setText(Integer.toString(u.getAp()));
+			v.setText(Long.toString(u.getAp()));
 			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), v);
 			Helper.setFont(getActivity(), (TextView) view.findViewById(R.id.statsUsername));

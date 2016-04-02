@@ -1,7 +1,6 @@
 package org.c_base.c_beam.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.minidev.json.JSONObject;
 
 public class Artefact {
 	int id;
@@ -14,14 +13,9 @@ public class Artefact {
 	
 	public Artefact(JSONObject item) {
 		super();
-		try {
-			//id = item.getInt("id");	
-			name = item.getString("name");
-			slug = item.getString("slug");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//id = item.getInt("id");
+		name = (String) item.get("name");
+		slug = (String) item.get("slug");
 	}
 
 	public int getId() {
