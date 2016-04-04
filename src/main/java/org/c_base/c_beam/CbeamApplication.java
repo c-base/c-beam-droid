@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import org.c_base.c_beam.mqtt.MqttManager;
-import org.c_base.c_beam.settings.Settings;
 
 public class CbeamApplication extends Application {
 
@@ -16,10 +15,8 @@ public class CbeamApplication extends Application {
 
     public MqttManager getMqttManager() {
         if (connection == null) {
-            Settings settings = new Settings(this);
-            connection = new MqttManager(this, settings);
+            connection = MqttManager.getInstance(this);
         }
-
         return connection;
     }
 }

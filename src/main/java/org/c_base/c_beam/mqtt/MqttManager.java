@@ -9,14 +9,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.c_base.c_beam.CbeamApplication;
 import org.c_base.c_beam.NotificationBroadcastReceiver;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.activity.NotificationActivity;
 import org.c_base.c_beam.domain.Notification;
 import org.c_base.c_beam.extension.NotificationBroadcast;
 import org.c_base.c_beam.settings.Settings;
-import org.c_base.c_beam.activity.MainActivity;
 import org.c_base.c_beam.util.NotificationsDataSource;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -31,15 +29,13 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLSocketFactory;
 
 public class MqttManager implements MqttCallback, IMqttActionListener {
+
     private static final String LOG_TAG = "MqttManager";
     private static final int QOS = 1;
     private static final String CHANNEL = "c-beam-droid";
@@ -49,37 +45,79 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
     private static final int NOTIFICATION_ID = 1;
 
+    private static boolean ready = false;
+
     private final Context context;
     private final Settings settings;
     private MqttAndroidClient client;
     private NotificationManager mNotificationManager;
 
-    public MqttManager(Context context, Settings settings) {
+    private static Connections connections;
+    private String clientHandle;
+    private Thread thread;
+
+    private static MqttManager instance = null;
+
+    // TODO: remove workaround or bug in paho 1.0.2 https://github.com/eclipse/paho.mqtt.android/issues/2
+    private static boolean subscribed = false;
+
+    public static MqttManager getInstance(Context context) {
+        Settings settings = new Settings(context);
+        if (instance == null) {
+            instance = new MqttManager(context, settings);
+        }
+        return instance;
+    }
+
+    private MqttManager(Context context, Settings settings) {
         this.context = context;
         this.settings = settings;
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        connections = Connections.getInstance(context);
     }
 
     public void startConnection() {
         if (client != null) {
+            Log.i(LOG_TAG, "Reuse client");
+            if (!client.isConnected()) {
+                Log.i(LOG_TAG, "Try reconnecting");
+                connect();
+            }
             return;
         }
-
-        client = createMqttClient();
-        client.setCallback(this);
         MqttConnectOptions options = createMqttConnectOptions();
+        client = createMqttClient(options);
+        client.setCallback(this);
+        connect();
+    }
+
+    private void connect() {
+        if (client.isConnected()) {
+            Log.i(LOG_TAG, "Client already connected");
+            return;
+        }
         try {
-            client.connect(options, null, this);
+            client.connect(Connections.getInstance(context).getConnection(clientHandle).getConnectionOptions(), null, this);
+            Log.i(LOG_TAG, "Connect seems successful");
         } catch (MqttException e) {
             Log.e(LOG_TAG, "Error while connecting to server", e);
         }
     }
 
-    private MqttAndroidClient createMqttClient() {
+    private MqttAndroidClient createMqttClient(MqttConnectOptions options) {
         String serverUri = settings.getMqttUri();
         String clientId = CLIENT_ID_PREFIX + UUID.randomUUID();
         Log.e(LOG_TAG, "ServerURI:" + serverUri);
-        return new MqttAndroidClient(context, serverUri, clientId);
+
+        MqttAndroidClient client = connections.createClient(context, serverUri, clientId);
+
+        clientHandle = serverUri + clientId;
+        Connection connection = new Connection(clientHandle, clientId, "c-beam.cbrp3.c-base.org", 1883,
+                context, client, settings.getUseTls());
+
+        connection.addConnectionOptions(options);
+        Connections.getInstance(context).addConnection(connection);
+        return client;
     }
 
     private MqttConnectOptions createMqttConnectOptions() {
@@ -102,40 +140,52 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 e.printStackTrace();
             }
         }
-        options.setCleanSession(true);
+        options.setCleanSession(false);
         return options;
     }
 
     private void subscribe() {
+        Log.i(LOG_TAG, "Subscribe called");
+        if (subscribed) {
+            return;
+        }
         String topic = getTopic(OPEN_URL_TOPIC);
         try {
             client.subscribe(topic, QOS);
             client.subscribe("user/boarding", QOS);
-
+            client.subscribe("test/smile", QOS);
+            subscribed = true;
+            Log.i(LOG_TAG, "Subscribed successfully");
         } catch (MqttException e) {
             Log.e(LOG_TAG, "Failed to subscribe", e);
         }
     }
 
-    public void crewNetworkConencted() {
+    public void crewNetworkConnected() {
+        if (!ready || !client.isConnected()) {
+            return;
+        }
         try {
             client.subscribe("bar/status", QOS);
-        } catch (MqttException e) {
+        } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to subscribe to bar/status", e);
         }
     }
 
     public void crewNetworkDisconnected() {
+        if (!ready || !client.isConnected()) {
+            return;
+        }
         try {
             client.unsubscribe("bar/status");
-        } catch (MqttException e) {
+        } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to unsubscribe from bar/status", e);
         }
     }
 
     @Override
     public void connectionLost(final Throwable throwable) {
-        Log.w(LOG_TAG, "Connection lost", throwable);
+        Log.w(LOG_TAG, "Connection lost, will reconnect when network is available"); //, throwable);
     }
 
     @Override
@@ -152,6 +202,8 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
 
     @Override
     public void onSuccess(final IMqttToken token) {
+        ready = true;
+        Log.i(LOG_TAG, "Connection successfully established.");
         subscribe();
     }
 
@@ -187,6 +239,9 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 title = "now boarding";
                 NotificationBroadcast.sendBoardingBroadcast(context, json.getString("user"), json.getString("timestamp"));
                 notificationText = json.getString("timestamp") + " " + title + ": " + json.getString("user");
+            } else if (topic.equals("test/smile")) {
+                title = "test/smile";
+                notificationText = payload;
             } else if (topic.equals("user/eta")) {
                 json = new JSONObject(payload);
                 NotificationBroadcast.sendEtaBroadcast(context, json.getString("user"), json.getString("eta"), json.getString("timestamp"));
@@ -233,7 +288,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 }
                 style.setSummaryText("+" + (notificationList.size() - 5) + " more...");
             } else {
-                for(org.c_base.c_beam.domain.Notification line: notificationList) {
+                for (org.c_base.c_beam.domain.Notification line : notificationList) {
                     style.addLine(line.toString());
                 }
             }
@@ -258,13 +313,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
         dataSource.close();
     }
 
-    private void sendEtaBroadcast(Context context, String text,  Date today) {
-        Matcher matcher = ETA_PATTERN.matcher(text);
-        if (matcher.matches()) {
-            String member = matcher.group(1);
-            String eta = matcher.group(2).replaceFirst("^(\\d{2})(\\d{2})$", "$1:$2");
-
-            NotificationBroadcast.sendEtaBroadcast(context, member, eta, today.toString());
-        }
+    public void startConnectionExt() {
+        Log.i(LOG_TAG, "start connection to external MQTT server");
     }
 }

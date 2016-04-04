@@ -34,7 +34,6 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 
-import org.c_base.c_beam.CbeamApplication;
 import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -187,7 +186,9 @@ public class RingActivity extends C_beamActivity {
         mIsOnline = false;
         showOfflineView();
         stopNetworkingThreads();
-        mqttConnection.crewNetworkDisconnected();
+        if (mqttConnection != null) {
+            mqttConnection.crewNetworkDisconnected();
+        }
     }
 
     protected void switchToOnlineMode() {
@@ -197,7 +198,9 @@ public class RingActivity extends C_beamActivity {
         mIsOnline = true;
         showOnlineView();
         startNetworkingThreads();
-        mqttConnection.crewNetworkConencted();
+        if (mqttConnection != null) {
+            mqttConnection.crewNetworkConnected();
+        }
     }
 
     private void startNetworkingThreads() {
@@ -609,8 +612,9 @@ public class RingActivity extends C_beamActivity {
     }
 
     private void startMqttConnection(Context context) {
-        CbeamApplication app = CbeamApplication.getInstance(context);
-        mqttConnection = app.getMqttManager();
+        //CbeamApplication app = CbeamApplication.getInstance(context);
+        //mqttConnection = app.getMqttManager();
+        mqttConnection = MqttManager.getInstance(context);
         mqttConnection.startConnection();
     }
 

@@ -328,6 +328,17 @@
 
         <!-- MQTT Service -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <!--
+                <receiver android:name="org.c_base.c_beam.mqtt.NetworkBroadcastReceiver" >
+                    <intent-filter>
+
+                        <action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE" />
+                        <action android:name="android.net.wifi.STATE_CHANGE" />
+
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        -->
 
         <receiver android:name=".boot.BootReceiver" >
             <intent-filter>
