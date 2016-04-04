@@ -327,7 +327,7 @@
         </activity>
 
         <!-- MQTT Service -->
-        <!--
+        <!-- -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <receiver android:name=".boot.BootReceiver" >
@@ -338,7 +338,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        -->
+        <!-- -->
     </application>
 
 </manifest>

@@ -102,7 +102,7 @@ public class RingActivity extends C_beamActivity {
         setupAPDisplay();
         setupNavigationDrawer();
 
-        //startMqttConnection(this);
+        startMqttConnection(this);
     }
 
     protected void setupButtons() {
