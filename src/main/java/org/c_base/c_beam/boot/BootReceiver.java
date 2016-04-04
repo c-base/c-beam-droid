@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.util.Log;
 
 import org.c_base.c_beam.CbeamApplication;
-import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.mqtt.MqttManager;
 
 public class BootReceiver extends BroadcastReceiver {
@@ -23,14 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             startMqttConnection(context);
         } else if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-            Log.i(LOG_TAG, "Connectivity changed");
             /*
-            boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-            boolean hasConnectivity = !noConnectivity;
-            if (hasConnectivity) {
-                startMqttConnection(context);
-            }
-            */
             boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
             boolean hasConnectivity = !noConnectivity;
             if (hasConnectivity) {
@@ -41,6 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
                     //startMqttConnectionExt(context);
                 }
             }
+            */
         } else {
             throw new UnsupportedOperationException("Unsupported action: " + action);
         }
