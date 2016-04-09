@@ -3,9 +3,12 @@ package org.c_base.c_beam.boot;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.preference.PreferenceManager;
 
 import org.c_base.c_beam.CbeamApplication;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.mqtt.MqttManager;
 
 public class BootReceiver extends BroadcastReceiver {
@@ -47,6 +50,10 @@ public class BootReceiver extends BroadcastReceiver {
     private void startMqttConnection(Context context) {
         CbeamApplication app = CbeamApplication.getInstance(context);
         MqttManager connection = app.getMqttManager();
-        connection.startConnection();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean mqttEnabled = sharedPref.getBoolean(Settings.MQTT_ENABLED, false);
+        if (mqttEnabled) {
+            connection.startConnection();
+        }
     }
 }

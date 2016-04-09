@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,10 +13,10 @@ import android.widget.Toast;
 
 import org.c_base.c_beam.NotificationBroadcastReceiver;
 import org.c_base.c_beam.R;
+import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.activity.NotificationActivity;
 import org.c_base.c_beam.domain.Notification;
 import org.c_base.c_beam.extension.NotificationBroadcast;
-import org.c_base.c_beam.settings.Settings;
 import org.c_base.c_beam.util.NotificationsDataSource;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -29,7 +31,6 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -37,18 +38,23 @@ import javax.net.ssl.SSLSocketFactory;
 public class MqttManager implements MqttCallback, IMqttActionListener {
 
     private static final String LOG_TAG = "MqttManager";
-    private static final int QOS = 1;
+    private static final int QOS = 2;
     private static final String CHANNEL = "c-beam-droid";
     private static final String OPEN_URL_TOPIC = "open";
     private static final String CLIENT_ID_PREFIX = "c-beam-droid-";
 
     private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
     private static final int NOTIFICATION_ID = 1;
+    private static final String DEFAULT_MQTT_URI = "ssl://echelon.c-base.org:1883";
+    private static final boolean DEFAULT_MQTT_TLS = false;
+    private static final String DEFAULT_MQTT_USERNAME = "";
+    private static final String DEFAULT_MQTT_PASSWORD = "";
+    private static final String DEFAULT_MQTT_ID = "c-beam-droid-bernd01";
 
     private static boolean ready = false;
+    private static SharedPreferences sharedPref;
 
     private final Context context;
-    private final Settings settings;
     private MqttAndroidClient client;
     private NotificationManager mNotificationManager;
 
@@ -62,16 +68,18 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     private static boolean subscribed = false;
 
     public static MqttManager getInstance(Context context) {
-        Settings settings = new Settings(context);
+
+
         if (instance == null) {
-            instance = new MqttManager(context, settings);
+            instance = new MqttManager(context);
         }
         return instance;
     }
 
-    private MqttManager(Context context, Settings settings) {
+    private MqttManager(Context context) {
         this.context = context;
-        this.settings = settings;
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         connections = Connections.getInstance(context);
     }
@@ -105,15 +113,15 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     }
 
     private MqttAndroidClient createMqttClient(MqttConnectOptions options) {
-        String serverUri = settings.getMqttUri();
-        String clientId = CLIENT_ID_PREFIX + UUID.randomUUID();
+        String serverUri = sharedPref.getString(Settings.MQTT_URI, DEFAULT_MQTT_URI);
+        String clientId = sharedPref.getString(Settings.MQTT_ID, DEFAULT_MQTT_ID);//CLIENT_ID_PREFIX + UUID.randomUUID();
         Log.e(LOG_TAG, "ServerURI:" + serverUri);
 
         MqttAndroidClient client = connections.createClient(context, serverUri, clientId);
 
         clientHandle = serverUri + clientId;
         Connection connection = new Connection(clientHandle, clientId, "c-beam.cbrp3.c-base.org", 1883,
-                context, client, settings.getUseTls());
+                context, client, sharedPref.getBoolean(Settings.MQTT_TLS, DEFAULT_MQTT_TLS));
 
         connection.addConnectionOptions(options);
         Connections.getInstance(context).addConnection(connection);
@@ -121,9 +129,9 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     }
 
     private MqttConnectOptions createMqttConnectOptions() {
-        String userName = settings.getUserName();
-        String password = settings.getPassword();
-        boolean useTLS = settings.getUseTls();
+        String userName = sharedPref.getString(Settings.MQTT_USERNAME, DEFAULT_MQTT_USERNAME);
+        String password = sharedPref.getString(Settings.MQTT_PASSWORD, DEFAULT_MQTT_PASSWORD);
+        boolean useTLS = sharedPref.getBoolean(Settings.MQTT_TLS, DEFAULT_MQTT_TLS);
         MqttConnectOptions options = new MqttConnectOptions();
         if (!TextUtils.isEmpty(userName)) {
             options.setUserName(userName);
@@ -238,7 +246,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 json = new JSONObject(payload);
                 title = "now boarding";
                 NotificationBroadcast.sendBoardingBroadcast(context, json.getString("user"), json.getString("timestamp"));
-                notificationText = json.getString("timestamp") + " " + title + ": " + json.getString("user");
+                notificationText = "MQTT: " + json.getString("timestamp") + " " + title + ": " + json.getString("user");
             } else if (topic.equals("test/smile")) {
                 title = "test/smile";
                 notificationText = payload;

@@ -14,8 +14,15 @@ public interface Settings {
 	public static final String PUSH_BOARDING = "pref_push_boarding";
 	public static final String PUSH_ETA = "pref_push_eta";
 	public static final String DEBUG_ENABLED = "pref_debug_enabled";
+	public static final String MQTT_ENABLED = "pref_mqtt_enabled";
 	public static final String C_BEAM_URL = "pref_c_beam_url";
 	public static final String DEFAULT_ETA = "pref_default_eta";
     public static final String USER_DISCOVERED_NAVDRAWER =  "pref_user_discovered_navdrawer";
-	
+	public static final String MQTT_URI = "pref_mqtt_uri";
+	public static final String MQTT_USERNAME = "pref_mqtt_username";
+	public static final String MQTT_PASSWORD = "pref_mqtt_password";
+	public static final String MQTT_TLS = "pref_mqtt_tls";
+	public static final String MQTT_ID = "pref_mqtt_id";
+
+
 }

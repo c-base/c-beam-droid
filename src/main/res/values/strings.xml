@@ -295,4 +295,16 @@
     <string name="messageRecieved">Message received</string>
     <string name="notification">Notification</string>
     <string name="notifyTitle">Notification</string>
+    <string name="pref_mqtt_enabled_summ">Enable MQTT</string>
+    <string name="pref_mqtt_enabled">MQTT</string>
+    <string name="pref_mqtt_uri_summ">tcp://host:port</string>
+    <string name="pref_mqtt_uri">MQTT URI</string>
+    <string name="pref_mqtt_tls_summ">soll TLS für die MQTT verbindung genutzt werden</string>
+    <string name="pref_mqtt_tls">MQTT TLS</string>
+    <string name="pref_mqtt_username_summ">benutzername fu:r den MQTT server</string>
+    <string name="pref_mqtt_username">MQTT username</string>
+    <string name="pref_mqtt_password">MQTT password</string>
+    <string name="pref_mqtt_password_summ">passwort fu:r den MQTT server</string>
+    <string name="pref_mqtt_id_summ">MQTT client id</string>
+    <string name="pref_mqtt_id">MQTT ID</string>
 </resources>

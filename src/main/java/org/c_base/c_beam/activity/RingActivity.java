@@ -102,7 +102,10 @@ public class RingActivity extends C_beamActivity {
         setupAPDisplay();
         setupNavigationDrawer();
 
-        startMqttConnection(this);
+        boolean mqttEnabled = sharedPref.getBoolean(Settings.MQTT_ENABLED, false);
+        if (mqttEnabled) {
+            startMqttConnection(this);
+        }
     }
 
     protected void setupButtons() {

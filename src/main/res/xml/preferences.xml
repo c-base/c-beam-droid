@@ -46,11 +46,13 @@
         android:key="pref_stats_enabled"
         android:summary="@string/pref_stats_enabled_summ"
         android:title="@string/pref_stats_enabled" />
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_display_ap"
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
+
 
     <!--
     <EditTextPreference
@@ -107,6 +109,45 @@
             android:key="pref_debug_enabled"
             android:summary="@string/pref_debug_enabled_summ"
             android:title="@string/pref_debug_enabled" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_mqtt_enabled"
+            android:summary="@string/pref_mqtt_enabled_summ"
+            android:title="@string/pref_mqtt_enabled" />
+
+        <EditTextPreference
+            android:defaultValue="tcp://c-beam.cbrp3.c-base.org:1883"
+            android:key="pref_mqtt_uri"
+            android:summary="@string/pref_mqtt_uri_summ"
+            android:title="@string/pref_mqtt_uri" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_mqtt_tls"
+            android:summary="@string/pref_mqtt_tls_summ"
+            android:title="@string/pref_mqtt_tls" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_mqtt_username"
+            android:summary="@string/pref_mqtt_username_summ"
+            android:title="@string/pref_mqtt_username" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="pref_mqtt_password"
+            android:summary="@string/pref_mqtt_password_summ"
+            android:title="@string/pref_mqtt_password" />
+
+        <EditTextPreference
+            android:defaultValue="c-beam-droid-bernd01"
+            android:key="pref_mqtt_id"
+            android:summary="@string/pref_mqtt_id_summ"
+            android:title="@string/pref_mqtt_id" />
+
+
     </PreferenceScreen>
 
 </PreferenceScreen>
