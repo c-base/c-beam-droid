@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.androidplot:androidplot-core:0.6.1'
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
