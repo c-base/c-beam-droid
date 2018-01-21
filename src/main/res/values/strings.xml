@@ -200,7 +200,7 @@
     <string name="button_clamp">clamp</string>
     <string name="button_expand"></string>
     <string name="button_collapse"></string>
-    <string name="interface_map_url">http://ijon.crew.c-base.org/interface/index.html</string>
+    <string name="interface_map_url">https://c-beam.cbrp3.c-base.org/c-base-map/</string>
     <string name="blueprint_map_url">http://smile.crew.c-base.org/basemap/</string>
     <string name="google_map_url">
         <![CDATA[https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A]]></string>
