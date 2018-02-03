@@ -1,10 +1,10 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
     }
 }
 
@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    compile 'com.androidplot:androidplot-core:0.6.1'
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
@@ -33,6 +34,13 @@ dependencies {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.3'
-    //useLibrary 'org.apache.http.legacy'
+    buildToolsVersion '25.0.2'
+
+    lintOptions {
+          checkReleaseBuilds false
+          // Or, if you prefer, you can continue to check for errors in release builds,
+          // but continue the build even when errors are found:
+          abortOnError false
+    }
+
 }
