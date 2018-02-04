@@ -1,5 +1,13 @@
 package org.c_base.c_beam;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import com.google.android.gcm.GCMBaseIntentService;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,20 +16,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.c_base.c_beam.activity.NotificationActivity;
 import org.c_base.c_beam.extension.NotificationBroadcast;
 import org.c_base.c_beam.util.NotificationsDataSource;
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
-import com.google.android.gcm.GCMBaseIntentService;
 
 
 public class GCMIntentService extends GCMBaseIntentService {

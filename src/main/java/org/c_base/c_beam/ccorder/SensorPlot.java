@@ -2,11 +2,10 @@ package org.c_base.c_beam.ccorder;
 
 import android.graphics.Color;
 import android.hardware.SensorEvent;
-import com.androidplot.Plot;
 import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
-
 import java.util.ArrayList;
 
 public class SensorPlot {
@@ -37,7 +36,7 @@ public class SensorPlot {
             for (int j=0; j<100; j++) {
                 series[i].addLast(null, 0);
             }
-            LineAndPointFormatter format = new LineAndPointFormatter(formatColors[i][0], null, formatColors[i][1]);
+            LineAndPointFormatter format = new LineAndPointFormatter(formatColors[i][0], null, formatColors[i][1], new PointLabelFormatter());
             format.getFillPaint().setAlpha(150);
             plot.addSeries(series[i], format);
         }

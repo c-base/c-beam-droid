@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import org.c_base.c_beam.activity.SettingsActivity;
-
 public class Settings {
     private static final String DEFAULT_MQTT_URI = "tcp://c-beam.cbrp3.c-base.org:1883";
     private static final String DEFAULT_USERNAME = "";
@@ -16,7 +14,7 @@ public class Settings {
     public Settings(Context context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
-
+/*
     public String getMqttUri() {
         return preferences.getString(SettingsActivity.KEY_PREF_MQTT_URI, DEFAULT_MQTT_URI);
     }
@@ -32,5 +30,5 @@ public class Settings {
     public boolean getUseTls() {
         return preferences.getBoolean(SettingsActivity.KEY_PREF_MQTT_TLS, false);
     }
-
+*/
 }

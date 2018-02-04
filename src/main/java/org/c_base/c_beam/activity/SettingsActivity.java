@@ -1,29 +1,26 @@
 package org.c_base.c_beam.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
-import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.util.BooleanLock;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 
-    public static final String KEY_PREF_MQTT_USER = "pref_key_mqtt_user";
-    public static final String KEY_PREF_MQTT_PASSWORD = "pref_key_mqtt_password";
-    public static final String KEY_PREF_MQTT_URI = "pref_key_mqtt_uri";
-    public static final String KEY_PREF_MQTT_TLS = "pref_key_mqtt_tls";
-    public static final String KEY_PREF_DEFAULT_URL = "pref_key_default_url";
+//    public static final String KEY_PREF_MQTT_USER = "pref_key_mqtt_user";
+//    public static final String KEY_PREF_MQTT_PASSWORD = "pref_key_mqtt_password";
+//    public static final String KEY_PREF_MQTT_URI = "pref_key_mqtt_uri";
+//    public static final String KEY_PREF_MQTT_TLS = "pref_key_mqtt_tls";
+//    public static final String KEY_PREF_DEFAULT_URL = "pref_key_default_url";
 
-    C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
+	C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +93,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		push.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+				new AlertDialog.Builder(context)
+						.setMessage("Please restart device to apply change")
+						.show();
+
+				/*
+				TODO: later please do everything correctly - also listen to preference in withGCM flavor
 				if (((Boolean) newValue).booleanValue()) {
 					GCMManager.register(context);
 				} else {
 					GCMManager.unregister(context);
 				}
+				*/
 
 				return true;
 			}

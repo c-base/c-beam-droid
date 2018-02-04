@@ -12,8 +12,6 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
-import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.ShutterCallback;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -43,12 +41,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.util.Log;
-
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.androidplot.xy.XYPlot;
-
+import java.io.IOException;
+import java.util.ArrayList;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.ccorder.DrawOnTop;
@@ -56,9 +53,6 @@ import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 import org.c_base.c_beam.domain.Ring;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
@@ -106,33 +100,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
-    ShutterCallback shutter = new ShutterCallback() {
-        @Override
-        public void onShutter() {
-            // No action to be perfomed on the Shutter callback.
-        }
-    };
-    PictureCallback raw = new PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            // No action taken on the raw data. Only action taken on jpeg data.
-        }
-    };
-
-    PictureCallback jpeg = new PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            // No action taken on the jpeg data yet.
-        }
-    };
     private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
     private String[] dimensionArrayLux = {"/ lux"};
     private String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
-    private boolean mustRelease = false;
-    private boolean previewOn = false;
     private SharedPreferences sharedPref;
     private Runnable updateSlowPlotsCallbacks = new Runnable() {
         @Override

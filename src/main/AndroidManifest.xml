@@ -117,19 +117,6 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
 
-        <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="org.c_base.c_beam" />
-            </intent-filter>
-        </receiver>
-
-        <service android:name="org.c_base.c_beam.GCMIntentService" />
-
         <!--
         Currently not working
         <receiver android:name="org.c_base.c_beam.C_beamAppWidgetProvider" >
@@ -327,7 +314,7 @@
         </activity>
 
         <!-- MQTT Service -->
-        <!--
+        <!-- -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <receiver android:name=".boot.BootReceiver" >
@@ -338,7 +325,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        -->
+        <!-- -->
     </application>
 
 </manifest>
