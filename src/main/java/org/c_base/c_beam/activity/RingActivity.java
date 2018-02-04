@@ -30,20 +30,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
-
-import org.c_base.c_beam.GCMManager;
+import java.util.ArrayList;
+import java.util.Calendar;
+import org.c_base.c_beam.GCMFacade;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Ring;
 import org.c_base.c_beam.mqtt.MqttManager;
 import org.c_base.c_beam.util.Helper;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by smile on 2013-05-31.
@@ -396,11 +393,7 @@ public class RingActivity extends C_beamActivity {
 
     protected void setupGCM() {
         if (sharedPref.getBoolean(Settings.PUSH, false)) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            String registrationId = GCMManager.getRegistrationId(this);
-            String username = sharedPref.getString(Settings.USERNAME, "bernd");
-            new C_beamTask().execute("gcm_update", "user", username, "regid", registrationId);
-            //c_beam.register_update(registrationId, username);
+            GCMFacade.setupGCM(this);
         }
     }
 

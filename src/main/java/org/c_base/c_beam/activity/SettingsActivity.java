@@ -1,14 +1,12 @@
 package org.c_base.c_beam.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
-import org.c_base.c_beam.GCMManager;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
@@ -95,11 +93,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		push.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+				new AlertDialog.Builder(context)
+						.setMessage("Please restart device to apply change")
+						.show();
+
+				/*
+				TODO: later please do everything correctly - also listen to preference in withGCM flavor
 				if (((Boolean) newValue).booleanValue()) {
 					GCMManager.register(context);
 				} else {
 					GCMManager.unregister(context);
 				}
+				*/
 
 				return true;
 			}
