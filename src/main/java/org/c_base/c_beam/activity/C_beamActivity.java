@@ -4,19 +4,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
@@ -141,38 +138,6 @@ public class C_beamActivity extends SherlockFragmentActivity {
     protected void startActivity(Class activityClass) {
         Intent myIntent = new Intent(this, activityClass);
         startActivityForResult(myIntent, 0);
-    }
-
-    protected class C_beamTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            if (params.length == 3) {
-                return c_beam.call(params[0], params[1], params[2]);
-            } else if (params.length == 5) {
-                return c_beam.call(params[0], params[1], params[2], params[3], params[4]);
-            }
-            return "failure";
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-//            if (result.contentEquals("eta_set")) {
-//                result = getText(R.string.eta_set).toString();
-//            } else if (result.contentEquals("eta_removed")) {
-//                result = getText(R.string.eta_removed).toString();
-//            } else {
-//                result = getText(R.string.eta_failure).toString();
-//            }
-            //Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
     }
 
 }

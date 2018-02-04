@@ -13,14 +13,14 @@ public class GCMManager {
 	public static final String SENDER_ID = "987966345562";
 
 	public static void register(Context context) {
-		Log.v("GCMManager", "register()");
+		Log.v("org.c_base.c_beam.GCMManager", "register()");
 		GCMRegistrar.checkDevice(context);
 		GCMRegistrar.checkManifest(context);
 		GCMRegistrar.register(context, SENDER_ID);
 	}
 
 	public static void unregister(Context context) {
-		Log.v("GCMManager", "unregister()");
+		Log.v("org.c_base.c_beam.GCMManager", "unregister()");
 		GCMRegistrar.unregister(context);
 	}
 
@@ -32,7 +32,7 @@ public class GCMManager {
 			registrationId = GCMRegistrar.getRegistrationId(context);
 		}
 
-		Log.v("GCMManager", "getRegistrationId() = " + registrationId);
+		Log.v("org.c_base.c_beam.GCMManager", "getRegistrationId() = " + registrationId);
 
 		return registrationId;
 	}
