@@ -1,4 +1,9 @@
 Release Notes
+
+1.5.2
+- Added matelight tab to core activity
+- Replaced Google Maps with OSM
+
 1.5.1
 - Fixed Google Alert regarding WebView SSL Error Handler
 
@@ -28,3 +33,5 @@ Release Notes
 1.1.2
 * Missionen / Activity Log
 * NFC Login (cketti)
+
+all release notes at: https://github.com/c-base/c-beam-droid/blob/master/releasenotes.txt
