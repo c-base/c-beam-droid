@@ -1,4 +1,29 @@
 Release Notes
+1.5.1
+- Fixed Google Alert regarding WebView SSL Error Handler
+
+1.5.0
+- MQTT push notification support
+- SDK Update
+
+1.4.4
+- added temperature sensor to c-corder (thx to bronsen)
+- fixed notification timestamp bug.
+- updated api
+
+1.4.3
+- c-beam changed url bugfix
+- c-corder bugfix
+
+1.4.2
+- smart watch notification interface for 3rd party apps
+- c-beam url updated
+- bugfixes
+
+1.4.1
+- bugfix and easteregg release
+
+[some release notes are missing]
 
 1.1.2
 * Missionen / Activity Log
