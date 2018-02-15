@@ -140,7 +140,8 @@ public class ClampActivity extends RingActivity {
                     fragment = new ArtefactListFragment();
                 } else if (position == GOOGLE_MAP_FRAGMENT) {
                     fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+                    //((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
                 } else if (position == WWW_CBO_FRAGMENT) {
                     fragment = new C_portalWebViewFragment();
                     ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));

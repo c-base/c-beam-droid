@@ -307,4 +307,6 @@
     <string name="pref_mqtt_password_summ">passwort fu:r den MQTT server</string>
     <string name="pref_mqtt_id_summ">MQTT client id</string>
     <string name="pref_mqtt_id">MQTT ID</string>
+    <string name="osm_map_url">https://www.openstreetmap.org/#map=18/52.51297/13.42013</string>
+    <string name="matelight_url">http://matelight.cbrp3.c-base.org/</string>
 </resources>

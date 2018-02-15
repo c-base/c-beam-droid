@@ -28,7 +28,8 @@ public class CoreActivity extends RingActivity {
     private static final int MEMBERINTERFACE_FRAGMENT = 1;
     private static final int HYPERBLAST_FRAGMENT = 2;
     private static final int MEGABLAST_FRAGMENT = 3;
-    private static final int RINGINFO_FRAGMENT = 4;
+    private static final int MATELIGHT_FRAGMENT = 4;
+    private static final int RINGINFO_FRAGMENT = 5;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -120,6 +121,9 @@ public class CoreActivity extends RingActivity {
                 } else if (position == MEGABLAST_FRAGMENT) {
                     fragment = new C_portalWebViewFragment();
                     ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
+                } else if (position == MATELIGHT_FRAGMENT) {
+                    fragment = new C_portalWebViewFragment();
+                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.matelight_url));
                 } else if (position == RINGINFO_FRAGMENT) {
                     fragment = new RinginfoFragment();
                     ((RinginfoFragment) fragment).setRing("core");
@@ -135,20 +139,22 @@ public class CoreActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            return 6;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
+                case CONTROL_FRAGMENT:
                     return getString(R.string.title_core_section1).toUpperCase();
-                case 1:
+                case MEMBERINTERFACE_FRAGMENT:
                     return getString(R.string.title_core_section2).toUpperCase();
-                case 2:
+                case HYPERBLAST_FRAGMENT:
                     return getString(R.string.title_core_section3).toUpperCase();
-                case 3:
+                case MEGABLAST_FRAGMENT:
                     return getString(R.string.title_core_section4).toUpperCase();
+                case MATELIGHT_FRAGMENT:
+                    return "matelight".toUpperCase();
                 case RINGINFO_FRAGMENT:
                     return getString(R.string.title_ringinfo).toUpperCase();
 
