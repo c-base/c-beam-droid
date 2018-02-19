@@ -204,7 +204,11 @@ public class C_beam {
 //            System.out.println(response.getResult());
 //        else
 //            System.out.println(response.getError().getMessage());
-        return (net.minidev.json.JSONObject) response.getResult();
+        if (response != null) {
+            return (net.minidev.json.JSONObject) response.getResult();
+        } else {
+            return null;
+        }
     }
 
     private void updateLists() {
@@ -734,7 +738,10 @@ public class C_beam {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", user);
         params.put("eta", eta);
-        result = (String) etaCall("eta", params).get("result");
+        JSONObject call_result = etaCall("eta", params);
+        if (call_result != null) {
+            result = (String) call_result.get("result");
+        }
         return result;
     }
 
