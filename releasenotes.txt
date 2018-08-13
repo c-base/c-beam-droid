@@ -1,5 +1,8 @@
 Release Notes
 
+1.5.3
+- Fixed crash in push settings
+
 1.5.2
 - Added matelight tab to core activity
 - Replaced Google Maps with OSM
