@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion '25.0.2'
+    defaultConfig {
+        applicationId "org.c_base.c_beam"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "gcm"
+
+    productFlavors {
+        withGCM {
+            dimension "gcm"
+        }
+
+        noGCM {
+            dimension "gcm"
+        }
+    }
+}
+
+dependencies {
+    compile 'com.androidplot:androidplot-core:0.6.1'
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.madgag.spongycastle:core:1.51.0.0'
+    compile 'com.madgag.spongycastle:prov:1.51.0.0'
+    compile 'com.madgag.spongycastle:pkix:1.51.0.0'
+    compile 'com.thetransactioncompany:jsonrpc2-base:1.38'
+    compile 'com.thetransactioncompany:jsonrpc2-client:1.16.4'
+    //compile "com.google.android.gms:play-services-gcm:8.4.0"
+    compile('org.eclipse.paho:org.eclipse.paho.android.service:latest.integration') {
+        exclude module: 'support-v4'
+    }
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:latest.integration'
+    withGCMCompile fileTree(dir: 'libs', include: '*.jar')
+}
