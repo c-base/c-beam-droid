@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -20,8 +21,13 @@ import net.minidev.json.JSONObject;
 
 import org.c_base.c_beam.Settings;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -137,7 +143,49 @@ public class C_beam {
         thread.start();
     }
 
+    // TODO sort out rules for 'in crew network'
+    //      for now just resolve cbeam internal url. should work fine with thetering (no wifi)
     public boolean isInCrewNetwork() {
+
+        // TODO check network permission first
+/*
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+*/
+
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            //URL url = new URL("http://c-beam.cbrp3.c-base.org:80");
+            //InetAddress ia = InetAddress.getByName("c-beam.cbrp3.c-base.org");
+            //Log.d(TAG, "Check for crew network: " + ia.getHostAddress());
+            //return true;
+
+            long start = System.currentTimeMillis();
+            InetAddress ia = InetAddress.getByName("c-beam.cbrp3.c-base.org");
+            String hostAddress = ia.getHostAddress();
+            long dnsResolved = System.currentTimeMillis();
+            SocketAddress sockaddr = new InetSocketAddress(ia, 80);
+            Socket socket = new Socket();
+            socket.connect(sockaddr, 5000);
+            socket.close();
+            long probeFinish = System.currentTimeMillis();
+            //r.dns = (int) (dnsResolved - start);
+            //r.cnt = (int) (probeFinish - dnsResolved);
+            //r.host = url.getHost();
+            //r.ip = hostAddress;
+
+            Log.d(TAG, "Check for crew network. DNS: " + (dnsResolved - start) + "ms, Connect: " + (probeFinish - dnsResolved) + "ms. [" + hostAddress + "]");
+
+            return true;
+        } catch (UnknownHostException e) {
+            Log.d(TAG, "Check for crew network: Unknown host " + e.getLocalizedMessage(), e);
+        } catch (Throwable t) {
+            Log.e(TAG, "Check for crew network failed.", t);
+        }
+        return false;
+        /*
         if (activity == null) {
             Log.e(TAG, "no activity set");
             return true;
@@ -150,6 +198,7 @@ public class C_beam {
         WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
+        */
     }
 
     private Object c_beamCall(String method, Map<String, Object> params) {

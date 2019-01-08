@@ -67,8 +67,8 @@ public class RingActivity extends C_beamActivity {
     protected View mOfflineArea;
     protected View mCbeamArea;
     protected boolean mIsOnline = false;
-    protected WifiBroadcastReceiver mWifiReceiver;
-    protected IntentFilter mWifiIntentFilter;
+    //protected WifiBroadcastReceiver mWifiReceiver;
+    //protected IntentFilter mWifiIntentFilter;
 
     protected TextView tvAp = null;
     protected TextView tvUsername = null;
@@ -425,7 +425,7 @@ public class RingActivity extends C_beamActivity {
 
     @Override
     protected void onPause() {
-        unregisterReceiver(mWifiReceiver);
+        //unregisterReceiver(mWifiReceiver);
         stopNetworkingThreads();
         super.onPause();
     }
@@ -435,7 +435,7 @@ public class RingActivity extends C_beamActivity {
         c_beam.setActivity(this);
         //c_beam.testJsonRPC2();
 
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
+        //registerReceiver(mWifiReceiver, mWifiIntentFilter);
         if (c_beam.isInCrewNetwork()) {
             switchToOnlineMode();
         } else {
@@ -575,8 +575,8 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void initializeBroadcastReceiver() {
-        mWifiReceiver = new WifiBroadcastReceiver();
-        mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        //mWifiReceiver = new WifiBroadcastReceiver();
+        //mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
     }
 
     protected class RingAdapter extends ArrayAdapter {
