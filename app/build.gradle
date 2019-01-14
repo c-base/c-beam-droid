@@ -9,6 +9,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        archivesBaseName = "c_app-$versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,14 +18,33 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            applicationIdSuffix ".debug"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
-    flavorDimensions "gcm"
+    flavorDimensions "gcm", "mostlybroken"
 
     productFlavors {
+        legacy {
+            dimension "mostlybroken"
+            applicationIdSuffix ".legacy"
+            manifestPlaceholders.cbeamNameDebug = "c-beamer (legacy)"
+        }
+
+        develop {
+            dimension "mostlybroken"
+            applicationIdSuffix ".develop"
+            manifestPlaceholders.cbeamNameDebug = "c-beamer (develop)"
+        }
+
+        mostlybroken {
+            dimension "mostlybroken"
+            applicationIdSuffix ".mostlybroken"
+            manifestPlaceholders.cbeamNameDebug = "c-beamer (mostlybroken)"
+        }
+
         withGCM {
             dimension "gcm"
         }
