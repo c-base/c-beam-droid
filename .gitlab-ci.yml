@@ -1,0 +1,45 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - build
+  - deploy
+
+###################################################
+# MostlyBroken Builds
+# Experimental repositories, inofficial keys
+###################################################
+
+MostlyBroken Android:
+  stage: build
+  script:
+    - echo "sdk.dir=/home/gitlab-runner/android/android-sdk" > local.properties
+    - echo "ndk.dir=/home/gitlab-runner/android/android-sdk/ndk-bundle" >> local.properties
+    - ./gradlew clean
+    - ./gradlew assembleNoGCMDevelopDebug
+  artifacts:
+    paths:
+    - app/build/outputs/
+  only:
+    - develop
+  tags:
+    - android
+    - MostlyBroken
+
+MostlyBroken Android deploy:
+  stage: deploy
+  script:
+    - cp app/build/outputs/apk/noGCMDevelop/debug/c_app*.apk ~/mb/cshell/cbeam/fdroid/repo
+    - cp app/build/outputs/apk/noGCMDevelop/debug/c_app*.apk ~/mb/cshell/cbeam-develop/fdroid/repo
+    - cd ~/mb/cshell/cbeam/fdroid/
+    - fdroid update
+    - fdroid server update
+    - cd ~/mb/cshell/cbeam-develop/fdroid/
+    - fdroid update
+    - fdroid server update
+  only:
+    - develop
+  tags:
+    - c-base
+    - deploy
+    - MostlyBroken
