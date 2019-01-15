@@ -29,7 +29,7 @@ import org.c_base.c_beam.util.Helper;
  */
 public class C_beamAppWidgetProvider extends AppWidgetProvider {
 	// log tag
-	private static final String TAG = "ExampleAppWidgetProvider";
+	private static final String TAG = "CBeamAppWidgetProvider";
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
