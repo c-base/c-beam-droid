@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -443,20 +444,28 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 //        if(mSurfaceView.getVisibility() != View.VISIBLE) {
 //            camera = Camera.open();
 //        }
-        Parameters params = camera.getParameters();
-        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-        camera.setParameters(params);
+        try {
+            Parameters params = camera.getParameters();
+            params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            camera.setParameters(params);
+        } catch (Exception ex) {
+            Log.e(TAG, "TODO camera permission", ex);
+        }
         //Log.d(TAG, "ledOn " + System.currentTimeMillis());
     }
 
     void ledOff() {
-        Parameters params = camera.getParameters();
-        params.setFlashMode(Parameters.FLASH_MODE_OFF);
-        camera.setParameters(params);
-//        if(mSurfaceView.getVisibility() != View.VISIBLE) {
-//            camera.release();
-//        }
-        //Log.d(TAG, "ledOff" + System.currentTimeMillis());
+        try {
+            Parameters params = camera.getParameters();
+            params.setFlashMode(Parameters.FLASH_MODE_OFF);
+            camera.setParameters(params);
+//          if(mSurfaceView.getVisibility() != View.VISIBLE) {
+//              camera.release();
+//          }
+            //Log.d(TAG, "ledOff" + System.currentTimeMillis());
+        } catch (Exception ex) {
+            Log.e(TAG, "TODO camera permission", ex);
+        }
     }
 
     void ledflash() {
@@ -527,7 +536,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 //        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
         startTimerForSlowPlots();
-        camera = Camera.open();
+        try {
+            camera = Camera.open();
+        } catch (Exception ex) {
+            Log.e(TAG, "TODO camera permission", ex);
+        }
     }
 
     private void startTimerForSlowPlots() {
@@ -543,9 +556,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     protected void onPause() {
         super.onPause();
         unregisterSensors();
-        camera.stopPreview();
-        camera.release();
-        camera = null;
+        try {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        } catch (Exception ex) {
+            Log.e(TAG, "TODO camera permission", ex);
+        }
         handler.removeCallbacks(updateSlowPlotsCallbacks);
     }
 
