@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 22
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "org.c_base.c_beam"
-        minSdkVersion 14
-        targetSdkVersion 23
+        minSdkVersion 9
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile 'com.androidplot:androidplot-core:0.6.1'
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:22.2.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
