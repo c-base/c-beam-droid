@@ -7,8 +7,8 @@ android {
         applicationId "org.c_base.c_beam"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 19999001 // scheme: xx.xx.xx.xxx major.minor.patch.buildnumber
+        versionName "2.0.0α"
         archivesBaseName = "c_app-$versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
