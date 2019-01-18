@@ -58,7 +58,7 @@ android {
 dependencies {
     compile 'com.androidplot:androidplot-core:0.6.1'
     compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.madgag.spongycastle:prov:1.51.0.0'

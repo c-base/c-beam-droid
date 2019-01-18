@@ -8,11 +8,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.actionbarsherlock.app.ActionBar;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;

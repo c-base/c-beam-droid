@@ -21,10 +21,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-
-import com.actionbarsherlock.app.SherlockActivity;
 
 import org.c_base.c_beam.util.Helper;
 
@@ -34,7 +33,7 @@ import org.c_base.c_beam.util.Helper;
 /**
  * The configuration screen for the ExampleAppWidgetProvider widget sample.
  */
-public class AppWidgetConfigure extends SherlockActivity {
+public class AppWidgetConfigure extends AppCompatActivity {
     static final String TAG = "AppWidgetConfigure";
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
