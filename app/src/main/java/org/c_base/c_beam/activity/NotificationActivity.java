@@ -6,11 +6,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-
-import com.actionbarsherlock.view.Menu;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.domain.Notification;

@@ -3,10 +3,9 @@ package org.c_base.c_beam.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 import org.c_base.c_beam.R;
 
@@ -29,7 +28,7 @@ public class ArtefactActivity extends C_beamActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_artefact, menu);
+		getMenuInflater().inflate(R.menu.activity_artefact, menu);
 		return true;
 	}
 

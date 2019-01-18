@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import org.c_base.c_beam.R;
 
@@ -24,7 +23,7 @@ public class BamActivity extends C_beamActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getSherlock().getMenuInflater().inflate(R.menu.activity_bam, menu);
+		getMenuInflater().inflate(R.menu.activity_bam, menu);
 		return true;
 	}
 
