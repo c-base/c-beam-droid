@@ -1,6 +1,5 @@
 package org.c_base.c_beam;
 
-import com.google.android.gcm.GCMRegistrar;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,26 +13,26 @@ public class GCMManager {
 
 	public static void register(Context context) {
 		Log.v("org.c_base.c_beam.GCMManager", "register()");
-		GCMRegistrar.checkDevice(context);
-		GCMRegistrar.checkManifest(context);
-		GCMRegistrar.register(context, SENDER_ID);
+		//GCMRegistrar.checkDevice(context);
+		//GCMRegistrar.checkManifest(context);
+		//GCMRegistrar.register(context, SENDER_ID);
 	}
 
 	public static void unregister(Context context) {
 		Log.v("org.c_base.c_beam.GCMManager", "unregister()");
-		GCMRegistrar.unregister(context);
+		//GCMRegistrar.unregister(context);
 	}
 
-	public static String getRegistrationId(Context context) {
-		String registrationId = GCMRegistrar.getRegistrationId(context);
-
-		if ("".equals(registrationId)) {
-			register(context);
-			registrationId = GCMRegistrar.getRegistrationId(context);
-		}
-
-		Log.v("org.c_base.c_beam.GCMManager", "getRegistrationId() = " + registrationId);
-
-		return registrationId;
-	}
+//	public static String getRegistrationId(Context context) {
+//		String registrationId = GCMRegistrar.getRegistrationId(context);
+//
+//		if ("".equals(registrationId)) {
+//			register(context);
+//			registrationId = GCMRegistrar.getRegistrationId(context);
+//		}
+//
+//		Log.v("org.c_base.c_beam.GCMManager", "getRegistrationId() = " + registrationId);
+//
+//		return registrationId;
+//	}
 }

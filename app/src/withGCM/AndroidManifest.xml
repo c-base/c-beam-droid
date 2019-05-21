@@ -3,20 +3,11 @@
     package="org.c_base.c_beam">
 
     <application>
-
-        <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+        <service android:name="org.c_base.c_beam.GCMIntentService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="org.c_base.c_beam" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </receiver>
-
-        <service android:name="org.c_base.c_beam.GCMIntentService" />
-
+        </service>
     </application>
 
 </manifest>
