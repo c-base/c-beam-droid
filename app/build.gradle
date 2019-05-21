@@ -50,5 +50,6 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:latest.integration'
-    withGCMImplementation fileTree(dir: 'libs', include: '*.jar')
+    withGCMImplementation fileTree(dir: '../libs', include: '*.jar')
+    withGCMImplementation 'com.google.firebase:firebase-messaging:18.0.0'
 }
