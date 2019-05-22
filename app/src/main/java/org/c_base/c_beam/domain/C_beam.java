@@ -1,12 +1,9 @@
 package org.c_base.c_beam.domain;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -766,6 +763,7 @@ public class C_beam {
             result = (String) c_beamCall(method, params);
         } else {
             result = "not in crew network";
+            Log.i("c-beam", "Ignoring call to " + method + ": Not in crew network");
         }
         return result;
     }
