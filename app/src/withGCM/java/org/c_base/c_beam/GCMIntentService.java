@@ -9,8 +9,13 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.c_base.c_beam.activity.NotificationActivity;
+import org.c_base.c_beam.domain.C_beam;
+import org.c_base.c_beam.util.NotificationsDataSource;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,12 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.c_base.c_beam.activity.NotificationActivity;
-import org.c_base.c_beam.domain.C_beam;
-import org.c_base.c_beam.extension.NotificationBroadcast;
-import org.c_base.c_beam.util.NotificationsDataSource;
 
 
 public class GCMIntentService extends FirebaseMessagingService {
@@ -91,10 +91,10 @@ public class GCMIntentService extends FirebaseMessagingService {
 
         String notificationText;
         if (title.equals("now boarding")) {
-            NotificationBroadcast.sendBoardingBroadcast(this, text, today);
+            // NotificationBroadcast.sendBoardingBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + ": " + text;
         } else if (title.equals("ETA")) {
-            sendEtaBroadcast(this, text, today);
+            // sendEtaBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + " " + text;
         } else if (title.equals("mission completed")) {
             notificationText = timestamp + ": " + text;
@@ -156,7 +156,7 @@ public class GCMIntentService extends FirebaseMessagingService {
 
         dataSource.close();
     }
-
+    /*
     private void sendEtaBroadcast(Context context, String text,  Date today) {
 		Matcher matcher = ETA_PATTERN.matcher(text);
 		if (matcher.matches()) {
@@ -165,5 +165,5 @@ public class GCMIntentService extends FirebaseMessagingService {
 
 			NotificationBroadcast.sendEtaBroadcast(context, member, eta, today);
 		}
-	}
+	}*/
 }

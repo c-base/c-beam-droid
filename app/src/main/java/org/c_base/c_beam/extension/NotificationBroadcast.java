@@ -4,8 +4,6 @@ package org.c_base.c_beam.extension;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.Date;
-
 public class NotificationBroadcast {
 	public static final String ACTION_BOARDING = "org.c_base.c_beam.extension.NOTIFICATION_BOARDING";
 	public static final String ACTION_ETA = "org.c_base.c_beam.extension.NOTIFICATION_ETA";
@@ -18,7 +16,7 @@ public class NotificationBroadcast {
 
 	public static final String NOTIFICATION_PERMISSION = "org.c_base.c_beam.permission.NOTIFICATION";
 
-
+/*
 	public static void sendBoardingBroadcast(Context context, String member, String timestamp) {
 		Intent intent = new Intent(ACTION_BOARDING);
 		intent.putExtra(EXTRA_MEMBER, member);
@@ -48,7 +46,7 @@ public class NotificationBroadcast {
         intent.putExtra(EXTRA_TIMESTAMP, timestamp);
         context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
     }
-
+*/
 	public static void sendReadBroadcast(Context context) {
 		Intent intent = new Intent(ACTION_READ);
 		context.sendBroadcast(intent, NOTIFICATION_PERMISSION);
