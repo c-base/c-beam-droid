@@ -1,9 +1,12 @@
 package org.c_base.c_beam.domain;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -144,7 +147,7 @@ public class C_beam {
         if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false) || debug)
             return true;
 
-        WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
