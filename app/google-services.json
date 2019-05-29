@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "987966345562",
+    "firebase_url": "https://c-beam.firebaseio.com",
+    "project_id": "c-beam",
+    "storage_bucket": "c-beam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987966345562:android:774099477aee8895",
+        "android_client_info": {
+          "package_name": "org.c_base.c_beam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987966345562-6n4564hj21bqfmjjlkc5k7386srvhvea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ3j1jBgZHVj7ylB7ZbIbs1QMFE97dIkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987966345562-6n4564hj21bqfmjjlkc5k7386srvhvea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987966345562:android:a0340b40cb9a62fe",
+        "android_client_info": {
+          "package_name": "org.c_base.c_beam.develop.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987966345562-dl5leta1hs1mgs3galjgo9ud5ca0i61t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.c_base.c_beam.develop.debug",
+            "certificate_hash": "6e6582cc556d447f6d371fe10c3045074024f71b"
+          }
+        },
+        {
+          "client_id": "987966345562-6n4564hj21bqfmjjlkc5k7386srvhvea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ3j1jBgZHVj7ylB7ZbIbs1QMFE97dIkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987966345562-6n4564hj21bqfmjjlkc5k7386srvhvea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

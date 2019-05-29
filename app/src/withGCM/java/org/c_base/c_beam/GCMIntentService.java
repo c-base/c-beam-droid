@@ -5,23 +5,29 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import com.google.android.gcm.GCMBaseIntentService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.c_base.c_beam.activity.NotificationActivity;
+import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.extension.NotificationBroadcast;
 import org.c_base.c_beam.util.NotificationsDataSource;
 
 
-public class GCMIntentService extends GCMBaseIntentService {
+public class GCMIntentService extends FirebaseMessagingService {
     private static final String LOG_TAG = "c-beam";
 	private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
@@ -31,7 +37,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 
     public GCMIntentService() {
-		super("GCMIntentService");
+		super();
     }
 
     @Override
@@ -41,26 +47,54 @@ public class GCMIntentService extends GCMBaseIntentService {
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
+     */
     @Override
-	protected void onError(Context context, String errorId) {
-		Log.i("GCM Error", errorId);
-	}
+    public void onNewToken(String token) {
+        Log.d("FCM", "Refreshed token: " + token);
 
-	@Override
-	protected void onMessage(Context context, Intent intent) {
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // Instance ID token to your app server.
+        sendRegistrationToServer(token);
+    }
+
+    private void sendRegistrationToServer(String token) {
+        final String regid = token;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String username = sharedPref.getString(Settings.USERNAME, "bernd");
+
+                C_beam c_beam = C_beam.getInstance();
+                c_beam.call("fcm_update", "user", username, "regid", regid);
+            }
+        }).start();
+    }
+
+    @Override
+    public void onMessageReceived(RemoteMessage message) {
+	//protected void onMessage(Context context, Intent intent) {
         Date today = Calendar.getInstance().getTime();
         //String timestamp = DATE_FORMAT.format(today);
+        Map<String, String> data = message.getData();
+        String title = message.getNotification().getTitle();
+        String text = message.getNotification().getBody();
+        // String timestamp = new SimpleDateFormat("HH:mm").format(new Date(new Long(message.getSentTime()) * 1000));
+        String timestamp = data.get("timestamp");
 
-        String title = intent.getExtras().getString("title");
-        String text = intent.getExtras().getString("text");
-        String timestamp = intent.getExtras().getString("timestamp");
+        //String timestamp = new Long(message.getSentTime()).toString();
 
         String notificationText;
         if (title.equals("now boarding")) {
-            NotificationBroadcast.sendBoardingBroadcast(context, text, today);
+            NotificationBroadcast.sendBoardingBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + ": " + text;
         } else if (title.equals("ETA")) {
-            sendEtaBroadcast(context, text, today);
+            sendEtaBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + " " + text;
         } else if (title.equals("mission completed")) {
             notificationText = timestamp + ": " + text;
@@ -131,15 +165,5 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			NotificationBroadcast.sendEtaBroadcast(context, member, eta, today);
 		}
-	}
-
-	@Override
-	protected void onRegistered(Context context, String registrationId) {
-		Log.i("GCM Registered", registrationId);
-	}
-
-	@Override
-	protected void onUnregistered(Context context, String registrationId) {
-		Log.i("GCM Unregistered", registrationId);
 	}
 }
