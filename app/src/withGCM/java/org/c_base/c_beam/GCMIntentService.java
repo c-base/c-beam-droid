@@ -78,23 +78,15 @@ public class GCMIntentService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
-	//protected void onMessage(Context context, Intent intent) {
-        Date today = Calendar.getInstance().getTime();
-        //String timestamp = DATE_FORMAT.format(today);
-        Map<String, String> data = message.getData();
         String title = message.getNotification().getTitle();
         String text = message.getNotification().getBody();
         // String timestamp = new SimpleDateFormat("HH:mm").format(new Date(new Long(message.getSentTime()) * 1000));
-        String timestamp = data.get("timestamp");
-
-        //String timestamp = new Long(message.getSentTime()).toString();
+        String timestamp = message.getData().get("timestamp");
 
         String notificationText;
         if (title.equals("now boarding")) {
-            // NotificationBroadcast.sendBoardingBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + ": " + text;
         } else if (title.equals("ETA")) {
-            // sendEtaBroadcast(this, text, today);
             notificationText = timestamp + ": " + title + " " + text;
         } else if (title.equals("mission completed")) {
             notificationText = timestamp + ": " + text;
@@ -102,7 +94,6 @@ public class GCMIntentService extends FirebaseMessagingService {
             Log.d(LOG_TAG, "Unknown notification message received: " + title);
             return;
         }
-
         createNotification(notificationText);
     }
 
