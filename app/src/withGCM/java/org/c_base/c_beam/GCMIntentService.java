@@ -78,9 +78,11 @@ public class GCMIntentService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        String title = message.getNotification().getTitle();
-        String text = message.getNotification().getBody();
+        // String title = message.getNotification().getTitle();
+        // String text = message.getNotification().getBody();
         // String timestamp = new SimpleDateFormat("HH:mm").format(new Date(new Long(message.getSentTime()) * 1000));
+        String title = message.getData().get("title");
+        String text = message.getData().get("text");
         String timestamp = message.getData().get("timestamp");
 
         String notificationText;
