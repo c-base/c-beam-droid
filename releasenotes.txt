@@ -1,4 +1,6 @@
 Release Notes
+1.6.0
+- Switched from GCM to FCM (Google notifications)
 
 1.5.3
 - Fixed crash in push settings
