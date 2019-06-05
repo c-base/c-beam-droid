@@ -1,4 +1,7 @@
 Release Notes
+1.6.1
+- Fixed JSON RPC connection on Android 9
+
 1.6.0
 - Switched from GCM to FCM (Google notifications)
 
