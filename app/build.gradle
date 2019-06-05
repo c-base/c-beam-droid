@@ -8,8 +8,8 @@ android {
         applicationId "org.c_base.c_beam"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 27
-        versionName "1.6.0"
+        versionCode 28
+        versionName "1.6.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
