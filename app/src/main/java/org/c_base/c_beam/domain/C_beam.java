@@ -45,7 +45,7 @@ public class C_beam {
 
     private static final String TAG = "c-beam";
 
-    private static final String C_BEAM_URL = "http://c-beam.cbrp3.c-base.org:4254/rpc/";
+    private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
     private static final String C_PORTAL_URL = "https://c-portal.c-base.org/rpc/";
     private static final String ETA_URL = "http://shell.c-base.org:4255/rpc/";
 
@@ -103,6 +103,7 @@ public class C_beam {
         }
 
         JSONRPC2Session session = new JSONRPC2Session(serverURL);
+        session.getOptions().trustAllCerts(true);
         return session;
     }
 
