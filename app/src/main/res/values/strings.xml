@@ -44,7 +44,7 @@
     <string name="pref_push_eta">push ETA</string>
     <string name="pref_display_ap">AP anzeigen</string>
     <string name="pref_display_ap_summ"></string>
-    <string name="c_beam_rpc_url">http://c-beam.cbrp3.c-base.org:4254/rpc/</string>
+    <string name="c_beam_rpc_url">https://c-beam.cbrp3.c-base.org/rpc/</string>
     <string name="menu_login">einloggen</string>
     <string name="menu_logout">ausloggen</string>
     <string name="title_activity_main_activity2">MainActivity2</string>
@@ -201,7 +201,7 @@
     <string name="button_expand"></string>
     <string name="button_collapse"></string>
     <string name="interface_map_url">https://c-beam.cbrp3.c-base.org/c-base-map/</string>
-    <string name="blueprint_map_url">http://smile.crew.c-base.org/basemap/</string>
+    <string name="blueprint_map_url">https://smile.crew.c-base.org/basemap/</string>
     <string name="google_map_url">
         <![CDATA[https://maps.google.de/maps?q=c-base&hl=de&cid=10710432516262848279&gl=DE&t=m&z=16&iwloc=A]]></string>
     <string name="title_activity_core">core</string>
@@ -219,7 +219,7 @@
     <string name="title_clamp_section2">artefacte</string>
     <string name="title_clamp_section3">carte</string>
     <string name="title_clamp_section4">terra</string>
-    <string name="www_cbo_url">http://www.c-base.org</string>
+    <string name="www_cbo_url">https://www.c-base.org</string>
     <string name="title_clamp_section5">www</string>
     <string name="title_carbon_section1">an bord</string>
     <string name="title_com_section1">c-portal</string>
@@ -237,10 +237,10 @@
     <string name="menu_creactiv">creactiv</string>
     <string name="menu_cience">cience</string>
     <string name="title_com_section2">logbuch</string>
-    <string name="logbuch_url">http://logbuch.c-base.org/</string>
-    <string name="coredump_url">http://wiki.c-base.org/coredump/</string>
+    <string name="logbuch_url">https://logbuch.c-base.org/</string>
+    <string name="coredump_url">https://wiki.c-base.org/coredump/</string>
     <string name="title_com_section3">cimp</string>
-    <string name="cimp_url">http://www.c-base.org/cv50f/core/init.html</string>
+    <string name="cimp_url">https://www.c-base.org/cv50f/core/init.html</string>
     <string name="title_com_section4">coredump</string>
     <string name="cbag_base_url">http://10.0.1.44</string>
     <string name="title_ringinfo">ringinfo</string>

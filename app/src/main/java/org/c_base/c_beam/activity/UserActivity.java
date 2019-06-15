@@ -34,7 +34,7 @@ public class UserActivity extends C_beamActivity {
 				addData(u);
 				WebView w = (WebView) findViewById(R.id.userWebView);
 				w.getSettings().setJavaScriptEnabled(true);
-				w.loadUrl("http://"+u.getUsername()+".crew.c-base.org");
+				w.loadUrl("https://"+u.getUsername()+".crew.c-base.org");
 
 			} else {
 				this.setTitle("c-beam user view");
