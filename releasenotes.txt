@@ -1,4 +1,8 @@
 Release Notes
+1.6.2
+- Changed some URLs from HTTP to HTTPS
+- Allowed HTTP connections anyway since some internal services don't have TLS
+
 1.6.1
 - Fixed JSON RPC connection on Android 9
 
