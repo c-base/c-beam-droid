@@ -1,13 +1,11 @@
 package org.c_base.c_beam.fragment;
 
+import org.c_base.c_beam.BuildConfig;
 import org.c_base.c_beam.R;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Html;
@@ -40,15 +38,9 @@ public class AboutDialogFragment extends DialogFragment {
     }
 
     private String getVersionName() {
-        String version = "?";
-        try {
-            Activity context = getActivity();
-            String packageName = context.getPackageName();
-            PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, 0);
-            version = pi.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // do nothing
+        if ("debug".equals(BuildConfig.BUILD_TYPE)) {
+            return String.format("%s (%d)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
         }
-        return version;
+        return BuildConfig.VERSION_NAME;
     }
 }
