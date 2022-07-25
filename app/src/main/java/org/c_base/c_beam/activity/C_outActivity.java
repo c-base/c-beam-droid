@@ -11,7 +11,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;

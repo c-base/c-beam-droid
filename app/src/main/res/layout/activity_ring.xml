@@ -109,7 +109,7 @@
 
             </RelativeLayout>
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -117,7 +117,7 @@
                     android:layout_below="@+id/ap_area"
 
                     android:layout_above="@+id/fragment">
-            </android.support.v4.view.ViewPager>
+            </androidx.viewpager.widget.ViewPager>
 
             <fragment
                     android:layout_width="wrap_content"

@@ -3,10 +3,12 @@ package org.c_base.c_beam.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.ToggleButton;
 
@@ -37,17 +39,17 @@ public class ClampActivity extends RingActivity {
     private static final String TAG = "ClampActivity";
 
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
+     * {@link FragmentPagerAdapter} derivative, which
      * will keep every loaded fragment in memory. If this becomes too memory
      * intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link android.support.v4.view.ViewPager} that will host the section contents.
+     * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
 
@@ -112,7 +114,7 @@ public class ClampActivity extends RingActivity {
     }
 
     /**
-     * A {@link android.support.v4.app.FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

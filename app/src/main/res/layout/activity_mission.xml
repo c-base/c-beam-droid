@@ -52,14 +52,14 @@
 	        android:text="0 AP"
 	        android:textSize="20sp" />
 
-	    <android.support.v4.view.ViewPager
+	    <androidx.viewpager.widget.ViewPager
 	        android:id="@+id/pager"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_above="@+id/activity_logger"
 	        android:layout_below="@+id/textView_username"
 	        tools:context=".MainActivity" >
-	    </android.support.v4.view.ViewPager>
+	    </androidx.viewpager.widget.ViewPager>
 
 	    <LinearLayout
 	        android:id="@+id/activity_logger"

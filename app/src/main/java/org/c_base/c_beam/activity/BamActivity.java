@@ -3,7 +3,7 @@ package org.c_base.c_beam.activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import androidx.core.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 

@@ -1,6 +1,6 @@
 package org.c_base.c_beam.fragment;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 public class MissionDetailFragment extends Fragment {
 //	protected static final String TAG = "MissionActivity";

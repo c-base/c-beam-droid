@@ -9,7 +9,7 @@ android {
         targetSdkVersion 30
         versionCode 29
         versionName "1.6.2"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -39,8 +39,8 @@ android {
 
 dependencies {
     implementation 'com.androidplot:androidplot-core:0.6.1'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     implementation 'com.madgag.spongycastle:core:1.51.0.0'
     implementation 'com.madgag.spongycastle:prov:1.51.0.0'
