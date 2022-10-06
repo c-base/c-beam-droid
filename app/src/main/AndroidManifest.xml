@@ -31,7 +31,8 @@
             android:name="org.c_base.c_beam.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -116,7 +117,8 @@
         </receiver>
         -->
 
-        <activity android:name="org.c_base.c_beam.activity.AppWidgetConfigure" >
+        <activity android:name="org.c_base.c_beam.activity.AppWidgetConfigure"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -203,7 +205,8 @@
                 android:value="org.c_base.c_beam.activity.MainActivity" />
         </activity>
 
-        <receiver android:name="org.c_base.c_beam.NotificationBroadcastReceiver" >
+        <receiver android:name="org.c_base.c_beam.NotificationBroadcastReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="notification_cancelled" />
             </intent-filter>
@@ -303,7 +306,8 @@
         <!-- -->
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
-        <receiver android:name=".boot.BootReceiver" >
+        <receiver android:name=".boot.BootReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
