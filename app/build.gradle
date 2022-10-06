@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation 'com.androidplot:androidplot-core:0.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     implementation 'com.madgag.spongycastle:core:1.51.0.0'
     implementation 'com.madgag.spongycastle:prov:1.51.0.0'
@@ -52,7 +52,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:latest.integration'
-    withGCMImplementation 'com.google.firebase:firebase-messaging:18.0.0'
+    withGCMImplementation 'com.google.firebase:firebase-messaging:23.0.8'
 }
 
 // apply plugin: 'com.google.gms.google-services'      //Add this line
