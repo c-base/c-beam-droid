@@ -1,4 +1,10 @@
 Release Notes
+1.6.4
+- API Update Release
+
+1.6.3
+- WTF-Release
+
 1.6.2
 - Changed some URLs from HTTP to HTTPS
 - Allowed HTTP connections anyway since some internal services don't have TLS
