@@ -52,7 +52,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:latest.integration'
-    withGCMImplementation 'com.google.firebase:firebase-messaging:18.0.0'
+    withGCMImplementation 'com.google.firebase:firebase-messaging:23.1.2'
 }
 
 // apply plugin: 'com.google.gms.google-services'      //Add this line
