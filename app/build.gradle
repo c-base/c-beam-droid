@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation 'com.androidplot:androidplot-core:0.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
     implementation 'com.madgag.spongycastle:core:1.51.0.0'
     implementation 'com.madgag.spongycastle:prov:1.51.0.0'
