@@ -1,12 +1,15 @@
 package org.c_base.c_beam;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
@@ -32,6 +35,7 @@ public class GCMIntentService extends FirebaseMessagingService {
 	private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
     private static final int NOTIFICATION_ID = 1;
+    private static final String CHANNEL_ID = "cbeam_channel";
 
     private NotificationManager mNotificationManager;
 
@@ -45,7 +49,50 @@ public class GCMIntentService extends FirebaseMessagingService {
         super.onCreate();
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // The id of the channel.
+        String id = "my_channel_01";
+
+        // The user-visible name of the channel.
+        CharSequence name = "c-beam";
+
+        // The user-visible description of the channel.
+        String description = "c-beam notifications";
+
+        int importance = NotificationManager.IMPORTANCE_LOW;
+
+        NotificationChannel mChannel = new NotificationChannel(id, name,importance);
+
+        // Configure the notification channel.
+        mChannel.setDescription(description);
+
+        // mChannel.enableLights(true);
+        // Sets the notification light color for notifications posted to this
+        // channel, if the device supports this feature.
+//        mChannel.setLightColor(Color.RED);
+//
+//        mChannel.enableVibration(true);
+//        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+
+        // mNotificationManager.createNotificationChannel(mChannel);
+        createNotificationChannel();
     }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this.
+            //NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+    }
+
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -106,13 +153,15 @@ public class GCMIntentService extends FirebaseMessagingService {
         dataSource.createNotification(notificationText);
 
         Intent notificationIntent = new Intent(this, NotificationActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent deleteIntent = new Intent(this, NotificationBroadcastReceiver.class);
         deleteIntent.setAction(NotificationBroadcastReceiver.ACTION_NOTIFICATION_CANCELLED);
 
         PendingIntent pendingDeleteIntent = PendingIntent.getBroadcast(this, 0, deleteIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.FLAG_IMMUTABLE
+        //        PendingIntent.FLAG_CANCEL_CURRENT
+        );
 
         try {
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
@@ -138,6 +187,7 @@ public class GCMIntentService extends FirebaseMessagingService {
                     .setTicker(notificationText)
                     .setDeleteIntent(pendingDeleteIntent)
                     .setContentIntent(pIntent)
+                    .setChannelId("cbeam_channel")
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setStyle(style)
                     .build();

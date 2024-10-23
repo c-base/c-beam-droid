@@ -3,7 +3,7 @@
 
     <application>
         <service android:name="org.c_base.c_beam.GCMIntentService"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
