@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_tts"
-            android:layout_alignParentRight="true"/>
+            android:layout_toLeftOf="@+id/button_bar"/>
 
     <Button
             android:id="@+id/button_c_maps"
@@ -41,6 +41,14 @@
             android:text="@string/button_c_mission"
             android:layout_toLeftOf="@+id/button_c_maps"/>
 
+
+    <Button
+        android:id="@+id/button_bar"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="BAR" />
 
 </RelativeLayout>
 

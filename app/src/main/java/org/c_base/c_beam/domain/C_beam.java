@@ -60,6 +60,7 @@ public class C_beam {
     private ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
     private ArrayList<Article> articleList = new ArrayList<Article>();
     private ArrayList<User> stats = new ArrayList<User>();
+    private boolean barStatus = false;
 
     private Activity activity;
 
@@ -224,6 +225,7 @@ public class C_beam {
                 updateActivitylog((JSONArray) result.get("activitylog"));
                 updateStats((JSONArray) result.get("stats"));
                 updateSounds((JSONArray) result.get("sounds"));
+                updateBarStatus((boolean) result.get("barstatus"));
                 sleepTime = 5000;
                 Log.i(TAG, "updateLists successful");
             } else {
@@ -300,6 +302,14 @@ public class C_beam {
             soundList.add("hilfe, die sounds sind weg");
         }
         this.sounds = soundList;
+    }
+
+    private void updateBarStatus(boolean barStatus) {
+        this.barStatus = barStatus;
+    }
+
+    public boolean getBarStatus() {
+        return this.barStatus;
     }
 
     private void updateUserLists(JSONArray userResult) {

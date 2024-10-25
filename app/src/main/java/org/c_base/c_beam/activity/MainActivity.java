@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +16,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
@@ -134,6 +137,7 @@ public class MainActivity extends RingActivity {
         C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
         ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
         ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
+        Button barButton = (Button) findViewById(R.id.button_bar);
 
         ArrayList<User> onlineList = c_beam.getOnlineList();
         ArrayList<User> etaList = c_beam.getEtaList();
@@ -190,6 +194,12 @@ public class MainActivity extends RingActivity {
             artefacts.clear();
             for (Artefact artefact : artefactList)
                 artefacts.addItem(artefact);
+        }
+
+        if (c_beam.getBarStatus()) {
+            barButton.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(0, 100, 0)));
+        } else {
+            barButton.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
         }
         activitylog.updateLog(c_beam.getActivityLog());
     }
