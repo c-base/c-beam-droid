@@ -1,5 +1,8 @@
 Release Notes
 
+1.7.1
+- Add bar status indicator
+
 1.7.0
 - Fix push notifications and update minSdk version
 

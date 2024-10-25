@@ -258,7 +258,6 @@ public class MainActivity extends RingActivity {
                 fragment.setArguments(new Bundle());
                 pages[position] = fragment;
             } else {
-
                 fragment = pages[position];
             }
             return fragment;
