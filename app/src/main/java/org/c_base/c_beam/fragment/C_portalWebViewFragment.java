@@ -1,5 +1,7 @@
 package org.c_base.c_beam.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -58,6 +60,30 @@ public class C_portalWebViewFragment extends Fragment {
                         }
                     } else {
                         super.onReceivedSslError(view, handler, error);
+                    }
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    if (url == null) {
+                        return false;
+                    }
+                    String current = view.getUrl();
+                    String currentHost = current != null ? Uri.parse(current).getHost() : null;
+                    String targetHost = Uri.parse(url).getHost();
+                    // Keep navigation on the portal host inside the WebView.
+                    // Hand any other link to the system so it opens in a
+                    // normal browser instead of loading over the portal.
+                    if (currentHost == null || currentHost.equals(targetHost)) {
+                        return false;
+                    }
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        view.getContext().startActivity(intent);
+                        return true;
+                    } catch (Exception e) {
+                        return false;
                     }
                 }
             });
