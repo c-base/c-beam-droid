@@ -25,6 +25,10 @@ import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -217,7 +221,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             public void onClick(View v) {
                 ToggleButton b = (ToggleButton) v;
                 if (b.isChecked()) {
-                    int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
+                    int toolbarHeight = getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
+                    int height = getResources().getDisplayMetrics().heightPixels - toolbarHeight - 240;
                     TranslateAnimation transAnimation = new TranslateAnimation(0, 0, 0, height);
                     transAnimation.setRepeatMode(2);
                     transAnimation.setRepeatCount(-1);
@@ -445,30 +450,28 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     void ledOn() {
-//        if(mSurfaceView.getVisibility() != View.VISIBLE) {
-//            camera = Camera.open();
-//        }
+        if (camera == null) {
+            return;
+        }
         try {
             Parameters params = camera.getParameters();
             params.setFlashMode(Parameters.FLASH_MODE_TORCH);
             camera.setParameters(params);
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to turn on led", ex);
         }
-        //Log.d(TAG, "ledOn " + System.currentTimeMillis());
     }
 
     void ledOff() {
+        if (camera == null) {
+            return;
+        }
         try {
             Parameters params = camera.getParameters();
             params.setFlashMode(Parameters.FLASH_MODE_OFF);
             camera.setParameters(params);
-//          if(mSurfaceView.getVisibility() != View.VISIBLE) {
-//              camera.release();
-//          }
-            //Log.d(TAG, "ledOff" + System.currentTimeMillis());
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to turn off led", ex);
         }
     }
 
@@ -537,13 +540,43 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     protected void onResume() {
         super.onResume();
-//        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
         startTimerForSlowPlots();
+        checkCameraPermission();
+    }
+
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 42;
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            openCamera();
+        }
+    }
+
+    private void openCamera() {
         try {
-            camera = Camera.open();
+            if (camera == null) {
+                camera = Camera.open();
+                if (mSurfaceHolder != null && mSurfaceHolder.getSurface().isValid()) {
+                    camera.setPreviewDisplay(mSurfaceHolder);
+                    camera.setDisplayOrientation(90);
+                    camera.startPreview();
+                }
+            }
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to open camera", ex);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            }
         }
     }
 
@@ -561,9 +594,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         super.onPause();
         unregisterSensors();
         try {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
+            if (camera != null) {
+                camera.stopPreview();
+                camera.release();
+                camera = null;
+            }
         } catch (Exception ex) {
             Log.e(TAG, "TODO camera permission", ex);
         }
