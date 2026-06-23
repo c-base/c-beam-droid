@@ -173,7 +173,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle(mTitle);
+                if (actionBar != null) {
+                    actionBar.setTitle(mTitle);
+                }
                 sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
             }
         };
@@ -184,9 +186,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     private void setupSounds() {

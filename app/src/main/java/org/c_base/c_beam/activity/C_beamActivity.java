@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,9 @@ import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.util.Helper;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.graphics.Insets;
 
 public class C_beamActivity extends AppCompatActivity {
     ActionBar actionBar;
@@ -35,7 +39,58 @@ public class C_beamActivity extends AppCompatActivity {
         //setupActionBar();
     }
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        setupActionBar();
+        applyEdgeToEdge();
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        setupActionBar();
+        applyEdgeToEdge();
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        super.setContentView(view, params);
+        setupActionBar();
+        applyEdgeToEdge();
+    }
+
+    private void applyEdgeToEdge() {
+        View root = findViewById(android.R.id.content);
+        if (root != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+                View toolbar = findViewById(R.id.toolbar);
+                if (toolbar != null) {
+                    toolbar.setPadding(toolbar.getPaddingLeft(), systemBars.top, toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+                    v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
+                } else {
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                }
+
+                View drawer = findViewById(R.id.left_drawer);
+                if (drawer != null) {
+                    drawer.setPadding(drawer.getPaddingLeft(), systemBars.top, drawer.getPaddingRight(), drawer.getPaddingBottom());
+                }
+
+                return insets;
+            });
+        }
+    }
+
     protected void setupActionBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+        actionBar = getSupportActionBar();
+        if (actionBar == null) return;
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);

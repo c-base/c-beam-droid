@@ -11,6 +11,14 @@
                   android:layout_height="match_parent"
                   android:orientation="vertical" >
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
         <!--
              Here is where we put the SurfaceView, in a frame so that we can
              stack other views on top of it.

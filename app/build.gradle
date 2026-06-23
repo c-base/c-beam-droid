@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "org.c_base.c_beam"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 37
         versionCode 34
         versionName "1.6.5"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -36,6 +36,11 @@ android {
         }
     }
     namespace 'org.c_base.c_beam'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {

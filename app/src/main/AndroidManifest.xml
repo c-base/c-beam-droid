@@ -98,7 +98,8 @@
             android:name="org.c_base.c_beam.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="org.c_base.c_beam.activity.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/PreferenceTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.c_base.c_beam.activity.MainActivity" />

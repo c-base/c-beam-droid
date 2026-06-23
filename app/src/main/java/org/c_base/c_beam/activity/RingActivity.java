@@ -375,7 +375,9 @@ public class RingActivity extends C_beamActivity {
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle(mTitle);
+                if (actionBar != null) {
+                    actionBar.setTitle(mTitle);
+                }
                 sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
             }
         };
@@ -386,9 +388,11 @@ public class RingActivity extends C_beamActivity {
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     protected void setupGCM() {
