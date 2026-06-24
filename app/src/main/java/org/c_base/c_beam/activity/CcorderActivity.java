@@ -16,7 +16,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +28,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
 import android.Manifest;
-import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.view.Gravity;
@@ -77,8 +78,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private TextView textView1;
     private TextView textView2;
     private MediaPlayer zap;
-    private MediaPlayer scan;
     private MediaPlayer bleeps;
+    private SoundPool soundPool;
+    private int scanSoundId;
 
     private SensorManager mSensorManager;
 
@@ -112,6 +114,10 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
     private SharedPreferences sharedPref;
+    private boolean hasLinearAcceleration = false;
+    private long lastScanSoundTime = 0;
+    private static final long SCAN_SOUND_MIN_INTERVAL = 150; // milliseconds
+
     private Runnable updateSlowPlotsCallbacks = new Runnable() {
         @Override
         public void run() {
@@ -199,8 +205,25 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     private void setupSounds() {
         zap = MediaPlayer.create(this, R.raw.zap);
-        scan = MediaPlayer.create(this, R.raw.scan);
         bleeps = MediaPlayer.create(this, R.raw.bleeps);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(10)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        scanSoundId = soundPool.load(this, R.raw.scan, 1);
+
+        soundPool.setOnLoadCompleteListener((pool, sampleId, status) -> {
+            if (status == 0) {
+                Log.d(TAG, "Scan sound loaded successfully");
+            } else {
+                Log.e(TAG, "Failed to load scan sound, status: " + status);
+            }
+        });
     }
 
     private void setupSurfaceView() {
@@ -385,22 +408,25 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
+        int[] sensorTypes = {
+                Sensor.TYPE_LINEAR_ACCELERATION,
+                Sensor.TYPE_ACCELEROMETER,
+                Sensor.TYPE_GRAVITY,
+                Sensor.TYPE_GYROSCOPE,
+                Sensor.TYPE_LIGHT,
+                Sensor.TYPE_MAGNETIC_FIELD,
+                Sensor.TYPE_AMBIENT_TEMPERATURE
+        };
+
+        for (int type : sensorTypes) {
+            Sensor s = mSensorManager.getDefaultSensor(type);
+            if (s != null) {
+                sensors.add(s);
+                if (type == Sensor.TYPE_LINEAR_ACCELERATION) {
+                    hasLinearAcceleration = true;
+                }
+            }
         }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-        }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_LIGHT)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
-        }
-        // it seems there is no PackageManager.FEATURE_SENSOR_MAGNETIC_FIELD
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE));
     }
 
     @Override
@@ -500,39 +526,44 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if (toggleButtonScanner.isChecked()) {
-                if (Math.abs(event.values[1] + event.values[2]) > 5) {
-                    scan.seekTo(0);
-                    scan.start();
+        int type = event.sensor.getType();
+
+        if (type == Sensor.TYPE_LINEAR_ACCELERATION || (type == Sensor.TYPE_ACCELEROMETER && !hasLinearAcceleration)) {
+            if (toggleButtonScanner != null && toggleButtonScanner.isChecked()) {
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+                float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+                
+                float threshold = (type == Sensor.TYPE_ACCELEROMETER) ? 15.0f : 4.5f;
+
+                if (magnitude > threshold) {
+                    long currentTime = System.currentTimeMillis();
+                    if (soundPool != null && scanSoundId != 0 && (currentTime - lastScanSoundTime > SCAN_SOUND_MIN_INTERVAL)) {
+                        soundPool.play(scanSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                        lastScanSoundTime = currentTime;
+                    }
                 }
-                //accelerationPlot.addEvent(event);
-            } else if (event.values[2] > 10) {
-                bleeps.seekTo(0);
-                bleeps.start();
+            } else if (event.values[2] > 25.0f) {
+                if (bleeps != null && !bleeps.isPlaying()) {
+                    bleeps.seekTo(0);
+                    bleeps.start();
+                }
             }
         }
-        if (toggleButtonSensors.isChecked()) {
-            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                //            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
-                //            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
+
+        if (toggleButtonSensors != null && toggleButtonSensors.isChecked()) {
+            if (type == Sensor.TYPE_MAGNETIC_FIELD) {
                 magnetPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+            } else if (type == Sensor.TYPE_GRAVITY) {
                 gravityPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            } else if (type == Sensor.TYPE_ACCELEROMETER) {
                 accelerationPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            } else if (type == Sensor.TYPE_GYROSCOPE) {
                 gyroPlot.addEvent(event);
-            }
-
-            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            } else if (type == Sensor.TYPE_LIGHT) {
                 lastLightEvent = event;
-            }
-
-            if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
+            } else if (type == Sensor.TYPE_AMBIENT_TEMPERATURE){
                 lastTemperatureEvent = event;
             }
         }
@@ -605,6 +636,15 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         handler.removeCallbacks(updateSlowPlotsCallbacks);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
+    }
+
     private void unregisterSensors() {
         for (Sensor sensor : sensors) {
             mSensorManager.unregisterListener(this, sensor);
@@ -647,24 +687,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void selectItem(int position) {
-
-        /*
-        // Create a new fragment and specify the planet to show based on position
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .commit();
-
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawer.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawer);
-        */
         setTitle(mDrawerItems[position]);
 
         switch (position) {
@@ -696,13 +718,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null) {
+            mDrawerToggle.syncState();
+        }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if (mDrawerToggle != null) {
+            mDrawerToggle.onConfigurationChanged(newConfig);
+        }
     }
 
     @Override
@@ -715,7 +741,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 mDrawerLayout.openDrawer(mDrawerList);
             }
 
-            mDrawerToggle.syncState();
+            if (mDrawerToggle != null) {
+                mDrawerToggle.syncState();
+            }
             return true;
         }
         // Handle your other action bar items...
@@ -723,4 +751,3 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
 }
-

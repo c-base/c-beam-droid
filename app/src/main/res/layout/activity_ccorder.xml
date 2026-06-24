@@ -85,6 +85,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:background="@drawable/button"
+                                android:checked="true"
                                 android:textOff="cam activieren"
                                 android:textOn="cam deactivieren"
                                 android:textSize="12sp" />
