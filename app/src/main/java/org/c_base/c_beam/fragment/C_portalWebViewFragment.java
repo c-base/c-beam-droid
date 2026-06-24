@@ -42,7 +42,7 @@ public class C_portalWebViewFragment extends Fragment {
             caInput.close();
 
             View v = inflater.inflate(R.layout.fragment_c_portal_webview, container, false);
-            webView = (WebView) v.findViewById(R.id.c_portalWebView);
+            webView = v.findViewById(R.id.c_portalWebView);
             webView.setWebViewClient(new WebViewClient() {
                 public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                     SslCertificate sslCertificate = error.getCertificate();

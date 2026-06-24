@@ -288,9 +288,9 @@ public class Persistence extends SQLiteOpenHelper implements BaseColumns {
             int timeout = c.getInt(c.getColumnIndexOrThrow(COLUMN_TIME_OUT));
 
             //get all values that need converting and convert integers to booleans in line using "condition ? trueValue : falseValue"
-            boolean cleanSession = c.getInt(c.getColumnIndexOrThrow(COLUMN_CLEAN_SESSION)) == 1 ? true : false;
-            boolean retained = c.getInt(c.getColumnIndexOrThrow(COLUMN_RETAINED)) == 1 ? true : false;
-            boolean ssl = c.getInt(c.getColumnIndexOrThrow(COLUMN_ssl)) == 1 ? true : false;
+            boolean cleanSession = c.getInt(c.getColumnIndexOrThrow(COLUMN_CLEAN_SESSION)) == 1;
+            boolean retained = c.getInt(c.getColumnIndexOrThrow(COLUMN_RETAINED)) == 1;
+            boolean ssl = c.getInt(c.getColumnIndexOrThrow(COLUMN_ssl)) == 1;
 
             //rebuild objects starting with the connect options
             MqttConnectOptions opts = new MqttConnectOptions();

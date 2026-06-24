@@ -56,8 +56,8 @@ public class MissionActivity extends RingActivity implements
         setupViewPager();
         setupGCM();
 
-        activity_text = (EditText) findViewById(R.id.edit_log_activity);
-        activity_ap = (EditText) findViewById(R.id.edit_log_activity_ap);
+        activity_text = findViewById(R.id.edit_log_activity);
+        activity_ap = findViewById(R.id.edit_log_activity_ap);
         TextWatcher tw = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -76,7 +76,7 @@ public class MissionActivity extends RingActivity implements
         activity_text.addTextChangedListener(tw);
         activity_ap.addTextChangedListener(tw);
 
-        button_log_activity = (Button) findViewById(R.id.button_log_activity);
+        button_log_activity = findViewById(R.id.button_log_activity);
         button_log_activity.setOnClickListener(this);
         button_log_activity.setEnabled(false);
 
@@ -84,11 +84,7 @@ public class MissionActivity extends RingActivity implements
     }
 
     private void enableSubmitIfReady() {
-        if (activity_text.getText().length() > 0 && activity_ap.getText().length() > 0) {
-            button_log_activity.setEnabled(true);
-        } else {
-            button_log_activity.setEnabled(false);
-        }
+        button_log_activity.setEnabled(activity_text.getText().length() > 0 && activity_ap.getText().length() > 0);
 
     }
 
@@ -181,7 +177,7 @@ public class MissionActivity extends RingActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding

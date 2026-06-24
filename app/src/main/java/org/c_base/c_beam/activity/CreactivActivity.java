@@ -62,15 +62,15 @@ public class CreactivActivity extends RingActivity implements
         setupCbeamArea();
         setupViewPager();
 
-        TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
+        TextView textView = findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
 
         setupActionBar();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        tvAp = (TextView) findViewById(R.id.textView_ap);
+        tvAp = findViewById(R.id.textView_ap);
         tvAp.setTextColor(Color.rgb(58, 182, 228));
-        tvUsername = (TextView) findViewById(R.id.textView_username);
+        tvUsername = findViewById(R.id.textView_username);
         tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
         tvUsername.setTextColor(Color.rgb(58, 182, 228));
         Helper.setFont(this, tvUsername);
@@ -81,8 +81,8 @@ public class CreactivActivity extends RingActivity implements
             tvAp.setHeight(0);
         }
 
-        activity_text = (EditText) findViewById(R.id.edit_log_activity);
-        activity_ap = (EditText) findViewById(R.id.edit_log_activity_ap);
+        activity_text = findViewById(R.id.edit_log_activity);
+        activity_ap = findViewById(R.id.edit_log_activity_ap);
         TextWatcher tw = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -100,7 +100,7 @@ public class CreactivActivity extends RingActivity implements
         activity_text.addTextChangedListener(tw);
         activity_ap.addTextChangedListener(tw);
 
-        button_log_activity = (Button) findViewById(R.id.button_log_activity);
+        button_log_activity = findViewById(R.id.button_log_activity);
         button_log_activity.setOnClickListener(this);
         button_log_activity.setEnabled(false);
 
@@ -108,11 +108,7 @@ public class CreactivActivity extends RingActivity implements
     }
 
     private void enableSubmitIfReady() {
-        if (activity_text.getText().length() > 0 && activity_ap.getText().length() > 0) {
-            button_log_activity.setEnabled(true);
-        } else {
-            button_log_activity.setEnabled(false);
-        }
+        button_log_activity.setEnabled(activity_text.getText().length() > 0 && activity_ap.getText().length() > 0);
 
     }
 
@@ -123,7 +119,7 @@ public class CreactivActivity extends RingActivity implements
         ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
 
         ArrayList<User> userList = c_beam.getUsers();
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user : userList) {
             if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
@@ -215,7 +211,7 @@ public class CreactivActivity extends RingActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding

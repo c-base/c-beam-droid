@@ -75,8 +75,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private View sensorPlotLayout;
 
     private View mVictimContainer;
-    private TextView textView1;
-    private TextView textView2;
     private MediaPlayer zap;
     private MediaPlayer bleeps;
     private SoundPool soundPool;
@@ -94,7 +92,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private SensorEvent lastLightEvent;
     private SensorEvent lastTemperatureEvent;
 
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     protected String[] mDrawerItems;
     protected TypedArray mDrawerImages;
@@ -107,9 +105,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
-    private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
-    private String[] dimensionArrayLux = {"/ lux"};
-    private String[] dimensionArrayTemp = {"°K"};
+    private final String[] dimensionArrayXYZ = {"X", "Y", "Z"};
+    private final String[] dimensionArrayLux = {"/ lux"};
+    private final String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
@@ -118,7 +116,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private long lastScanSoundTime = 0;
     private static final long SCAN_SOUND_MIN_INTERVAL = 150; // milliseconds
 
-    private Runnable updateSlowPlotsCallbacks = new Runnable() {
+    private final Runnable updateSlowPlotsCallbacks = new Runnable() {
         @Override
         public void run() {
             updateSlowPlots();
@@ -158,8 +156,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     protected void setupNavigationDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerList = findViewById(R.id.left_drawer);
         mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
 
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
@@ -176,7 +174,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
@@ -227,7 +225,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void setupSurfaceView() {
-        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+        mSurfaceView = findViewById(R.id.surfaceview);
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -237,7 +235,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private void setupControls() {
         // Find the views whose visibility will change
         mVictimContainer = findViewById(R.id.hidecontainer);
-        toggleButtonScanner = (ToggleButton) findViewById(R.id.hideme1);
+        toggleButtonScanner = findViewById(R.id.hideme1);
         toggleButtonScanner.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -258,7 +256,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
+        ToggleButton toggleButtonGrid = findViewById(R.id.hideme2);
         toggleButtonGrid.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -272,7 +270,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        Button buttonPhotons = (Button) findViewById(R.id.hideme3);
+        Button buttonPhotons = findViewById(R.id.hideme3);
         buttonPhotons.setOnTouchListener(new OnTouchListener() {
 
             @Override
@@ -293,7 +291,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton toggleButtonFilter = (ToggleButton) findViewById(R.id.hideme4);
+        ToggleButton toggleButtonFilter = findViewById(R.id.hideme4);
         toggleButtonFilter.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -307,7 +305,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        toggleButtonSensors = (ToggleButton) findViewById(R.id.hideme5);
+        toggleButtonSensors = findViewById(R.id.hideme5);
         toggleButtonSensors.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -322,7 +320,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        toggleButtonCam = (ToggleButton) findViewById(R.id.hideme6);
+        toggleButtonCam = findViewById(R.id.hideme6);
         toggleButtonCam.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -336,12 +334,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
+        ToggleButton visibleButton = findViewById(R.id.vis);
         visibleButton.setOnClickListener(mVisibleListener);
     }
 
     private void setupGLSurfaceView() {
-        glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
+        glSurfaceView = findViewById(R.id.glsurfaceview);
         ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
         int index = parent.indexOfChild(glSurfaceView);
         parent.removeView(glSurfaceView);
@@ -350,20 +348,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void setupPlotViews() {
-        textView1 = (TextView) findViewById(R.id.textView1);
-        textView2 = (TextView) findViewById(R.id.textView2);
-
 //        LinearLayout sensorPlotLayout = (LinearLayout) findViewById(R.id.sensorPlotLayout);
 //        XYPlot plot = new XYPlot(this, "foo");
 //        plot.setLayoutParams(LinearLayout);
 //        sensorPlotLayout.addView(plot);
 
-        magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot));
-        gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot2));
-        accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot3));
-        gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
-        lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, (XYPlot) findViewById(R.id.mySimpleXYPlot5));
-        temperaturePlot = new SensorPlot("C_trahlungsintensität (300GHz - 400THz)", dimensionArrayTemp, (XYPlot) findViewById(R.id.mySimpleXYPlot6));
+        magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot));
+        gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot2));
+        accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot3));
+        gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot4));
+        lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, findViewById(R.id.mySimpleXYPlot5));
+        temperaturePlot = new SensorPlot("C_trahlungsintensität (300GHz - 400THz)", dimensionArrayTemp, findViewById(R.id.mySimpleXYPlot6));
     }
 
     private void setupGrid() {
@@ -653,8 +648,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     protected class RingAdapter extends ArrayAdapter {
         private static final String TAG = "UserAdapter";
-        private ArrayList<Ring> items;
-        private Context context;
+        private final ArrayList<Ring> items;
+        private final Context context;
 
         @SuppressWarnings("unchecked")
         public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
@@ -667,12 +662,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         public View getView(int position, View convertView, ViewGroup parent) {
             final View listview = super.getView(position, convertView, parent);
 
-            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            TextView textView = listview.findViewById(R.id.drawer_list_item_textview);
             Ring r = items.get(position);
 
             textView.setText(r.getName());
 
-            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            ImageView b = listview.findViewById(R.id.drawer_ring_imageView);
             b.setImageDrawable(r.getImage());
             return listview;
         }

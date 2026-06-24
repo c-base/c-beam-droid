@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -56,7 +57,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
 
     private final Context context;
     private MqttAndroidClient client;
-    private NotificationManager mNotificationManager;
+    private final NotificationManager mNotificationManager;
 
     private static Connections connections;
     private String clientHandle;
@@ -199,7 +200,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     @Override
     public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
         Log.d(LOG_TAG, "Message arrived: " + topic);
-        String payload = new String(mqttMessage.getPayload(), "UTF-8");
+        String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
         onMessage(topic, payload);
     }
 
@@ -266,7 +267,6 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            return;
         }
     }
 

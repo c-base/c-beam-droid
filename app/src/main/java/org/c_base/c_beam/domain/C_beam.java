@@ -34,7 +34,7 @@ public class C_beam {
         FAILURE("failure");
         private final String stringValue;
 
-        private RESULTS(final String s) {
+        RESULTS(final String s) {
             stringValue = s;
         }
 
@@ -51,9 +51,9 @@ public class C_beam {
 
     private JSONRPC2Session etaClient;
     private JSONRPC2Session c_beamClient;
-    private ArrayList<User> onlineList = new ArrayList<User>();
-    private ArrayList<User> offlineList = new ArrayList<User>();
-    private ArrayList<User> etaList = new ArrayList<User>();
+    private final ArrayList<User> onlineList = new ArrayList<User>();
+    private final ArrayList<User> offlineList = new ArrayList<User>();
+    private final ArrayList<User> etaList = new ArrayList<User>();
     private ArrayList<Mission> missions = new ArrayList<Mission>();
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Event> events = new ArrayList<Event>();
@@ -68,9 +68,9 @@ public class C_beam {
     private Thread thread;
     private ArrayList<ActivityLog> activitylog;
 
-    private boolean debug = false;
+    private final boolean debug = false;
 
-    private static C_beam instance = new C_beam();
+    private static final C_beam instance = new C_beam();
 
     private C_beam() {
         initC_beamClient();

@@ -38,7 +38,7 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.c_portal_pager);
+		mViewPager = findViewById(R.id.c_portal_pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		// When swiping between different sections, select the corresponding

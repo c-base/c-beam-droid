@@ -66,8 +66,8 @@ public class NotificationListFragment extends ListFragment {
 
     public class C_beamAdapter<T> extends ArrayAdapter<Notification> {
         private static final String TAG = "UserAdapter";
-        private ArrayList<Notification> items;
-        private Context context;
+        private final ArrayList<Notification> items;
+        private final Context context;
 
         public C_beamAdapter(Context context, int textViewResourceId, ArrayList<Notification> items) {
             super(context, textViewResourceId, items);

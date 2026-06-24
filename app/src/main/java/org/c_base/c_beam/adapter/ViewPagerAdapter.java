@@ -18,7 +18,7 @@ import org.c_base.c_beam.util.ScrollState;
 
 public class ViewPagerAdapter extends PagerAdapter
 {
-	private static String[] titles = new String[] { "Page 1", "Page 2",
+	private static final String[] titles = new String[] { "Page 1", "Page 2",
 			"Page 3" };
 	private final Context context;
 	private int[] scrollPosition = new int[titles.length];

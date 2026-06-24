@@ -10,13 +10,13 @@ import java.util.ArrayList;
 
 public class SensorPlot {
     private final XYPlot plot;
-    private SimpleXYSeries[] series;
+    private final SimpleXYSeries[] series;
 
     private SimpleXYSeries seriesX;
     private SimpleXYSeries seriesY;
     private SimpleXYSeries seriesZ;
 
-    private int[][] formatColors = {
+    private final int[][] formatColors = {
             {Color.rgb(0, 0, 200), Color.rgb(0, 0, 80)},
             {Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)},
             {Color.rgb(200, 0, 0), Color.rgb(80, 0, 0)},

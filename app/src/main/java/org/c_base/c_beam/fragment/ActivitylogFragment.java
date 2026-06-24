@@ -26,7 +26,7 @@ public class ActivitylogFragment extends Fragment {
 		if (v == null) {
 			return;
 		}
-		TextView tv = (TextView) getView().findViewById(R.id.textView_activitylog);
+		TextView tv = getView().findViewById(R.id.textView_activitylog);
 		String tmp = "user@c-beam> tail activitlog\n";
 		if (activitylogList != null) {
 			for(ActivityLog activitylog: activitylogList) {
@@ -42,7 +42,7 @@ public class ActivitylogFragment extends Fragment {
 			tv.setBackgroundColor(Color.BLACK);
 			tv.setTextColor(Color.rgb(58, 182, 228));
 			tv.setText(logtail);
-			ScrollView sv = (ScrollView) v.findViewById(R.id.scrollView1);
+			ScrollView sv = v.findViewById(R.id.scrollView1);
 			sv.fullScroll(View.FOCUS_DOWN);
 		}
 	}
@@ -54,14 +54,14 @@ public class ActivitylogFragment extends Fragment {
 		}
 
 		View view = inflater.inflate(R.layout.fragment_activitylog, container, false);
-		TextView tv = (TextView) view.findViewById(R.id.textView_activitylog);
+		TextView tv = view.findViewById(R.id.textView_activitylog);
 		String logtail = "user@c-beam>\n";
 		tv.setTypeface(Typeface.MONOSPACE);
 		tv.setTextSize(10);
 		tv.setBackgroundColor(Color.BLACK);
 		tv.setTextColor(Color.rgb(58, 182, 228));
 		tv.setText(logtail);
-		ScrollView sv = (ScrollView) view.findViewById(R.id.scrollView1);
+		ScrollView sv = view.findViewById(R.id.scrollView1);
 		sv.fullScroll(View.FOCUS_DOWN);
 		view.setBackgroundColor(Color.BLACK);
 		return view;

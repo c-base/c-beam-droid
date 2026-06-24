@@ -28,9 +28,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MqttCallbackHandler implements MqttCallback {
 
     /** {@link Context} for the application used to format and import external strings**/
-    private Context context;
+    private final Context context;
     /** Client handle to reference the connection that this handler is attached to**/
-    private String clientHandle;
+    private final String clientHandle;
 
     /**
      * Creates an <code>MqttCallbackHandler</code> object

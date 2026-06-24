@@ -67,7 +67,7 @@ public class Connection {
     /**
      * Collection of {@link PropertyChangeListener}
      **/
-    private ArrayList<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    private final ArrayList<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
     /**
      * The {@link Context} of the application this object is part of
@@ -170,11 +170,10 @@ public class Connection {
         this.client = client;
         this.sslConnection = sslConnection;
         history = new ArrayList<String>();
-        StringBuffer sb = new StringBuffer();
-        sb.append("Client: ");
-        sb.append(clientId);
-        sb.append(" created");
-        addAction(sb.toString());
+        String sb = "Client: " +
+                clientId +
+                " created";
+        addAction(sb);
     }
 
     /**

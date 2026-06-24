@@ -28,11 +28,11 @@ public class UserActivity extends C_beamActivity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			User u = c_beam.getUser(extras.getInt("id"));
-			tl = (TableLayout) findViewById(R.id.TableLayout1);
+			tl = findViewById(R.id.TableLayout1);
 			if (u!=null) {
 				this.setTitle(u.getUsername());
 				addData(u);
-				WebView w = (WebView) findViewById(R.id.userWebView);
+				WebView w = findViewById(R.id.userWebView);
 				w.getSettings().setJavaScriptEnabled(true);
 				w.loadUrl("https://"+u.getUsername()+".crew.c-base.org");
 

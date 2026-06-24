@@ -34,18 +34,18 @@ public class C_outActivity extends C_beamActivity {
 
     ActionBar actionBar;
     private Runnable fred;
-    private Handler handler = new Handler();
-    private long threadDelay = 5000;
-    private long firstThreadDelay = 1000;
+    private final Handler handler = new Handler();
+    private final long threadDelay = 5000;
+    private final long firstThreadDelay = 1000;
 
     protected WifiBroadcastReceiver mWifiReceiver;
     protected IntentFilter mWifiIntentFilter;
     private TimePicker timePicker;
     private boolean mIsOnline = false;
 
-    private int defaultETA = 30;
+    private final int defaultETA = 30;
     private SharedPreferences sharedPref;
-    private boolean debug = false;
+    private final boolean debug = false;
     private C_outListFragment c_outList;
 
     @Override
@@ -56,9 +56,9 @@ public class C_outActivity extends C_beamActivity {
 
         c_outList = (C_outListFragment) this.getSupportFragmentManager().findFragmentById(R.id.fragment1);
 
-        et = (EditText) findViewById(R.id.c_outEditText);
+        et = findViewById(R.id.c_outEditText);
 
-        Button b = (Button) findViewById(R.id.button_announce);
+        Button b = findViewById(R.id.button_announce);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +69,7 @@ public class C_outActivity extends C_beamActivity {
             }
         });
 
-        b = (Button) findViewById(R.id.button_r2d2);
+        b = findViewById(R.id.button_r2d2);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +80,7 @@ public class C_outActivity extends C_beamActivity {
             }
         });
 
-        b = (Button) findViewById(R.id.button_tts);
+        b = findViewById(R.id.button_tts);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,7 +197,7 @@ public class C_outActivity extends C_beamActivity {
 
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
-        String eta = "" + timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
+        String eta = timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
         return eta;
     }
 

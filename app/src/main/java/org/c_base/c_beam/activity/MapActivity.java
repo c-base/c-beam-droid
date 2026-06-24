@@ -54,7 +54,7 @@ public class MapActivity extends C_beamActivity implements
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.map_pager);
+		mViewPager = findViewById(R.id.map_pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		// When swiping between different sections, select the corresponding

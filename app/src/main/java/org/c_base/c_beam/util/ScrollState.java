@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class ScrollState implements Parcelable
 {
-	private int[] scrollPos;
+	private final int[] scrollPos;
 	
 	public static Parcelable.Creator<ScrollState> CREATOR = new Parcelable.Creator<ScrollState>()
 	{

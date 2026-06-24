@@ -59,7 +59,7 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 
 		setupActionBar();
 
-		Button buttonDeleteNotifications = (Button) findViewById(R.id.button_delete_notifications);
+		Button buttonDeleteNotifications = findViewById(R.id.button_delete_notifications);
 		buttonDeleteNotifications.setOnClickListener(new OnClickListener() {
 
 			@Override

@@ -65,8 +65,8 @@ public class C_outListFragment extends ListFragment {
     @SuppressWarnings("rawtypes")
     public class C_outAdapter extends ArrayAdapter {
         private static final String TAG = "C_outAdapter";
-        private ArrayList<String> items;
-        private Context context;
+        private final ArrayList<String> items;
+        private final Context context;
 
         @SuppressWarnings("unchecked")
         public C_outAdapter(Context context, int textViewResourceId, ArrayList<String> items) {

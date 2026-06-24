@@ -36,7 +36,7 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             m = c_beam.getMission(extras.getInt("id"));
-            tl = (TableLayout) findViewById(R.id.TableLayout1);
+            tl = findViewById(R.id.TableLayout1);
             //tl.setShrinkAllColumns(true);
             tl.setColumnShrinkable(1, true);
 
@@ -48,7 +48,7 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
 
         }
 
-        toggleMissionButton = (ToggleButton) findViewById(R.id.toggleMissionButton);
+        toggleMissionButton = findViewById(R.id.toggleMissionButton);
         toggleMissionButton.setOnClickListener(this);
         boolean isUserAssigned = false;
 
@@ -57,8 +57,10 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
 
         if (m != null) {
             for (String user : m.getAssigned_to()) {
-                if (user.equals(username))
+                if (user.equals(username)) {
                     isUserAssigned = true;
+                    break;
+                }
             }
             toggleMissionButton.setChecked(m.getStatus().equals("assigned") && isUserAssigned);
         }

@@ -61,8 +61,8 @@ public class EventListFragment extends ListFragment {
 
 	@SuppressWarnings("rawtypes")
 	public class EventAdapter extends ArrayAdapter {
-		private ArrayList<Event> items;
-		private Context context;
+		private final ArrayList<Event> items;
+		private final Context context;
 
 		@SuppressWarnings("unchecked")
 		public EventAdapter(Context context, int textViewResourceId, ArrayList<Event> items) {

@@ -56,7 +56,7 @@ public class ComActivity extends RingActivity {
 
         ArrayList<User> userList = c_beam.getUsers();
 
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user: userList) {
             if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
@@ -152,7 +152,7 @@ public class ComActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding

@@ -63,8 +63,8 @@ public class C_portalListFragment extends ListFragment {
 	@SuppressWarnings("rawtypes")
 	public class ArticleAdapter extends ArrayAdapter {
 		private static final String TAG = "ArticleAdapter";
-		private ArrayList<Article> items;
-		private Context context;
+		private final ArrayList<Article> items;
+		private final Context context;
 
 		@SuppressWarnings("unchecked")
 		public ArticleAdapter(Context context, int textViewResourceId, ArrayList<Article> items) {

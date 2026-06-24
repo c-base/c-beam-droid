@@ -54,7 +54,7 @@ public class MainActivity extends RingActivity {
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    private C_beam c_beam = getInstance();
+    private final C_beam c_beam = getInstance();
     private SharedPreferences sharedPref;
 
     @Override
@@ -139,7 +139,7 @@ public class MainActivity extends RingActivity {
         ArrayList<User> etaList = c_beam.getEtaList();
 
         ArrayList<User> userList = c_beam.getUsers();
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user : userList) {
             if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
@@ -200,7 +200,7 @@ public class MainActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         setupViewPagerIndicator(mViewPager);

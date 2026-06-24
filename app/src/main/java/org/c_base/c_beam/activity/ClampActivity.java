@@ -34,7 +34,7 @@ public class ClampActivity extends RingActivity {
     private static final int WWW_CBO_FRAGMENT = 5;
     private static final int RINGINFO_FRAGMENT = 4;
 
-    private RING currentRing = RING.CLAMP;
+    private final RING currentRing = RING.CLAMP;
 
     private static final String TAG = "ClampActivity";
 
@@ -74,7 +74,7 @@ public class ClampActivity extends RingActivity {
 
     public void updateLists() {
         ArrayList<User> userList = c_beam.getUsers();
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         for (User user : userList) {
             if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
@@ -107,7 +107,7 @@ public class ClampActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         setupViewPagerIndicator(mViewPager);

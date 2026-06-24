@@ -24,10 +24,10 @@ import org.c_base.c_beam.util.Helper;
 @SuppressLint("ValidFragment")
 public class C_ontrolFragment extends Fragment {
     private ProgressBar input;
-    private C_ontrolFragment cf = this;
+    private final C_ontrolFragment cf = this;
     private AlertDialog pd;
     private int progress;
-    private C_beam c_beam;
+    private final C_beam c_beam;
 
     public C_ontrolFragment(C_beam c_beam) {
         this.c_beam = c_beam;
@@ -41,10 +41,10 @@ public class C_ontrolFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_c_ontrol, container, false);
 
-        TextView pattern = (TextView) v.findViewById(R.id.textView1);
+        TextView pattern = v.findViewById(R.id.textView1);
         Helper.setFont(getActivity(), pattern);
 
-        Button b = (Button) v.findViewById(R.id.button_self_destruct);
+        Button b = v.findViewById(R.id.button_self_destruct);
 
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -91,7 +91,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_liftoff);
+        b = v.findViewById(R.id.button_liftoff);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +103,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_unlabeled);
+        b = v.findViewById(R.id.button_unlabeled);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +111,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        ToggleButton t = (ToggleButton) v.findViewById(R.id.toggleButtonBluewall);
+        ToggleButton t = v.findViewById(R.id.toggleButtonBluewall);
         t.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +126,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_softwareverbrennung);
+        b = v.findViewById(R.id.button_softwareverbrennung);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +134,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
         /* */
-        b = (Button) v.findViewById(R.id.button1);
+        b = v.findViewById(R.id.button1);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +142,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button2);
+        b = v.findViewById(R.id.button2);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +150,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button3);
+        b = v.findViewById(R.id.button3);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +158,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button4);
+        b = v.findViewById(R.id.button4);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +166,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button5);
+        b = v.findViewById(R.id.button5);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,7 +174,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button6);
+        b = v.findViewById(R.id.button6);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +182,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button7);
+        b = v.findViewById(R.id.button7);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,7 +190,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_speed_plus_9);
+        b = v.findViewById(R.id.button_speed_plus_9);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +199,7 @@ public class C_ontrolFragment extends Fragment {
         });
 
 
-        b = (Button) v.findViewById(R.id.button8);
+        b = v.findViewById(R.id.button8);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,7 +207,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button9);
+        b = v.findViewById(R.id.button9);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,7 +215,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button10);
+        b = v.findViewById(R.id.button10);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,7 +223,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button11);
+        b = v.findViewById(R.id.button11);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,7 +231,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button12);
+        b = v.findViewById(R.id.button12);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,7 +239,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_speed_minus_9);
+        b = v.findViewById(R.id.button_speed_minus_9);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,7 +247,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_emergency_lights);
+        b = v.findViewById(R.id.button_emergency_lights);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,7 +255,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_small_blue);
+        b = v.findViewById(R.id.button_small_blue);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,7 +263,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_small_green);
+        b = v.findViewById(R.id.button_small_green);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,7 +271,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_small_red);
+        b = v.findViewById(R.id.button_small_red);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +279,7 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
-        b = (Button) v.findViewById(R.id.button_pattern_default);
+        b = v.findViewById(R.id.button_pattern_default);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

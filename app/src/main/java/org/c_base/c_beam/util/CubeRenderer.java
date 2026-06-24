@@ -19,8 +19,8 @@ import android.util.Log;
 
 
 public class CubeRenderer implements GLSurfaceView.Renderer {  
-	private Square square;
-	private Context context;
+	private final Square square;
+	private final Context context;
 
 	public CubeRenderer(boolean useTranslucentBackground, Context context) { 
 		mTranslucentBackground = useTranslucentBackground;   
@@ -75,8 +75,8 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 	public void setAngle(float _angle){
 
 	}
-	private boolean mTranslucentBackground;  
-	private Cube mCube;  
+	private final boolean mTranslucentBackground;
+	private final Cube mCube;
 	private float mAngle;
 	public  float mAngleX;  
 	public float mAngleY;
@@ -114,7 +114,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 class Cube{   
 	public Cube()  
 	{        int one = 0x10000;    
-	int vertices[] = {  
+	int[] vertices = {
 			-one, -one, -one,   
 			one, -one, -one,     
 			one,  one, -one,      
@@ -143,7 +143,7 @@ class Cube{
 	//	1f,    1f,  1f,  0.1f,        
 	//	0f,    1f,  1f,  0.1f,        };    
 
-	byte indices[] = {          
+	byte[] indices = {
 			0, 4, 5,    0, 5, 1,    
 			1, 5, 6,    1, 6, 2,     
 			2, 6, 7,    2, 7, 3,      
@@ -166,15 +166,15 @@ class Cube{
 	mIndexBuffer.put(indices);     
 	mIndexBuffer.position(0);    } 
 	public void draw(GL10 gl)    {    
-		gl.glFrontFace(gl.GL_CW);     
-		gl.glVertexPointer(3, gl.GL_FIXED, 0, mVertexBuffer);  
-		gl.glColorPointer(4, gl.GL_FIXED, 0, mColorBuffer);     
-		gl.glDrawElements(gl.GL_TRIANGLES, 36, gl.GL_UNSIGNED_BYTE, mIndexBuffer);    
+		gl.glFrontFace(GL10.GL_CW);
+		gl.glVertexPointer(3, GL10.GL_FIXED, 0, mVertexBuffer);
+		gl.glColorPointer(4, GL10.GL_FIXED, 0, mColorBuffer);
+		gl.glDrawElements(GL10.GL_TRIANGLES, 36, GL10.GL_UNSIGNED_BYTE, mIndexBuffer);
 	} 
 
-	private IntBuffer   mVertexBuffer;  
-	private FloatBuffer   mColorBuffer;   
-	private ByteBuffer  mIndexBuffer;
+	private final IntBuffer   mVertexBuffer;
+	private final FloatBuffer   mColorBuffer;
+	private final ByteBuffer  mIndexBuffer;
 
 }
 
@@ -185,16 +185,16 @@ class Cube{
  */
 class Square {
 
-	private FloatBuffer vertexBuffer;	// buffer holding the vertices
-	private float vertices[] = {
+	private final FloatBuffer vertexBuffer;	// buffer holding the vertices
+	private final float[] vertices = {
 			-1.0f, -1.0f,  0.0f,		// V1 - bottom left
 			-1.0f,  1.0f,  0.0f,		// V2 - top left
 			1.0f, -1.0f,  0.0f,		// V3 - bottom right
 			1.0f,  1.0f,  0.0f			// V4 - top right
 	};
 
-	private FloatBuffer textureBuffer;	// buffer holding the texture coordinates
-	private float texture[] = {    		
+	private final FloatBuffer textureBuffer;	// buffer holding the texture coordinates
+	private final float[] texture = {
 			// Mapping coordinates for the vertices
 			0.0f, 1.0f,		// top left		(V2)
 			0.0f, 0.0f,		// bottom left	(V1)
@@ -203,7 +203,7 @@ class Square {
 	};
 
 	/** The texture pointer */
-	private int[] textures = new int[1];
+	private final int[] textures = new int[1];
 
 	public Square() {
 		// a float has 4 bytes so we allocate for each coordinate 4 bytes

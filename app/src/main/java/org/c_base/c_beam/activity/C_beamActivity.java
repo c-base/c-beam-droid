@@ -27,7 +27,7 @@ import androidx.core.graphics.Insets;
 public class C_beamActivity extends AppCompatActivity {
     ActionBar actionBar;
     C_beam c_beam = C_beam.getInstance();
-    private String TAG = "C_beamActivity";
+    private final String TAG = "C_beamActivity";
 
 
     @Override
@@ -98,7 +98,7 @@ public class C_beamActivity extends AppCompatActivity {
         LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
         View v = inflator.inflate(R.layout.view_actionbar, null);
-        TextView titleView = (TextView) v.findViewById(R.id.title);
+        TextView titleView = v.findViewById(R.id.title);
         titleView.setText(this.getTitle());
         titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
         titleView.setTextSize(30);
