@@ -15,6 +15,9 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#33b6f6</item>
 
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:textSize">14sp</item>
