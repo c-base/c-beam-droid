@@ -22,7 +22,6 @@ import android.widget.ToggleButton;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
-import org.c_base.c_beam.domain.Article;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
 import org.c_base.c_beam.domain.Mission;
@@ -30,7 +29,6 @@ import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
-import org.c_base.c_beam.fragment.C_portalListFragment;
 import org.c_base.c_beam.fragment.EventListFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
 import org.c_base.c_beam.fragment.RinginfoFragment;
@@ -43,15 +41,13 @@ import static org.c_base.c_beam.domain.C_beam.getInstance;
 @SuppressLint("NewApi")
 public class MainActivity extends RingActivity {
     private static final int USER_FRAGMENT = 0;
-    private static final int C_PORTAL_FRAGMENT = 1;
-    private static final int ARTEFACTS_FRAGMENT = 6;
-    private static final int RINGINFO_FRAGMENT = 7;
-    private static final int EVENTS_FRAGMENT = 5;
-    private static final int C_ONTROL_FRAGMENT = 2;
-    private static final int MISSION_FRAGMENT = 3;
-    private static final int ACTIVITYLOG_FRAGMENT = 4;
+    private static final int ARTEFACTS_FRAGMENT = 5;
+    private static final int RINGINFO_FRAGMENT = 6;
+    private static final int EVENTS_FRAGMENT = 4;
+    private static final int C_ONTROL_FRAGMENT = 1;
+    private static final int MISSION_FRAGMENT = 2;
+    private static final int ACTIVITYLOG_FRAGMENT = 3;
 
-    private ArrayList<Article> articleList;
     private ArrayList<Event> eventList;
 
     private ViewPager mViewPager;
@@ -134,7 +130,6 @@ public class MainActivity extends RingActivity {
         UserListFragment online = (UserListFragment) mSectionsPagerAdapter.getItem(USER_FRAGMENT);
         EventListFragment events = (EventListFragment) mSectionsPagerAdapter.getItem(EVENTS_FRAGMENT);
         MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSION_FRAGMENT);
-        C_portalListFragment c_portal = (C_portalListFragment) mSectionsPagerAdapter.getItem(C_PORTAL_FRAGMENT);
         ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
         ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
         Button barButton = (Button) findViewById(R.id.button_bar);
@@ -181,12 +176,6 @@ public class MainActivity extends RingActivity {
                 missions.addItem(missionList.get(i));
         }
 
-        if (c_portal.isAdded()) {
-            articleList = c_beam.getArticles();
-            c_portal.clear();
-            for (int i = 0; i < articleList.size(); i++)
-                c_portal.addItem(articleList.get(i));
-        }
 
         if (artefacts.isAdded()) {
             ArrayList<Artefact> artefactList;
@@ -237,8 +226,6 @@ public class MainActivity extends RingActivity {
             if (pages[position] == null) {
                 if (position == USER_FRAGMENT) {
                     fragment = new UserListFragment();
-                } else if (position == C_PORTAL_FRAGMENT) {
-                    fragment = new C_portalListFragment();
                 } else if (position == ARTEFACTS_FRAGMENT) {
                     fragment = new ArtefactListFragment();
                 } else if (position == EVENTS_FRAGMENT) {
@@ -265,7 +252,7 @@ public class MainActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            return 7;
+            return 6;
         }
 
         @Override
@@ -273,8 +260,6 @@ public class MainActivity extends RingActivity {
             switch (position) {
                 case USER_FRAGMENT:
                     return getString(R.string.title_users);
-                case C_PORTAL_FRAGMENT:
-                    return getString(R.string.title_c_portal);
                 case ARTEFACTS_FRAGMENT:
                     return getString(R.string.title_artefacts);
                 case EVENTS_FRAGMENT:

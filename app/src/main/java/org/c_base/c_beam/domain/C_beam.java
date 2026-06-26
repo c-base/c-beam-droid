@@ -47,7 +47,6 @@ public class C_beam {
     private static final String TAG = "c-beam";
 
     private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
-    private static final String C_PORTAL_URL = "https://c-portal.c-base.org/rpc/";
     private static final String ETA_URL = "https://shell.c-base.org/rpc/";
 
     private JSONRPC2Session etaClient;
@@ -59,7 +58,6 @@ public class C_beam {
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-    private ArrayList<Article> articleList = new ArrayList<Article>();
     private ArrayList<User> stats = new ArrayList<User>();
     private boolean barStatus = false;
 
@@ -211,7 +209,6 @@ public class C_beam {
                 updateEvents((JSONArray) result.get("events"));
                 updateArtefacts((JSONArray) result.get("artefacts"));
                 updateMissions((JSONArray) result.get("missions"));
-                updateArticles((JSONArray) result.get("articles"));
                 updateActivitylog((JSONArray) result.get("activitylog"));
                 updateStats((JSONArray) result.get("stats"));
                 updateSounds((JSONArray) result.get("sounds"));
@@ -245,13 +242,6 @@ public class C_beam {
         this.activitylog = activitylogList;
     }
 
-    private void updateArticles(JSONArray articleResult) {
-        ArrayList<Article> articleList = new ArrayList<Article>();
-        for (int i = 0; i < articleResult.size(); i++) {
-            articleList.add(new Article((JSONObject) articleResult.get(i)));
-        }
-        this.articleList = articleList;
-    }
 
     private void updateMissions(JSONArray missionResult) {
         ArrayList<Mission> missionList = new ArrayList<Mission>();
@@ -567,9 +557,6 @@ public class C_beam {
 
     }
 
-    public ArrayList<Article> getArticles() {
-        return articleList;
-    }
 
     public ArrayList<Artefact> getArtefacts() {
         return artefactList;

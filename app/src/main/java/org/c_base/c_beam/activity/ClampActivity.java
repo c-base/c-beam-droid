@@ -17,7 +17,7 @@ import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.WebViewFragment;
 import org.c_base.c_beam.fragment.RinginfoFragment;
 
 import java.util.ArrayList;
@@ -133,20 +133,20 @@ public class ClampActivity extends RingActivity {
             Fragment fragment;
             if (pages[position] == null) {
                 if (position == INTERFACE_MAP_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
                 } else if (position == BLUEPRINT_MAP_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
                 } else if (position == ARTEFACTS_FRAGMENT) {
                     fragment = new ArtefactListFragment();
                 } else if (position == GOOGLE_MAP_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    //((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
+                    fragment = new WebViewFragment();
+                    //((WebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
                 } else if (position == WWW_CBO_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
                 } else if (position == RINGINFO_FRAGMENT) {
                     fragment = new RinginfoFragment();
                     ((RinginfoFragment) fragment).setRing("clamp");

@@ -7,16 +7,10 @@
     <string name="title_c_ontrol">c-ontrol</string>
     <string name="title_events">events</string>
     <string name="title_artefacts">artefacte</string>
-    <string name="title_c_portal">c-portal</string>
     <string name="title_users">an bord</string>
     <string name="title_stats">stats</string>
     <string name="title_activity">activitylog</string>
     <string name="title_section0">an bord</string>
-    <string name="title_c_portal_section0">article view</string>
-    <string name="title_c_portal_section1">article</string>
-    <string name="title_c_portal_section2">groups</string>
-    <string name="title_c_portal_section3">users</string>
-    <string name="title_c_portal_section4">tags</string>
     <string name="title_map_section0">u:berblicc</string>
     <string name="title_map_section1"></string>
     <string name="title_map_section2"></string>
@@ -63,7 +57,6 @@
     <string name="title_activity_web">c-browser</string>
     <string name="title_activity_artefact">cbag3</string>
     <string name="title_activity_artefact_long">c-base artefact guide 3</string>
-    <string name="title_activity_c_portal">c-portal</string>
     <string name="title_activity_bam">BÄM!</string>
     <string name="confirm_login">wirklich einloggen?</string>
     <string name="button_login">einloggen</string>
