@@ -1,5 +1,9 @@
 Release Notes
 
+26.06.0
+- Change versioning scheme
+- Compatibility updates and fixes
+
 1.7.1
 - Add bar status indicator
 
