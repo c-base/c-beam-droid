@@ -1,20 +1,26 @@
 Release Notes
 
-    1.6.5
-    - Yet another API Update Release
+1.7.1
+- Add bar status indicator
 
-    1.6.4
-    - API Update Release
+1.7.0
+- Fix push notifications and update minSdk version
 
-    1.6.3
-    - WTF-Release
+1.6.5
+- Yet another API Update Release
 
-    1.6.2
-    - Changed some URLs from HTTP to HTTPS
-    - Allowed HTTP connections anyway since some internal services don't have TLS
+1.6.4
+- API Update Release
 
-    1.6.1
-    - Fixed JSON RPC connection on Android 9
+1.6.3
+- WTF-Release
+
+1.6.2
+- Changed some URLs from HTTP to HTTPS
+- Allowed HTTP connections anyway since some internal services don't have TLS
+
+1.6.1
+- Fixed JSON RPC connection on Android 9
 
 1.6.0
 - Switched from GCM to FCM (Google notifications)
