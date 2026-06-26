@@ -1,6 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	private int currentArticle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +59,7 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 
 		if (extras != null) {
 			C_portalWebViewFragment f = (C_portalWebViewFragment) mSectionsPagerAdapter.getItem(0);
-			currentArticle = extras.getInt("id");
-			if (f != null) {
-				f.setUrl("https://c-portal.c-base.org/articles/" + extras.getInt("id") + "/");
-			}
+			f.setUrl("https://c-portal.c-base.org/articles/" + extras.getInt("id") + "/");
 		}
 
 	}
@@ -90,25 +85,15 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent myIntent;
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
+		int id = item.getItemId();
+		if (id == android.R.id.home) {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		case R.id.menu_settings:
-			myIntent = new Intent(this, SettingsActivity.class);
-			startActivityForResult(myIntent, 0);
+		} else if (id == R.id.menu_settings) {
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
-		case R.id.menu_c_out:
-			myIntent = new Intent(this, C_outActivity.class);
-			startActivityForResult(myIntent, 0);
+		} else if (id == R.id.menu_c_out) {
+			startActivity(new Intent(this, C_outActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -167,11 +152,8 @@ public class C_PortalActivity extends C_beamActivity implements ActionBar.TabLis
 		}
 	}
 
-	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	private void enableStrictMode() {
-		if (android.os.Build.VERSION.SDK_INT > 9) {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-		}
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
 	}
 }

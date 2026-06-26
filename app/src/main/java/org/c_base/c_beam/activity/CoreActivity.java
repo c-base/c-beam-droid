@@ -3,6 +3,7 @@ package org.c_base.c_beam.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -32,7 +33,6 @@ public class CoreActivity extends RingActivity {
     private static final int RINGINFO_FRAGMENT = 5;
 
     SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class CoreActivity extends RingActivity {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
                     if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp()+" AP");
+                        tvAp.setText(getString(R.string.ap_display, user.getAp()));
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
@@ -74,18 +74,18 @@ public class CoreActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.pager);
+        ViewPager mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 try {
                     actionBar.setSelectedNavigationItem(position);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -99,10 +99,11 @@ public class CoreActivity extends RingActivity {
         private final Fragment[] pages;
 
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             pages = new Fragment[getCount()];
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -110,26 +111,35 @@ public class CoreActivity extends RingActivity {
             // below) with the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if (position == CONTROL_FRAGMENT) {
-                    fragment = new C_ontrolFragment(c_beam);
-                } else if (position == MEMBERINTERFACE_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
-                } else if (position == HYPERBLAST_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
-                } else if (position == MEGABLAST_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
-                } else if (position == MATELIGHT_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.matelight_url));
-                } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment();
-                    ((RinginfoFragment) fragment).setRing("core");
-                } else {
-                    fragment = null;
+                switch (position) {
+                    case CONTROL_FRAGMENT:
+                        fragment = new C_ontrolFragment(c_beam);
+                        break;
+                    case MEMBERINTERFACE_FRAGMENT:
+                        fragment = new C_portalWebViewFragment();
+                        ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
+                        break;
+                    case HYPERBLAST_FRAGMENT:
+                        fragment = new C_portalWebViewFragment();
+                        ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
+                        break;
+                    case MEGABLAST_FRAGMENT:
+                        fragment = new C_portalWebViewFragment();
+                        ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
+                        break;
+                    case MATELIGHT_FRAGMENT:
+                        fragment = new C_portalWebViewFragment();
+                        ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.matelight_url));
+                        break;
+                    case RINGINFO_FRAGMENT:
+                        fragment = new RinginfoFragment();
+                        ((RinginfoFragment) fragment).setRing("core");
+                        break;
+                    default:
+                        fragment = new Fragment();
+                        break;
                 }
+                pages[position] = fragment;
             } else {
 
                 fragment = pages[position];

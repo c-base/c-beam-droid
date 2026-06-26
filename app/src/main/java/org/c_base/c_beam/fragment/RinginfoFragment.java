@@ -1,6 +1,7 @@
 package org.c_base.c_beam.fragment;
 
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,45 +12,53 @@ import android.widget.TextView;
 import org.c_base.c_beam.R;
 
 public class RinginfoFragment extends Fragment {
-    private String ring = "core";
+	private String ring = "clamp";
 
-    public RinginfoFragment() {
-    }
+	public void setRing(String ring) {
+		this.ring = ring;
+	}
 
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.fragment_ringinfo, container, false);
+		TextView tv = v.findViewById(R.id.textView);
+		TextView tv2 = v.findViewById(R.id.textView2);
+        ImageView iv = v.findViewById(R.id.imageView);
 
-    public void setRing(String ring) {
-        this.ring = ring;
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_ringinfo, container, false);
-
-        TextView ringInfoTextView = v.findViewById(R.id.textView);
-        TextView ringTitleTextView = v.findViewById(R.id.textView2);
-        ImageView ringInfoImageView = v.findViewById(R.id.imageView);
-        ringTitleTextView.setText(ring);
-        if (ring == "clamp") {
-            ringInfoTextView.setText(getString(R.string.info_clamp));
-            ringInfoImageView.setImageResource(R.drawable.ring_clamp);
-        } else if(ring.equals("carbon")) {
-            ringInfoTextView.setText(getString(R.string.info_carbon));
-            ringInfoImageView.setImageResource(R.drawable.ring_carbon);
-        } else if(ring.equals("cience")) {
-            ringInfoTextView.setText(getString(R.string.info_cience));
-            ringInfoImageView.setImageResource(R.drawable.ring_cience);
-        } else if(ring.equals("creactiv")) {
-            ringInfoTextView.setText(getString(R.string.info_creactiv));
-            ringInfoImageView.setImageResource(R.drawable.ring_creactiv);
-        } else if(ring.equals("culture")) {
-            ringInfoTextView.setText(getString(R.string.info_culture));
-            ringInfoImageView.setImageResource(R.drawable.ring_culture);
-        } else if(ring.equals("com")) {
-            ringInfoTextView.setText(getString(R.string.info_com));
-            ringInfoImageView.setImageResource(R.drawable.ring_com);
-        } else if(ring.equals("core")) {
-            ringInfoTextView.setText(getString(R.string.info_core));
-            ringInfoImageView.setImageResource(R.drawable.ring_core);
+        tv2.setText(ring);
+        switch (ring) {
+            case "clamp":
+                tv.setText(R.string.info_clamp);
+                iv.setImageResource(R.drawable.ring_clamp);
+                break;
+            case "carbon":
+                tv.setText(R.string.info_carbon);
+                iv.setImageResource(R.drawable.ring_carbon);
+                break;
+            case "cience":
+                tv.setText(R.string.info_cience);
+                iv.setImageResource(R.drawable.ring_cience);
+                break;
+            case "creactiv":
+                tv.setText(R.string.info_creactiv);
+                iv.setImageResource(R.drawable.ring_creactiv);
+                break;
+            case "culture":
+                tv.setText(R.string.info_culture);
+                iv.setImageResource(R.drawable.ring_culture);
+                break;
+            case "com":
+                tv.setText(R.string.info_com);
+                iv.setImageResource(R.drawable.ring_com);
+                break;
+            case "core":
+                tv.setText(R.string.info_core);
+                iv.setImageResource(R.drawable.ring_core);
+                break;
         }
-        return v;
-    }
+
+		return v;
+	}
+
 }

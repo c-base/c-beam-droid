@@ -3,8 +3,6 @@ package org.c_base.c_beam.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
 
@@ -13,15 +11,10 @@ import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
 
+@SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
-//    public static final String KEY_PREF_MQTT_USER = "pref_key_mqtt_user";
-//    public static final String KEY_PREF_MQTT_PASSWORD = "pref_key_mqtt_password";
-//    public static final String KEY_PREF_MQTT_URI = "pref_key_mqtt_uri";
-//    public static final String KEY_PREF_MQTT_TLS = "pref_key_mqtt_tls";
-//    public static final String KEY_PREF_DEFAULT_URL = "pref_key_default_url";
-
-	C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
+	private final C_beam c_beam = C_beam.getInstance();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,63 +46,31 @@ public class SettingsActivity extends PreferenceActivity {
 			push_eta.setEnabled(false);
 		}
 		
-		stats_enabled.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				c_beam.setStatsEnabled((Boolean) newValue);
-//				if (((Boolean) newValue).booleanValue()) {
-//
-//				} else {
-//
-//				}
-				return true;
-			}
-		});
+		stats_enabled.setOnPreferenceChangeListener((preference, newValue) -> {
+            c_beam.setStatsEnabled((Boolean) newValue);
+            return true;
+        });
 		
-		push_missions.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				c_beam.setPushMissions((Boolean) newValue);
-				return true;
-			}
-		});
+		push_missions.setOnPreferenceChangeListener((preference, newValue) -> {
+            c_beam.setPushMissions((Boolean) newValue);
+            return true;
+        });
 		
-		push_boarding.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				c_beam.setPushBoarding((Boolean) newValue);
-				return true;
-			}
-		});
+		push_boarding.setOnPreferenceChangeListener((preference, newValue) -> {
+            c_beam.setPushBoarding((Boolean) newValue);
+            return true;
+        });
 		
-		push_eta.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				c_beam.setPushETA((Boolean) newValue);
-				return true;
-			}
-		});
+		push_eta.setOnPreferenceChangeListener((preference, newValue) -> {
+            c_beam.setPushETA((Boolean) newValue);
+            return true;
+        });
 		
 		CheckBoxPreference push = (CheckBoxPreference) findPreference(Settings.PUSH);
-		push.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                Toast.makeText(context, "Please restart device to apply this change",
-                        Toast.LENGTH_LONG).show();
-
-				/*
-				TODO: later please do everything correctly - also listen to preference in withGCM flavor
-				if (((Boolean) newValue).booleanValue()) {
-					GCMManager.register(context);
-				} else {
-					GCMManager.unregister(context);
-				}
-				*/
-                //GCMFacade.registerGCM(context, (Boolean) newValue);
-
-				return true;
-			}
-		});
+		push.setOnPreferenceChangeListener((preference, newValue) -> {
+            Toast.makeText(context, "Please restart device to apply this change",
+                    Toast.LENGTH_LONG).show();
+            return true;
+        });
 	}
 }

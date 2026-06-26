@@ -1,35 +1,28 @@
 package org.c_base.c_beam.activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.fragment.C_portalWebViewFragment;
 
-@SuppressLint("NewApi")
-public class MapActivity extends C_beamActivity implements
-		ActionBar.TabListener {
+import java.util.Locale;
+
+public class MapActivity extends C_beamActivity implements ActionBar.TabListener {
 
 	/**
-	 * The {@link PagerAdapter} that will provide
+	 * The {@link androidx.viewpager.widget.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
 	 * {@link FragmentPagerAdapter} derivative, which
 	 * will keep every loaded fragment in memory. If this becomes too memory
 	 * intensive, it may be best to switch to a
-	 * {@link FragmentStatePagerAdapter}.
+	 * {@link androidx.fragment.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -44,9 +37,11 @@ public class MapActivity extends C_beamActivity implements
 		setContentView(R.layout.activity_map);
 
 		// Set up the action bar.
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		// Show the Up button in the action bar.
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		final ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null) {
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -61,12 +56,14 @@ public class MapActivity extends C_beamActivity implements
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
 		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+		.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				if (actionBar != null) {
+					actionBar.setSelectedNavigationItem(position);
+				}
+			}
+		});
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -74,9 +71,11 @@ public class MapActivity extends C_beamActivity implements
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
-			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+			if (actionBar != null) {
+				actionBar.addTab(actionBar.newTab()
+						.setText(mSectionsPagerAdapter.getPageTitle(i))
+						.setTabListener(this));
+			}
 		}
 	}
 
@@ -105,32 +104,33 @@ public class MapActivity extends C_beamActivity implements
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
+			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 		}
 
+		@NonNull
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 			Fragment fragment;
-			Bundle args = new Bundle();
-            if (position == 0) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
-            } else if (position == 1) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
-            } else if (position == 2) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
-            } else {
-                fragment = new DummySectionFragment();
-                args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-                fragment.setArguments(args);
-            }
-
-            return fragment;
+			switch (position) {
+				case 0:
+					fragment = new C_portalWebViewFragment();
+					((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+					break;
+				case 1:
+					fragment = new C_portalWebViewFragment();
+					((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+					break;
+				case 2:
+				default:
+					fragment = new C_portalWebViewFragment();
+					//((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+					((C_portalWebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
+					break;
+			}
+			return fragment;
 		}
 
 		@Override
@@ -141,42 +141,16 @@ public class MapActivity extends C_beamActivity implements
 
 		@Override
 		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_section1).toUpperCase();
+				return getString(R.string.title_map_section0).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_section2).toUpperCase();
+				return getString(R.string.title_clamp_section3).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_section3).toUpperCase();
+				return getString(R.string.title_clamp_section4).toUpperCase(l);
 			}
 			return null;
-		}
-	}
-
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	public static class DummySectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			// Create a new TextView and set its text to the fragment's section
-			// number argument value.
-			TextView textView = new TextView(getActivity());
-			textView.setGravity(Gravity.CENTER);
-			textView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return textView;
 		}
 	}
 

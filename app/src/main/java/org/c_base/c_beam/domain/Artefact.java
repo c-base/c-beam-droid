@@ -1,29 +1,16 @@
 package org.c_base.c_beam.domain;
 
+import androidx.annotation.NonNull;
 import net.minidev.json.JSONObject;
 
 public class Artefact {
-	int id;
-	String name;
-	String slug;
-	
-	public Artefact(String string) {
-		// TODO Auto-generated constructor stub
-	}
-	
+	private String name;
+	private String slug;
+
 	public Artefact(JSONObject item) {
 		super();
-		//id = item.getInt("id");
-		name = (String) item.get("name");
-		slug = (String) item.get("slug");
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+		this.name = (String) item.get("name");
+		this.slug = (String) item.get("slug");
 	}
 
 	public String getName() {
@@ -42,9 +29,9 @@ public class Artefact {
 		this.slug = slug;
 	}
 
+    @NonNull
 	@Override
 	public String toString() {
 		return name;
 	}
-
 }

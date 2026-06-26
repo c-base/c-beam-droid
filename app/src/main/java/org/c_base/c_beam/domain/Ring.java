@@ -1,30 +1,31 @@
 package org.c_base.c_beam.domain;
 
 import android.graphics.drawable.Drawable;
-import android.widget.ImageButton;
 
-/**
- * Created by smile on 7/6/13.
- */
 public class Ring {
-    private String name = "";
-    private Drawable image = null;
+	private String name;
+	private Drawable image;
 
-    public Ring(String name, Drawable image) {
-        this.name = name;
-        this.image = image;
-    }
+	public Ring(String name, Drawable image) {
+		super();
+		this.name = name;
+		this.image = image;
+	}
 
-    public Ring() {
+	public String getName() {
+		return name;
+	}
 
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Drawable getImage() {
+		return image;
+	}
 
-    public Drawable getImage() {
-        return image;
-    }
+	public void setImage(Drawable image) {
+		this.image = image;
+	}
 
 }

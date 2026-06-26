@@ -2,12 +2,12 @@ package org.c_base.c_beam.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -48,10 +48,6 @@ public class MainActivity extends RingActivity {
     private static final int MISSION_FRAGMENT = 3;
     private static final int ACTIVITYLOG_FRAGMENT = 4;
 
-    private ArrayList<Article> articleList;
-    private ArrayList<Event> eventList;
-
-    private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private final C_beam c_beam = getInstance();
@@ -95,17 +91,13 @@ public class MainActivity extends RingActivity {
         String defaultUsername = "bernd";
         String user = sharedPref.getString(Settings.USERNAME, defaultUsername);
 
-        if (user.equals(defaultUsername) || user.length() == 0) {
+        if (user.equals(defaultUsername) || user.isEmpty()) {
             AlertDialog.Builder b = new AlertDialog.Builder(this);
             b.setTitle(R.string.set_username_title);
             b.setMessage(R.string.set_username_message);
-            b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                    startActivityForResult(myIntent, 0);
-                }
+            b.setPositiveButton("OK", (dialog, which) -> {
+                Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(myIntent);
             });
             b.show();
             return false;
@@ -116,14 +108,6 @@ public class MainActivity extends RingActivity {
 
     public void toggleLogin() {
         showLoginLogoutDialog();
-        /*
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        if (c_beam.isLoggedIn(sharedPref.getString(Settings.USERNAME, "bernd"))) {
-            showLogoutDialog();
-        } else {
-            showLoginDialog();
-        }
-        */
     }
 
     public void updateLists() {
@@ -146,7 +130,7 @@ public class MainActivity extends RingActivity {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
                     if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp() + " AP");
+                        tvAp.setText(getString(R.string.ap_display, user.getAp()));
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
@@ -155,33 +139,32 @@ public class MainActivity extends RingActivity {
         }
         if (online.isAdded()) {
             online.clear();
-            for (int i = 0; i < onlineList.size(); i++)
-                online.addItem(onlineList.get(i));
-            for (int i = 0; i < etaList.size(); i++)
-                online.addItem(etaList.get(i));
+            for (User u : onlineList)
+                online.addItem(u);
+            for (User u : etaList)
+                online.addItem(u);
         }
         if (events.isAdded()) {
-            eventList = c_beam.getEvents();
+            ArrayList<Event> eventList = c_beam.getEvents();
             events.clear();
             if (eventList != null) {
-                for (int i = 0; i < eventList.size(); i++)
-                    events.addItem(eventList.get(i));
+                for (Event e : eventList)
+                    events.addItem(e);
             }
         }
 
         if (missions.isAdded()) {
-            ArrayList<Mission> missionList = new ArrayList<Mission>();
-            missionList = c_beam.getMissions();
+            ArrayList<Mission> missionList = c_beam.getMissions();
             missions.clear();
-            for (int i = 0; i < missionList.size(); i++)
-                missions.addItem(missionList.get(i));
+            for (Mission m : missionList)
+                missions.addItem(m);
         }
 
         if (c_portal.isAdded()) {
-            articleList = c_beam.getArticles();
+            ArrayList<Article> articleList = c_beam.getArticles();
             c_portal.clear();
-            for (int i = 0; i < articleList.size(); i++)
-                c_portal.addItem(articleList.get(i));
+            for (Article a : articleList)
+                c_portal.addItem(a);
         }
 
         if (artefacts.isAdded()) {
@@ -200,7 +183,7 @@ public class MainActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.pager);
+        ViewPager mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         setupViewPagerIndicator(mViewPager);
@@ -214,10 +197,11 @@ public class MainActivity extends RingActivity {
         Fragment[] pages;
 
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             pages = new Fragment[getCount()];
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -225,25 +209,35 @@ public class MainActivity extends RingActivity {
             // below) with the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if (position == USER_FRAGMENT) {
-                    fragment = new UserListFragment();
-                } else if (position == C_PORTAL_FRAGMENT) {
-                    fragment = new C_portalListFragment();
-                } else if (position == ARTEFACTS_FRAGMENT) {
-                    fragment = new ArtefactListFragment();
-                } else if (position == EVENTS_FRAGMENT) {
-                    fragment = new EventListFragment();
-                } else if (position == C_ONTROL_FRAGMENT) {
-                    fragment = new C_ontrolFragment(c_beam);
-                } else if (position == MISSION_FRAGMENT) {
-                    fragment = new MissionListFragment();
-                } else if (position == ACTIVITYLOG_FRAGMENT) {
-                    fragment = new ActivitylogFragment();
-                } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment();
-                    ((RinginfoFragment) fragment).setRing("clamp");
-                } else {
-                    fragment = null;
+                switch (position) {
+                    case USER_FRAGMENT:
+                        fragment = new UserListFragment();
+                        break;
+                    case C_PORTAL_FRAGMENT:
+                        fragment = new C_portalListFragment();
+                        break;
+                    case ARTEFACTS_FRAGMENT:
+                        fragment = new ArtefactListFragment();
+                        break;
+                    case EVENTS_FRAGMENT:
+                        fragment = new EventListFragment();
+                        break;
+                    case C_ONTROL_FRAGMENT:
+                        fragment = new C_ontrolFragment(c_beam);
+                        break;
+                    case MISSION_FRAGMENT:
+                        fragment = new MissionListFragment();
+                        break;
+                    case ACTIVITYLOG_FRAGMENT:
+                        fragment = new ActivitylogFragment();
+                        break;
+                    case RINGINFO_FRAGMENT:
+                        fragment = new RinginfoFragment();
+                        ((RinginfoFragment) fragment).setRing("clamp");
+                        break;
+                    default:
+                        fragment = new Fragment();
+                        break;
                 }
                 fragment.setArguments(new Bundle());
                 pages[position] = fragment;

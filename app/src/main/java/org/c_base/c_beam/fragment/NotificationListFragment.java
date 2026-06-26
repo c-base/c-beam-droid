@@ -1,93 +1,57 @@
 package org.c_base.c_beam.fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import org.c_base.c_beam.activity.UserActivity;
 import org.c_base.c_beam.domain.Notification;
 import org.c_base.c_beam.util.Helper;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class NotificationListFragment extends ListFragment {
-    ArrayList<Notification> items = new ArrayList<Notification>();
-    ListAdapter adapter;
-    Class nextActivity = UserActivity.class;
-
-    SharedPreferences sharedPref;
-
-
-    public NotificationListFragment() {
-
-    }
-
-//    public NotificationListFragment(ArrayList<Notification> items) {
-//        this.items = items;
-//    }
-
-    public void setItems(ArrayList<Notification> items) {
-        this.items = items;
-    }
+	private ArrayList<Notification> items = new ArrayList<>();
 
     public void clear() {
         items.clear();
     }
 
-    public void addItem(Notification item) {
-        items.add(item);
+    public void setItems(ArrayList<Notification> items) {
+        this.items = items;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        adapter = new C_beamAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, items);
-        setListAdapter(adapter);
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-    }
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		setListAdapter(new NotificationAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, items));
+	}
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-    }
+	private static class NotificationAdapter extends ArrayAdapter<Notification> {
+		private final ArrayList<Notification> items;
 
-    public void setNextActivity(Class cls) {
-        nextActivity = cls;
-    }
+		public NotificationAdapter(Context context, int itemLayout, ArrayList<Notification> items) {
+			super(context, itemLayout, items);
+			this.items = items;
+		}
 
-    public class C_beamAdapter<T> extends ArrayAdapter<Notification> {
-        private static final String TAG = "UserAdapter";
-        private final ArrayList<Notification> items;
-        private final Context context;
-
-        public C_beamAdapter(Context context, int textViewResourceId, ArrayList<Notification> items) {
-            super(context, textViewResourceId, items);
-            this.context = context;
-            this.items = items;
-        }
-
+		@NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            NumberFormat defaultFormat = NumberFormat.getPercentInstance();
-            defaultFormat.setMinimumFractionDigits(1);
-            TextView view = (TextView) super.getView(position, convertView, parent);
-            Notification s = items.get(position);
+		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+			View v = super.getView(position, convertView, parent);
+			TextView tv = v.findViewById(android.R.id.text1);
+            if (getContext() instanceof android.app.Activity) {
+                Helper.setFont((android.app.Activity) getContext(), tv);
+            }
+			tv.setText(items.get(position).getNotification());
+			return v;
+		}
 
-            Helper.setListItemStyle(view);
-            Helper.setFont(getActivity(), view);
+	}
 
-            view.setText(s.toString());
-            return view;
-        }
-
-    }
-}	
+}

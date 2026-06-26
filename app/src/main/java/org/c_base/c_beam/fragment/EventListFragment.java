@@ -1,84 +1,85 @@
 package org.c_base.c_beam.fragment;
 
-import java.util.ArrayList;
-
-import org.c_base.c_beam.R;
-import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.activity.EventActivity;
-import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.util.Helper;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.c_base.c_beam.R;
+import org.c_base.c_beam.activity.EventActivity;
+import org.c_base.c_beam.domain.Event;
+import org.c_base.c_beam.util.Helper;
+
+import java.util.ArrayList;
+
 public class EventListFragment extends ListFragment {
-	ArrayList<Event> items = new ArrayList<Event>();
-	ListAdapter adapter;
-	Class nextActivity = EventActivity.class;
+	private final ArrayList<Event> items = new ArrayList<>();
+	Class<?> nextActivity = EventActivity.class;
 	SharedPreferences sharedPref;
 
-	public void clear() {
-		items.clear();
-	}
-	public void addItem(Event item) {
-		items.add(item);
-		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
-	}
-	// Override onCreateView() so we can use a custom empty view
+    public void clear() {
+        items.clear();
+    }
+
+    public void addItem(Event item) {
+        items.add(item);
+        if (getListAdapter() != null) {
+            ((ArrayAdapter<?>) getListAdapter()).notifyDataSetChanged();
+        }
+    }
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.list_view, null);
+		return inflater.inflate(R.layout.list_view, container, false);
 	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-		adapter = new EventAdapter(getActivity(),
-				android.R.layout.simple_list_item_1, items);
-		setListAdapter(adapter);
-		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
-		getListView().setHapticFeedbackEnabled(true);
+		setListAdapter(new EventAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, items));
+		if (getActivity() != null) {
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        }
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-	    Intent myIntent = new Intent(v.getContext(), nextActivity);
-		myIntent.putExtra("id", items.get((int) id).getId());
-		startActivityForResult(myIntent, 0);
+	public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+		Intent myIntent = new Intent(v.getContext(), nextActivity);
+		myIntent.putExtra("id", items.get(position).getId());
+		startActivity(myIntent);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public class EventAdapter extends ArrayAdapter {
+	private static class EventAdapter extends ArrayAdapter<Event> {
 		private final ArrayList<Event> items;
-		private final Context context;
 
-		@SuppressWarnings("unchecked")
-		public EventAdapter(Context context, int textViewResourceId, ArrayList<Event> items) {
-			super(context, textViewResourceId, items);
-			this.context = context;
+		public EventAdapter(Context context, int itemLayout, ArrayList<Event> items) {
+			super(context, itemLayout, items);
 			this.items = items;
 		}
- 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			TextView view = (TextView) super.getView(position, convertView, parent);
-//			Event event = items.get(position);
-			Helper.setListItemStyle(view);
-			Helper.setFont(getActivity(), view);
-			return view;
+
+		@NonNull
+        @Override
+		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+			View v = super.getView(position, convertView, parent);
+			TextView tv = v.findViewById(android.R.id.text1);
+            if (getContext() instanceof android.app.Activity) {
+                Helper.setFont((android.app.Activity) getContext(), tv);
+            }
+			tv.setText(items.get(position).toString());
+			return v;
 		}
 
 	}
+
 }

@@ -2,54 +2,46 @@ package org.c_base.c_beam.ccorder;
 
 import android.graphics.Color;
 import android.hardware.SensorEvent;
+
 import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
+
 import java.util.ArrayList;
 
 public class SensorPlot {
-    private final XYPlot plot;
+
     private final SimpleXYSeries[] series;
 
-    private SimpleXYSeries seriesX;
-    private SimpleXYSeries seriesY;
-    private SimpleXYSeries seriesZ;
-
-    private final int[][] formatColors = {
-            {Color.rgb(0, 0, 200), Color.rgb(0, 0, 80)},
-            {Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)},
-            {Color.rgb(200, 0, 0), Color.rgb(80, 0, 0)},
-            {Color.rgb(200, 0, 200), Color.rgb(80, 0, 80)},
-            {Color.rgb(0, 200, 200), Color.rgb(0, 80, 80)},
-            {Color.rgb(200, 200, 0), Color.rgb(80, 80, 0)},
-            {Color.rgb(200, 200, 200), Color.rgb(80, 80, 80)}
-    };
-
     public SensorPlot(String sensorName, String[] dimensions, XYPlot plot) {
-        this.plot = plot;
-        plot.setTitle(sensorName);
-
         series = new SimpleXYSeries[dimensions.length];
-        for (int i=0; i<dimensions.length; i++) {
-            series[i] = new SimpleXYSeries(new ArrayList<Number>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " " + dimensions[i]);
-            for (int j=0; j<100; j++) {
+
+        int[][] formatColors = {
+                {Color.rgb(0, 0, 0), Color.RED},
+                {Color.rgb(0, 0, 0), Color.GREEN},
+                {Color.rgb(0, 0, 0), Color.BLUE},
+                {Color.rgb(0, 0, 0), Color.YELLOW},
+                {Color.rgb(0, 0, 0), Color.CYAN},
+                {Color.rgb(0, 0, 0), Color.MAGENTA},
+        };
+
+        for (int i = 0; i < dimensions.length; i++) {
+            series[i] = new SimpleXYSeries(new ArrayList<>(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, sensorName + " " + dimensions[i]);
+            for (int j = 0; j < 100; j++) {
                 series[i].addLast(null, 0);
             }
-            LineAndPointFormatter format = new LineAndPointFormatter(formatColors[i][0], null, formatColors[i][1], new PointLabelFormatter());
-            format.getFillPaint().setAlpha(150);
-            plot.addSeries(series[i], format);
+            int[] colors = formatColors[i % formatColors.length];
+            plot.addSeries(series[i], new LineAndPointFormatter(colors[1], null, colors[0], null));
         }
+
+        plot.setTicksPerRangeLabel(3);
+        plot.getGraphWidget().setDomainLabelOrientation(-45);
     }
 
     public void addEvent(SensorEvent event) {
-        for (int i=0; i<series.length; i++) {
-//            if (series[i].size() > 100) {
-//                series[i].removeFirst();
-//            }
+        for (int i = 0; i < series.length; i++) {
             series[i].removeFirst();
             series[i].addLast(null, event.values[i]);
         }
-        plot.redraw();
     }
 }

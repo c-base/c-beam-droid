@@ -12,7 +12,9 @@ public class EventActivity extends C_beamActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event);
 		// Show the Up button in the action bar.
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 	}
 
 	@Override

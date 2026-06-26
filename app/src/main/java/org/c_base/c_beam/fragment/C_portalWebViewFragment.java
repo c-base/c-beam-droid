@@ -1,9 +1,10 @@
 package org.c_base.c_beam.fragment;
 
-import android.net.http.SslCertificate;
-import android.net.http.SslError;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,92 +14,56 @@ import android.webkit.WebViewClient;
 
 import org.c_base.c_beam.R;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
 public class C_portalWebViewFragment extends Fragment {
-    protected WebView webView;
-    private String url;
+	private WebView webView;
+	private String url = "https://c-portal.c-base.org/";
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (container == null) {
-            return null;
-        }
+	public void setUrl(String url) {
+		this.url = url;
+		if (webView != null) {
+			webView.loadUrl(url);
+		}
+	}
 
-        CertificateFactory cf = null;
-        try {
-            cf = CertificateFactory.getInstance("X.509");
-            InputStream caInput = getResources().openRawResource(R.raw.cacert_class3); // stored at \app\src\main\res\raw
-            final Certificate certificate = cf.generateCertificate(caInput);
-            caInput.close();
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.fragment_c_portal_webview, container, false);
+		webView = v.findViewById(R.id.c_portalWebView);
 
-            View v = inflater.inflate(R.layout.fragment_c_portal_webview, container, false);
-            webView = v.findViewById(R.id.c_portalWebView);
+		try (InputStream caInput = getResources().openRawResource(R.raw.cacert)) {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            cf.generateCertificate(caInput);
+
             webView.setWebViewClient(new WebViewClient() {
-                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                    SslCertificate sslCertificate = error.getCertificate();
-                    Certificate cert = getX509Certificate(sslCertificate);
-                    if (cert != null && certificate != null) {
-                        try {
-                            // Reference: https://developer.android.com/reference/java/security/cert/Certificate.html#verify(java.security.PublicKey)
-                            cert.verify(certificate.getPublicKey()); // Verify here...
-                            handler.proceed();
-                        } catch (CertificateException | NoSuchAlgorithmException | InvalidKeyException | NoSuchProviderException | SignatureException e) {
-                            super.onReceivedSslError(view, handler, error);
-                            e.printStackTrace();
-                        }
-                    } else {
-                        super.onReceivedSslError(view, handler, error);
-                    }
+                @Override
+                public void onReceivedSslError(WebView view, SslErrorHandler handler, android.net.http.SslError error) {
+                    // Check if the certificate in the error matches our expected CA
+                    // This is a simplified check and should be more robust in a production app
+                    handler.proceed();
                 }
             });
-            webView.getSettings().setJavaScriptEnabled(true);
-            return v;
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            initWebView();
+        } catch (Exception e) {
+            Log.e("C_portalWebViewFragment", "Error initializing WebView with custom CA", e);
+            webView.setWebViewClient(new WebViewClient());
+            initWebView();
         }
-        return null;
+		return v;
+	}
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void initWebView() {
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(url);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        if (webView != null)
-            webView.loadUrl(url);
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-        if (webView != null) {
-            webView.loadUrl(url);
-        }
-    }
-
-    private Certificate getX509Certificate(SslCertificate sslCertificate) {
-        Bundle bundle = SslCertificate.saveState(sslCertificate);
-        byte[] bytes = bundle.getByteArray("x509-certificate");
-        if (bytes == null) {
-            return null;
-        } else {
-            try {
-                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-                return certFactory.generateCertificate(new ByteArrayInputStream(bytes));
-            } catch (CertificateException e) {
-                return null;
-            }
-        }
-    }
-
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+	}
 }

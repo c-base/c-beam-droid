@@ -1,13 +1,26 @@
 package org.c_base.c_beam.domain;
 
+import androidx.annotation.NonNull;
 import net.minidev.json.JSONObject;
 
 public class Event {
-	protected int id = 0;
-	protected String title = "dummy event";
-	protected String description = "";
-	protected String start = "";
-	protected String end = "";
+	protected String title;
+	protected String description;
+	protected String start;
+	protected String end;
+	protected int id;
+
+	public Event(JSONObject item) {
+		super();
+		this.title = (String) item.get("title");
+		this.description = (String) item.get("description");
+		this.start = (String) item.get("start");
+		this.end = (String) item.get("end");
+	}
+
+	public Event(String title) {
+		this.title = title;
+	}
 
 	public String getTitle() {
 		return title;
@@ -25,17 +38,12 @@ public class Event {
 		this.description = description;
 	}
 
-	public Event(String title) {
-		this.title = title;
+	public String getStart() {
+		return start;
 	}
 
-	public Event(JSONObject item) {
-		super();
-		//			id = item.getInt("id");
-		title = (String) item.get("title");
-		description = (String) item.get("description");
-		start = (String) item.get("start");
-		end = (String) item.get("end");
+	public void setStart(String start) {
+		this.start = start;
 	}
 
 	public int getId() {
@@ -46,21 +54,10 @@ public class Event {
 		this.id = id;
 	}
 
+    @NonNull
 	@Override
 	public String toString() {
-		if (!start.isEmpty() || !end.isEmpty()) {
-			return title + " ("+start+"-"+end+")";
-		} else {
-			return title;
-		}
-	}
-
-	public String getStart() {
-		return start;
-	}
-
-	public void setStart(String start) {
-		this.start = start;
+		return title;
 	}
 
 	public String getEnd() {
@@ -70,7 +67,4 @@ public class Event {
 	public void setEnd(String end) {
 		this.end = end;
 	}
-	
-	
-	
 }

@@ -97,7 +97,7 @@ public class C_beamActivity extends AppCompatActivity {
 
         LayoutInflater inflator = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        View v = inflator.inflate(R.layout.view_actionbar, null);
+        View v = inflator.inflate(R.layout.view_actionbar, findViewById(android.R.id.content), false);
         TextView titleView = v.findViewById(R.id.title);
         titleView.setText(this.getTitle());
         titleView.setTypeface(Typeface.createFromAsset(getAssets(), "CEVA-CM.TTF"));
@@ -112,10 +112,6 @@ public class C_beamActivity extends AppCompatActivity {
         // Loop through all of the children.
         for (int i = 0; i < mCount; ++i) {
             final View mChild = mContainer.getChildAt(i);
-            //			if (mChild instanceof Button) {
-            //				mChild.setBackgroundResource(R.drawable.button);
-            //				return;
-            //			}
             if (mChild instanceof TextView) {
                 Helper.setFont(this, ((TextView) mChild));
             } else if (mChild instanceof ViewGroup) {
@@ -127,34 +123,29 @@ public class C_beamActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        if (item.getItemId() == R.id.menu_settings) {
-            Intent myIntent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(myIntent, 0);
-        } else if (item.getItemId() == R.id.menu_login) {
+        int id = item.getItemId();
+        if (id == R.id.menu_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+        } else if (id == R.id.menu_login) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             c_beam.force_login(sharedPref.getString(Settings.USERNAME, "bernd"));
-        } else if (item.getItemId() == R.id.menu_logout) {
+        } else if (id == R.id.menu_logout) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
             c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
-        } else if (item.getItemId() == R.id.menu_c_out) {
-            Intent myIntent = new Intent(this, C_outActivity.class);
-            startActivityForResult(myIntent, 0);
-        } else if (item.getItemId() == R.id.menu_map) {
-            Intent myIntent = new Intent(this, MapActivity.class);
-            startActivityForResult(myIntent, 0);
-        } else if (item.getItemId() == R.id.menu_c_mission) {
-            Intent myIntent = new Intent(this, MissionActivity.class);
-            startActivityForResult(myIntent, 0);
-        } else if (item.getItemId() == R.id.menu_c_corder) {
-            Intent myIntent = new Intent(this, CcorderActivity.class);
-            startActivityForResult(myIntent, 0);
-        } else if (item.getItemId() == R.id.menu_ab_out) {
+        } else if (id == R.id.menu_c_out) {
+            startActivity(new Intent(this, C_outActivity.class));
+        } else if (id == R.id.menu_map) {
+            startActivity(new Intent(this, MapActivity.class));
+        } else if (id == R.id.menu_c_mission) {
+            startActivity(new Intent(this, MissionActivity.class));
+        } else if (id == R.id.menu_c_corder) {
+            startActivity(new Intent(this, CcorderActivity.class));
+        } else if (id == R.id.menu_ab_out) {
             new AboutDialogFragment().show(getSupportFragmentManager(), "about");
-        } else if (item.getItemId() == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             Intent myIntent = new Intent(this, MainActivity.class);
             myIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivityForResult(myIntent, 0);
+            startActivity(myIntent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -190,9 +181,9 @@ public class C_beamActivity extends AppCompatActivity {
         c_beam.setActivity(this);
     }
 
-    protected void startActivity(Class activityClass) {
+    protected void startActivity(Class<?> activityClass) {
         Intent myIntent = new Intent(this, activityClass);
-        startActivityForResult(myIntent, 0);
+        startActivity(myIntent);
     }
 
 }

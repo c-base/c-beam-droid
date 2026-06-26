@@ -1,22 +1,25 @@
 package org.c_base.c_beam.mqtt;
 
+import android.Manifest;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
-import androidx.core.app.NotificationCompat;
-import android.text.TextUtils;
+import android.annotation.SuppressLint;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.c_base.c_beam.NotificationBroadcastReceiver;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.activity.NotificationActivity;
-import org.c_base.c_beam.domain.Notification;
-import org.c_base.c_beam.extension.NotificationBroadcast;
+import org.c_base.c_beam.activity.MainActivity;
 import org.c_base.c_beam.util.NotificationsDataSource;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -26,302 +29,163 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLSocketFactory;
-
-public class MqttManager implements MqttCallback, IMqttActionListener {
-
-    private static final String LOG_TAG = "MqttManager";
-    private static final int QOS = 2;
-    private static final String CHANNEL = "c-beam-droid";
-    private static final String OPEN_URL_TOPIC = "open";
-    private static final String CLIENT_ID_PREFIX = "c-beam-droid-";
-
-    private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
-    private static final int NOTIFICATION_ID = 1;
-    private static final String DEFAULT_MQTT_URI = "ssl://echelon.c-base.org:1883";
-    private static final boolean DEFAULT_MQTT_TLS = false;
-    private static final String DEFAULT_MQTT_USERNAME = "";
-    private static final String DEFAULT_MQTT_PASSWORD = "";
-    private static final String DEFAULT_MQTT_ID = "c-beam-droid-bernd01";
-
-    private static boolean ready = false;
-    private static SharedPreferences sharedPref;
-
-    private final Context context;
-    private MqttAndroidClient client;
-    private final NotificationManager mNotificationManager;
-
-    private static Connections connections;
-    private String clientHandle;
-    private Thread thread;
-
-    private static MqttManager instance = null;
-
-    // TODO: remove workaround or bug in paho 1.0.2 https://github.com/eclipse/paho.mqtt.android/issues/2
-    private static boolean subscribed = false;
-
-    public static MqttManager getInstance(Context context) {
 
 
-        if (instance == null) {
-            instance = new MqttManager(context);
-        }
-        return instance;
-    }
+public class MqttManager implements MqttCallback {
+	private static final String TAG = "MqttManager";
+	private static final String BOARDING_TOPIC = "user/boarding";
+	private static final String ETA_TOPIC = "user/eta";
+	private static final String MISSION_TOPIC = "mission/completed";
+	private static final String CHANNEL_ID = "c_beam_mqtt_channel";
 
-    private MqttManager(Context context) {
-        this.context = context;
+	private final Context context;
+	private MqttAndroidClient mqttClient;
+	private final SharedPreferences sharedPref;
 
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        connections = Connections.getInstance(context);
-    }
+	private static MqttManager instance = null;
 
-    public void startConnection() {
-        if (client != null) {
-            Log.i(LOG_TAG, "Reuse client");
-            if (!client.isConnected()) {
-                Log.i(LOG_TAG, "Try reconnecting");
-                connect();
-            }
-            return;
-        }
-        MqttConnectOptions options = createMqttConnectOptions();
-        client = createMqttClient(options);
-        client.setCallback(this);
-        connect();
-    }
+	private MqttManager(Context context) {
+		this.context = context.getApplicationContext();
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(this.context);
+		createNotificationChannel();
+	}
 
-    private void connect() {
-        if (client.isConnected()) {
-            Log.i(LOG_TAG, "Client already connected");
-            return;
-        }
-        try {
-            client.connect(Connections.getInstance(context).getConnection(clientHandle).getConnectionOptions(), null, this);
-            Log.i(LOG_TAG, "Connect seems successful");
-        } catch (MqttException e) {
-            Log.e(LOG_TAG, "Error while connecting to server", e);
-        }
-    }
+	public static synchronized MqttManager getInstance(Context context) {
+		if (instance == null) {
+			instance = new MqttManager(context);
+		}
+		return instance;
+	}
 
-    private MqttAndroidClient createMqttClient(MqttConnectOptions options) {
-        String serverUri = sharedPref.getString(Settings.MQTT_URI, DEFAULT_MQTT_URI);
-        String clientId = sharedPref.getString(Settings.MQTT_ID, DEFAULT_MQTT_ID);//CLIENT_ID_PREFIX + UUID.randomUUID();
-        Log.e(LOG_TAG, "ServerURI:" + serverUri);
+	public void startConnection() {
+		String uri = sharedPref.getString(Settings.MQTT_URI, "tcp://c-beam.cbrp3.c-base.org:1883");
+		String clientId = sharedPref.getString(Settings.MQTT_ID, "c-beam-droid-" + System.currentTimeMillis());
 
-        MqttAndroidClient client = connections.createClient(context, serverUri, clientId);
+		mqttClient = new MqttAndroidClient(context, uri, clientId);
+		mqttClient.setCallback(this);
 
-        clientHandle = serverUri + clientId;
-        Connection connection = new Connection(clientHandle, clientId, "c-beam.cbrp3.c-base.org", 1883,
-                context, client, sharedPref.getBoolean(Settings.MQTT_TLS, DEFAULT_MQTT_TLS));
+		MqttConnectOptions options = new MqttConnectOptions();
+		options.setAutomaticReconnect(true);
+		options.setCleanSession(false);
 
-        connection.addConnectionOptions(options);
-        Connections.getInstance(context).addConnection(connection);
-        return client;
-    }
+		try {
+			mqttClient.connect(options, null, new IMqttActionListener() {
+				@Override
+				public void onSuccess(IMqttToken asyncActionToken) {
+					subscribeToTopics();
+				}
 
-    private MqttConnectOptions createMqttConnectOptions() {
-        String userName = sharedPref.getString(Settings.MQTT_USERNAME, DEFAULT_MQTT_USERNAME);
-        String password = sharedPref.getString(Settings.MQTT_PASSWORD, DEFAULT_MQTT_PASSWORD);
-        boolean useTLS = sharedPref.getBoolean(Settings.MQTT_TLS, DEFAULT_MQTT_TLS);
-        MqttConnectOptions options = new MqttConnectOptions();
-        if (!TextUtils.isEmpty(userName)) {
-            options.setUserName(userName);
-        }
-        if (!TextUtils.isEmpty(password)) {
-            options.setPassword(password.toCharArray());
-        }
-        if (useTLS) {
-            try {
-                InputStream certificateInputStream = getCaCertFromResources();
-                SSLSocketFactory socketFactory = SslUtil.getSocketFactory(certificateInputStream);
-                options.setSocketFactory(socketFactory);
-            } catch (Exception e) {
-                e.printStackTrace();
+				@Override
+				public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+					Log.e(TAG, "Connection failed", exception);
+				}
+			});
+		} catch (MqttException e) {
+			Log.e(TAG, "MqttException on connect", e);
+		}
+	}
+
+	private void subscribeToTopics() {
+		try {
+			mqttClient.subscribe(BOARDING_TOPIC, 0);
+			mqttClient.subscribe(ETA_TOPIC, 0);
+			mqttClient.subscribe(MISSION_TOPIC, 0);
+		} catch (MqttException e) {
+			Log.e(TAG, "Subscription failed", e);
+		}
+	}
+
+	@Override
+	public void connectionLost(Throwable cause) {
+		Log.w(TAG, "Connection lost", cause);
+	}
+
+	@Override
+	public void messageArrived(String topic, MqttMessage message) {
+		String payload = new String(message.getPayload());
+		Log.d(TAG, "Message arrived. Topic: " + topic + ", Payload: " + payload);
+
+		String notificationTitle = "";
+        if (topic != null) {
+            switch (topic) {
+                case BOARDING_TOPIC:
+                    notificationTitle = "Boarding";
+                    break;
+                case ETA_TOPIC:
+                    notificationTitle = "ETA Update";
+                    break;
+                case MISSION_TOPIC:
+                    notificationTitle = "Mission Completed";
+                    break;
             }
         }
-        options.setCleanSession(false);
-        return options;
-    }
 
-    private void subscribe() {
-        Log.i(LOG_TAG, "Subscribe called");
-        if (subscribed) {
-            return;
-        }
-        String topic = getTopic(OPEN_URL_TOPIC);
-        try {
-            client.subscribe(topic, QOS);
-            client.subscribe("user/boarding", QOS);
-            client.subscribe("test/smile", QOS);
-            subscribed = true;
-            Log.i(LOG_TAG, "Subscribed successfully");
-        } catch (MqttException e) {
-            Log.e(LOG_TAG, "Failed to subscribe", e);
-        }
-    }
+		if (!notificationTitle.isEmpty()) {
+			showNotification(notificationTitle, payload);
+			saveNotification(payload);
+		}
+	}
 
-    public void crewNetworkConnected() {
-        if (!ready || !client.isConnected()) {
-            return;
-        }
-        try {
-            client.subscribe("bar/status", QOS);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to subscribe to bar/status", e);
-        }
-    }
+	@Override
+	public void deliveryComplete(IMqttDeliveryToken token) {
+	}
 
-    public void crewNetworkDisconnected() {
-        if (!ready || !client.isConnected()) {
-            return;
-        }
-        try {
-            client.unsubscribe("bar/status");
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to unsubscribe from bar/status", e);
-        }
-    }
+	public void crewNetworkConnected() {
+		if (mqttClient != null && !mqttClient.isConnected()) {
+			startConnection();
+		}
+	}
 
-    @Override
-    public void connectionLost(final Throwable throwable) {
-        Log.w(LOG_TAG, "Connection lost, will reconnect when network is available"); //, throwable);
-    }
+	public void crewNetworkDisconnected() {
+		if (mqttClient != null && mqttClient.isConnected()) {
+			try {
+				mqttClient.disconnect();
+			} catch (MqttException e) {
+				Log.e(TAG, "Disconnect failed", e);
+			}
+		}
+	}
 
-    @Override
-    public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
-        Log.d(LOG_TAG, "Message arrived: " + topic);
-        String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
-        onMessage(topic, payload);
-    }
+	@SuppressLint("MissingPermission")
+    private void showNotification(String title, String message) {
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-    @Override
-    public void deliveryComplete(final IMqttDeliveryToken deliveryToken) {
-        Log.d(LOG_TAG, "Delivery complete");
-    }
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle(title)
+				.setContentText(message)
+				.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+				.setContentIntent(pendingIntent)
+				.setAutoCancel(true);
 
-    @Override
-    public void onSuccess(final IMqttToken token) {
-        ready = true;
-        Log.i(LOG_TAG, "Connection successfully established.");
-        subscribe();
-    }
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+		if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+			notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+		}
+	}
 
-    @Override
-    public void onFailure(final IMqttToken token, final Throwable throwable) {
-        showErrorMessage(R.string.connection_to_server_failed);
-        Log.e(LOG_TAG, "Connection failed" + throwable.getCause());
-        throwable.printStackTrace();
-    }
+	private void saveNotification(String message) {
+		new Thread(() -> {
+            NotificationsDataSource dataSource = new NotificationsDataSource(context);
+            dataSource.open();
+            dataSource.createNotification(message);
+            dataSource.close();
+        }).start();
+	}
 
-    private void showErrorMessage(int errorMessageResId) {
-        String text = context.getString(errorMessageResId);
-        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    private String getTopic(String subTopic) {
-        return CHANNEL + "/" + subTopic;
-    }
-
-    private InputStream getCaCertFromResources() {
-        return context.getResources().openRawResource(R.raw.cacert);
-    }
-
-
-    protected void onMessage(String topic, String payload) {
-        String title = "";
-        JSONObject json = null;
-        try {
-            String notificationText;
-            if (topic.equals("user/boarding")) {
-                json = new JSONObject(payload);
-                title = "now boarding";
-                NotificationBroadcast.sendBoardingBroadcast(context, json.getString("user"), json.getString("timestamp"));
-                notificationText = "MQTT: " + json.getString("timestamp") + " " + title + ": " + json.getString("user");
-            } else if (topic.equals("test/smile")) {
-                title = "test/smile";
-                notificationText = payload;
-            } else if (topic.equals("user/eta")) {
-                json = new JSONObject(payload);
-                NotificationBroadcast.sendEtaBroadcast(context, json.getString("user"), json.getString("eta"), json.getString("timestamp"));
-                notificationText = json.getString("timestamp") + " ETA " + json.getString("user") + ": " + json.getString("eta");
-            } else if (topic.equals("bar/status")) {
-                notificationText = payload;
-            } else if (title.equals("mission completed")) {
-                notificationText = json.getString("timestamp") + "mission completed: " + title + " " + payload;
-            } else {
-                Log.d(LOG_TAG, "Unknown notification message received: " + topic + " / " + payload);
-                return;
-            }
-            createNotification(notificationText);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void createNotification(String notificationText) {
-        //TODO: don't access the database from the main thread
-        NotificationsDataSource dataSource = new NotificationsDataSource(context);
-        dataSource.open();
-        dataSource.createNotification(notificationText);
-
-        Intent notificationIntent = new Intent(context, NotificationActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-        Intent deleteIntent = new Intent(context, NotificationBroadcastReceiver.class);
-        deleteIntent.setAction(NotificationBroadcastReceiver.ACTION_NOTIFICATION_CANCELLED);
-
-        PendingIntent pendingDeleteIntent = PendingIntent.getBroadcast(context, 0, deleteIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-
-        try {
-            NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
-            ArrayList<Notification> notificationList =
-                    dataSource.getAllNotifications();
-
-            if (notificationList.size() > 5) {
-                for (int i = 0; i < 5; i++) {
-                    style.addLine(notificationList.get(i).toString());
-                }
-                style.setSummaryText("+" + (notificationList.size() - 5) + " more...");
-            } else {
-                for (org.c_base.c_beam.domain.Notification line : notificationList) {
-                    style.addLine(line.toString());
-                }
-            }
-
-            android.app.Notification notification = new NotificationCompat.Builder(context)
-                    .setContentTitle("c-beam")
-                    .setContentText(notificationText)
-                    .setAutoCancel(true)
-                    .setSubText(null)
-                    .setTicker(notificationText)
-                    .setDeleteIntent(pendingDeleteIntent)
-                    .setContentIntent(pIntent)
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setStyle(style)
-                    .build();
-
-            mNotificationManager.notify(NOTIFICATION_ID, notification);
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Error while creating notification", e);
-        }
-
-        dataSource.close();
-    }
-
-    public void startConnectionExt() {
-        Log.i(LOG_TAG, "start connection to external MQTT server");
-    }
+	private void createNotificationChannel() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			CharSequence name = "c-beam Notifications";
+			String description = "Mqtt notifications for c-beam";
+			int importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+			channel.setDescription(description);
+			NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+			if (notificationManager != null) {
+				notificationManager.createNotificationChannel(channel);
+			}
+		}
+	}
 }

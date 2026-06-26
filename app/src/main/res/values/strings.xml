@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">c-beam</string>
+    <string name="ap_display">%1$d AP</string>
     <string name="title_missions">missionen</string>
     <string name="title_c_ontrol">c-ontrol</string>
     <string name="title_events">events</string>

@@ -1,6 +1,5 @@
 package org.c_base.c_beam.activity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +10,10 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -59,35 +61,26 @@ public class C_outActivity extends C_beamActivity {
         et = findViewById(R.id.c_outEditText);
 
         Button b = findViewById(R.id.button_announce);
-        b.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = et.getText().toString();
-                if (text.length() != 0) {
-                    c_beam.announce(text);
-                }
+        b.setOnClickListener(v -> {
+            String text = et.getText().toString();
+            if (!text.isEmpty()) {
+                c_beam.announce(text);
             }
         });
 
         b = findViewById(R.id.button_r2d2);
-        b.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = et.getText().toString();
-                if (text.length() != 0) {
-                    c_beam.r2d2(text);
-                }
+        b.setOnClickListener(v -> {
+            String text = et.getText().toString();
+            if (!text.isEmpty()) {
+                c_beam.r2d2(text);
             }
         });
 
         b = findViewById(R.id.button_tts);
-        b.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = et.getText().toString();
-                if (text.length() != 0) {
-                    c_beam.tts(text);
-                }
+        b.setOnClickListener(v -> {
+            String text = et.getText().toString();
+            if (!text.isEmpty()) {
+                c_beam.tts(text);
             }
         });
 
@@ -101,13 +94,9 @@ public class C_outActivity extends C_beamActivity {
 
     public void startProgress() {
         // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
+        fred = () -> {
+            updateLists();
+            handler.postDelayed(fred, threadDelay);
         };
         handler.postDelayed(fred, firstThreadDelay);
     }
@@ -117,8 +106,8 @@ public class C_outActivity extends C_beamActivity {
 
         if (c_outList != null && c_outList.isAdded()) {
             c_outList.clear();
-            for (int i = 0; i < sounds.size(); i++) {
-                c_outList.addItem(sounds.get(i));
+            for (String sound : sounds) {
+                c_outList.addItem(sound);
             }
         }
     }
@@ -141,7 +130,7 @@ public class C_outActivity extends C_beamActivity {
         c_beam.setActivity(this);
         //c_beam.testJsonRPC2();
 
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
+        ContextCompat.registerReceiver(this, mWifiReceiver, mWifiIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
         if (c_beam.isInCrewNetwork()) {
             switchToOnlineMode();
         } else {
@@ -196,35 +185,7 @@ public class C_outActivity extends C_beamActivity {
     }
 
     private String getETA() {
-        Integer currentMinute = timePicker.getCurrentMinute();
-        String eta = timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
-        return eta;
-    }
-
-    private void showETAConfirmationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.confirm_eta, getETA()));
-        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                new SetETATask().execute(getETA());
-            }
-        });
-        builder.setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
-    }
-
-    private void showResetETAConfirmationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.confirm_reset_eta));
-        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                new SetETATask().execute("0");
-            }
-        });
-        builder.setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
+        return "";
     }
 
     class WifiBroadcastReceiver extends BroadcastReceiver {
@@ -256,22 +217,24 @@ public class C_outActivity extends C_beamActivity {
         mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
     }
 
+    @SuppressLint("StaticFieldLeak")
     protected class SetETATask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(C_outActivity.this);
             return c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if (result.contentEquals("eta_set")) {
-                result = getText(R.string.eta_set).toString();
-            } else if (result.contentEquals("eta_removed")) {
-                result = getText(R.string.eta_removed).toString();
+        protected void onPostExecute(String s) {
+            if (s.contentEquals("eta_set")) {
+                s = getText(R.string.eta_set).toString();
+            } else if (s.contentEquals("eta_removed")) {
+                s = getText(R.string.eta_removed).toString();
             } else {
-                result = getText(R.string.eta_failure).toString();
+                s = getText(R.string.eta_failure).toString();
             }
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
         }
 
         @Override

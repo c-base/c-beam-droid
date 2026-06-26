@@ -1,100 +1,78 @@
 package org.c_base.c_beam.activity;
 
-import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
-import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
 
 public class UserActivity extends C_beamActivity {
-	C_beam c_beam = C_beam.getInstance();
-	TableLayout tl;
-	TableRow tr;
-	TextView labelTV,valueTV;
 
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user);
-
+		setupActionBar();
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			User u = c_beam.getUser(extras.getInt("id"));
-			tl = findViewById(R.id.TableLayout1);
-			if (u!=null) {
-				this.setTitle(u.getUsername());
-				addData(u);
-				WebView w = findViewById(R.id.userWebView);
-				w.getSettings().setJavaScriptEnabled(true);
-				w.loadUrl("https://"+u.getUsername()+".crew.c-base.org");
-
-			} else {
-				this.setTitle("c-beam user view");
+			if (u != null) {
+				updateUser(u);
 			}
 		}
-		
-		final ViewGroup mContainer = (ViewGroup) findViewById(
-				android.R.id.content).getRootView();
-		setAppFont(mContainer);
-		super.onCreate(savedInstanceState);
 	}
 
-	/** This function add the data to the table **/
-	public void addData(User u){
+	private void updateUser(User u) {
+		TextView tv = findViewById(R.id.textView1);
+		if (tv != null) {
+			tv.setText(u.getUsername());
+		}
 
-		addRow("Username:", u.getUsername());
-		addRow("Status:", u.getStatus());
-		if (!u.getEta().isEmpty()) {
-			addRow("ETA:", u.getEta());
+		ToggleButton toggleButton1 = findViewById(R.id.toggleButton1);
+		toggleButton1.setTextOff(u.getUsername());
+		toggleButton1.setTextOn(u.getUsername());
+
+		if (u.getStatus().equals("online")) {
+			toggleButton1.setChecked(true);
+			toggleButton1.setBackgroundColor(Color.rgb(0, 255, 0));
+		} else {
+			toggleButton1.setChecked(false);
+			toggleButton1.setBackgroundColor(Color.rgb(255, 0, 0));
 		}
-		if(u.getStatus().equals("online")) {
-			addRow("Logintime:", u.getLogintime());
-		}
-		if(!u.getReminder().isEmpty()) {
-			addRow("Reminder:", u.getReminder());
-		}
-		if (u.isStats_enabled()) {
-			addRow("AP:", ""+u.getAp());
-		}
-		
+
+		WebView w = findViewById(R.id.userWebView);
+		w.loadUrl("https://portal.c-base.org/users/" + u.getUsername());
+
+		TableLayout tl = findViewById(R.id.TableLayout1);
+
+		tl.addView(createRow("Status", u.getStatus()));
+		tl.addView(createRow("Abheben", u.getAutologout() + " min"));
+		tl.addView(createRow("AP", "" + u.getAp()));
 	}
-	public void addRow(String label, String value) {
-		/** Create a TableRow dynamically **/
-		tr = new TableRow(this);
-		tr.setLayoutParams(new LayoutParams(
-				//					LayoutParams.FILL_PARENT,
+
+	private TableRow createRow(String label, String value) {
+		TableRow tr = new TableRow(this);
+		tr.setLayoutParams(new TableRow.LayoutParams(
+				LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 
-		/** Creating a TextView to add to the row **/
-		labelTV = new TextView(this);
+		TextView labelTV = new TextView(this);
 		labelTV.setText(label);
-		//		companyTV.setTextColor(Color.RED);
-		//		companyTV.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-		//		companyTV.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-		labelTV.setPadding(15, 15, 15, 15);
-		tr.addView(labelTV);  // Adding textView to tablerow.
+		labelTV.setPadding(15, 5, 15, 5);
+		tr.addView(labelTV);
 
-		/** Creating another textview **/
-		valueTV = new TextView(this);
+		TextView valueTV = new TextView(this);
 		valueTV.setText(value);
-		//		valueTV.setTextColor(Color.GREEN);
-		//		valueTV.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-		valueTV.setPadding(15, 15, 15, 15);
-		//		valueTV.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-		tr.addView(valueTV); // Adding textView to tablerow.
+		valueTV.setPadding(15, 5, 15, 5);
+		tr.addView(valueTV);
 
-		// Add the TableRow to the TableLayout
-		tl.addView(tr, new TableLayout.LayoutParams(
-				LayoutParams.FILL_PARENT,
-				LayoutParams.WRAP_CONTENT));
-
+		return tr;
 	}
+
 }

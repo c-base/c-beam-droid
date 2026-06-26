@@ -38,9 +38,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 		//   - Create a RemoteViews object for it
 		//   - Set the text in the RemoteViews object
 		//   - Tell the AppWidgetManager to show that views object for the widget.
-		final int N = appWidgetIds.length;
-		for (int i=0; i<N; i++) {
-			int appWidgetId = appWidgetIds[i];
+		for (int appWidgetId : appWidgetIds) {
 			String titlePrefix = Helper.loadTitlePref(context, appWidgetId);
 			updateAppWidget(context, appWidgetManager, appWidgetId, titlePrefix);
 		}
@@ -50,9 +48,8 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 	public void onDeleted(Context context, int[] appWidgetIds) {
 		Log.d(TAG, "onDeleted");
 		// When the user deletes the widget, delete the preference associated with it.
-		final int N = appWidgetIds.length;
-		for (int i=0; i<N; i++) {
-			Helper.deleteTitlePref(context, appWidgetIds[i]);
+		for (int appWidgetId : appWidgetIds) {
+			Helper.deleteTitlePref(context, appWidgetId);
 		}
 	}
 
@@ -82,7 +79,7 @@ public class C_beamAppWidgetProvider extends AppWidgetProvider {
 				PackageManager.DONT_KILL_APP);
 	}
 
-	static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+	public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
 			int appWidgetId, String titlePrefix) {
 		Log.d(TAG, "updateAppWidget appWidgetId=" + appWidgetId + " titlePrefix=" + titlePrefix);
 		// Getting the string this way allows the string to be localized.  The format

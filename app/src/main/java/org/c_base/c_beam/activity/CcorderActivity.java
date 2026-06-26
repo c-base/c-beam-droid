@@ -1,9 +1,9 @@
 package org.c_base.c_beam.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -23,14 +23,8 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import androidx.legacy.app.ActionBarDrawerToggle;
-import androidx.drawerlayout.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
-import android.Manifest;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,19 +33,24 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.androidplot.xy.XYPlot;
-import java.io.IOException;
-import java.util.ArrayList;
+
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.ccorder.DrawOnTop;
@@ -60,6 +59,9 @@ import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 import org.c_base.c_beam.domain.Ring;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
     private static final String TAG = "CCorderActivity";
@@ -67,8 +69,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private Camera camera;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
-    GLSurfaceView glSurfaceView;
-    //	private TouchSurfaceView mGLSurfaceView;
+    private GLSurfaceView glSurfaceView;
 
     private View scanBar;
     private View grid;
@@ -103,14 +104,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     protected CharSequence mTitle;
 
-    ArrayList<Sensor> sensors = new ArrayList<Sensor>();
+    private final ArrayList<Sensor> sensors = new ArrayList<>();
 
     private final String[] dimensionArrayXYZ = {"X", "Y", "Z"};
     private final String[] dimensionArrayLux = {"/ lux"};
     private final String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
-    private ToggleButton toggleButtonCam;
     private SharedPreferences sharedPref;
     private boolean hasLinearAcceleration = false;
     private long lastScanSoundTime = 0;
@@ -163,35 +163,35 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
         mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
 
-        ArrayList<Ring> mRings = new ArrayList<Ring>();
-        for (int i = 0; i < mDrawerItems.length; i++) {
-            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        ArrayList<Ring> mRings = new ArrayList<>();
+        int index = 0;
+        for (String item : mDrawerItems) {
+            mRings.add(new Ring(item, mDrawerImages.getDrawable(index++)));
         }
 
         mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
                 R.id.drawer_list_item_textview, mRings));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener((adapterView, view, position, id) -> selectItem(position));
 
         mTitle = getTitle();
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
-                // TODO Auto-generated method stub
                 super.onDrawerOpened(drawerView);
                 if (actionBar != null) {
                     actionBar.setTitle(mTitle);
                 }
-                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
+                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).apply();
             }
         };
 
         // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         if (!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
-            mDrawerLayout.openDrawer(Gravity.LEFT);
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
 
         if (actionBar != null) {
@@ -228,109 +228,85 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         mSurfaceView = findViewById(R.id.surfaceview);
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
-        mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurfaceHolder.setFormat(PixelFormat.TRANSPARENT);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setupControls() {
         // Find the views whose visibility will change
         mVictimContainer = findViewById(R.id.hidecontainer);
         toggleButtonScanner = findViewById(R.id.hideme1);
-        toggleButtonScanner.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ToggleButton b = (ToggleButton) v;
-                if (b.isChecked()) {
-                    int toolbarHeight = getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
-                    int height = getResources().getDisplayMetrics().heightPixels - toolbarHeight - 240;
-                    TranslateAnimation transAnimation = new TranslateAnimation(0, 0, 0, height);
-                    transAnimation.setRepeatMode(2);
-                    transAnimation.setRepeatCount(-1);
-                    transAnimation.setDuration(1000);
-                    scanBar.startAnimation(transAnimation);
-                } else {
-                    scanBar.clearAnimation();
-                    scanBar.setVisibility(View.GONE);
-                }
+        toggleButtonScanner.setOnClickListener(v -> {
+            ToggleButton b = (ToggleButton) v;
+            if (b.isChecked()) {
+                int toolbarHeight = getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
+                int height = getResources().getDisplayMetrics().heightPixels - toolbarHeight - 240;
+                TranslateAnimation transAnimation = new TranslateAnimation(0, 0, 0, height);
+                transAnimation.setRepeatMode(2);
+                transAnimation.setRepeatCount(-1);
+                transAnimation.setDuration(1000);
+                scanBar.startAnimation(transAnimation);
+            } else {
+                scanBar.clearAnimation();
+                scanBar.setVisibility(View.GONE);
             }
         });
 
         ToggleButton toggleButtonGrid = findViewById(R.id.hideme2);
-        toggleButtonGrid.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ToggleButton b = (ToggleButton) v;
-                if (b.isChecked()) {
-                    grid.setVisibility(View.VISIBLE);
-                } else {
-                    grid.setVisibility(View.INVISIBLE);
-                }
+        toggleButtonGrid.setOnClickListener(v -> {
+            ToggleButton b = (ToggleButton) v;
+            if (b.isChecked()) {
+                grid.setVisibility(View.VISIBLE);
+            } else {
+                grid.setVisibility(View.INVISIBLE);
             }
         });
 
-        Button buttonPhotons = findViewById(R.id.hideme3);
-        buttonPhotons.setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        ledOn();
-                        if (zap != null) {
-                            zap.seekTo(0);
-                            zap.start();
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        ledOff();
-                        break;
-                }
-                return false;
+        findViewById(R.id.hideme3).setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ledOn();
+                    if (zap != null) {
+                        zap.seekTo(0);
+                        zap.start();
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    v.performClick();
+                    ledOff();
+                    break;
             }
+            return false;
         });
 
         ToggleButton toggleButtonFilter = findViewById(R.id.hideme4);
-        toggleButtonFilter.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ToggleButton b = (ToggleButton) v;
-                if (b.isChecked()) {
-                    glSurfaceView.setVisibility(View.VISIBLE);
-                } else {
-                    glSurfaceView.setVisibility(View.INVISIBLE);
-                }
+        toggleButtonFilter.setOnClickListener(v -> {
+            ToggleButton b = (ToggleButton) v;
+            if (b.isChecked()) {
+                glSurfaceView.setVisibility(View.VISIBLE);
+            } else {
+                glSurfaceView.setVisibility(View.INVISIBLE);
             }
         });
 
         toggleButtonSensors = findViewById(R.id.hideme5);
-        toggleButtonSensors.setOnClickListener(new OnClickListener() {
+        toggleButtonSensors.setOnClickListener(v -> {
+            ToggleButton b = (ToggleButton) v;
+            if (b.isChecked()) {
+                sensorPlotLayout.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onClick(View v) {
-                ToggleButton b = (ToggleButton) v;
-                if (b.isChecked()) {
-                    sensorPlotLayout.setVisibility(View.VISIBLE);
-
-                } else {
-                    sensorPlotLayout.setVisibility(View.INVISIBLE);
-                }
+            } else {
+                sensorPlotLayout.setVisibility(View.INVISIBLE);
             }
         });
 
-        toggleButtonCam = findViewById(R.id.hideme6);
-        toggleButtonCam.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                ToggleButton b = (ToggleButton) v;
-                if (b.isChecked()) {
-                    mSurfaceView.setVisibility(View.VISIBLE);
-                } else {
-                    mSurfaceView.setVisibility(View.INVISIBLE);
-                }
+        ToggleButton toggleButtonCam = findViewById(R.id.hideme6);
+        toggleButtonCam.setOnClickListener(v -> {
+            ToggleButton b = (ToggleButton) v;
+            if (b.isChecked()) {
+                mSurfaceView.setVisibility(View.VISIBLE);
+            } else {
+                mSurfaceView.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -348,11 +324,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void setupPlotViews() {
-//        LinearLayout sensorPlotLayout = (LinearLayout) findViewById(R.id.sensorPlotLayout);
-//        XYPlot plot = new XYPlot(this, "foo");
-//        plot.setLayoutParams(LinearLayout);
-//        sensorPlotLayout.addView(plot);
-
         magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot));
         gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot2));
         accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot3));
@@ -389,11 +360,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(R.string.c_corder_warning_title);
         b.setMessage(Html.fromHtml(getString(R.string.c_corder_warning_text)));
-        b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        b.setPositiveButton("OK", (dialog, which) -> {
         });
         b.show();
     }
@@ -426,7 +393,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             menu.findItem(R.id.menu_c_corder).setVisible(false);
         }
 
@@ -442,7 +409,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+    public void surfaceChanged(@NonNull SurfaceHolder arg0, int arg1, int arg2, int arg3) {
         if (camera != null) {
             Camera.Parameters p = camera.getParameters();
             p.setPreviewSize(arg2, arg3);
@@ -450,24 +417,21 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 camera.setPreviewDisplay(arg0);
                 camera.setDisplayOrientation(90);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "surfaceChanged", e);
             }
             camera.startPreview();
         }
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        //camera = Camera.open();
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         if (camera != null) {
             camera.stopPreview();
         }
-        //camera.release();
-        //camera = null;
     }
 
     void ledOn() {
@@ -496,27 +460,16 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
-    void ledflash() {
-        Parameters params = camera.getParameters();
-        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-        camera.setParameters(params);
-        params.setFlashMode(Parameters.FLASH_MODE_OFF);
-        camera.setParameters(params);
-    }
-
-    OnClickListener mVisibleListener = new OnClickListener() {
-        public void onClick(View v) {
-            if (((ToggleButton) v).isChecked()) {
-                mVictimContainer.setVisibility(View.VISIBLE);
-            } else {
-                mVictimContainer.setVisibility(View.GONE);
-            }
+    private final OnClickListener mVisibleListener = v -> {
+        if (((ToggleButton) v).isChecked()) {
+            mVictimContainer.setVisibility(View.VISIBLE);
+        } else {
+            mVictimContainer.setVisibility(View.GONE);
         }
     };
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -564,6 +517,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
+    @Override
     protected void onResume() {
         super.onResume();
         registerSensors();
@@ -597,7 +551,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -616,6 +570,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
+    @Override
     protected void onPause() {
         super.onPause();
         unregisterSensors();
@@ -626,7 +581,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 camera = null;
             }
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "onPause", ex);
         }
         handler.removeCallbacks(updateSlowPlotsCallbacks);
     }
@@ -646,20 +601,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
-    protected class RingAdapter extends ArrayAdapter {
-        private static final String TAG = "UserAdapter";
+    protected static class RingAdapter extends ArrayAdapter<Ring> {
         private final ArrayList<Ring> items;
-        private final Context context;
 
-        @SuppressWarnings("unchecked")
         public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
             super(context, itemLayout, textViewResourceId, items);
-            this.context = context;
             this.items = items;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final View listview = super.getView(position, convertView, parent);
 
             TextView textView = listview.findViewById(R.id.drawer_list_item_textview);
@@ -670,14 +622,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             ImageView b = listview.findViewById(R.id.drawer_ring_imageView);
             b.setImageDrawable(r.getImage());
             return listview;
-        }
-
-    }
-
-    protected class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            selectItem(position);
         }
     }
 
@@ -712,14 +656,13 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         if (mDrawerToggle != null) {
             mDrawerToggle.syncState();
         }
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mDrawerToggle != null) {
             mDrawerToggle.onConfigurationChanged(newConfig);
@@ -727,13 +670,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle the event for ActionBarDrawerToggle and return true to cancel propagation
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.closeDrawer(mDrawerList);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
-                mDrawerLayout.openDrawer(mDrawerList);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
 
             if (mDrawerToggle != null) {
@@ -741,8 +683,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
             return true;
         }
-        // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
-
 }

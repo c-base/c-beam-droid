@@ -3,9 +3,9 @@ package org.c_base.c_beam.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.view.View;
@@ -28,9 +28,6 @@ public class CarbonActivity extends RingActivity {
     private static final int RINGINFO_FRAGMENT = 2;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
-
-    private final RING currentRing = RING.CARBON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +61,7 @@ public class CarbonActivity extends RingActivity {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
                     if(sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp()+" AP");
+                        tvAp.setText(getString(R.string.ap_display, user.getAp()));
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
@@ -73,29 +70,28 @@ public class CarbonActivity extends RingActivity {
         }
         if (online.isAdded()) {
             online.clear();
-            for(int i=0; i<onlineList.size();i++) {
-                online.addItem(onlineList.get(i));
-            }
+            for (User u : onlineList)
+                online.addItem(u);
         }
         if (eta.isAdded()) {
             eta.clear();
-            for(int i=0; i<etaList.size();i++) {
-                eta.addItem(etaList.get(i));
-            }
+            for (User u : etaList)
+                eta.addItem(u);
         }
     }
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] pages;
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             pages = new Fragment[getCount()];
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -103,15 +99,20 @@ public class CarbonActivity extends RingActivity {
             // below) with the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if(position == USERLIST_FRAGMENT) {
-                    fragment = new UserListFragment();
-                } else if(position == ETALIST_FRAGMENT) {
-                    fragment = new UserListFragment();
-                } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment();
-                    ((RinginfoFragment) fragment).setRing("carbon");
-                } else {
-                    fragment = null;
+                switch (position) {
+                    case USERLIST_FRAGMENT:
+                        fragment = new UserListFragment();
+                        break;
+                    case ETALIST_FRAGMENT:
+                        fragment = new UserListFragment();
+                        break;
+                    case RINGINFO_FRAGMENT:
+                        fragment = new RinginfoFragment();
+                        ((RinginfoFragment) fragment).setRing("carbon");
+                        break;
+                    default:
+                        fragment = new Fragment();
+                        break;
                 }
                 fragment.setArguments(new Bundle());
                 pages[position] = fragment;
@@ -147,18 +148,18 @@ public class CarbonActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.pager);
+        ViewPager mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 try {
                     actionBar.setSelectedNavigationItem(position);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }

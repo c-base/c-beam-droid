@@ -1,132 +1,94 @@
 package org.c_base.c_beam.activity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
-import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
-import org.c_base.c_beam.fragment.StatsFragment;
+import org.c_base.c_beam.fragment.RinginfoFragment;
 
 import java.util.ArrayList;
 
-@SuppressLint("NewApi")
-public class MissionActivity extends RingActivity implements
-        OnClickListener {
+/**
+ * Created by smile on 2013-05-31.
+ */
+public class MissionActivity extends RingActivity {
     private static final int MISSIONLIST_FRAGMENT = 0;
-    private static final int STATS_FRAGMENT = 2;
-    private static final int ACTIVITYLOG_FRAGMENT = 1;
+    private static final int RINGINFO_FRAGMENT = 1;
 
-    private EditText activity_text;
-    private EditText activity_ap;
-    private Button button_log_activity;
-
-    ViewPager mViewPager;
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_creactiv);
-
-        mCbeamArea = findViewById(R.id.cbeam_area);
+        setContentView(R.layout.activity_mission);
 
         setupOfflineArea();
-        setupActionBar();
         setupCbeamArea();
+        setupActionBar();
         setupViewPager();
-        setupGCM();
-
-        activity_text = findViewById(R.id.edit_log_activity);
-        activity_ap = findViewById(R.id.edit_log_activity_ap);
-        TextWatcher tw = new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                enableSubmitIfReady();
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //		    	  enableSubmitIfReady();
-            }
-        };
-        activity_text.addTextChangedListener(tw);
-        activity_ap.addTextChangedListener(tw);
-
-        button_log_activity = findViewById(R.id.button_log_activity);
-        button_log_activity.setOnClickListener(this);
-        button_log_activity.setEnabled(false);
 
         initializeBroadcastReceiver();
-    }
 
-    private void enableSubmitIfReady() {
-        button_log_activity.setEnabled(activity_text.getText().length() > 0 && activity_ap.getText().length() > 0);
-
+        findViewById(R.id.button_log_activity).setOnClickListener(this::logActivity);
     }
 
     public void updateLists() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        MissionListFragment missions = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSIONLIST_FRAGMENT);
-        StatsFragment stats = (StatsFragment) mSectionsPagerAdapter.getItem(STATS_FRAGMENT);
-        ActivitylogFragment activitylog = (ActivitylogFragment) mSectionsPagerAdapter.getItem(ACTIVITYLOG_FRAGMENT);
+        MissionListFragment online = (MissionListFragment) mSectionsPagerAdapter.getItem(MISSIONLIST_FRAGMENT);
 
         ArrayList<User> userList = c_beam.getUsers();
+
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user : userList) {
             if (user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
-                tvAp.setText(user.getAp() + " AP");
+                if (button != null) {
+                    button.setChecked(user.getStatus().equals("online"));
+                    button.setEnabled(true);
+                    if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
+                        tvAp.setText(getString(R.string.ap_display, user.getAp()));
+                        tvAp.setVisibility(View.VISIBLE);
+                        tvUsername.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         }
-        if (missions.isAdded()) {
-            ArrayList<Mission> missionList = new ArrayList<Mission>();
-            missionList = c_beam.getMissions();
-            missions.clear();
-            for (int i = 0; i < missionList.size(); i++)
-                missions.addItem(missionList.get(i));
+
+        if (online.isAdded()) {
+            ArrayList<Mission> missionList = c_beam.getMissions();
+            online.clear();
+            for (Mission mission : missionList)
+                online.addItem(mission);
         }
-        if (stats.isAdded()) {
-            stats.clear();
-            for (User user : c_beam.getStats())
-                stats.addItem(user);
-        }
-        activitylog.updateLog(c_beam.getActivityLog());
     }
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] pages;
 
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             pages = new Fragment[getCount()];
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -134,14 +96,17 @@ public class MissionActivity extends RingActivity implements
             // below) with the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if (position == MISSIONLIST_FRAGMENT) {
-                    fragment = new MissionListFragment();
-                } else if (position == STATS_FRAGMENT) {
-                    fragment = new StatsFragment();
-                } else if (position == ACTIVITYLOG_FRAGMENT) {
-                    fragment = new ActivitylogFragment();
-                } else {
-                    fragment = null;
+                switch (position) {
+                    case MISSIONLIST_FRAGMENT:
+                        fragment = new MissionListFragment();
+                        break;
+                    case RINGINFO_FRAGMENT:
+                        fragment = new RinginfoFragment();
+                        ((RinginfoFragment) fragment).setRing("culture");
+                        break;
+                    default:
+                        fragment = new Fragment();
+                        break;
                 }
                 fragment.setArguments(new Bundle());
                 pages[position] = fragment;
@@ -154,7 +119,7 @@ public class MissionActivity extends RingActivity implements
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -162,10 +127,8 @@ public class MissionActivity extends RingActivity implements
             switch (position) {
                 case MISSIONLIST_FRAGMENT:
                     return getString(R.string.title_missions).toUpperCase();
-                case STATS_FRAGMENT:
-                    return getString(R.string.title_stats).toUpperCase();
-                case ACTIVITYLOG_FRAGMENT:
-                    return getString(R.string.title_activity).toUpperCase();
+                case RINGINFO_FRAGMENT:
+                    return getString(R.string.title_ringinfo).toUpperCase();
             }
             return null;
         }
@@ -177,18 +140,18 @@ public class MissionActivity extends RingActivity implements
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.pager);
+        ViewPager mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 try {
                     actionBar.setSelectedNavigationItem(position);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -197,36 +160,24 @@ public class MissionActivity extends RingActivity implements
         setupViewPagerIndicator(mViewPager);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_log_activity: {
-                //			Button b = (Button) view;
-                showLogActivityDialog();
-                break;
-            }
+    public void logActivity(View view) {
+        if (view.getId() == R.id.button_log_activity) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.confirm_log_activity);
+            builder.setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                EditText editLogActivity = findViewById(R.id.edit_log_activity);
+                EditText editLogActivityAp = findViewById(R.id.edit_log_activity_ap);
+                String activity = editLogActivity.getText().toString();
+                String ap = editLogActivityAp.getText().toString();
+                if (!activity.isEmpty() && !ap.isEmpty()) {
+                    c_beam.logactivity(activity, ap);
+                    editLogActivity.setText("");
+                    editLogActivityAp.setText("");
+                }
+            });
+            builder.setNegativeButton(R.string.button_cancel, null);
+            builder.create().show();
         }
-    }
-
-    private void showLogActivityDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.confirm_log_activity);
-        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                logActivity();
-            }
-
-        });
-        builder.setNegativeButton(R.string.button_cancel, null);
-        builder.create().show();
-    }
-
-    private void logActivity() {
-//		String activity_text = ((EditText) findViewById(R.id.edit_log_activity)).getText().toString();
-        c_beam.logactivity(activity_text.getText().toString(), activity_ap.getText().toString());
-        // TODO Auto-generated method stub
-
     }
 
 }

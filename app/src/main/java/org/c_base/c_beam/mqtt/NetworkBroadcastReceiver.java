@@ -74,6 +74,6 @@ public class NetworkBroadcastReceiver extends BroadcastReceiver {
 
     private void startMqttConnectionExt(Context context) {
         MqttManager connection = MqttManager.getInstance(context);
-        connection.startConnectionExt();
+        connection.startConnection();
     }
 }

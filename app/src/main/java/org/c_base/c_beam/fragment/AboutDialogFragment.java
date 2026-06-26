@@ -1,54 +1,55 @@
 package org.c_base.c_beam.fragment;
 
-import org.c_base.c_beam.R;
-
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import org.c_base.c_beam.R;
 
-/**
- * Show an "About" dialog
- */
 public class AboutDialogFragment extends DialogFragment {
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.label_about);
-        builder.setPositiveButton(android.R.string.ok, null);
-
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.about_dialog, null);
-
-        TextView about = view.findViewById(R.id.about_text);
-        about.setText(Html.fromHtml(getString(R.string.about_text, getVersionName())));
-        about.setMovementMethod(LinkMovementMethod.getInstance());
-
-        builder.setView(view);
-
-        return builder.create();
+    public AboutDialogFragment() {
+        // Empty constructor required for DialogFragment
     }
 
-    private String getVersionName() {
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.about_dialog, null);
+
+        TextView textView = view.findViewById(R.id.about_text);
+
         String version = "?";
-        try {
-            Activity context = getActivity();
-            String packageName = context.getPackageName();
-            PackageInfo pi = context.getPackageManager().getPackageInfo(packageName, 0);
-            version = pi.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // do nothing
+        Context context = getActivity();
+        if (context != null) {
+            try {
+                String packageName = context.getPackageName();
+                PackageInfo pInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+                version = pInfo.versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e("AboutDialogFragment", "Failed to get version name", e);
+            }
         }
-        return version;
+
+        textView.setText(Html.fromHtml(getString(R.string.about_text, version)));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .setPositiveButton(R.string.button_ok, (dialog, which) -> {
+                })
+                .create();
     }
 }

@@ -15,10 +15,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import androidx.legacy.app.ActionBarDrawerToggle;
-import androidx.viewpager.widget.ViewPager;
+import android.annotation.SuppressLint;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import android.view.Gravity;
+import androidx.viewpager.widget.ViewPager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,37 +109,19 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void setupButtons() {
-        findViewById(R.id.toggleLogin).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (((ToggleButton) view).isChecked()) {
-                    showLoginDialog();
-                } else {
-                    showLogoutDialog();
-                }
+        findViewById(R.id.toggleLogin).setOnClickListener(view -> {
+            if (((ToggleButton) view).isChecked()) {
+                showLoginDialog();
+            } else {
+                showLogoutDialog();
             }
         });
 
-        findViewById(R.id.buttonC_out).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startC_outActivity();
-            }
-        });
+        findViewById(R.id.buttonC_out).setOnClickListener(view -> startC_outActivity());
 
-        findViewById(R.id.button_c_mission).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startC_missionActivity();
-            }
-        });
+        findViewById(R.id.button_c_mission).setOnClickListener(view -> startC_missionActivity());
 
-        findViewById(R.id.button_c_maps).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startC_mapsActivity();
-            }
-        });
+        findViewById(R.id.button_c_maps).setOnClickListener(view -> startC_mapsActivity());
     }
 
 
@@ -146,18 +131,8 @@ public class RingActivity extends C_beamActivity {
         Helper.setFont(this, textView);
         timePicker = this.findViewById(R.id.timePicker1);
         timePicker.setIs24HourView(true);
-        findViewById(R.id.button_set_eta).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showETAConfirmationDialog();
-            }
-        });
-        findViewById(R.id.button_reset_eta).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showResetETAConfirmationDialog();
-            }
-        });
+        findViewById(R.id.button_set_eta).setOnClickListener(view -> showETAConfirmationDialog());
+        findViewById(R.id.button_reset_eta).setOnClickListener(view -> showResetETAConfirmationDialog());
     }
 
     protected void setupAPDisplay() {
@@ -224,20 +199,14 @@ public class RingActivity extends C_beamActivity {
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
         Integer currentHour = timePicker.getCurrentHour();
-        String eta = (currentHour < 10 ? "0" : "") + currentHour +
+        return (currentHour < 10 ? "0" : "") + currentHour +
                 (currentMinute < 10 ? "0" : "") + currentMinute;
-        return eta;
     }
 
     private void showETAConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_eta, getETA()));
-        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                new SetETATask().execute(getETA());
-            }
-        });
+        builder.setPositiveButton(R.string.button_ok, (dialog, whichButton) -> new SetETATask().execute(getETA()));
         builder.setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -245,30 +214,19 @@ public class RingActivity extends C_beamActivity {
     private void showResetETAConfirmationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_reset_eta));
-        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                new SetETATask().execute("0");
-            }
-        });
+        builder.setPositiveButton(R.string.button_ok, (dialog, whichButton) -> new SetETATask().execute("0"));
         builder.setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
 
     private void startC_missionActivity() {
-        Intent myIntent = new Intent(this, MissionActivity.class);
-        startActivityForResult(myIntent, 0);
+        startActivity(MissionActivity.class);
     }
 
     protected void showLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm_login);
-        builder.setPositiveButton(R.string.button_login, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                login();
-            }
-        });
+        builder.setPositiveButton(R.string.button_login, (dialog, whichButton) -> login());
         builder.setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
@@ -280,13 +238,13 @@ public class RingActivity extends C_beamActivity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 switch (whichButton) {
-                    case 0: // mission complete
+                    case 0:
                         login();
                         break;
-                    case 1: // mission cancelled
+                    case 1:
                         logout();
                         break;
-                    case 2: // oops
+                    case 2:
                         break;
                 }
             }
@@ -297,24 +255,17 @@ public class RingActivity extends C_beamActivity {
     protected void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm_logout);
-        builder.setPositiveButton(R.string.button_logout, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                logout();
-            }
-        });
+        builder.setPositiveButton(R.string.button_logout, (dialog, whichButton) -> logout());
         builder.setNegativeButton(R.string.button_cancel, null);
         builder.create().show();
     }
 
     protected void startC_outActivity() {
-        Intent myIntent = new Intent(this, C_outActivity.class);
-        startActivityForResult(myIntent, 0);
+        startActivity(C_outActivity.class);
     }
 
     protected void startC_mapsActivity() {
-        Intent myIntent = new Intent(this, MapActivity.class);
-        startActivityForResult(myIntent, 0);
+        startActivity(MapActivity.class);
     }
 
     public void toggleLogin() {
@@ -356,20 +307,22 @@ public class RingActivity extends C_beamActivity {
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
         mDrawerImages = getResources().obtainTypedArray(R.array.drawer_images_array);
 
-        ArrayList<Ring> mRings = new ArrayList<Ring>();
-        for (int i = 0; i < mDrawerItems.length; i++) {
-            mRings.add(new Ring(mDrawerItems[i], mDrawerImages.getDrawable(i)));
+        ArrayList<Ring> mRings = new ArrayList<>();
+        int index = 0;
+        for (String item : mDrawerItems) {
+            mRings.add(new Ring(item, mDrawerImages.getDrawable(index++)));
         }
 
         mDrawerList.setAdapter(new RingAdapter(this, R.layout.drawer_list_item,
                 R.id.drawer_list_item_textview, mRings));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener((adapterView, view, position, id) -> selectItem(position));
 
         mTitle = getTitle();
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
@@ -377,14 +330,13 @@ public class RingActivity extends C_beamActivity {
                 if (actionBar != null) {
                     actionBar.setTitle(mTitle);
                 }
-                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
+                sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).apply();
             }
         };
 
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         if (!sharedPref.getBoolean(Settings.USER_DISCOVERED_NAVDRAWER, false)) {
-            mDrawerLayout.openDrawer(Gravity.LEFT);
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
 
         if (actionBar != null) {
@@ -410,13 +362,9 @@ public class RingActivity extends C_beamActivity {
 
     public void startProgress() {
         // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
+        fred = () -> {
+            updateLists();
+            handler.postDelayed(fred, threadDelay);
         };
         handler.postDelayed(fred, firstThreadDelay);
     }
@@ -438,7 +386,7 @@ public class RingActivity extends C_beamActivity {
         c_beam.setActivity(this);
         //c_beam.testJsonRPC2();
 
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
+        ContextCompat.registerReceiver(this, mWifiReceiver, mWifiIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
         if (c_beam.isInCrewNetwork()) {
             switchToOnlineMode();
         } else {
@@ -519,13 +467,6 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
-    protected class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            selectItem(position);
-        }
-    }
-
     class WifiBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -550,6 +491,7 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     protected class SetETATask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -557,15 +499,15 @@ public class RingActivity extends C_beamActivity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            if (result.contentEquals("eta_set")) {
-                result = getText(R.string.eta_set).toString();
-            } else if (result.contentEquals("eta_removed")) {
-                result = getText(R.string.eta_removed).toString();
+        protected void onPostExecute(String s) {
+            if (s.contentEquals("eta_set")) {
+                s = getText(R.string.eta_set).toString();
+            } else if (s.contentEquals("eta_removed")) {
+                s = getText(R.string.eta_removed).toString();
             } else {
-                result = getText(R.string.eta_failure).toString();
+                s = getText(R.string.eta_failure).toString();
             }
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -582,20 +524,17 @@ public class RingActivity extends C_beamActivity {
         mWifiIntentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
     }
 
-    protected class RingAdapter extends ArrayAdapter {
-        private static final String TAG = "UserAdapter";
+    protected static class RingAdapter extends ArrayAdapter<Ring> {
         private final ArrayList<Ring> items;
-        private final Context context;
 
-        @SuppressWarnings("unchecked")
         public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
             super(context, itemLayout, textViewResourceId, items);
-            this.context = context;
             this.items = items;
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             final View listview = super.getView(position, convertView, parent);
 
             TextView textView = listview.findViewById(R.id.drawer_list_item_textview);
