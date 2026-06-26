@@ -28,6 +28,7 @@ public class ActivitylogFragment extends Fragment {
 	}
 
 	public void updateLog(ArrayList<ActivityLog> activityLogList) {
+		if (activityLogList == null) return;
         StringBuilder tmp = new StringBuilder("user@c-beam> tail activitylog\n");
 
 		for (ActivityLog activitylog : activityLogList) {
