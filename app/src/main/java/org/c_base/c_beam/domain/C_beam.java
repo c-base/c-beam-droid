@@ -117,7 +117,7 @@ public class C_beam {
 		if (activity == null) return false;
 		WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
-		return ip.startsWith("10.0.1.") || ip.startsWith("42.42.");
+		return ip.startsWith("10.0.") || ip.startsWith("42.42.");
 	}
 
 	private synchronized Object c_beamCall(String method, Map<String, Object> params) {
