@@ -56,7 +56,7 @@
     <string name="c_out_sound_played">cound wurde abgespielt</string>
     <string name="title_activity_web">c-browser</string>
     <string name="title_activity_artefact">cbag3</string>
-    <string name="title_activity_artefact_long">c-base artefact guide 3</string>
+    <string name="title_activity_artefact_long">artefact guide 3</string>
     <string name="title_activity_bam">BÄM!</string>
     <string name="confirm_login">wirklich einloggen?</string>
     <string name="button_login">einloggen</string>
@@ -236,7 +236,7 @@
     <string name="title_com_section3">cimp</string>
     <string name="cimp_url">https://www.c-base.org/cv50f/core/init.html</string>
     <string name="title_com_section4">coredump</string>
-    <string name="cbag_base_url">http://10.0.1.44</string>
+    <string name="cbag_base_url">https://cbag3.c-base.org</string>
     <string name="title_ringinfo">ringinfo</string>
     <string name="info_clamp">
         Der c-base Kosmos. Übersicht der Aktivitiäten und Möglichkeiten, Aufbau der
@@ -249,7 +249,7 @@
     </string>
     <string name="info_cience">
         Der wissenschaftliche Bereich. Seminare und Workshops von c wie c-base über
-        C-Programmierung, Internetnutzung, Linux, Web Design bis Z wie Zukunftsforschung.
+        C-Programmierung, Internetnutzung, Linux, Web Design bis C wie Cukunftsforschung.
     </string>
     <string name="info_creactiv">
         Der Focus für Kreativität und Phantasie. Die Crew bündelt ihre künstlerischen und

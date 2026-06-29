@@ -19,7 +19,7 @@ public class ArtefactActivity extends C_beamActivity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			WebView w = findViewById(R.id.artefactWebView);
-			w.loadUrl(getString(R.string.cbag_base_url)+extras.getString("slug"));
+			w.loadUrl(getString(R.string.cbag_base_url)+extras.getString("slug")+"/");
 		}
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
