@@ -42,7 +42,6 @@ public class CoreActivity extends RingActivity {
         setupOfflineArea();
         setupViewPager();
         setupCbeamArea();
-        setupActionBar();
         initializeBroadcastReceiver();
 
     }

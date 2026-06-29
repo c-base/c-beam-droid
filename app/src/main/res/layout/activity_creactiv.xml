@@ -17,6 +17,8 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:title=""
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <FrameLayout

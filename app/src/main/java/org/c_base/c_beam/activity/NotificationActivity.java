@@ -57,8 +57,6 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		ft.add(R.id.notifications, nlf);
 		ft.commit();
 
-		setupActionBar();
-
 		Button buttonDeleteNotifications = findViewById(R.id.button_delete_notifications);
 		buttonDeleteNotifications.setOnClickListener(new OnClickListener() {
 

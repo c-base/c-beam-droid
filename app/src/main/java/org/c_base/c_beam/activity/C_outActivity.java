@@ -95,7 +95,6 @@ public class C_outActivity extends C_beamActivity {
                 android.R.id.content).getRootView();
         setAppFont(mContainer);
 //		Helper.setButtonStyle(mContainer);
-        setupActionBar();
         initializeBroadcastReceiver();
     }
 

@@ -57,7 +57,6 @@ public class CultureActivity extends RingActivity implements
         TextView textView = findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
 
-        setupActionBar();
         setupViewPager();
 
         initializeBroadcastReceiver();

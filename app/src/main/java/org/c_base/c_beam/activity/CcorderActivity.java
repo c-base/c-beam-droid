@@ -149,7 +149,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupGrid();
         setupScanBar();
         setupSurfaceView();
-        setupActionBar();
         setupNavigationDrawer();
 
         showWarningMessage();

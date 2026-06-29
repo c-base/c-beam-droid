@@ -51,7 +51,6 @@ public class MissionActivity extends RingActivity implements
         mCbeamArea = findViewById(R.id.cbeam_area);
 
         setupOfflineArea();
-        setupActionBar();
         setupCbeamArea();
         setupViewPager();
         setupGCM();

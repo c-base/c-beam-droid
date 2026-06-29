@@ -3,11 +3,10 @@ package org.c_base.c_beam.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.widget.ToggleButton;
@@ -31,27 +30,16 @@ public class ClampActivity extends RingActivity {
     private static final int ARTEFACTS_FRAGMENT = 1;
     private static final int BLUEPRINT_MAP_FRAGMENT = 2;
     private static final int GOOGLE_MAP_FRAGMENT = 3;
-    private static final int WWW_CBO_FRAGMENT = 5;
-    private static final int RINGINFO_FRAGMENT = 4;
-
-    private final RING currentRing = RING.CLAMP;
-
-    private static final String TAG = "ClampActivity";
+    private static final int WWW_CBO_FRAGMENT = 4;
+    private static final int RINGINFO_FRAGMENT = 5;
 
     /**
-     * The {@link PagerAdapter} that will provide
+     * The PagerAdapter that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
-     * {@link FragmentStatePagerAdapter}.
+     * will keep every loaded fragment in memory.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +54,12 @@ public class ClampActivity extends RingActivity {
         setupViewPager();
         setupNavigationDrawer();
         setupOfflineArea();
-        setupActionBar();
         setupCbeamArea();
 
         initializeBroadcastReceiver();
     }
 
+    @Override
     public void updateLists() {
         ArrayList<User> userList = c_beam.getUsers();
         ToggleButton button = findViewById(R.id.toggleLogin);
@@ -82,7 +70,7 @@ public class ClampActivity extends RingActivity {
                     button.setChecked(user.getStatus().equals("online"));
                     button.setEnabled(true);
                     if (sharedPref.getBoolean(Settings.DISPLAY_AP, true)) {
-                        tvAp.setText(user.getAp() + " AP");
+                        tvAp.setText(getString(R.string.ap_display, user.getAp()));
                         tvAp.setVisibility(View.VISIBLE);
                         tvUsername.setVisibility(View.VISIBLE);
                     }
@@ -107,7 +95,7 @@ public class ClampActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.pager);
+        ViewPager mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         setupViewPagerIndicator(mViewPager);
@@ -121,42 +109,46 @@ public class ClampActivity extends RingActivity {
         Fragment[] pages;
 
         public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             pages = new Fragment[getCount()];
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a DummySectionFragment (defined as a static inner class
-            // below) with the page number as its lone argument.
             Fragment fragment;
             if (pages[position] == null) {
-                if (position == INTERFACE_MAP_FRAGMENT) {
-                    fragment = new WebViewFragment();
-                    ((WebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
-                } else if (position == BLUEPRINT_MAP_FRAGMENT) {
-                    fragment = new WebViewFragment();
-                    ((WebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
-                } else if (position == ARTEFACTS_FRAGMENT) {
-                    fragment = new ArtefactListFragment();
-                } else if (position == GOOGLE_MAP_FRAGMENT) {
-                    fragment = new WebViewFragment();
-                    //((WebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
-                    ((WebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
-                } else if (position == WWW_CBO_FRAGMENT) {
-                    fragment = new WebViewFragment();
-                    ((WebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
-                } else if (position == RINGINFO_FRAGMENT) {
-                    fragment = new RinginfoFragment();
-                    ((RinginfoFragment) fragment).setRing("clamp");
-                } else {
-                    fragment = null;
+                switch (position) {
+                    case INTERFACE_MAP_FRAGMENT:
+                        fragment = new WebViewFragment();
+                        ((WebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+                        break;
+                    case BLUEPRINT_MAP_FRAGMENT:
+                        fragment = new WebViewFragment();
+                        ((WebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+                        break;
+                    case ARTEFACTS_FRAGMENT:
+                        fragment = new ArtefactListFragment();
+                        break;
+                    case GOOGLE_MAP_FRAGMENT:
+                        fragment = new WebViewFragment();
+                        ((WebViewFragment) fragment).setUrl(getString(R.string.osm_map_url));
+                        break;
+                    case WWW_CBO_FRAGMENT:
+                        fragment = new WebViewFragment();
+                        ((WebViewFragment) fragment).setUrl(getString(R.string.www_cbo_url));
+                        break;
+                    case RINGINFO_FRAGMENT:
+                        fragment = new RinginfoFragment();
+                        ((RinginfoFragment) fragment).setRing("clamp");
+                        break;
+                    default:
+                        fragment = new Fragment();
+                        break;
                 }
                 fragment.setArguments(new Bundle());
                 pages[position] = fragment;
             } else {
-
                 fragment = pages[position];
             }
             return fragment;
@@ -164,20 +156,19 @@ public class ClampActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 5;
+            return 6;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
+                case INTERFACE_MAP_FRAGMENT:
                     return getString(R.string.title_clamp_section1).toUpperCase();
-                case 1:
+                case ARTEFACTS_FRAGMENT:
                     return getString(R.string.title_clamp_section2).toUpperCase();
-                case 2:
+                case BLUEPRINT_MAP_FRAGMENT:
                     return getString(R.string.title_clamp_section3).toUpperCase();
-                case 3:
+                case GOOGLE_MAP_FRAGMENT:
                     return getString(R.string.title_clamp_section4).toUpperCase();
                 case WWW_CBO_FRAGMENT:
                     return getString(R.string.title_clamp_section5).toUpperCase();

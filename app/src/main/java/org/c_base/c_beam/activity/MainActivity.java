@@ -66,7 +66,6 @@ public class MainActivity extends RingActivity {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         setupOfflineArea();
-        setupActionBar();
         setupCbeamArea();
         setupViewPager();
         setupGCM();
@@ -252,7 +251,7 @@ public class MainActivity extends RingActivity {
 
         @Override
         public int getCount() {
-            return 6;
+            return 7;
         }
 
         @Override
