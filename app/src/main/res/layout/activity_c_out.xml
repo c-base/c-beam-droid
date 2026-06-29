@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView3"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/button1"
+        android:layout_toRightOf="@+id/button_tts"
         android:text="@string/button_announce" />
 
     <TextView
@@ -40,16 +40,6 @@
         android:paddingBottom="4dp"
         android:layout_marginLeft="4dp"
         android:text="@string/label_play_sound" />
-
-    <Button
-        android:id="@+id/button_r2d2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView3"
-        android:layout_toLeftOf="@id/button_announce"
-        android:layout_toRightOf="@+id/button_tts"
-        android:text="@string/button_r2d2" />
 
     <EditText
         android:id="@+id/c_outEditText"

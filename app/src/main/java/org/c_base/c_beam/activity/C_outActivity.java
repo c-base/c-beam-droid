@@ -1,5 +1,6 @@
 package org.c_base.c_beam.activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +28,7 @@ import org.c_base.c_beam.fragment.C_outListFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class C_outActivity extends C_beamActivity {
     C_beam c_beam = C_beam.getInstance();
@@ -63,19 +65,8 @@ public class C_outActivity extends C_beamActivity {
             @Override
             public void onClick(View v) {
                 String text = et.getText().toString();
-                if (text.length() != 0) {
+                if (!text.isEmpty()) {
                     c_beam.announce(text);
-                }
-            }
-        });
-
-        b = findViewById(R.id.button_r2d2);
-        b.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = et.getText().toString();
-                if (text.length() != 0) {
-                    c_beam.r2d2(text);
                 }
             }
         });
@@ -85,7 +76,7 @@ public class C_outActivity extends C_beamActivity {
             @Override
             public void onClick(View v) {
                 String text = et.getText().toString();
-                if (text.length() != 0) {
+                if (!text.isEmpty()) {
                     c_beam.tts(text);
                 }
             }
@@ -134,6 +125,7 @@ public class C_outActivity extends C_beamActivity {
         super.onPause();
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     protected void onResume() {
 
         super.onResume();
@@ -183,9 +175,7 @@ public class C_outActivity extends C_beamActivity {
     }
 
     private void showOfflineView() {
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        //mCbeamArea.setVisibility(View.GONE);
-        //mOfflineArea.setVisibility(View.VISIBLE);
+        Objects.requireNonNull(getSupportActionBar()).setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
 
     private void showOnlineView() {
@@ -196,8 +186,7 @@ public class C_outActivity extends C_beamActivity {
 
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
-        String eta = timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
-        return eta;
+        return timePicker.getCurrentHour() + (currentMinute < 10 ? "0" : "") + currentMinute;
     }
 
     private void showETAConfirmationDialog() {
@@ -273,13 +262,6 @@ public class C_outActivity extends C_beamActivity {
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
         }
 
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
     }
 
 

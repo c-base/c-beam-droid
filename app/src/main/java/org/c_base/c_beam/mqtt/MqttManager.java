@@ -277,13 +277,13 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
         dataSource.createNotification(notificationText);
 
         Intent notificationIntent = new Intent(context, NotificationActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent deleteIntent = new Intent(context, NotificationBroadcastReceiver.class);
         deleteIntent.setAction(NotificationBroadcastReceiver.ACTION_NOTIFICATION_CANCELLED);
 
         PendingIntent pendingDeleteIntent = PendingIntent.getBroadcast(context, 0, deleteIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         try {
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
