@@ -63,8 +63,8 @@ public class MissionListFragment extends ListFragment {
 	@SuppressWarnings("rawtypes")
 	public class MissionAdapter extends ArrayAdapter {
 		private static final String TAG = "MissionAdapter";
-		private ArrayList<Mission> items;
-		private Context context;
+		private final ArrayList<Mission> items;
+		private final Context context;
 
 		@SuppressWarnings("unchecked")
 		public MissionAdapter(Context context, int textViewResourceId, ArrayList<Mission> items) {

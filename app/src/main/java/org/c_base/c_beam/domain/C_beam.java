@@ -1,5 +1,6 @@
 package org.c_base.c_beam.domain;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,7 +35,7 @@ public class C_beam {
         FAILURE("failure");
         private final String stringValue;
 
-        private RESULTS(final String s) {
+        RESULTS(final String s) {
             stringValue = s;
         }
 
@@ -46,19 +47,17 @@ public class C_beam {
     private static final String TAG = "c-beam";
 
     private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
-    private static final String C_PORTAL_URL = "https://c-portal.c-base.org/rpc/";
     private static final String ETA_URL = "https://shell.c-base.org/rpc/";
 
     private JSONRPC2Session etaClient;
     private JSONRPC2Session c_beamClient;
-    private ArrayList<User> onlineList = new ArrayList<User>();
-    private ArrayList<User> offlineList = new ArrayList<User>();
-    private ArrayList<User> etaList = new ArrayList<User>();
+    private final ArrayList<User> onlineList = new ArrayList<User>();
+    private final ArrayList<User> offlineList = new ArrayList<User>();
+    private final ArrayList<User> etaList = new ArrayList<User>();
     private ArrayList<Mission> missions = new ArrayList<Mission>();
     private ArrayList<User> users = new ArrayList<User>();
     private ArrayList<Event> events = new ArrayList<Event>();
     private ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-    private ArrayList<Article> articleList = new ArrayList<Article>();
     private ArrayList<User> stats = new ArrayList<User>();
     private boolean barStatus = false;
 
@@ -69,9 +68,9 @@ public class C_beam {
     private Thread thread;
     private ArrayList<ActivityLog> activitylog;
 
-    private boolean debug = false;
+    private final boolean debug = false;
 
-    private static C_beam instance = new C_beam();
+    private static final C_beam instance = new C_beam();
 
     private C_beam() {
         initC_beamClient();
@@ -154,30 +153,19 @@ public class C_beam {
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
 
-    private Object c_beamCall(String method, Map<String, Object> params) {
+    private synchronized Object c_beamCall(String method, Map<String, Object> params) {
+        JSONRPC2Request request = new JSONRPC2Request(method, params, 0);
+        JSONRPC2Response response;
 
-        JSONRPC2Request request = null;
-        if (params == null) {
-            request = new JSONRPC2Request(method, 0);
-        } else {
-            request = new JSONRPC2Request(method, params, 0);
-        }
-
-        JSONRPC2Response response = null;
         try {
             response = c_beamClient.send(request);
         } catch (JSONRPC2SessionException e) {
-            System.err.println(e.getMessage());
-            // handle exception...
+            Log.e(TAG, "c_beamCall failed: " + e.getMessage());
+            return null;
         }
 
-        // Print response result / error
         if (response != null && response.indicatesSuccess()) {
-            System.out.println(response.getResult());
             return response.getResult();
-        }
-        if (response != null) {
-            System.out.println(response.getError().getMessage());
         }
         return null;
     }
@@ -221,7 +209,6 @@ public class C_beam {
                 updateEvents((JSONArray) result.get("events"));
                 updateArtefacts((JSONArray) result.get("artefacts"));
                 updateMissions((JSONArray) result.get("missions"));
-                updateArticles((JSONArray) result.get("articles"));
                 updateActivitylog((JSONArray) result.get("activitylog"));
                 updateStats((JSONArray) result.get("stats"));
                 updateSounds((JSONArray) result.get("sounds"));
@@ -255,13 +242,6 @@ public class C_beam {
         this.activitylog = activitylogList;
     }
 
-    private void updateArticles(JSONArray articleResult) {
-        ArrayList<Article> articleList = new ArrayList<Article>();
-        for (int i = 0; i < articleResult.size(); i++) {
-            articleList.add(new Article((JSONObject) articleResult.get(i)));
-        }
-        this.articleList = articleList;
-    }
 
     private void updateMissions(JSONArray missionResult) {
         ArrayList<Mission> missionList = new ArrayList<Mission>();
@@ -577,9 +557,6 @@ public class C_beam {
 
     }
 
-    public ArrayList<Article> getArticles() {
-        return articleList;
-    }
 
     public ArrayList<Artefact> getArtefacts() {
         return artefactList;
@@ -757,29 +734,32 @@ public class C_beam {
     }
 
     public synchronized String call(String method, String param1_name, String param1_value) {
-        String result = "failure";
         if (isInCrewNetwork()) {
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put(param1_name, param1_value);
-            result = (String) ((JSONObject) c_beamCall(method, params)).get("result");
-        } else {
-            result = "not in crew network";
+            Object response = c_beamCall(method, params);
+            if (response instanceof JSONObject) {
+                return (String) ((JSONObject) response).get("result");
+            } else if (response instanceof String) {
+                return (String) response;
+            }
         }
-        return result;
+        return "failure";
     }
 
     public synchronized String call(String method, String param1_name, String param1_value, String param2_name, String param2_value) {
-        String result = "failure";
         if (isInCrewNetwork()) {
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put(param1_name, param1_value);
             params.put(param2_name, param2_value);
-            result = (String) c_beamCall(method, params);
-        } else {
-            result = "not in crew network";
-            Log.i("c-beam", "Ignoring call to " + method + ": Not in crew network");
+            Object response = c_beamCall(method, params);
+            if (response instanceof JSONObject) {
+                return (String) ((JSONObject) response).get("result");
+            } else if (response instanceof String) {
+                return (String) response;
+            }
         }
-        return result;
+        return "failure";
     }
 
     public void callAsync(String method) {
@@ -788,56 +768,38 @@ public class C_beam {
     }
 
     public void callAsync(String method, Map<String, String> map) {
-        RPCCallTask rpcCallTask = new RPCCallTask();
-        String[] params = new String[3];
-        params[0] = method;
-        int counter = 1;
-        for (Map.Entry<String, String> param : map.entrySet()) {
-            params[counter++] = param.getKey();
-            params[counter++] = param.getValue();
-        }
-        rpcCallTask.execute(params);
+        new RPCCallTask(method).execute(map);
     }
 
-    public class RPCCallTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String result = "failed";
-            Map<String, Object> params_map = new HashMap<String, Object>();
-            String method = params[0];
-            if (params.length == 3) {
-                params_map.put(params[1], params[2]);
-            }
-            if (params.length == 5) {
-                params_map.put(params[3], params[4]);
-            }
-            if (params.length == 7) {
-                params_map.put(params[5], params[6]);
-            }
-            if (params.length == 9) {
-                params_map.put(params[7], params[8]);
-            }
-            Object response = c_beamCall(method, params_map);
-            if (response instanceof JSONObject) {
-                result = ((JSONObject) response).toJSONString();
-            } else if (response instanceof String) {
-                result = (String) response;
-            }
+    @SuppressLint("StaticFieldLeak")
+    public class RPCCallTask extends AsyncTask<Map<String, String>, Void, String> {
+        private final String method;
 
-            return result; //c_beam.setETA(sharedPref.getString(Settings.USERNAME, "bernd"), params.length == 1 ? params[0] : getETA());
+        public RPCCallTask(String method) {
+            this.method = method;
+        }
+
+        @SafeVarargs
+        @Override
+        protected final String doInBackground(Map<String, String>... params) {
+            Map<String, Object> callParams = new HashMap<>();
+            if (params.length > 0 && params[0] != null) {
+                callParams.putAll(params[0]);
+            }
+            Object response = c_beamCall(method, callParams);
+            if (response instanceof JSONObject) {
+                return ((JSONObject) response).toJSONString();
+            } else if (response instanceof String) {
+                return (String) response;
+            }
+            return "failure";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
+            if (activity != null && !result.equals("failure")) {
+                Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            }
         }
     }
 

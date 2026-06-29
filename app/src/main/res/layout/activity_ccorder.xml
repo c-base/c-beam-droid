@@ -11,6 +11,16 @@
                   android:layout_height="match_parent"
                   android:orientation="vertical" >
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:title=""
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
         <!--
              Here is where we put the SurfaceView, in a frame so that we can
              stack other views on top of it.
@@ -48,118 +58,101 @@
                     android:orientation="vertical"
                     android:visibility="visible" >
 
-                <RelativeLayout
+                <LinearLayout
                         android:id="@+id/hidecontainer"
                         android:layout_width="match_parent"
-                        android:layout_height="100dip"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="invisible"
-                        android:layout_alignParentBottom="true">
+                        android:layout_alignParentBottom="true"
+                        android:background="#B0000000"
+                        android:padding="2dp">
 
-                    <ToggleButton
-                            android:id="@+id/hideme1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:text="scanner activieren"
-                            android:textOff="scanner activieren"
-                            android:textOn="scanner deactivieren"
-                            android:visibility="visible"
-                            android:layout_above="@+id/hideme5"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignRight="@+id/hideme3"/>
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:orientation="horizontal">
+                        <ToggleButton
+                                android:id="@+id/hideme1"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:textOff="scanner activieren"
+                                android:textOn="scanner deactivieren"
+                                android:textSize="12sp" />
+                        <ToggleButton
+                                android:id="@+id/hideme6"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:checked="true"
+                                android:textOff="cam activieren"
+                                android:textOn="cam deactivieren"
+                                android:textSize="12sp" />
+                        <ToggleButton
+                                android:id="@+id/hideme4"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:checked="true"
+                                android:textOff="filt0r activieren"
+                                android:textOn="filt0r deactivieren"
+                                android:textSize="12sp" />
+                    </LinearLayout>
 
-                    <ToggleButton
-                            android:id="@+id/hideme2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:text="grid activieren"
-                            android:textOff="grid activieren"
-                            android:textOn="grid deactivieren"
-                            android:visibility="visible"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignLeft="@+id/hideme4"/>
-
-                    <Button
-                            android:id="@+id/hideme3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:text="photonen abfeuern"
-                            android:visibility="visible"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"/>
-
-                    <ToggleButton
-                            android:id="@+id/hideme4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:checked="true"
-                            android:text="filt0r activieren"
-                            android:textOff="filt0r activieren"
-                            android:textOn="filt0r deactivieren"
-                            android:layout_above="@+id/hideme2"
-                            android:layout_alignParentRight="true"/>
-
-                    <ToggleButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:text="sensoren"
-                            android:textOff="sensoren activieren"
-                            android:textOn="sensoren deactivieren"
-                            android:id="@+id/hideme5"
-
-                            android:layout_alignParentBottom="true"
-                            android:layout_toRightOf="@+id/hideme1"
-                            android:layout_toLeftOf="@+id/hideme2"/>
-
-                    <ToggleButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button"
-                            android:text="foo"
-                            android:textOff="cam activieren"
-                            android:textOn="cam deactivieren"
-                            android:id="@+id/hideme6"
-                            android:layout_above="@+id/hideme5"
-                            android:layout_toLeftOf="@+id/hideme2"
-                            android:layout_toRightOf="@+id/hideme1"
-                            android:visibility="visible"
-                        android:checked="false" />
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:orientation="horizontal">
+                        <Button
+                                android:id="@+id/hideme3"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:text="photonen abfeuern"
+                                android:textSize="12sp" />
+                        <ToggleButton
+                                android:id="@+id/hideme5"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:textOff="sensoren activieren"
+                                android:textOn="sensoren deactivieren"
+                                android:textSize="12sp" />
+                        <ToggleButton
+                                android:id="@+id/hideme2"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/button"
+                                android:textOff="grid activieren"
+                                android:textOn="grid deactivieren"
+                                android:textSize="12sp" />
+                    </LinearLayout>
 
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:id="@+id/textView1"
-                            android:layout_alignRight="@+id/hideme2"
-                            android:layout_alignLeft="@+id/hideme1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:padding="8dp"
                             android:background="@drawable/button_32x32_med"
                             android:textColor="#FFFF00"
                             android:visibility="gone"/>
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:id="@+id/textView2"
-                            android:layout_below="@+id/textView1"
-                            android:layout_alignLeft="@+id/textView1"
-                            android:layout_alignRight="@+id/textView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:padding="8dp"
                             android:background="@drawable/button_32x32_med"
                             android:textColor="#FFFF00"
                             android:visibility="gone"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <LinearLayout
                         android:orientation="vertical"
@@ -239,17 +232,13 @@
 
         <RelativeLayout
                 android:id="@+id/RelativeLayout1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal" >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
             <ToggleButton
                     android:id="@+id/vis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
                     android:text="@string/button_show_controls"
                     android:textOff="c-ontrols anzeigen"
                     android:textOn="c-ontrols ausblenden" />

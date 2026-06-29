@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.os.Build;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
@@ -158,10 +161,7 @@ public class GCMIntentService extends FirebaseMessagingService {
         Intent deleteIntent = new Intent(this, NotificationBroadcastReceiver.class);
         deleteIntent.setAction(NotificationBroadcastReceiver.ACTION_NOTIFICATION_CANCELLED);
 
-        PendingIntent pendingDeleteIntent = PendingIntent.getBroadcast(this, 0, deleteIntent,
-                PendingIntent.FLAG_IMMUTABLE
-        //        PendingIntent.FLAG_CANCEL_CURRENT
-        );
+        PendingIntent pendingDeleteIntent = PendingIntent.getBroadcast(this, 0, deleteIntent, PendingIntent.FLAG_IMMUTABLE);
 
         try {
             NotificationCompat.InboxStyle style = new NotificationCompat.InboxStyle();
@@ -179,7 +179,7 @@ public class GCMIntentService extends FirebaseMessagingService {
                 }
             }
 
-            Notification notification = new NotificationCompat.Builder(getApplicationContext())
+            Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                     .setContentTitle("c-beam")
                     .setContentText(notificationText)
                     .setAutoCancel(true)
@@ -187,12 +187,13 @@ public class GCMIntentService extends FirebaseMessagingService {
                     .setTicker(notificationText)
                     .setDeleteIntent(pendingDeleteIntent)
                     .setContentIntent(pIntent)
-                    .setChannelId("cbeam_channel")
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setStyle(style)
                     .build();
 
-            mNotificationManager.notify(NOTIFICATION_ID, notification);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                mNotificationManager.notify(NOTIFICATION_ID, notification);
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error while creating notification", e);
         }

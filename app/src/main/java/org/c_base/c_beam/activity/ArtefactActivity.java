@@ -18,8 +18,8 @@ public class ArtefactActivity extends C_beamActivity {
 		// Show the Up button in the action bar.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			WebView w = (WebView) findViewById(R.id.artefactWebView);
-			w.loadUrl(getString(R.string.cbag_base_url)+extras.getString("slug"));
+			WebView w = findViewById(R.id.artefactWebView);
+			w.loadUrl(getString(R.string.cbag_base_url)+extras.getString("slug")+"/");
 		}
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

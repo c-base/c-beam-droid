@@ -62,7 +62,7 @@ public class RingActivity extends C_beamActivity {
     protected C_beam c_beam = C_beam.getInstance();
 
     protected Runnable fred;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     protected View mOfflineArea;
     protected View mCbeamArea;
@@ -106,7 +106,7 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void setupButtons() {
-        ((ToggleButton) findViewById(R.id.toggleLogin)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.toggleLogin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (((ToggleButton) view).isChecked()) {
@@ -117,21 +117,21 @@ public class RingActivity extends C_beamActivity {
             }
         });
 
-        ((Button) findViewById(R.id.buttonC_out)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.buttonC_out).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startC_outActivity();
             }
         });
 
-        ((Button) findViewById(R.id.button_c_mission)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_c_mission).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startC_missionActivity();
             }
         });
 
-        ((Button) findViewById(R.id.button_c_maps)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_c_maps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startC_mapsActivity();
@@ -142,17 +142,17 @@ public class RingActivity extends C_beamActivity {
 
     protected void setupOfflineArea() {
         mOfflineArea = findViewById(R.id.info_area);
-        TextView textView = (TextView) findViewById(R.id.not_in_crew_network);
+        TextView textView = findViewById(R.id.not_in_crew_network);
         Helper.setFont(this, textView);
-        timePicker = (TimePicker) this.findViewById(R.id.timePicker1);
+        timePicker = this.findViewById(R.id.timePicker1);
         timePicker.setIs24HourView(true);
-        ((Button) findViewById(R.id.button_set_eta)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_set_eta).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showETAConfirmationDialog();
             }
         });
-        ((Button) findViewById(R.id.button_reset_eta)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_reset_eta).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showResetETAConfirmationDialog();
@@ -161,9 +161,9 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void setupAPDisplay() {
-        tvAp = (TextView) findViewById(R.id.textView_ap);
+        tvAp = findViewById(R.id.textView_ap);
         tvAp.setTextColor(Color.rgb(58, 182, 228));
-        tvUsername = (TextView) findViewById(R.id.textView_username);
+        tvUsername = findViewById(R.id.textView_username);
         tvUsername.setText(sharedPref.getString(Settings.USERNAME, "bernd"));
         tvUsername.setTextColor(Color.rgb(58, 182, 228));
         Helper.setFont(this, tvUsername);
@@ -177,7 +177,7 @@ public class RingActivity extends C_beamActivity {
 
 
     protected void setupViewPagerIndicator(ViewPager mViewPager) {
-        TitlePageIndicator titleIndicator = (TitlePageIndicator) findViewById(R.id.titles);
+        TitlePageIndicator titleIndicator = findViewById(R.id.titles);
         titleIndicator.setViewPager(mViewPager);
         Helper.setFont(titleIndicator);
     }
@@ -224,8 +224,7 @@ public class RingActivity extends C_beamActivity {
     private String getETA() {
         Integer currentMinute = timePicker.getCurrentMinute();
         Integer currentHour = timePicker.getCurrentHour();
-        String eta = "" +
-                (currentHour < 10 ? "0" : "") + currentHour +
+        String eta = (currentHour < 10 ? "0" : "") + currentHour +
                 (currentMinute < 10 ? "0" : "") + currentMinute;
         return eta;
     }
@@ -350,8 +349,8 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void setupNavigationDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerList = findViewById(R.id.left_drawer);
         mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
 
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
@@ -368,14 +367,16 @@ public class RingActivity extends C_beamActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle(mTitle);
+                if (actionBar != null) {
+                    actionBar.setTitle(mTitle);
+                }
                 sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
             }
         };
@@ -386,9 +387,11 @@ public class RingActivity extends C_beamActivity {
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     protected void setupGCM() {
@@ -581,8 +584,8 @@ public class RingActivity extends C_beamActivity {
 
     protected class RingAdapter extends ArrayAdapter {
         private static final String TAG = "UserAdapter";
-        private ArrayList<Ring> items;
-        private Context context;
+        private final ArrayList<Ring> items;
+        private final Context context;
 
         @SuppressWarnings("unchecked")
         public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
@@ -595,12 +598,12 @@ public class RingActivity extends C_beamActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             final View listview = super.getView(position, convertView, parent);
 
-            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            TextView textView = listview.findViewById(R.id.drawer_list_item_textview);
             Ring r = items.get(position);
 
             textView.setText(r.getName());
 
-            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            ImageView b = listview.findViewById(R.id.drawer_ring_imageView);
             b.setImageDrawable(r.getImage());
             return listview;
         }

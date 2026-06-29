@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.c_base.c_beam.R;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.WebViewFragment;
 
 @SuppressLint("NewApi")
 public class MapActivity extends C_beamActivity implements
@@ -54,7 +54,7 @@ public class MapActivity extends C_beamActivity implements
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.map_pager);
+		mViewPager = findViewById(R.id.map_pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		// When swiping between different sections, select the corresponding
@@ -116,14 +116,14 @@ public class MapActivity extends C_beamActivity implements
 			Fragment fragment;
 			Bundle args = new Bundle();
             if (position == 0) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
+                fragment = new WebViewFragment();
+                ((WebViewFragment) fragment).setUrl(getString(R.string.interface_map_url));
             } else if (position == 1) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
+                fragment = new WebViewFragment();
+                ((WebViewFragment) fragment).setUrl(getString(R.string.blueprint_map_url));
             } else if (position == 2) {
-                fragment = new C_portalWebViewFragment();
-                ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
+                fragment = new WebViewFragment();
+                ((WebViewFragment) fragment).setUrl(getString(R.string.google_map_url));
             } else {
                 fragment = new DummySectionFragment();
                 args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);

@@ -78,8 +78,8 @@ public class ArtefactListFragment extends ListFragment {
     @SuppressWarnings("rawtypes")
     public class ArtefactAdapter extends ArrayAdapter {
         private static final String TAG = "UserAdapter";
-        private ArrayList<Artefact> items;
-        private Context context;
+        private final ArrayList<Artefact> items;
+        private final Context context;
 
         @SuppressWarnings("unchecked")
         public ArtefactAdapter(Context context, int textViewResourceId, ArrayList<Artefact> items) {

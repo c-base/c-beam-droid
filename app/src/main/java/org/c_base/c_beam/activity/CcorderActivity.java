@@ -16,7 +16,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,9 @@ import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.drawerlayout.widget.DrawerLayout;
 import android.text.Html;
 import android.util.Log;
+import android.Manifest;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,11 +75,10 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private View sensorPlotLayout;
 
     private View mVictimContainer;
-    private TextView textView1;
-    private TextView textView2;
     private MediaPlayer zap;
-    private MediaPlayer scan;
     private MediaPlayer bleeps;
+    private SoundPool soundPool;
+    private int scanSoundId;
 
     private SensorManager mSensorManager;
 
@@ -88,7 +92,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private SensorEvent lastLightEvent;
     private SensorEvent lastTemperatureEvent;
 
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     protected String[] mDrawerItems;
     protected TypedArray mDrawerImages;
@@ -101,14 +105,18 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 
-    private String[] dimensionArrayXYZ = {"X", "Y", "Z"};
-    private String[] dimensionArrayLux = {"/ lux"};
-    private String[] dimensionArrayTemp = {"°K"};
+    private final String[] dimensionArrayXYZ = {"X", "Y", "Z"};
+    private final String[] dimensionArrayLux = {"/ lux"};
+    private final String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
     private ToggleButton toggleButtonCam;
     private SharedPreferences sharedPref;
-    private Runnable updateSlowPlotsCallbacks = new Runnable() {
+    private boolean hasLinearAcceleration = false;
+    private long lastScanSoundTime = 0;
+    private static final long SCAN_SOUND_MIN_INTERVAL = 150; // milliseconds
+
+    private final Runnable updateSlowPlotsCallbacks = new Runnable() {
         @Override
         public void run() {
             updateSlowPlots();
@@ -141,15 +149,14 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupGrid();
         setupScanBar();
         setupSurfaceView();
-        setupActionBar();
         setupNavigationDrawer();
 
         showWarningMessage();
     }
 
     protected void setupNavigationDrawer() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerList = findViewById(R.id.left_drawer);
         mDrawerList.setBackgroundColor(Color.argb(120, 0, 0, 0));
 
         mDrawerItems = getResources().getStringArray(R.array.drawer_items_array);
@@ -166,14 +173,16 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 // TODO Auto-generated method stub
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle(mTitle);
+                if (actionBar != null) {
+                    actionBar.setTitle(mTitle);
+                }
                 sharedPref.edit().putBoolean(Settings.USER_DISCOVERED_NAVDRAWER, true).commit();
             }
         };
@@ -184,19 +193,38 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     private void setupSounds() {
         zap = MediaPlayer.create(this, R.raw.zap);
-        scan = MediaPlayer.create(this, R.raw.scan);
         bleeps = MediaPlayer.create(this, R.raw.bleeps);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(10)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        scanSoundId = soundPool.load(this, R.raw.scan, 1);
+
+        soundPool.setOnLoadCompleteListener((pool, sampleId, status) -> {
+            if (status == 0) {
+                Log.d(TAG, "Scan sound loaded successfully");
+            } else {
+                Log.e(TAG, "Failed to load scan sound, status: " + status);
+            }
+        });
     }
 
     private void setupSurfaceView() {
-        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+        mSurfaceView = findViewById(R.id.surfaceview);
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -206,14 +234,15 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private void setupControls() {
         // Find the views whose visibility will change
         mVictimContainer = findViewById(R.id.hidecontainer);
-        toggleButtonScanner = (ToggleButton) findViewById(R.id.hideme1);
+        toggleButtonScanner = findViewById(R.id.hideme1);
         toggleButtonScanner.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 ToggleButton b = (ToggleButton) v;
                 if (b.isChecked()) {
-                    int height = getResources().getDisplayMetrics().heightPixels - getSupportActionBar().getHeight() - 240;
+                    int toolbarHeight = getSupportActionBar() != null ? getSupportActionBar().getHeight() : 0;
+                    int height = getResources().getDisplayMetrics().heightPixels - toolbarHeight - 240;
                     TranslateAnimation transAnimation = new TranslateAnimation(0, 0, 0, height);
                     transAnimation.setRepeatMode(2);
                     transAnimation.setRepeatCount(-1);
@@ -226,7 +255,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton toggleButtonGrid = (ToggleButton) findViewById(R.id.hideme2);
+        ToggleButton toggleButtonGrid = findViewById(R.id.hideme2);
         toggleButtonGrid.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -240,7 +269,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        Button buttonPhotons = (Button) findViewById(R.id.hideme3);
+        Button buttonPhotons = findViewById(R.id.hideme3);
         buttonPhotons.setOnTouchListener(new OnTouchListener() {
 
             @Override
@@ -261,7 +290,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton toggleButtonFilter = (ToggleButton) findViewById(R.id.hideme4);
+        ToggleButton toggleButtonFilter = findViewById(R.id.hideme4);
         toggleButtonFilter.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -275,7 +304,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        toggleButtonSensors = (ToggleButton) findViewById(R.id.hideme5);
+        toggleButtonSensors = findViewById(R.id.hideme5);
         toggleButtonSensors.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -290,7 +319,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        toggleButtonCam = (ToggleButton) findViewById(R.id.hideme6);
+        toggleButtonCam = findViewById(R.id.hideme6);
         toggleButtonCam.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -304,12 +333,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             }
         });
 
-        ToggleButton visibleButton = (ToggleButton) findViewById(R.id.vis);
+        ToggleButton visibleButton = findViewById(R.id.vis);
         visibleButton.setOnClickListener(mVisibleListener);
     }
 
     private void setupGLSurfaceView() {
-        glSurfaceView = (GLSurfaceView) findViewById(R.id.glsurfaceview);
+        glSurfaceView = findViewById(R.id.glsurfaceview);
         ViewGroup parent = (ViewGroup) glSurfaceView.getParent();
         int index = parent.indexOfChild(glSurfaceView);
         parent.removeView(glSurfaceView);
@@ -318,20 +347,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void setupPlotViews() {
-        textView1 = (TextView) findViewById(R.id.textView1);
-        textView2 = (TextView) findViewById(R.id.textView2);
-
 //        LinearLayout sensorPlotLayout = (LinearLayout) findViewById(R.id.sensorPlotLayout);
 //        XYPlot plot = new XYPlot(this, "foo");
 //        plot.setLayoutParams(LinearLayout);
 //        sensorPlotLayout.addView(plot);
 
-        magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot));
-        gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot2));
-        accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot3));
-        gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, (XYPlot) findViewById(R.id.mySimpleXYPlot4));
-        lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, (XYPlot) findViewById(R.id.mySimpleXYPlot5));
-        temperaturePlot = new SensorPlot("C_trahlungsintensität (300GHz - 400THz)", dimensionArrayTemp, (XYPlot) findViewById(R.id.mySimpleXYPlot6));
+        magnetPlot = new SensorPlot("magnetfeld", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot));
+        gravityPlot = new SensorPlot("gravitation", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot2));
+        accelerationPlot = new SensorPlot("bec_leunigung", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot3));
+        gyroPlot = new SensorPlot("rotation", dimensionArrayXYZ, findViewById(R.id.mySimpleXYPlot4));
+        lightPlot = new SensorPlot("photonendichte", dimensionArrayLux, findViewById(R.id.mySimpleXYPlot5));
+        temperaturePlot = new SensorPlot("C_trahlungsintensität (300GHz - 400THz)", dimensionArrayTemp, findViewById(R.id.mySimpleXYPlot6));
     }
 
     private void setupGrid() {
@@ -376,22 +402,25 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
+        int[] sensorTypes = {
+                Sensor.TYPE_LINEAR_ACCELERATION,
+                Sensor.TYPE_ACCELEROMETER,
+                Sensor.TYPE_GRAVITY,
+                Sensor.TYPE_GYROSCOPE,
+                Sensor.TYPE_LIGHT,
+                Sensor.TYPE_MAGNETIC_FIELD,
+                Sensor.TYPE_AMBIENT_TEMPERATURE
+        };
+
+        for (int type : sensorTypes) {
+            Sensor s = mSensorManager.getDefaultSensor(type);
+            if (s != null) {
+                sensors.add(s);
+                if (type == Sensor.TYPE_LINEAR_ACCELERATION) {
+                    hasLinearAcceleration = true;
+                }
+            }
         }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
-        }
-        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_LIGHT)) {
-            sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT));
-        }
-        // it seems there is no PackageManager.FEATURE_SENSOR_MAGNETIC_FIELD
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
-        sensors.add(mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE));
     }
 
     @Override
@@ -441,30 +470,28 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     void ledOn() {
-//        if(mSurfaceView.getVisibility() != View.VISIBLE) {
-//            camera = Camera.open();
-//        }
+        if (camera == null) {
+            return;
+        }
         try {
             Parameters params = camera.getParameters();
             params.setFlashMode(Parameters.FLASH_MODE_TORCH);
             camera.setParameters(params);
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to turn on led", ex);
         }
-        //Log.d(TAG, "ledOn " + System.currentTimeMillis());
     }
 
     void ledOff() {
+        if (camera == null) {
+            return;
+        }
         try {
             Parameters params = camera.getParameters();
             params.setFlashMode(Parameters.FLASH_MODE_OFF);
             camera.setParameters(params);
-//          if(mSurfaceView.getVisibility() != View.VISIBLE) {
-//              camera.release();
-//          }
-            //Log.d(TAG, "ledOff" + System.currentTimeMillis());
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to turn off led", ex);
         }
     }
 
@@ -493,39 +520,44 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            if (toggleButtonScanner.isChecked()) {
-                if (Math.abs(event.values[1] + event.values[2]) > 5) {
-                    scan.seekTo(0);
-                    scan.start();
+        int type = event.sensor.getType();
+
+        if (type == Sensor.TYPE_LINEAR_ACCELERATION || (type == Sensor.TYPE_ACCELEROMETER && !hasLinearAcceleration)) {
+            if (toggleButtonScanner != null && toggleButtonScanner.isChecked()) {
+                float x = event.values[0];
+                float y = event.values[1];
+                float z = event.values[2];
+                float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+                
+                float threshold = (type == Sensor.TYPE_ACCELEROMETER) ? 15.0f : 4.5f;
+
+                if (magnitude > threshold) {
+                    long currentTime = System.currentTimeMillis();
+                    if (soundPool != null && scanSoundId != 0 && (currentTime - lastScanSoundTime > SCAN_SOUND_MIN_INTERVAL)) {
+                        soundPool.play(scanSoundId, 1.0f, 1.0f, 0, 0, 1.0f);
+                        lastScanSoundTime = currentTime;
+                    }
                 }
-                //accelerationPlot.addEvent(event);
-            } else if (event.values[2] > 10) {
-                bleeps.seekTo(0);
-                bleeps.start();
+            } else if (event.values[2] > 25.0f) {
+                if (bleeps != null && !bleeps.isPlaying()) {
+                    bleeps.seekTo(0);
+                    bleeps.start();
+                }
             }
         }
-        if (toggleButtonSensors.isChecked()) {
-            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                //            textView1.setText("magnetfeldX: " + event.values[0] + " uT");
-                //            textView2.setText("magnetfeldY: " + event.values[1] + " uT");
+
+        if (toggleButtonSensors != null && toggleButtonSensors.isChecked()) {
+            if (type == Sensor.TYPE_MAGNETIC_FIELD) {
                 magnetPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+            } else if (type == Sensor.TYPE_GRAVITY) {
                 gravityPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            } else if (type == Sensor.TYPE_ACCELEROMETER) {
                 accelerationPlot.addEvent(event);
-            }
-            if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            } else if (type == Sensor.TYPE_GYROSCOPE) {
                 gyroPlot.addEvent(event);
-            }
-
-            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            } else if (type == Sensor.TYPE_LIGHT) {
                 lastLightEvent = event;
-            }
-
-            if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
+            } else if (type == Sensor.TYPE_AMBIENT_TEMPERATURE){
                 lastTemperatureEvent = event;
             }
         }
@@ -533,13 +565,43 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     protected void onResume() {
         super.onResume();
-//        if (toggleButtonScanner.isChecked() || toggleButtonSensors.isChecked())
         registerSensors();
         startTimerForSlowPlots();
+        checkCameraPermission();
+    }
+
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 42;
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            openCamera();
+        }
+    }
+
+    private void openCamera() {
         try {
-            camera = Camera.open();
+            if (camera == null) {
+                camera = Camera.open();
+                if (mSurfaceHolder != null && mSurfaceHolder.getSurface().isValid()) {
+                    camera.setPreviewDisplay(mSurfaceHolder);
+                    camera.setDisplayOrientation(90);
+                    camera.startPreview();
+                }
+            }
         } catch (Exception ex) {
-            Log.e(TAG, "TODO camera permission", ex);
+            Log.e(TAG, "Failed to open camera", ex);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            }
         }
     }
 
@@ -557,13 +619,24 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         super.onPause();
         unregisterSensors();
         try {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
+            if (camera != null) {
+                camera.stopPreview();
+                camera.release();
+                camera = null;
+            }
         } catch (Exception ex) {
             Log.e(TAG, "TODO camera permission", ex);
         }
         handler.removeCallbacks(updateSlowPlotsCallbacks);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
     }
 
     private void unregisterSensors() {
@@ -574,8 +647,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
 
     protected class RingAdapter extends ArrayAdapter {
         private static final String TAG = "UserAdapter";
-        private ArrayList<Ring> items;
-        private Context context;
+        private final ArrayList<Ring> items;
+        private final Context context;
 
         @SuppressWarnings("unchecked")
         public RingAdapter(Context context, int itemLayout, int textViewResourceId, ArrayList<Ring> items) {
@@ -588,12 +661,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         public View getView(int position, View convertView, ViewGroup parent) {
             final View listview = super.getView(position, convertView, parent);
 
-            TextView textView = (TextView) listview.findViewById(R.id.drawer_list_item_textview);
+            TextView textView = listview.findViewById(R.id.drawer_list_item_textview);
             Ring r = items.get(position);
 
             textView.setText(r.getName());
 
-            ImageView b = (ImageView) listview.findViewById(R.id.drawer_ring_imageView);
+            ImageView b = listview.findViewById(R.id.drawer_ring_imageView);
             b.setImageDrawable(r.getImage());
             return listview;
         }
@@ -608,24 +681,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
     private void selectItem(int position) {
-
-        /*
-        // Create a new fragment and specify the planet to show based on position
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .commit();
-
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawer.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawer);
-        */
         setTitle(mDrawerItems[position]);
 
         switch (position) {
@@ -657,13 +712,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if (mDrawerToggle != null) {
+            mDrawerToggle.syncState();
+        }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if (mDrawerToggle != null) {
+            mDrawerToggle.onConfigurationChanged(newConfig);
+        }
     }
 
     @Override
@@ -676,7 +735,9 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 mDrawerLayout.openDrawer(mDrawerList);
             }
 
-            mDrawerToggle.syncState();
+            if (mDrawerToggle != null) {
+                mDrawerToggle.syncState();
+            }
             return true;
         }
         // Handle your other action bar items...
@@ -684,4 +745,3 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     }
 
 }
-

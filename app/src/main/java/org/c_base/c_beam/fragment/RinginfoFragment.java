@@ -24,9 +24,9 @@ public class RinginfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_ringinfo, container, false);
 
-        TextView ringInfoTextView = (TextView) v.findViewById(R.id.textView);
-        TextView ringTitleTextView = (TextView) v.findViewById(R.id.textView2);
-        ImageView ringInfoImageView = (ImageView) v.findViewById(R.id.imageView);
+        TextView ringInfoTextView = v.findViewById(R.id.textView);
+        TextView ringTitleTextView = v.findViewById(R.id.textView2);
+        ImageView ringInfoImageView = v.findViewById(R.id.imageView);
         ringTitleTextView.setText(ring);
         if (ring == "clamp") {
             ringInfoTextView.setText(getString(R.string.info_clamp));

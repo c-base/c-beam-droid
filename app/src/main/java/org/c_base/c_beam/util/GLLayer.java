@@ -26,13 +26,13 @@ import android.view.SurfaceView;
  * and the onPreviewFrame method.
  */
 public class GLLayer extends SurfaceView implements SurfaceHolder.Callback, Runnable, Camera.PreviewCallback {
-	final static float camObjCoord[] = new float[] {
+	final static float[] camObjCoord = new float[] {
 		-2.0f, -1.5f,  2.0f,
 		 2.0f, -1.5f,  2.0f,
 		-2.0f,  1.5f,  2.0f,
 		 2.0f,  1.5f,  2.0f	 
 	};
-	final static float camTexCoords[] = new float[] {
+	final static float[] camTexCoords = new float[] {
 		// Camera preview
 		 0.0f, 0.625f,
 		 0.9375f, 0.625f,

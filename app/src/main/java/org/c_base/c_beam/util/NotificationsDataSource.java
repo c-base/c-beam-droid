@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class NotificationsDataSource {
     private SQLiteDatabase database;
-    private SQLiteHelper dbHelper;
-    private String[] allColumns = {SQLiteHelper.COLUMN_ID,
+    private final SQLiteHelper dbHelper;
+    private final String[] allColumns = {SQLiteHelper.COLUMN_ID,
             SQLiteHelper.COLUMN_NOTIFICATION};
 
     public NotificationsDataSource(Context context) {

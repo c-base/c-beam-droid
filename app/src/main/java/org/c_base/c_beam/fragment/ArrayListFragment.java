@@ -63,8 +63,8 @@ public class ArrayListFragment extends ListFragment {
 
     public class C_beamAdapter<T> extends ArrayAdapter<String> {
         private static final String TAG = "UserAdapter";
-        private ArrayList<String> items;
-        private Context context;
+        private final ArrayList<String> items;
+        private final Context context;
 
         public C_beamAdapter(Context context, int textViewResourceId, ArrayList<String> items) {
             super(context, textViewResourceId, items);

@@ -30,7 +30,7 @@ public class CarbonActivity extends RingActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
-    private RING currentRing = RING.CARBON;
+    private final RING currentRing = RING.CARBON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +40,7 @@ public class CarbonActivity extends RingActivity {
 
         mCbeamArea = findViewById(R.id.cbeam_area);
 
-        setupOfflineArea();
         setupCbeamArea();
-        setupActionBar();
         setupViewPager();
 
         initializeBroadcastReceiver();
@@ -57,7 +55,7 @@ public class CarbonActivity extends RingActivity {
         ArrayList<User> etaList = c_beam.getEtaList();
         ArrayList<User> userList = c_beam.getUsers();
 
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user: userList) {
             if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
@@ -147,7 +145,7 @@ public class CarbonActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding

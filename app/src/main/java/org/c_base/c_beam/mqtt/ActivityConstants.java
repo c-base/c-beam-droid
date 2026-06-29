@@ -165,6 +165,6 @@ public class ActivityConstants {
     /**
      * Empty String for comparisons
      **/
-    static final String empty = new String();
+    static final String empty = "";
 
 }

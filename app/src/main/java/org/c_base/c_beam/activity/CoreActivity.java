@@ -14,7 +14,7 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.C_ontrolFragment;
-import org.c_base.c_beam.fragment.C_portalWebViewFragment;
+import org.c_base.c_beam.fragment.WebViewFragment;
 import org.c_base.c_beam.fragment.RinginfoFragment;
 
 import java.util.ArrayList;
@@ -42,7 +42,6 @@ public class CoreActivity extends RingActivity {
         setupOfflineArea();
         setupViewPager();
         setupCbeamArea();
-        setupActionBar();
         initializeBroadcastReceiver();
 
     }
@@ -52,7 +51,7 @@ public class CoreActivity extends RingActivity {
 
         ArrayList<User> userList = c_beam.getUsers();
 
-        ToggleButton button = (ToggleButton) findViewById(R.id.toggleLogin);
+        ToggleButton button = findViewById(R.id.toggleLogin);
         for (User user: userList) {
             if(user.getUsername().equals(sharedPref.getString(Settings.USERNAME, "bernd"))) {
                 if (button != null) {
@@ -74,7 +73,7 @@ public class CoreActivity extends RingActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding
@@ -113,17 +112,17 @@ public class CoreActivity extends RingActivity {
                 if (position == CONTROL_FRAGMENT) {
                     fragment = new C_ontrolFragment(c_beam);
                 } else if (position == MEMBERINTERFACE_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));
                 } else if (position == HYPERBLAST_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.hyperblast_url));
                 } else if (position == MEGABLAST_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.megablast_url));
                 } else if (position == MATELIGHT_FRAGMENT) {
-                    fragment = new C_portalWebViewFragment();
-                    ((C_portalWebViewFragment) fragment).setUrl(getString(R.string.matelight_url));
+                    fragment = new WebViewFragment();
+                    ((WebViewFragment) fragment).setUrl(getString(R.string.matelight_url));
                 } else if (position == RINGINFO_FRAGMENT) {
                     fragment = new RinginfoFragment();
                     ((RinginfoFragment) fragment).setRing("core");

@@ -30,7 +30,7 @@ public class AboutDialogFragment extends DialogFragment {
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.about_dialog, null);
 
-        TextView about = (TextView) view.findViewById(R.id.about_text);
+        TextView about = view.findViewById(R.id.about_text);
         about.setText(Html.fromHtml(getString(R.string.about_text, getVersionName())));
         about.setMovementMethod(LinkMovementMethod.getInstance());
 

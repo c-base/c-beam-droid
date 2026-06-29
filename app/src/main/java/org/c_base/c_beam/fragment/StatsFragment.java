@@ -62,8 +62,8 @@ public class StatsFragment extends ListFragment {
 	@SuppressWarnings("rawtypes")
 	public class UserAdapter extends ArrayAdapter {
 		private static final String TAG = "EventAdapter";
-		private ArrayList<User> items;
-		private Context context;
+		private final ArrayList<User> items;
+		private final Context context;
 
 		@SuppressWarnings("unchecked")
 		public UserAdapter(Context context, int textViewResourceId, ArrayList<User> items) {
@@ -75,12 +75,12 @@ public class StatsFragment extends ListFragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = super.getView(position, convertView, parent);
-			TextView v = (TextView) view.findViewById(R.id.statsAp);
+			TextView v = view.findViewById(R.id.statsAp);
 			User u = items.get(position);
 			v.setText(Long.toString(u.getAp()));
 			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), v);
-			Helper.setFont(getActivity(), (TextView) view.findViewById(R.id.statsUsername));
+			Helper.setFont(getActivity(), view.findViewById(R.id.statsUsername));
 			return view;
 		}
 

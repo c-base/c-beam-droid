@@ -69,8 +69,8 @@ public class UserListFragment extends ListFragment {
 	@SuppressWarnings("rawtypes")
 	public class UserAdapter extends ArrayAdapter {
 		private static final String TAG = "UserAdapter";
-		private ArrayList<User> items;
-		private Context context;
+		private final ArrayList<User> items;
+		private final Context context;
 
 		@SuppressWarnings("unchecked")
 		public UserAdapter(Context context, int textViewResourceId, ArrayList<User> items) {

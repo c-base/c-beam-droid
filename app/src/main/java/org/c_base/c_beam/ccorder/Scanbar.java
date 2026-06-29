@@ -12,8 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class Scanbar extends View {
-	private Paint paint = new Paint();
-	private int yPos = 0;
+	private final Paint paint = new Paint();
+	private final int yPos = 0;
 	private int barHeight = 0;
 
 	public int getBarHeight() {
