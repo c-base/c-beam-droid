@@ -38,8 +38,7 @@ public class CarbonActivity extends RingActivity {
 
         setContentView(R.layout.activity_main);
 
-        mCbeamArea = findViewById(R.id.cbeam_area);
-
+        setupOfflineArea();
         setupCbeamArea();
         setupViewPager();
 

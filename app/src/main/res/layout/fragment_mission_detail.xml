@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_portrait"
-    tools:context=".MainActivity" >
+    tools:context=".activity.MainActivity" >
 
     <TableLayout
         android:id="@+id/TableLayout1"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/toggleMissionButton"
-        tools:context=".MissionDetailActivity" >
+        tools:context=".activity.MissionDetailActivity" >
     </TableLayout>
 
     <ToggleButton

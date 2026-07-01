@@ -90,7 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_portrait"
-                    tools:context=".MainActivity">
+                    tools:context=".activity.CreactivActivity">
 
                 <com.viewpagerindicator.TitlePageIndicator
                         android:id="@+id/titles"
@@ -134,7 +134,7 @@
                         android:id="@+id/pager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        tools:context=".MainActivity"
+                        tools:context=".activity.CreactivActivity"
                         android:layout_below="@+id/ap_area"
                         android:layout_above="@+id/activity_logger">
                 </androidx.viewpager.widget.ViewPager>

@@ -5,7 +5,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	tools:context=".MainActivity" >
+	tools:context=".activity.MissionActivity" >
 
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/toolbar"
@@ -42,7 +42,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:background="@drawable/bg_portrait"
-			tools:context=".MainActivity" >
+			tools:context=".activity.MissionActivity" >
 
 			<TextView
 				android:id="@+id/textView_username"
@@ -74,7 +74,7 @@
 				android:layout_height="wrap_content"
 				android:layout_above="@+id/activity_logger"
 				android:layout_below="@+id/textView_username"
-				tools:context=".MainActivity" >
+				tools:context=".activity.MissionActivity" >
 			</androidx.viewpager.widget.ViewPager>
 
 			<LinearLayout

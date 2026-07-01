@@ -18,7 +18,7 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ArtefactActivity">
+            tools:context=".activity.ArtefactActivity">
 
         <WebView
                 android:id="@+id/artefactWebView"

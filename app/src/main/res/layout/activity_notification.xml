@@ -2,14 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".NotificationActivity" >
+    tools:context=".activity.NotificationActivity" >
 
     <RelativeLayout
         android:id="@+id/notification_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_portrait"
-        tools:context=".NotificationActivity" >
+        tools:context=".activity.NotificationActivity" >
         
         <Button
             android:id="@+id/button_delete_notifications"

@@ -12,7 +12,6 @@ public class CienceActivity extends RingActivity {
         setContentView(R.layout.activity_main);
         setupOfflineArea();
         setupCbeamArea();
-        setupActionBar();
         initializeBroadcastReceiver();
     }
 }

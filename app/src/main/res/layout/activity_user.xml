@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_portrait"
-    tools:context=".MainActivity" >
+    tools:context=".activity.MainActivity" >
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -27,7 +27,7 @@
             android:layout_above="@+id/toggleButton1"
             android:layout_below="@dimen/widget_margin"
             android:orientation="horizontal"
-            tools:context=".UserActivity" >
+            tools:context=".activity.UserActivity" >
 
         </TableLayout>
 

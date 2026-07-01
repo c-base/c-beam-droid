@@ -4,7 +4,7 @@
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
                  android:orientation="vertical"
-                 tools:context=".RingActivity" >
+                 tools:context=".activity.RingActivity" >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_portrait"
-                    tools:context=".MainActivity" >
+                    tools:context=".activity.MainActivity" >
 
                 <com.viewpagerindicator.TitlePageIndicator
                         android:id="@+id/titles"
@@ -129,7 +129,7 @@
                         android:id="@+id/pager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        tools:context=".MainActivity"
+                        tools:context=".activity.MainActivity"
                         android:layout_below="@+id/ap_area"
 
                         android:layout_above="@+id/fragment">
