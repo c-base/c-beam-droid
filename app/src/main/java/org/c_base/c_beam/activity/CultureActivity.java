@@ -86,9 +86,11 @@ public class CultureActivity extends RingActivity implements
         if (events.isAdded()){
             eventList = c_beam.getEvents();
             events.clear();
-            if (eventList != null) {
+            if (eventList != null && !eventList.isEmpty()) {
                 for(int i=0; i<eventList.size();i++)
                     events.addItem(eventList.get(i));
+            } else {
+                events.setEmptyText(getString(R.string.no_events));
             }
         }
     }

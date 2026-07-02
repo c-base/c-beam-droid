@@ -153,10 +153,14 @@ public class MainActivity extends RingActivity {
         }
         if (online.isAdded()) {
             online.clear();
-            for (int i = 0; i < onlineList.size(); i++)
-                online.addItem(onlineList.get(i));
-            for (int i = 0; i < etaList.size(); i++)
-                online.addItem(etaList.get(i));
+            if (onlineList.isEmpty() && etaList.isEmpty()) {
+                online.setEmptyText(getString(R.string.no_one_online));
+            } else {
+                for (int i = 0; i < onlineList.size(); i++)
+                    online.addItem(onlineList.get(i));
+                for (int i = 0; i < etaList.size(); i++)
+                    online.addItem(etaList.get(i));
+            }
         }
         if (events.isAdded()) {
             eventList = c_beam.getEvents();

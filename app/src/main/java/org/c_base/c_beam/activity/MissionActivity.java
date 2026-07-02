@@ -103,8 +103,12 @@ public class MissionActivity extends RingActivity implements
             ArrayList<Mission> missionList = new ArrayList<Mission>();
             missionList = c_beam.getMissions();
             missions.clear();
-            for (int i = 0; i < missionList.size(); i++)
-                missions.addItem(missionList.get(i));
+            if (missionList.isEmpty()) {
+                missions.setEmptyText("keine missionen");
+            } else {
+                for (int i = 0; i < missionList.size(); i++)
+                    missions.addItem(missionList.get(i));
+            }
         }
         if (stats.isAdded()) {
             stats.clear();

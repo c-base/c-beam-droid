@@ -27,20 +27,48 @@ public class EventListFragment extends ListFragment {
 	ListAdapter adapter;
 	Class nextActivity = EventActivity.class;
 	SharedPreferences sharedPref;
+	private String emptyText = null;
 
 	public void clear() {
 		items.clear();
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
 	}
+
+	public void setEmptyText(String text) {
+		this.emptyText = text;
+		updateEmptyView();
+	}
+
+	private void updateEmptyView() {
+		if (getView() != null && emptyText != null) {
+			TextView tv = getView().findViewById(R.id.no_users_online);
+			if (tv != null) {
+				tv.setText(emptyText);
+				tv.setVisibility(View.VISIBLE);
+			}
+			View pb = getView().findViewById(R.id.progress_bar);
+			if (pb != null) {
+				pb.setVisibility(View.GONE);
+			}
+		}
+	}
+
 	public void addItem(Event item) {
 		items.add(item);
-		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
 	}
+
 	// Override onCreateView() so we can use a custom empty view
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.list_view, null);
 	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -50,6 +78,7 @@ public class EventListFragment extends ListFragment {
 		setListAdapter(adapter);
 		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
+		updateEmptyView();
 	}
 
 	@Override

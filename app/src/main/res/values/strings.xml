@@ -44,6 +44,7 @@
     <string name="menu_logout">ausloggen</string>
     <string name="title_activity_main_activity2">MainActivity2</string>
     <string name="offline">nicht an bord</string>
+    <string name="no_one_online">derzeit ist niemand an bord</string>
     <string name="online">an bord</string>
     <string name="button_mission_start">mission starten</string>
     <string name="button_mission_end">mission beenden</string>
@@ -156,6 +157,7 @@
     <string name="confirm_delete_notifications">wirklich alle nachrichten lo:schen?</string>
     <string name="menu_c_corder">c-corder</string>
     <string name="no_events">fu:r heute sind keine events eingetragen</string>
+    <string name="no_etas">derzeit sind keine ETAs eingetragen</string>
     <string name="c_corder_warning_title">c-corder reconstruction beta</string>
     <string name="c_corder_warning_text">
         <![CDATA[

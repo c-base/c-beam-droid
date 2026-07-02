@@ -26,13 +26,39 @@ public class MissionListFragment extends ListFragment {
 	ListAdapter adapter;
 	Class nextActivity = MissionDetailActivity.class;
 	SharedPreferences sharedPref;
+	private String emptyText = null;
 
 	public void clear() {
 		items.clear();
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
 	}
+
+	public void setEmptyText(String text) {
+		this.emptyText = text;
+		updateEmptyView();
+	}
+
+	private void updateEmptyView() {
+		if (getView() != null && emptyText != null) {
+			TextView tv = getView().findViewById(R.id.no_users_online);
+			if (tv != null) {
+				tv.setText(emptyText);
+				tv.setVisibility(View.VISIBLE);
+			}
+			View pb = getView().findViewById(R.id.progress_bar);
+			if (pb != null) {
+				pb.setVisibility(View.GONE);
+			}
+		}
+	}
+
 	public void addItem(Mission item) {
 		items.add(item);
-		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
 	}
 
 	// Override onCreateView() so we can use a custom empty view
@@ -51,7 +77,9 @@ public class MissionListFragment extends ListFragment {
 		setListAdapter(adapter);
 		if (sharedPref.getBoolean(Settings.C_THEME, true)) getListView().setDividerHeight(0);
 		getListView().setHapticFeedbackEnabled(true);
+		updateEmptyView();
 	}
+
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {

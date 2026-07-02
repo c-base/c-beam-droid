@@ -27,14 +27,39 @@ public class UserListFragment extends ListFragment {
 	UserAdapter adapter;
 	Class nextActivity = UserActivity.class;
 	SharedPreferences sharedPref;
+	private String emptyText = null;
 
 	public void clear() {
 		items.clear();
+		if (adapter != null) {
+			adapter.notifyDataSetChanged();
+		}
+	}
+
+	public void setEmptyText(String text) {
+		this.emptyText = text;
+		updateEmptyView();
+	}
+
+	private void updateEmptyView() {
+		if (getView() != null && emptyText != null) {
+			TextView tv = getView().findViewById(R.id.no_users_online);
+			if (tv != null) {
+				tv.setText(emptyText);
+				tv.setVisibility(View.VISIBLE);
+			}
+			View pb = getView().findViewById(R.id.progress_bar);
+			if (pb != null) {
+				pb.setVisibility(View.GONE);
+			}
+		}
 	}
 
 	public void addItem(User item) {
 		items.add(item);
-		adapter.notifyDataSetChanged();
+		if (adapter != null) {
+			adapter.notifyDataSetChanged();
+		}
 	}
 
 	// Override onCreateView() so we can use a custom empty view
@@ -56,6 +81,7 @@ public class UserListFragment extends ListFragment {
 			getListView().setDividerHeight(0);
 		}
 		getListView().setHapticFeedbackEnabled(true);
+		updateEmptyView();
 	}
 
 	@Override
@@ -93,8 +119,11 @@ public class UserListFragment extends ListFragment {
 			Helper.setListItemStyle(view);
 			Helper.setFont(getActivity(), view);
 
-			if (u.getStatus().equals("online"))
-				view.setText(u.getUsername()+" ("+defaultFormat.format(alpha)+")");
+			if (u.getStatus().equals("online")) {
+				view.setText(u.getUsername() + " (" + defaultFormat.format(alpha) + ")");
+			} else {
+				view.setText(u.toString());
+			}
 			return view;
 		}
 

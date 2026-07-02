@@ -70,14 +70,22 @@ public class CarbonActivity extends RingActivity {
         }
         if (online.isAdded()) {
             online.clear();
-            for(int i=0; i<onlineList.size();i++) {
-                online.addItem(onlineList.get(i));
+            if (onlineList.isEmpty()) {
+                online.setEmptyText(getString(R.string.no_one_online));
+            } else {
+                for(int i=0; i<onlineList.size();i++) {
+                    online.addItem(onlineList.get(i));
+                }
             }
         }
         if (eta.isAdded()) {
             eta.clear();
-            for(int i=0; i<etaList.size();i++) {
-                eta.addItem(etaList.get(i));
+            if (etaList.isEmpty()) {
+                eta.setEmptyText(getString(R.string.no_etas));
+            } else {
+                for(int i=0; i<etaList.size();i++) {
+                    eta.addItem(etaList.get(i));
+                }
             }
         }
     }
