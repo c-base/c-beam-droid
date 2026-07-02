@@ -1,5 +1,9 @@
 Release Notes
 
+26.06.1
+- Fix crash in carbon
+- Fix behaviour for empty ETA and userlist
+
 26.06.0
 - Change versioning scheme
 - Compatibility updates and fixes
