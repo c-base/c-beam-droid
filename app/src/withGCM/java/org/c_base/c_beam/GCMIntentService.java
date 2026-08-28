@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.os.Build;
 import android.Manifest;
@@ -52,31 +51,6 @@ public class GCMIntentService extends FirebaseMessagingService {
         super.onCreate();
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // The id of the channel.
-        String id = "my_channel_01";
-
-        // The user-visible name of the channel.
-        CharSequence name = "c-beam";
-
-        // The user-visible description of the channel.
-        String description = "c-beam notifications";
-
-        int importance = NotificationManager.IMPORTANCE_LOW;
-
-        NotificationChannel mChannel = new NotificationChannel(id, name,importance);
-
-        // Configure the notification channel.
-        mChannel.setDescription(description);
-
-        // mChannel.enableLights(true);
-        // Sets the notification light color for notifications posted to this
-        // channel, if the device supports this feature.
-//        mChannel.setLightColor(Color.RED);
-//
-//        mChannel.enableVibration(true);
-//        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-
-        // mNotificationManager.createNotificationChannel(mChannel);
         createNotificationChannel();
     }
 

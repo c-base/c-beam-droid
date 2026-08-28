@@ -8,6 +8,7 @@ Release Notes
 - Ask for notification permission on Android 13 and newer, so notifications appear again
 - Fix crash on incoming MQTT notifications on Android 12 and newer
 - Fix crash when a push message arrives without a title
+- Fix crash on startup on Android 7.1
 
 26.07.0
 - Fix crash in carbon
