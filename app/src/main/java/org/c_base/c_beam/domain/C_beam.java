@@ -103,8 +103,7 @@ public class C_beam {
         }
 
         // No trustAllCerts here: the RPC hosts serve publicly trusted
-        // certificates, and network_security_config.xml supplies the root that
-        // API 24 is missing.
+        // certificates, so the platform's own validation is what we want.
         return new JSONRPC2Session(serverURL);
     }
 

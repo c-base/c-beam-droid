@@ -1,5 +1,11 @@
 Release Notes
 
+26.08.0
+- Fix unsafe WebView SSL error handler (Google Play policy alert)
+- Enable TLS certificate validation for c-beam and ETA server connections
+- Limit unencrypted HTTP to the internal services that require it
+- Raise minimum Android version to 7.1 (required for current server certificates)
+
 26.07.0
 - Fix crash in carbon
 - Fix behaviour for empty ETA and userlist

@@ -5,7 +5,7 @@ android {
     compileSdkVersion 37
     defaultConfig {
         applicationId "org.c_base.c_beam"
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 37
         versionCode 38
         versionName "26.07.0"
