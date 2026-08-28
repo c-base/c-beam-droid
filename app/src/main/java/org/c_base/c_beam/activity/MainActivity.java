@@ -1,5 +1,6 @@
 package org.c_base.c_beam.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,9 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -47,6 +51,7 @@ public class MainActivity extends RingActivity {
     private static final int C_ONTROL_FRAGMENT = 1;
     private static final int MISSION_FRAGMENT = 2;
     private static final int ACTIVITYLOG_FRAGMENT = 3;
+    private static final int POST_NOTIFICATIONS_REQUEST_CODE = 2001;
 
     private ArrayList<Event> eventList;
 
@@ -71,10 +76,29 @@ public class MainActivity extends RingActivity {
         setupGCM();
 
         checkNfc();
+        requestNotificationPermission();
 
         initializeBroadcastReceiver();
     }
 
+
+    /**
+     * Since Android 13 POST_NOTIFICATIONS is a runtime permission, and without it
+     * both the FCM handler (withGCM) and MqttManager (noGCM) post into the void.
+     * Nothing ever asked for it, so notifications simply never appeared on a fresh
+     * install.
+     */
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    POST_NOTIFICATIONS_REQUEST_CODE);
+        }
+    }
 
     protected void checkNfc() {
 

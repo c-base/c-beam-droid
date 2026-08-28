@@ -193,6 +193,10 @@ public class GCMIntentService extends FirebaseMessagingService {
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 mNotificationManager.notify(NOTIFICATION_ID, notification);
+            } else {
+                // Never fail silently here again: without this the message is
+                // received, stored, built and then dropped with no trace at all.
+                Log.w(LOG_TAG, "POST_NOTIFICATIONS not granted, dropping notification");
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error while creating notification", e);
