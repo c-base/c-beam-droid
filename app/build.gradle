@@ -7,8 +7,8 @@ android {
         applicationId "org.c_base.c_beam"
         minSdkVersion 25
         targetSdkVersion 37
-        versionCode 38
-        versionName "26.07.0"
+        versionCode 39
+        versionName "26.08.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
