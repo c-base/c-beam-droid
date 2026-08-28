@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Applies on API 24+. Cleartext is off by default and re-enabled only for the
+  three hosts that genuinely serve plain HTTP.
+
+  c-base hosts are served by Let's Encrypt, whose current chain roots in
+  ISRG Root X1. That root only entered the Android system store in 7.1.1
+  (API 25), so it is bundled here as an additional trust anchor for API 24.
+  "system" is listed first, so normal devices keep using their own store and
+  the bundled copy is only a fallback; this is not certificate pinning.
+-->
+<network-security-config>
+
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config>
+        <domain includeSubdomains="true">c-base.org</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/isrg_root_x1" />
+        </trust-anchors>
+
+        <!-- Matelight speaks plain HTTP only; inherits the anchors above. -->
+        <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="false">matelight.cbrp3.c-base.org</domain>
+        </domain-config>
+    </domain-config>
+
+    <!-- Megablast / hyperblast, reachable only on the c-base LAN. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.1.23</domain>
+        <domain includeSubdomains="false">10.0.1.24</domain>
+    </domain-config>
+
+</network-security-config>

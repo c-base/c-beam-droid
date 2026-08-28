@@ -102,9 +102,10 @@ public class C_beam {
             // handle exception...
         }
 
-        JSONRPC2Session session = new JSONRPC2Session(serverURL);
-        session.getOptions().trustAllCerts(true);
-        return session;
+        // No trustAllCerts here: the RPC hosts serve publicly trusted
+        // certificates, and network_security_config.xml supplies the root that
+        // API 24 is missing.
+        return new JSONRPC2Session(serverURL);
     }
 
     public static C_beam getInstance() {
