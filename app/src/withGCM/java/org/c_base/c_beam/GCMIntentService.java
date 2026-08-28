@@ -135,6 +135,13 @@ public class GCMIntentService extends FirebaseMessagingService {
         String text = message.getData().get("text");
         String timestamp = message.getData().get("timestamp");
 
+        // A notification-payload message, or a data message without a "title" key,
+        // leaves title null; the comparisons below would then throw.
+        if (title == null) {
+            Log.d(LOG_TAG, "Message received without a title data key: " + message.getData());
+            return;
+        }
+
         String notificationText;
         if (title.equals("now boarding")) {
             notificationText = timestamp + ": " + title + ": " + text;

@@ -6,6 +6,8 @@ Release Notes
 - Limit unencrypted HTTP to the internal services that require it
 - Raise minimum Android version to 7.1 (required for current server certificates)
 - Ask for notification permission on Android 13 and newer, so notifications appear again
+- Fix crash on incoming MQTT notifications on Android 12 and newer
+- Fix crash when a push message arrives without a title
 
 26.07.0
 - Fix crash in carbon
