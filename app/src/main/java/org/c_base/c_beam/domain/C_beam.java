@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class C_beam {
-    private ArrayList<String> sounds = new ArrayList<String>();
+    private volatile ArrayList<String> sounds = new ArrayList<String>();
 
     enum RESULTS {
         SUCCESS("success"),
@@ -54,19 +54,19 @@ public class C_beam {
     private final ArrayList<User> onlineList = new ArrayList<User>();
     private final ArrayList<User> offlineList = new ArrayList<User>();
     private final ArrayList<User> etaList = new ArrayList<User>();
-    private ArrayList<Mission> missions = new ArrayList<Mission>();
-    private ArrayList<User> users = new ArrayList<User>();
-    private ArrayList<Event> events = new ArrayList<Event>();
-    private ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
-    private ArrayList<User> stats = new ArrayList<User>();
-    private boolean barStatus = false;
+    private volatile ArrayList<Mission> missions = new ArrayList<Mission>();
+    private volatile ArrayList<User> users = new ArrayList<User>();
+    private volatile ArrayList<Event> events = new ArrayList<Event>();
+    private volatile ArrayList<Artefact> artefactList = new ArrayList<Artefact>();
+    private volatile ArrayList<User> stats = new ArrayList<User>();
+    private volatile boolean barStatus = false;
 
     private Activity activity;
 
     private int sleepTime = 1000;
 
     private Thread thread;
-    private ArrayList<ActivityLog> activitylog;
+    private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
 
@@ -373,11 +373,11 @@ public class C_beam {
         return events;
     }
 
-    public synchronized ArrayList<Mission> getMissions() {
+    public ArrayList<Mission> getMissions() {
         return missions;
     }
 
-    public synchronized ArrayList<ActivityLog> getActivityLog() {
+    public ArrayList<ActivityLog> getActivityLog() {
         return activitylog;
     }
 
@@ -536,7 +536,7 @@ public class C_beam {
         }
     }
 
-    public synchronized ArrayList<String> getSounds() {
+    public ArrayList<String> getSounds() {
         return sounds;
     }
 
