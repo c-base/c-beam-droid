@@ -9,6 +9,9 @@ Release Notes
 - Fix crash on incoming MQTT notifications on Android 12 and newer
 - Fix crash when a push message arrives without a title
 - Fix crash on startup on Android 7.1
+- Vibrate on incoming notifications
+- Fix notifications not appearing on Android 8 and newer in the F-Droid build
+- Keep the user interface responsive while data is loading
 
 26.07.0
 - Fix crash in carbon
