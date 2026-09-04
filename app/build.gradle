@@ -38,7 +38,10 @@ android {
 }
 
 dependencies {
-    implementation 'com.androidplot:androidplot-core:1.5.11'
+    // Reverted from 1.5.11 on 2026-09-05: 1.x crashed on the 0.6-era androidPlot.* layout
+    // attributes and, once those were removed, rendered the c-corder plots empty even
+    // though sensor data was arriving. Migrating to 1.x is tracked in CODE-AUDIT.md.
+    implementation 'com.androidplot:androidplot-core:0.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'
