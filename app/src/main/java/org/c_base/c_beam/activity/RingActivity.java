@@ -394,6 +394,10 @@ public class RingActivity extends C_beamActivity {
         }
     }
 
+    /**
+     * Push is opt-in, so this stays false by default. Registration also happens the moment the
+     * preference is switched on, in SettingsActivity — this path only covers subsequent launches.
+     */
     protected void setupGCM() {
         if (sharedPref.getBoolean(Settings.PUSH, false)) {
             GCMFacade.setupGCM(this);

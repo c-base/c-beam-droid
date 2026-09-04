@@ -6,14 +6,18 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.widget.Toast;
 
+import org.c_base.c_beam.GCMFacade;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
 
 public class SettingsActivity extends PreferenceActivity {
+
+	private static final String LOG_TAG = "c-beam";
 
 //    public static final String KEY_PREF_MQTT_USER = "pref_key_mqtt_user";
 //    public static final String KEY_PREF_MQTT_PASSWORD = "pref_key_mqtt_password";
@@ -94,20 +98,26 @@ public class SettingsActivity extends PreferenceActivity {
 		push.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-
-                Toast.makeText(context, "Please restart device to apply this change",
-                        Toast.LENGTH_LONG).show();
-
-				/*
-				TODO: later please do everything correctly - also listen to preference in withGCM flavor
-				if (((Boolean) newValue).booleanValue()) {
-					GCMManager.register(context);
+				if ((Boolean) newValue) {
+					// Register right here rather than telling the user to restart. setupGCM() is
+					// otherwise only reached from MainActivity.onCreate, so opting in did nothing
+					// at all until the app was next launched.
+					//
+					// fcm_update goes over the JSON-RPC API, which only answers on the crew WLAN,
+					// so opting in from anywhere else cannot complete. Say so instead of failing
+					// quietly — setupGCM() stays on the launch path, so it will retry on base.
+					if (c_beam.isInCrewNetwork()) {
+						GCMFacade.setupGCM(context);
+					} else {
+						Toast.makeText(context,
+								"Push enabled. Open the app on the c-base WLAN to finish registering.",
+								Toast.LENGTH_LONG).show();
+					}
 				} else {
-					GCMManager.unregister(context);
+					// There is no server-side unregister RPC, so the token c-beam already holds
+					// stays valid and it may keep pushing. Opting out is not yet complete.
+					Log.w(LOG_TAG, "push disabled locally; the server still holds the FCM token");
 				}
-				*/
-                //GCMFacade.registerGCM(context, (Boolean) newValue);
-
 				return true;
 			}
 		});
