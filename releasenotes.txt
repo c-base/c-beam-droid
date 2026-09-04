@@ -1,6 +1,6 @@
 Release Notes
 
-26.08.0
+26.09.0
 - Fix unsafe WebView SSL error handler (Google Play policy alert)
 - Enable TLS certificate validation for c-beam and ETA server connections
 - Limit unencrypted HTTP to the internal services that require it
