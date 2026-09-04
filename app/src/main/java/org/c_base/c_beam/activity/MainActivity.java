@@ -212,10 +212,15 @@ public class MainActivity extends RingActivity {
                 artefacts.addItem(artefact);
         }
 
-        if (c_beam.getBarStatus()) {
-            barButton.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(0, 100, 0)));
-        } else {
-            barButton.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+        // button_bar lives in fragment_mainbuttons, a ViewPager page, so the lookup
+        // returns null until that fragment's view is attached -- same reason the
+        // toggleLogin lookup above is null-checked.
+        if (barButton != null) {
+            if (c_beam.getBarStatus()) {
+                barButton.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(0, 100, 0)));
+            } else {
+                barButton.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            }
         }
         activitylog.updateLog(c_beam.getActivityLog());
     }
