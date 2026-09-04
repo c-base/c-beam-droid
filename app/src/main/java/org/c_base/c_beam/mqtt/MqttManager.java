@@ -1,10 +1,12 @@
 package org.c_base.c_beam.mqtt;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
@@ -41,6 +43,11 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
     private static final String LOG_TAG = "MqttManager";
     private static final int QOS = 2;
     private static final String CHANNEL = "c-beam-droid";
+    // Notification channel, unrelated to CHANNEL above (which is the MQTT topic prefix).
+    // The id carries a version suffix because a channel's vibration setting is fixed at
+    // creation: an existing installation would keep the old, silent channel forever.
+    private static final String NOTIFICATION_CHANNEL_ID = "cbeam_channel_v2";
+    private static final long[] VIBRATION_PATTERN = {0, 400};
     private static final String OPEN_URL_TOPIC = "open";
     private static final String CLIENT_ID_PREFIX = "c-beam-droid-";
 
@@ -82,7 +89,20 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        createNotificationChannel();
         connections = Connections.getInstance(context);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+        NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.channel_name), NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription(context.getString(R.string.channel_description));
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATION_PATTERN);
+        mNotificationManager.createNotificationChannel(channel);
     }
 
     public void startConnection() {
@@ -302,7 +322,8 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 }
             }
 
-            android.app.Notification notification = new NotificationCompat.Builder(context)
+            android.app.Notification notification =
+                    new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle("c-beam")
                     .setContentText(notificationText)
                     .setAutoCancel(true)
@@ -312,6 +333,8 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                     .setContentIntent(pIntent)
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setStyle(style)
+                    // Ignored on API 26+, where the channel above supplies the vibration.
+                    .setVibrate(VIBRATION_PATTERN)
                     .build();
 
             mNotificationManager.notify(NOTIFICATION_ID, notification);

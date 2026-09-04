@@ -11,6 +11,9 @@
     <!-- Declared here rather than inherited from firebase-messaging, so the noGCM
          flavor gets it too: its MQTT notifications need it just as much. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Normal permission, no runtime prompt. Needed for the pre-Android-8 notification
+         path, where vibration comes from Notification.vibrate rather than the channel. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />

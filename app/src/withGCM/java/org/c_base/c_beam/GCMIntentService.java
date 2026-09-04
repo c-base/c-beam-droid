@@ -37,7 +37,12 @@ public class GCMIntentService extends FirebaseMessagingService {
 	private static final Pattern ETA_PATTERN = Pattern.compile("^(.*) \\(([^\\)]*)\\)$");
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm", Locale.US);
     private static final int NOTIFICATION_ID = 1;
-    private static final String CHANNEL_ID = "cbeam_channel";
+    // A channel's vibration setting is fixed at creation, so enabling vibration on the
+    // existing "cbeam_channel" would have no effect on an installation that already has it.
+    // Hence a new id, and the old channel is removed so it does not linger in the settings.
+    private static final String CHANNEL_ID = "cbeam_channel_v2";
+    private static final String LEGACY_CHANNEL_ID = "cbeam_channel";
+    private static final long[] VIBRATION_PATTERN = {0, 400};
 
     private NotificationManager mNotificationManager;
 
@@ -63,6 +68,9 @@ public class GCMIntentService extends FirebaseMessagingService {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(VIBRATION_PATTERN);
+            mNotificationManager.deleteNotificationChannel(LEGACY_CHANNEL_ID);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this.
             //NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -170,6 +178,8 @@ public class GCMIntentService extends FirebaseMessagingService {
                     .setContentIntent(pIntent)
                     .setSmallIcon(R.drawable.ic_launcher)
                     .setStyle(style)
+                    // Ignored on API 26+, where the channel above supplies the vibration.
+                    .setVibrate(VIBRATION_PATTERN)
                     .build();
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
