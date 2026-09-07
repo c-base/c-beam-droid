@@ -46,7 +46,7 @@ public class SslUtil {
         trustManagerFactory.init(caKeyStore);
 
         // finally, create SSL socket factory
-        SSLContext context = SSLContext.getInstance("TLSv1");
+        SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, trustManagerFactory.getTrustManagers(), null);
 
         return context.getSocketFactory();

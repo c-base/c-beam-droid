@@ -54,7 +54,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		applyEdgeToEdge();
 
-		c_beam.setActivity(this);
+		c_beam.reloadConfiguration();
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preferences);

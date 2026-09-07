@@ -15,7 +15,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            // Deliberately no signingConfig: a release APK built from the command line is
+            // unsigned and fails to install, instead of quietly carrying the debug key.
+            // Releases are signed through the IDE's wizard with the c-base key.
             android.lintOptions.abortOnError = false
         }
         debug {
@@ -35,6 +37,24 @@ android {
         }
     }
     namespace 'org.c_base.c_beam'
+}
+
+// The Gradle daemon may run on a JRE-only JDK (Java 25 here has no compiler); pin the
+// compilation toolchain so the build no longer depends on a hand-set JAVA_HOME. The
+// foojay resolver in settings.gradle locates or provisions a matching JDK.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+// The google-services plugin has no per-flavor switch, so keep it from running for the
+// F-Droid flavor: noGCM has no Firebase dependency and must not embed the Firebase
+// project config as string resources. The withGCM tasks are untouched.
+tasks.configureEach { task ->
+    if (task.name.startsWith('processNoGCM') && task.name.endsWith('GoogleServices')) {
+        task.enabled = false
+    }
 }
 
 dependencies {

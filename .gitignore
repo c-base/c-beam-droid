@@ -6,3 +6,7 @@
 /build
 /captures
 .externalNativeBuild
+
+# Local build output and backups, not part of the source tree
+/app/withGCM/
+/app/google-services.json.bak

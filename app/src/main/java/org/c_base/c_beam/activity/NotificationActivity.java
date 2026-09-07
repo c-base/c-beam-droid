@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.StrictMode;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.View;
@@ -42,11 +41,6 @@ public class NotificationActivity extends C_beamActivity implements OnClickListe
 		if (notificationList.size() == 0) {
 			notificationList.add(new Notification(Notification.NO_MESSAGES));
 		}
-		if (android.os.Build.VERSION.SDK_INT > 9) {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-		}
-
 		setContentView(R.layout.activity_notification);
 
 		mNotificationArea = findViewById(R.id.notification_area);

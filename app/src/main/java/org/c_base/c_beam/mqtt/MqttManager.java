@@ -34,6 +34,8 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -74,6 +76,7 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
 
     // TODO: remove workaround or bug in paho 1.0.2 https://github.com/eclipse/paho.mqtt.android/issues/2
     private static boolean subscribed = false;
+    private final ExecutorService notificationExecutor = Executors.newSingleThreadExecutor();
 
     public static MqttManager getInstance(Context context) {
 
@@ -277,8 +280,6 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
                 notificationText = json.getString("timestamp") + " ETA " + json.getString("user") + ": " + json.getString("eta");
             } else if (topic.equals("bar/status")) {
                 notificationText = payload;
-            } else if (title.equals("mission completed")) {
-                notificationText = json.getString("timestamp") + "mission completed: " + title + " " + payload;
             } else {
                 Log.d(LOG_TAG, "Unknown notification message received: " + topic + " / " + payload);
                 return;
@@ -290,8 +291,15 @@ public class MqttManager implements MqttCallback, IMqttActionListener {
         }
     }
 
-    private void createNotification(String notificationText) {
-        //TODO: don't access the database from the main thread
+    /**
+     * Paho delivers messages on the main thread; the SQLite write and read below must not
+     * run there, so the whole notification build is handed to a single worker thread.
+     */
+    private void createNotification(final String notificationText) {
+        notificationExecutor.execute(() -> writeAndShowNotification(notificationText));
+    }
+
+    private void writeAndShowNotification(String notificationText) {
         NotificationsDataSource dataSource = new NotificationsDataSource(context);
         dataSource.open();
         dataSource.createNotification(notificationText);

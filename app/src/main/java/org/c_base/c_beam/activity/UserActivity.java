@@ -27,7 +27,9 @@ public class UserActivity extends C_beamActivity {
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			User u = c_beam.getUser(extras.getInt("id"));
+			// User.getId() is a long and the list fragments put it in the intent as one;
+			// reading it back with getInt() silently yields 0 and no user is ever found.
+			User u = c_beam.getUser(extras.getLong("id"));
 			tl = findViewById(R.id.TableLayout1);
 			if (u!=null) {
 				this.setTitle(u.getUsername());

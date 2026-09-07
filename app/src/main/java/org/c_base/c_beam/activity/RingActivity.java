@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import androidx.core.content.ContextCompat;
 import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -470,10 +471,13 @@ public class RingActivity extends C_beamActivity {
 
     protected void onResume() {
         super.onResume();
-        c_beam.setActivity(this);
+        c_beam.reloadConfiguration();
         //c_beam.testJsonRPC2();
 
-        registerReceiver(mWifiReceiver, mWifiIntentFilter);
+        // WIFI_STATE_CHANGED is a system broadcast, which a non-exported receiver still gets;
+        // the flag only shuts out other apps.
+        ContextCompat.registerReceiver(this, mWifiReceiver, mWifiIntentFilter,
+                ContextCompat.RECEIVER_NOT_EXPORTED);
         if (c_beam.isInCrewNetwork()) {
             switchToOnlineMode();
         } else {

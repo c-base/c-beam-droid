@@ -139,7 +139,8 @@ public class GCMIntentService extends FirebaseMessagingService {
     }
 
     private void createNotification(String notificationText) {
-        //TODO: don't access the database from the main thread
+        // Runs on FirebaseMessagingService's background thread, so the database access
+        // below is already off the main thread.
         NotificationsDataSource dataSource = new NotificationsDataSource(this);
         dataSource.open();
         dataSource.createNotification(notificationText);

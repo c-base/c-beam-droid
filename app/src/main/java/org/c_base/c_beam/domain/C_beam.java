@@ -1,7 +1,6 @@
 package org.c_base.c_beam.domain;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
@@ -21,6 +20,7 @@ import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
+import org.c_base.c_beam.CbeamApplication;
 import org.c_base.c_beam.Settings;
 
 import java.net.MalformedURLException;
@@ -51,8 +51,14 @@ public class C_beam {
     private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
     private static final String ETA_URL = "https://shell.c-base.org/rpc/";
 
-    private JSONRPC2Session etaClient;
-    private JSONRPC2Session c_beamClient;
+    // Locking model: the only monitors in this class guard the two RPC sessions, so a
+    // network round trip never blocks a reader. Everything the UI reads is a volatile
+    // reference that the poller swaps wholesale (see updateLists), and the wrappers below
+    // either enqueue an RPCCallTask or take rpcLock/etaLock for the duration of one call.
+    private final Object rpcLock = new Object();
+    private final Object etaLock = new Object();
+    private volatile JSONRPC2Session etaClient;
+    private volatile JSONRPC2Session c_beamClient;
     // Every collection below is replaced wholesale by the poller thread and read from the
     // UI thread without a lock, so each is volatile and never mutated in place.
     private volatile ArrayList<User> onlineList = new ArrayList<User>();
@@ -65,11 +71,9 @@ public class C_beam {
     private volatile ArrayList<User> stats = new ArrayList<User>();
     private volatile boolean barStatus = false;
 
-    private Activity activity;
-
     private int sleepTime = 1000;
 
-    private Thread thread;
+    private volatile Thread thread;
     private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
@@ -95,11 +99,20 @@ public class C_beam {
     /**
      *
      */
+    /**
+     * The application context from {@link CbeamApplication}; null only if this singleton
+     * is touched before Application.onCreate has run.
+     */
+    private static Context appContext() {
+        return CbeamApplication.getAppContext();
+    }
+
     private void initC_beamClient() {
         String c_beamUrl = C_BEAM_URL;
 
-        if (activity != null) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        Context context = appContext();
+        if (context != null) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false)) {
                 c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
             }
@@ -127,12 +140,12 @@ public class C_beam {
         return instance;
     }
 
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+    /**
+     * Rebuilds the RPC sessions, picking up a changed debug URL preference. Screens call
+     * this on resume; it replaced setActivity(), which used to keep the Activity alive in
+     * this static singleton.
+     */
+    public void reloadConfiguration() {
         initC_beamClient();
     }
 
@@ -183,26 +196,29 @@ public class C_beam {
     }
 
     public boolean isInCrewNetwork() {
-        if (activity == null) {
-            Log.e(TAG, "no activity set");
+        Context context = appContext();
+        if (context == null) {
+            Log.e(TAG, "no application context yet");
             return true;
         }
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false) || debug)
             return true;
 
-        WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
 
-    private synchronized Object c_beamCall(String method, Map<String, Object> params) {
+    private Object c_beamCall(String method, Map<String, Object> params) {
         JSONRPC2Request request = new JSONRPC2Request(method, params, 0);
         JSONRPC2Response response;
 
         try {
-            response = c_beamClient.send(request);
+            synchronized (rpcLock) {
+                response = c_beamClient.send(request);
+            }
         } catch (JSONRPC2SessionException e) {
             Log.e(TAG, "c_beamCall failed: " + e.getMessage());
             return null;
@@ -225,8 +241,9 @@ public class C_beam {
 
         JSONRPC2Response response = null;
         try {
-            response = etaClient.send(request);
-
+            synchronized (etaLock) {
+                response = etaClient.send(request);
+            }
         } catch (JSONRPC2SessionException e) {
 
             System.err.println(e.getMessage());
@@ -375,7 +392,7 @@ public class C_beam {
         return users;
     }
 
-    public synchronized User getUser(int id) {
+    public User getUser(long id) {
         for (User user : users) {
             if (user.getId() == id) {
                 return user;
@@ -398,7 +415,7 @@ public class C_beam {
     }
 
     public User getCurrentUser() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String username = sharedPref.getString(Settings.USERNAME, "bernd");
         for (User user : users) {
             if (user.getUsername().contentEquals(username)) {
@@ -431,7 +448,7 @@ public class C_beam {
         return activitylog;
     }
 
-    public synchronized Mission getMission(int id) {
+    public Mission getMission(long id) {
         for (Mission mission : missions) {
             if (mission.getId() == id) {
                 return mission;
@@ -452,8 +469,8 @@ public class C_beam {
         return m;
     }
 
-    public synchronized String assignMission(int id) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String assignMission(long id) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
         if (isInCrewNetwork()) {
@@ -466,8 +483,8 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String completeMission(int id) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String completeMission(long id) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
         if (isInCrewNetwork()) {
@@ -479,8 +496,8 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String cancelMission(int id) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String cancelMission(long id) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "";
         if (isInCrewNetwork()) {
@@ -496,7 +513,7 @@ public class C_beam {
         return stats;
     }
 
-    public synchronized String register(String regId, String user) {
+    public String register(String regId, String user) {
         String result = "failure";
         if (isInCrewNetwork()) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -507,7 +524,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String register_update(String regId, String user) {
+    public String register_update(String regId, String user) {
         String result = "failure";
         if (isInCrewNetwork()) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -518,7 +535,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized void toggleLogin(String user) {
+    public void toggleLogin(String user) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("user", user);
@@ -526,7 +543,7 @@ public class C_beam {
         }
     }
 
-    public synchronized void force_login(String user) {
+    public void force_login(String user) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("user", user);
@@ -541,7 +558,7 @@ public class C_beam {
         }
     }
 
-    public synchronized void force_logout(String user) {
+    public void force_logout(String user) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("user", user);
@@ -568,7 +585,7 @@ public class C_beam {
         return etaList;
     }
 
-    public synchronized void tts(String text) {
+    public void tts(String text) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("voice", "julia");
@@ -577,7 +594,7 @@ public class C_beam {
         }
     }
 
-    public synchronized void r2d2(String text) {
+    public void r2d2(String text) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("voice", "r2d2");
@@ -590,7 +607,7 @@ public class C_beam {
         return sounds;
     }
 
-    public synchronized void play(String sound) {
+    public void play(String sound) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("file", sound);
@@ -598,7 +615,7 @@ public class C_beam {
         }
     }
 
-    public synchronized void announce(String text) {
+    public void announce(String text) {
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
             params.put("text", text);
@@ -612,23 +629,23 @@ public class C_beam {
         return artefactList;
     }
 
-    public synchronized void bluewall() {
+    public void bluewall() {
     }
 
-    public synchronized void darkwall() {
+    public void darkwall() {
     }
 
 
-    public synchronized void hwstorage() {
+    public void hwstorage() {
     }
 
-    public synchronized void stopThread() {
+    public void stopThread() {
         if (thread != null) {
             thread.interrupt();
         }
     }
 
-    public synchronized String set_stripe_pattern(int pattern) {
+    public String set_stripe_pattern(int pattern) {
         String result = "failure";
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
@@ -638,7 +655,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String set_stripe_speed(int speed) {
+    public String set_stripe_speed(int speed) {
         String result = "failure";
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
@@ -648,7 +665,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String set_stripe_offset(int offset) {
+    public String set_stripe_offset(int offset) {
         String result = "failure";
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
@@ -658,7 +675,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String notbeleuchtung() {
+    public String notbeleuchtung() {
         String result = "failure";
         if (isInCrewNetwork()) {
             callAsync("notbeleuchtung");
@@ -666,7 +683,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String set_stripe_default() {
+    public String set_stripe_default() {
         String result = "failure";
         if (isInCrewNetwork()) {
             callAsync("set_pattern_default");
@@ -674,8 +691,8 @@ public class C_beam {
         return result;
     }
 
-    public synchronized boolean isStatsEnabled() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public boolean isStatsEnabled() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         User u;
         if (isInCrewNetwork()) {
@@ -688,8 +705,8 @@ public class C_beam {
         return false;
     }
 
-    public synchronized String setStatsEnabled(boolean stats_enabled) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String setStatsEnabled(boolean stats_enabled) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
         if (isInCrewNetwork()) {
@@ -702,10 +719,10 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String logactivity(String activity, String ap_string) {
+    public String logactivity(String activity, String ap_string) {
         String result = "failure";
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.activity);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         if (isInCrewNetwork()) {
             Map<String, String> params = new HashMap<String, String>();
@@ -717,7 +734,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized boolean isLoggedIn(String user) {
+    public boolean isLoggedIn(String user) {
         User u;
         if (isInCrewNetwork()) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -729,8 +746,8 @@ public class C_beam {
         return false;
     }
 
-    public synchronized String setPushMissions(Boolean newValue) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String setPushMissions(Boolean newValue) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
         if (isInCrewNetwork()) {
@@ -743,8 +760,8 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String setPushBoarding(Boolean newValue) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String setPushBoarding(Boolean newValue) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
         if (isInCrewNetwork()) {
@@ -757,8 +774,8 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String setPushETA(Boolean newValue) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+    public String setPushETA(Boolean newValue) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String user = sharedPref.getString(Settings.USERNAME, "bernd");
         String result = "failure";
         if (isInCrewNetwork()) {
@@ -771,7 +788,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String setETA(String user, String eta) {
+    public String setETA(String user, String eta) {
         String result = "failure";
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("user", user);
@@ -783,7 +800,7 @@ public class C_beam {
         return result;
     }
 
-    public synchronized String call(String method, String param1_name, String param1_value) {
+    public String call(String method, String param1_name, String param1_value) {
         if (isInCrewNetwork()) {
             Map<String, Object> params = new HashMap<>();
             params.put(param1_name, param1_value);
@@ -797,7 +814,7 @@ public class C_beam {
         return "failure";
     }
 
-    public synchronized String call(String method, String param1_name, String param1_value, String param2_name, String param2_value) {
+    public String call(String method, String param1_name, String param1_value, String param2_name, String param2_value) {
         if (isInCrewNetwork()) {
             Map<String, Object> params = new HashMap<>();
             params.put(param1_name, param1_value);
@@ -847,8 +864,9 @@ public class C_beam {
 
         @Override
         protected void onPostExecute(String result) {
-            if (activity != null && !result.equals("failure")) {
-                Toast.makeText(activity.getApplicationContext(), result, Toast.LENGTH_LONG).show();
+            Context context = appContext();
+            if (context != null && !result.equals("failure")) {
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             }
         }
     }

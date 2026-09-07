@@ -28,7 +28,6 @@ public class C_outListFragment extends ListFragment {
 
     public C_outListFragment() {
         c_beam = C_beam.getInstance();
-        c_beam.setActivity(this.getActivity());
     }
 
     public void clear() {

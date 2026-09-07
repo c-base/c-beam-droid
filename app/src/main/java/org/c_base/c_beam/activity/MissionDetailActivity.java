@@ -35,7 +35,7 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
         // Show the Up button in the action bar.
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            m = c_beam.getMission(extras.getInt("id"));
+            m = c_beam.getMission(extras.getLong("id"));
             tl = findViewById(R.id.TableLayout1);
             //tl.setShrinkAllColumns(true);
             tl.setColumnShrinkable(1, true);
@@ -160,14 +160,14 @@ public class MissionDetailActivity extends C_beamActivity implements OnClickList
     }
 
     private void startMission() {
-        c_beam.assignMission(getIntent().getExtras().getInt("id"));
+        c_beam.assignMission(getIntent().getExtras().getLong("id"));
     }
 
     private void completeMission() {
-        c_beam.completeMission(getIntent().getExtras().getInt("id"));
+        c_beam.completeMission(getIntent().getExtras().getLong("id"));
     }
 
     private void cancelMission() {
-        c_beam.cancelMission(getIntent().getExtras().getInt("id"));
+        c_beam.cancelMission(getIntent().getExtras().getLong("id"));
     }
 }

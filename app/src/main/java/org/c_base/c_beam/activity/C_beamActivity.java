@@ -31,7 +31,7 @@ public class C_beamActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        c_beam.setActivity(this);
+        c_beam.reloadConfiguration();
         actionBar = getSupportActionBar();
     }
 
@@ -177,7 +177,7 @@ public class C_beamActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        c_beam.setActivity(this);
+        c_beam.reloadConfiguration();
     }
 
     protected void startActivity(Class<?> activityClass) {

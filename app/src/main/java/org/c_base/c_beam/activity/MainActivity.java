@@ -63,7 +63,7 @@ public class MainActivity extends RingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         actionBar = getSupportActionBar();
-        c_beam.setActivity(this);
+        c_beam.reloadConfiguration();
         setContentView(R.layout.activity_main);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);

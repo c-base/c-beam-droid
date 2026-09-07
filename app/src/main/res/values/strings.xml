@@ -286,11 +286,6 @@
     <string name="connectionError">Connection error</string>
     <string name="dateFormat">dd/MM/yy \\\'at\\\' HH:mm:ss</string>
     <string name="timestamp"><![CDATA[&lt;br/&gt; &lt;small&gt; %1$s &lt;/small&gt;]]></string>
-    <string name="connection_lost">Connection lost</string>
-    <string name="notifyTitle_connectionLost">Connection lost</string>
-    <string name="messageRecieved">Message received</string>
-    <string name="notification">Notification</string>
-    <string name="notifyTitle">Notification</string>
     <string name="pref_mqtt_enabled_summ">Enable MQTT</string>
     <string name="pref_mqtt_enabled">MQTT</string>
     <string name="pref_mqtt_uri_summ">tcp://host:port</string>
