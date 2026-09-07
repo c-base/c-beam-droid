@@ -1,6 +1,7 @@
 package org.c_base.c_beam.fragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -57,6 +58,18 @@ public class EventListFragment extends ListFragment {
 
 	public void addItem(Event item) {
 		items.add(item);
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * Replaces the whole list with one adapter notification. The adapter shares the
+	 * {@code items} instance, so the list is refilled in place rather than reassigned.
+	 */
+	public void setItems(List<Event> newItems) {
+		items.clear();
+		items.addAll(newItems);
 		if (adapter != null) {
 			((ArrayAdapter) adapter).notifyDataSetChanged();
 		}

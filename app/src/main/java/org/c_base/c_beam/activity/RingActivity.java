@@ -18,6 +18,9 @@ import android.preference.PreferenceManager;
 import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,16 +56,19 @@ public class RingActivity extends C_beamActivity {
         CLAMP, CARBON, CIENCE, CREACTIV, CULTURE, COM, CORE
     }
 
-    private static final int threadDelay = 5000;
-    private static final int firstThreadDelay = 100;
     private static final String TAG = "RingActivity";
 
     private static final boolean debug = false;
 
     protected C_beam c_beam = C_beam.getInstance();
 
-    protected Runnable fred;
     private final Handler handler = new Handler();
+    private boolean renderPending = false;
+    private final Runnable renderRunnable = () -> {
+        renderPending = false;
+        updateLists();
+    };
+    private final C_beam.DataListener dataListener = this::requestRender;
 
     protected View mOfflineArea;
     protected View mCbeamArea;
@@ -91,6 +97,17 @@ public class RingActivity extends C_beamActivity {
         //setContentView(R.layout.activity_ring);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         defaultETA = Integer.parseInt(sharedPref.getString(Settings.DEFAULT_ETA, "30"));
+
+        // ViewPager pages attach lazily, so a fragment that was not there when the last
+        // payload was rendered would otherwise show nothing until the next one arrives.
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(
+                new FragmentManager.FragmentLifecycleCallbacks() {
+                    @Override
+                    public void onFragmentViewCreated(@NonNull FragmentManager fm, @NonNull Fragment f,
+                                                      @NonNull View v, Bundle savedInstanceState) {
+                        requestRender();
+                    }
+                }, false);
     }
 
     protected void setupCbeamArea() {
@@ -335,8 +352,25 @@ public class RingActivity extends C_beamActivity {
         c_beam.force_logout(sharedPref.getString(Settings.USERNAME, "bernd"));
     }
 
+    /**
+     * Renders the current contents of the {@link C_beam} singleton into this screen's
+     * views. Runs on the main thread, once per {@link #requestRender()} burst: after each
+     * new {@code app_data} payload, on start, and whenever a fragment's view is created.
+     */
     protected void updateLists() {
 
+    }
+
+    /**
+     * Schedules one {@link #updateLists()} on the main thread. Calls made before it runs
+     * are coalesced into that single render.
+     */
+    protected void requestRender() {
+        if (renderPending) {
+            return;
+        }
+        renderPending = true;
+        handler.post(renderRunnable);
     }
 
     protected void updateTimePicker() {
@@ -412,22 +446,19 @@ public class RingActivity extends C_beamActivity {
         mDrawerToggle.syncState();
     }
 
-    public void startProgress() {
-        // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
-        };
-        handler.postDelayed(fred, firstThreadDelay);
-    }
-
     public void onStart() {
         super.onStart();
-        startProgress();
+        c_beam.setDataListener(dataListener);
+        // The singleton may already hold data from before this screen started.
+        requestRender();
+    }
+
+    @Override
+    protected void onStop() {
+        c_beam.removeDataListener(dataListener);
+        handler.removeCallbacks(renderRunnable);
+        renderPending = false;
+        super.onStop();
     }
 
     @Override

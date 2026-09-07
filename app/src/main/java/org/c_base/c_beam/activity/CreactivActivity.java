@@ -20,7 +20,6 @@ import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.MissionListFragment;
@@ -128,17 +127,8 @@ public class CreactivActivity extends RingActivity {
                 }
             }
         }
-        if (missions.isAdded()) {
-            ArrayList<Mission> missionList = c_beam.getMissions();
-            missions.clear();
-            for (Mission m : missionList)
-                missions.addItem(m);
-        }
-        if (statsFragment.isAdded()) {
-            statsFragment.clear();
-            for (User user : c_beam.getStats())
-                statsFragment.addItem(user);
-        }
+        missions.setItems(c_beam.getMissions());
+        statsFragment.setItems(c_beam.getStats());
         activitylog.updateLog(c_beam.getActivityLog());
     }
 

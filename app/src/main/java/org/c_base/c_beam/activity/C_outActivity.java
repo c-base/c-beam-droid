@@ -25,7 +25,6 @@ import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.C_outListFragment;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class C_outActivity extends C_beamActivity {
@@ -33,10 +32,13 @@ public class C_outActivity extends C_beamActivity {
     EditText et;
 
     ActionBar actionBar;
-    private Runnable fred;
     private final Handler handler = new Handler();
-    private final long threadDelay = 5000;
-    private final long firstThreadDelay = 1000;
+    private boolean renderPending = false;
+    private final Runnable renderRunnable = () -> {
+        renderPending = false;
+        updateLists();
+    };
+    private final C_beam.DataListener dataListener = this::requestRender;
 
     protected WifiBroadcastReceiver mWifiReceiver;
     protected IntentFilter mWifiIntentFilter;
@@ -98,33 +100,32 @@ public class C_outActivity extends C_beamActivity {
         initializeBroadcastReceiver();
     }
 
-    public void startProgress() {
-        // Do something long
-        fred = new Runnable() {
-            @Override
-            public void run() {
-                updateLists();
-                handler.postDelayed(fred, threadDelay);
-            }
-
-        };
-        handler.postDelayed(fred, firstThreadDelay);
+    private void requestRender() {
+        if (renderPending) {
+            return;
+        }
+        renderPending = true;
+        handler.post(renderRunnable);
     }
 
     private void updateLists() {
-        ArrayList<String> sounds = c_beam.getSounds();
-
-        if (c_outList != null && c_outList.isAdded()) {
-            c_outList.clear();
-            for (int i = 0; i < sounds.size(); i++) {
-                c_outList.addItem(sounds.get(i));
-            }
+        if (c_outList != null) {
+            c_outList.setItems(c_beam.getSounds());
         }
     }
 
     public void onStart() {
         super.onStart();
-        startProgress();
+        c_beam.setDataListener(dataListener);
+        requestRender();
+    }
+
+    @Override
+    protected void onStop() {
+        c_beam.removeDataListener(dataListener);
+        handler.removeCallbacks(renderRunnable);
+        renderPending = false;
+        super.onStop();
     }
 
     @Override

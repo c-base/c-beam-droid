@@ -99,22 +99,12 @@ public class MissionActivity extends RingActivity implements
                 tvAp.setText(user.getAp() + " AP");
             }
         }
-        if (missions.isAdded()) {
-            ArrayList<Mission> missionList = new ArrayList<Mission>();
-            missionList = c_beam.getMissions();
-            missions.clear();
-            if (missionList.isEmpty()) {
-                missions.setEmptyText("keine missionen");
-            } else {
-                for (int i = 0; i < missionList.size(); i++)
-                    missions.addItem(missionList.get(i));
-            }
+        ArrayList<Mission> missionList = c_beam.getMissions();
+        if (missionList.isEmpty()) {
+            missions.setEmptyText("keine missionen");
         }
-        if (stats.isAdded()) {
-            stats.clear();
-            for (User user : c_beam.getStats())
-                stats.addItem(user);
-        }
+        missions.setItems(missionList);
+        stats.setItems(c_beam.getStats());
         activitylog.updateLog(c_beam.getActivityLog());
     }
 

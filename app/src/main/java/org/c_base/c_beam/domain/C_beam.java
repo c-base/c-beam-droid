@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.format.Formatter;
@@ -51,9 +53,11 @@ public class C_beam {
 
     private JSONRPC2Session etaClient;
     private JSONRPC2Session c_beamClient;
-    private final ArrayList<User> onlineList = new ArrayList<User>();
-    private final ArrayList<User> offlineList = new ArrayList<User>();
-    private final ArrayList<User> etaList = new ArrayList<User>();
+    // Every collection below is replaced wholesale by the poller thread and read from the
+    // UI thread without a lock, so each is volatile and never mutated in place.
+    private volatile ArrayList<User> onlineList = new ArrayList<User>();
+    private volatile ArrayList<User> offlineList = new ArrayList<User>();
+    private volatile ArrayList<User> etaList = new ArrayList<User>();
     private volatile ArrayList<Mission> missions = new ArrayList<Mission>();
     private volatile ArrayList<User> users = new ArrayList<User>();
     private volatile ArrayList<Event> events = new ArrayList<Event>();
@@ -69,6 +73,18 @@ public class C_beam {
     private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
+
+    /**
+     * Notified on the main thread each time the poller has swapped in a fresh
+     * {@code app_data} payload. Screens render once per notification instead of
+     * on their own timer.
+     */
+    public interface DataListener {
+        void onDataUpdated();
+    }
+
+    private volatile DataListener dataListener;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private static final C_beam instance = new C_beam();
 
@@ -118,6 +134,34 @@ public class C_beam {
     public void setActivity(Activity activity) {
         this.activity = activity;
         initC_beamClient();
+    }
+
+    public void setDataListener(DataListener listener) {
+        dataListener = listener;
+    }
+
+    /**
+     * Clears the listener only if it is still the one given. Activities call this
+     * from onStop, which for the previous screen runs *after* the next screen's
+     * onStart, so an unconditional clear would drop the new screen's registration.
+     */
+    public void removeDataListener(DataListener listener) {
+        if (dataListener == listener) {
+            dataListener = null;
+        }
+    }
+
+    private void notifyDataUpdated() {
+        final DataListener listener = dataListener;
+        if (listener == null) {
+            return;
+        }
+        mainHandler.post(() -> {
+            // Re-read: the screen may have unregistered while the post was queued.
+            if (dataListener == listener) {
+                listener.onDataUpdated();
+            }
+        });
     }
 
     public void startThread() {
@@ -215,6 +259,7 @@ public class C_beam {
                 updateBarStatus((boolean) result.get("barstatus"));
                 sleepTime = 5000;
                 Log.i(TAG, "updateLists successful");
+                notifyDataUpdated();
             } else {
                 Log.e(TAG, "updateLists returned null");
                 initC_beamClient();
@@ -300,25 +345,30 @@ public class C_beam {
         }
         this.users = userList;
 
-        onlineList.clear();
-        offlineList.clear();
-        etaList.clear();
+        ArrayList<User> online = new ArrayList<User>();
+        ArrayList<User> offline = new ArrayList<User>();
+        ArrayList<User> eta = new ArrayList<User>();
 
-        for (User user : users) {
+        for (User user : userList) {
             if (user.getStatus().equals("online")) {
-                onlineList.add(user);
+                online.add(user);
             }
             if (user.getStatus().equals("eta")) {
-                etaList.add(user);
+                eta.add(user);
             }
             if (user.getStatus().equals("offline")) {
-                offlineList.add(user);
+                offline.add(user);
             }
         }
 
-        if (onlineList.size() == 0 && etaList.size() == 0) {
-            onlineList.add(new User("Niemand da"));
+        if (online.size() == 0 && eta.size() == 0) {
+            online.add(new User("Niemand da"));
         }
+
+        // Swap, don't mutate: the UI thread may be iterating the previous lists.
+        this.onlineList = online;
+        this.offlineList = offline;
+        this.etaList = eta;
     }
 
     public ArrayList<User> getUsers() {

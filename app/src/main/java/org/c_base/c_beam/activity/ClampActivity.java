@@ -13,7 +13,6 @@ import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
 import org.c_base.c_beam.fragment.WebViewFragment;
@@ -79,13 +78,7 @@ public class ClampActivity extends RingActivity {
         }
 
         ArtefactListFragment artefacts = (ArtefactListFragment) mSectionsPagerAdapter.getItem(ARTEFACTS_FRAGMENT);
-        if (artefacts.isAdded()) {
-            ArrayList<Artefact> artefactList;
-            artefactList = c_beam.getArtefacts();
-            artefacts.clear();
-            for (Artefact artefact : artefactList)
-                artefacts.addItem(artefact);
-        }
+        artefacts.setItems(c_beam.getArtefacts());
 
     }
 

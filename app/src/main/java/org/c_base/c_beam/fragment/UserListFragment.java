@@ -21,6 +21,7 @@ import org.c_base.c_beam.util.Helper;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserListFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
@@ -57,6 +58,18 @@ public class UserListFragment extends ListFragment {
 
 	public void addItem(User item) {
 		items.add(item);
+		if (adapter != null) {
+			adapter.notifyDataSetChanged();
+		}
+	}
+
+	/**
+	 * Replaces the whole list with one adapter notification. The adapter shares the
+	 * {@code items} instance, so the list is refilled in place rather than reassigned.
+	 */
+	public void setItems(List<User> newItems) {
+		items.clear();
+		items.addAll(newItems);
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 		}

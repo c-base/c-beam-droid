@@ -83,16 +83,11 @@ public class CultureActivity extends RingActivity implements
             }
         }
 
-        if (events.isAdded()){
-            eventList = c_beam.getEvents();
-            events.clear();
-            if (eventList != null && !eventList.isEmpty()) {
-                for(int i=0; i<eventList.size();i++)
-                    events.addItem(eventList.get(i));
-            } else {
-                events.setEmptyText(getString(R.string.no_events));
-            }
+        eventList = c_beam.getEvents();
+        if (eventList == null || eventList.isEmpty()) {
+            events.setEmptyText(getString(R.string.no_events));
         }
+        events.setItems(eventList != null ? eventList : new ArrayList<Event>());
     }
 
     @Override

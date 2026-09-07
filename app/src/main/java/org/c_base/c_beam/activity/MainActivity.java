@@ -25,10 +25,8 @@ import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.domain.Artefact;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.Event;
-import org.c_base.c_beam.domain.Mission;
 import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.fragment.ActivitylogFragment;
 import org.c_base.c_beam.fragment.ArtefactListFragment;
@@ -175,42 +173,22 @@ public class MainActivity extends RingActivity {
                 }
             }
         }
-        if (online.isAdded()) {
-            online.clear();
-            if (onlineList.isEmpty() && etaList.isEmpty()) {
-                online.setEmptyText(getString(R.string.no_one_online));
-            } else {
-                for (int i = 0; i < onlineList.size(); i++)
-                    online.addItem(onlineList.get(i));
-                for (int i = 0; i < etaList.size(); i++)
-                    online.addItem(etaList.get(i));
-            }
+        // Each fragment gets one bulk replace and one adapter notification. A fragment
+        // whose view is not attached yet simply keeps the items for when it is.
+        if (onlineList.isEmpty() && etaList.isEmpty()) {
+            online.setEmptyText(getString(R.string.no_one_online));
         }
-        if (events.isAdded()) {
-            eventList = c_beam.getEvents();
-            events.clear();
-            if (eventList != null) {
-                for (int i = 0; i < eventList.size(); i++)
-                    events.addItem(eventList.get(i));
-            }
-        }
+        ArrayList<User> presentList = new ArrayList<User>(onlineList.size() + etaList.size());
+        presentList.addAll(onlineList);
+        presentList.addAll(etaList);
+        online.setItems(presentList);
 
-        if (missions.isAdded()) {
-            ArrayList<Mission> missionList = new ArrayList<Mission>();
-            missionList = c_beam.getMissions();
-            missions.clear();
-            for (int i = 0; i < missionList.size(); i++)
-                missions.addItem(missionList.get(i));
-        }
+        eventList = c_beam.getEvents();
+        events.setItems(eventList != null ? eventList : new ArrayList<Event>());
 
+        missions.setItems(c_beam.getMissions());
 
-        if (artefacts.isAdded()) {
-            ArrayList<Artefact> artefactList;
-            artefactList = c_beam.getArtefacts();
-            artefacts.clear();
-            for (Artefact artefact : artefactList)
-                artefacts.addItem(artefact);
-        }
+        artefacts.setItems(c_beam.getArtefacts());
 
         // button_bar lives in fragment_mainbuttons, a ViewPager page, so the lookup
         // returns null until that fragment's view is attached -- same reason the

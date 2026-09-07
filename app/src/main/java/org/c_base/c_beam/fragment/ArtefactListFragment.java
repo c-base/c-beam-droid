@@ -23,6 +23,7 @@ import org.c_base.c_beam.util.Helper;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArtefactListFragment extends ListFragment {
     String TAG = "ArtefactListFragment";
@@ -38,6 +39,18 @@ public class ArtefactListFragment extends ListFragment {
     public void addItem(Artefact item) {
         items.add(item);
         ((ArrayAdapter) getListView().getAdapter()).notifyDataSetChanged();
+    }
+
+    /**
+     * Replaces the whole list with one adapter notification. The adapter shares the
+     * {@code items} instance, so the list is refilled in place rather than reassigned.
+     */
+    public void setItems(List<Artefact> newItems) {
+        items.clear();
+        items.addAll(newItems);
+        if (adapter != null) {
+            ((ArrayAdapter) adapter).notifyDataSetChanged();
+        }
     }
 
     // Override onCreateView() so we can use a custom empty view

@@ -18,6 +18,7 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.util.Helper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class C_outListFragment extends ListFragment {
     ArrayList<String> items = new ArrayList<String>();
@@ -37,6 +38,18 @@ public class C_outListFragment extends ListFragment {
     public void addItem(String item) {
         items.add(item);
         adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Replaces the whole list with one adapter notification. The adapter shares the
+     * {@code items} instance, so the list is refilled in place rather than reassigned.
+     */
+    public void setItems(List<String> newItems) {
+        items.clear();
+        items.addAll(newItems);
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

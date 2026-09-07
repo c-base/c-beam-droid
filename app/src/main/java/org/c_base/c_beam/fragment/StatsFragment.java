@@ -21,6 +21,7 @@ import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.util.Helper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StatsFragment extends ListFragment {
 	ArrayList<User> items = new ArrayList<User>();
@@ -34,6 +35,18 @@ public class StatsFragment extends ListFragment {
 	public void addItem(User item) {
 		items.add(item);
 		((ArrayAdapter)getListView().getAdapter()).notifyDataSetChanged();
+	}
+
+	/**
+	 * Replaces the whole list with one adapter notification. The adapter shares the
+	 * {@code items} instance, so the list is refilled in place rather than reassigned.
+	 */
+	public void setItems(List<User> newItems) {
+		items.clear();
+		items.addAll(newItems);
+		if (adapter != null) {
+			((ArrayAdapter) adapter).notifyDataSetChanged();
+		}
 	}
 	// Override onCreateView() so we can use a custom empty view
 	@Override
