@@ -7,7 +7,12 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import org.c_base.c_beam.GCMFacade;
 import org.c_base.c_beam.R;
@@ -26,11 +31,29 @@ public class SettingsActivity extends PreferenceActivity {
 //    public static final String KEY_PREF_DEFAULT_URL = "pref_key_default_url";
 
 	C_beam c_beam = C_beam.getInstance(); //new C_beam(this);
+
+	/**
+	 * This screen is a framework PreferenceActivity, not a C_beamActivity, so it does not
+	 * inherit the inset handling the other screens get. With targetSdk 35+ the window is
+	 * edge-to-edge and the preference list would otherwise draw under the status bar.
+	 */
+	private void applyEdgeToEdge() {
+		View root = findViewById(android.R.id.content);
+		if (root == null) {
+			return;
+		}
+		ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+			return insets;
+		});
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		applyEdgeToEdge();
+
 		c_beam.setActivity(this);
 
 		// Load the preferences from an XML resource
