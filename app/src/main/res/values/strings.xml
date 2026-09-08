@@ -286,6 +286,11 @@
     <string name="connectionError">Connection error</string>
     <string name="dateFormat">dd/MM/yy \\\'at\\\' HH:mm:ss</string>
     <string name="timestamp"><![CDATA[&lt;br/&gt; &lt;small&gt; %1$s &lt;/small&gt;]]></string>
+    <string name="mqtt_service_channel">c-beam push connection</string>
+    <string name="mqtt_service_connected">Connected to c-beam</string>
+    <string name="mqtt_service_connecting">Connecting to c-beam…</string>
+    <string name="mqtt_restricted_title">Push notifications will stop</string>
+    <string name="mqtt_restricted_text">Battery usage for c-beam is set to \"Restricted\", so Android stops the push connection when the app is idle. Tap to open the app settings and set battery usage to \"Unrestricted\".</string>
     <string name="pref_mqtt_enabled_summ">Enable MQTT</string>
     <string name="pref_mqtt_enabled">MQTT</string>
     <string name="pref_mqtt_uri_summ">tcp://host:port</string>

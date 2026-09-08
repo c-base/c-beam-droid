@@ -142,7 +142,6 @@
             android:title="@string/pref_mqtt_password" />
 
         <EditTextPreference
-            android:defaultValue="c-beam-droid-bernd01"
             android:key="pref_mqtt_id"
             android:summary="@string/pref_mqtt_id_summ"
             android:title="@string/pref_mqtt_id" />

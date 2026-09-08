@@ -137,9 +137,9 @@ public class SettingsActivity extends PreferenceActivity {
 								Toast.LENGTH_LONG).show();
 					}
 				} else {
-					// There is no server-side unregister RPC, so the token c-beam already holds
-					// stays valid and it may keep pushing. Opting out is not yet complete.
-					Log.w(LOG_TAG, "push disabled locally; the server still holds the FCM token");
+					// noGCM: stops the MQTT foreground service. withGCM: only logs, since there
+					// is no server-side unregister RPC for the FCM token yet.
+					GCMFacade.disablePush(context);
 				}
 				return true;
 			}

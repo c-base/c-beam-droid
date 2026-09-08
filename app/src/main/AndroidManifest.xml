@@ -301,7 +301,6 @@
 
         <!-- MQTT Service -->
         <!-- -->
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <receiver android:name=".boot.BootReceiver"
             android:exported="true">

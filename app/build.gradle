@@ -37,6 +37,13 @@ android {
         }
     }
     namespace 'org.c_base.c_beam'
+
+    packaging {
+        resources {
+            // Netty ships these in several jars; required by the HiveMQ client on Android.
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/io.netty.versions.properties']
+        }
+    }
 }
 
 // The Gradle daemon may run on a JRE-only JDK (Java 25 here has no compiler); pin the
@@ -71,10 +78,12 @@ dependencies {
     implementation 'com.thetransactioncompany:jsonrpc2-base:2.2.1'
     implementation 'com.thetransactioncompany:jsonrpc2-client:2.1.1'
     //implementation "com.google.android.gms:play-services-gcm:8.4.0"
-    implementation('org.eclipse.paho:org.eclipse.paho.android.service:1.1.1') {
-        exclude module: 'support-v4'
-    }
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    // Replaced org.eclipse.paho.android.service 1.1.1 on 2026-09-08: its AlarmPingSender
+    // registers a receiver without an export flag and crashes the process on connect from
+    // targetSdk 34. HiveMQ is on Maven Central, actively maintained, speaks MQTT 3.1.1 now
+    // and 5 later. It is a plain Java client, so the long-lived connection lives in our own
+    // MqttForegroundService (noGCM flavor).
+    implementation 'com.hivemq:hivemq-mqtt-client:1.4.0'
         withGCMImplementation 'com.google.firebase:firebase-messaging:25.1.2'
 }
 

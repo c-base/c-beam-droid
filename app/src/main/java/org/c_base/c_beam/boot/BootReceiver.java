@@ -8,8 +8,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.c_base.c_beam.CbeamApplication;
+import org.c_base.c_beam.GCMFacade;
 import org.c_base.c_beam.Settings;
-import org.c_base.c_beam.mqtt.MqttManager;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String LOG_TAG = "BootReceiver";
@@ -33,12 +33,16 @@ public class BootReceiver extends BroadcastReceiver {
     }
 
     private void startMqttConnection(Context context) {
-        CbeamApplication app = CbeamApplication.getInstance(context);
-        MqttManager connection = app.getMqttManager();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean mqttEnabled = sharedPref.getBoolean(Settings.MQTT_ENABLED, false);
-        if (mqttEnabled) {
-            connection.startConnection();
+        // "push" is the user-facing switch. On noGCM it starts the MQTT foreground service,
+        // which BOOT_COMPLETED may launch (specialUse is not on the restricted-type list);
+        // on withGCM it refreshes the FCM registration.
+        if (sharedPref.getBoolean(Settings.PUSH, false)) {
+            GCMFacade.setupGCM(context);
+        }
+        // The expert "MQTT" switch: a bare connection with nothing keeping the process alive.
+        if (sharedPref.getBoolean(Settings.MQTT_ENABLED, false)) {
+            CbeamApplication.getInstance(context).getMqttManager().startConnection();
         }
     }
 }

@@ -117,8 +117,11 @@ public class RingActivity extends C_beamActivity {
         setupAPDisplay();
         setupNavigationDrawer();
 
-        boolean mqttEnabled = sharedPref.getBoolean(Settings.MQTT_ENABLED, false);
-        if (mqttEnabled) {
+        // Always hold the manager so crewNetworkConnected()/Disconnected() reach it even
+        // when the connection is owned by the push foreground service rather than started
+        // here through the expert "MQTT" switch.
+        mqttConnection = MqttManager.getInstance(this);
+        if (sharedPref.getBoolean(Settings.MQTT_ENABLED, false)) {
             startMqttConnection(this);
         }
     }
@@ -650,8 +653,6 @@ public class RingActivity extends C_beamActivity {
     }
 
     private void startMqttConnection(Context context) {
-        //CbeamApplication app = CbeamApplication.getInstance(context);
-        //mqttConnection = app.getMqttManager();
         mqttConnection = MqttManager.getInstance(context);
         mqttConnection.startConnection();
     }

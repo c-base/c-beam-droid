@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  noGCM (F-Droid) flavor only: there is no Firebase, so push notifications arrive over a
+  long-lived MQTT connection that MqttForegroundService keeps alive. The service type is
+  specialUse (with the mandatory subtype description), the same choice ntfy makes: dataSync
+  is time-limited since Android 15, and the connection must outlive that.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <application>
+        <service
+            android:name="org.c_base.c_beam.mqtt.MqttForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Holds the MQTT connection to the c-base member system so this build, which has no Firebase, can receive boarding and ETA notifications while the app is in the background." />
+        </service>
+    </application>
+
+</manifest>
