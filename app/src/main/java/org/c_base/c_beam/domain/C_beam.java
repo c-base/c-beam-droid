@@ -113,8 +113,13 @@ public class C_beam {
         Context context = appContext();
         if (context != null) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sharedPref.getBoolean(Settings.DEBUG_ENABLED, false)) {
-                c_beamUrl = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
+            // The URL override applies whenever it is set, independent of the debug-mode
+            // switch: a filled-in field that is silently ignored is worse than no field
+            // at all. Scheme and port are part of the URL, so a plain-HTTP development
+            // instance on another port is reached by editing the URL itself.
+            String urlPref = sharedPref.getString(Settings.C_BEAM_URL, C_BEAM_URL);
+            if (urlPref != null && !urlPref.trim().isEmpty()) {
+                c_beamUrl = urlPref.trim();
             }
         }
         c_beamClient = createClientSession(c_beamUrl);
@@ -141,7 +146,7 @@ public class C_beam {
     }
 
     /**
-     * Rebuilds the RPC sessions, picking up a changed debug URL preference. Screens call
+     * Rebuilds the RPC sessions, picking up a changed URL preference. Screens call
      * this on resume; it replaced setActivity(), which used to keep the Activity alive in
      * this static singleton.
      */

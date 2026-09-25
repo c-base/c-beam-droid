@@ -16,8 +16,12 @@
     </base-config>
 
     <!-- Matelight, megablast and hyperblast speak plain HTTP only, and are
-         reachable only on the c-base LAN. -->
+         reachable only on the c-base LAN. c-beam itself is listed so the URL
+         override in the debug settings can point the app at a development
+         instance that serves plain HTTP on a non-standard port; the default URL
+         stays https and is unaffected by this entry. -->
     <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">c-beam.cbrp3.c-base.org</domain>
         <domain includeSubdomains="false">matelight.cbrp3.c-base.org</domain>
         <domain includeSubdomains="false">10.0.1.23</domain>
         <domain includeSubdomains="false">10.0.1.24</domain>
