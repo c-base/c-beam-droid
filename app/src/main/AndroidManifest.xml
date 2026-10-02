@@ -14,8 +14,12 @@
     <!-- Normal permission, no runtime prompt. Needed for the pre-Android-8 notification
          path, where vibration comes from Notification.vibrate rather than the channel. -->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Runtime permission, asked for on the first press of the hold-to-talk button in the
+         c-corder and nowhere else. The microphone is only open while that button is held. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />

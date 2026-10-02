@@ -104,6 +104,13 @@
             android:summary="@string/pref_c_beam_url_summ"
             android:title="@string/pref_c_beam_url" />
 
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_stt_url"
+            android:summary="@string/pref_stt_url_summ"
+            android:title="@string/pref_stt_url" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_debug_enabled"

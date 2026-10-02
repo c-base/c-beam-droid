@@ -171,6 +171,25 @@
     <string name="pref_debug_enabled">debug-modus</string>
     <string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein
     </string>
+    <string name="pref_stt_url">whisper url</string>
+    <string name="pref_stt_url_summ">adresse der spracherkennung auf dem KI-server. leer lassen
+        fu:r den standard.
+    </string>
+    <string name="voice_hold_hint">zum sprechen halten</string>
+    <string name="voice_recording">● aufnahme la:uft  %1$s / %2$s</string>
+    <string name="voice_release_to_discard">loslassen zum verwerfen</string>
+    <string name="voice_discarded">aufnahme verworfen</string>
+    <string name="voice_transcribing">transkribiere…</string>
+    <string name="voice_empty">nichts verstanden</string>
+    <string name="voice_error">fehler: %s</string>
+    <string name="voice_mic_failed">mikrofon nicht verfu:gbar</string>
+    <string name="voice_permission_title">mikrofon</string>
+    <string name="voice_permission_text">die aufnahme la:uft nur, solange der knopf gehalten
+        wird. sie geht zum KI-server der station, der nur im crew-netz erreichbar ist, und
+        wird dort in text umgewandelt. die app speichert nichts davon.
+    </string>
+    <string name="voice_permission_yes">weiter</string>
+    <string name="voice_permission_no">lieber nicht</string>
     <string name="pref_c_beam_url">c-beam url</string>
     <string name="pref_c_beam_url_summ">diese einstellung sollte nur vera:ndert werden, wenn man
         weiss, was man tut.
