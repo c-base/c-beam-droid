@@ -222,16 +222,63 @@
                         android:padding="8dp"
                         android:visibility="gone">
 
-                    <TextView
-                            android:id="@+id/voice_transcript"
+                    <!-- What was heard (yellow), what c-beam answered or did (white), and,
+                         for anything audible in the station, the confirmation row. -->
+                    <LinearLayout
+                            android:id="@+id/voice_card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:background="@drawable/button_32x32_med"
+                            android:orientation="vertical"
                             android:padding="8dp"
-                            android:textColor="#FFFF00"
-                            android:textSize="16sp"
-                            android:visibility="gone" />
+                            android:visibility="gone">
+
+                        <TextView
+                                android:id="@+id/voice_transcript"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#FFFF00"
+                                android:textSize="16sp" />
+
+                        <TextView
+                                android:id="@+id/voice_answer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:visibility="gone" />
+
+                        <LinearLayout
+                                android:id="@+id/voice_confirm"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="6dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                            <Button
+                                    android:id="@+id/voice_confirm_no"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/button"
+                                    android:text="@string/voice_confirm_no"
+                                    android:textColor="#FFFFFF" />
+
+                            <Button
+                                    android:id="@+id/voice_confirm_yes"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/button"
+                                    android:text="@string/voice_confirm_yes"
+                                    android:textColor="#33B6F6"
+                                    android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                             android:layout_width="match_parent"

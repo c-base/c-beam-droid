@@ -25,13 +25,17 @@ import androidx.core.content.ContextCompat;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
+import org.c_base.c_beam.domain.C_beam;
 
 /**
- * Hold-to-talk microphone button with its recording banner and transcript card.
+ * Hold-to-talk microphone button with its recording banner and result card.
  *
  * The microphone is open exactly while the finger rests on the button: lifting it sends
  * the recording to Whisper, sliding off the button first throws it away, and leaving the
  * activity does the same. Nothing but this button ever starts a recording.
+ *
+ * The transcript then goes through a {@link VoiceSession}; whatever comes back (an answer,
+ * something done, or a proposal that needs a tap) lands in the card above the button.
  */
 public class HoldToTalkController {
     public static final int PERMISSION_REQUEST_CODE = 43;
@@ -54,11 +58,16 @@ public class HoldToTalkController {
     private final ImageButton button;
     private final TextView status;
     private final ProgressBar level;
+    private final View card;
     private final TextView transcript;
+    private final TextView answer;
+    private final View confirmRow;
 
     private final VoiceRecorder recorder = new VoiceRecorder();
     private final Handler main = new Handler(Looper.getMainLooper());
     private Transcriber transcriber;
+    private VoiceSession session;
+    private VoiceCommands.Action pendingAction;
     private ObjectAnimator pulse;
 
     private boolean available;
@@ -82,7 +91,10 @@ public class HoldToTalkController {
         button = panel.findViewById(R.id.voice_button);
         status = panel.findViewById(R.id.voice_status);
         level = panel.findViewById(R.id.voice_level);
+        card = panel.findViewById(R.id.voice_card);
         transcript = panel.findViewById(R.id.voice_transcript);
+        answer = panel.findViewById(R.id.voice_answer);
+        confirmRow = panel.findViewById(R.id.voice_confirm);
         cancelSlopPx = (int) (CANCEL_SLOP_DP * activity.getResources().getDisplayMetrics().density);
 
         button.setOnTouchListener(new View.OnTouchListener() {
@@ -91,10 +103,34 @@ public class HoldToTalkController {
                 return handleTouch(v, event);
             }
         });
-        transcript.setOnClickListener(new View.OnClickListener() {
+        card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transcript.setVisibility(View.GONE);
+                if (pendingAction == null) {
+                    card.setVisibility(View.GONE);
+                }
+            }
+        });
+        panel.findViewById(R.id.voice_confirm_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VoiceCommands.Action action = pendingAction;
+                if (action == null) {
+                    return;
+                }
+                pendingAction = null;
+                confirmRow.setVisibility(View.GONE);
+                commands().execute(action);
+                showAnswer(activity.getString(R.string.voice_executed, action.description), false);
+            }
+        });
+        panel.findViewById(R.id.voice_confirm_no).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pendingAction = null;
+                confirmRow.setVisibility(View.GONE);
+                card.setVisibility(View.GONE);
+                showHint(R.string.voice_discarded, COLOR_HINT);
             }
         });
     }
@@ -119,6 +155,13 @@ public class HoldToTalkController {
             transcriber.cancel();
             transcriber = null;
         }
+        if (session != null) {
+            session.cancel();
+            session = null;
+        }
+        // A proposal that was never confirmed dies with the screen.
+        pendingAction = null;
+        confirmRow.setVisibility(View.GONE);
         busy = false;
         button.setEnabled(true);
     }
@@ -210,7 +253,9 @@ public class HoldToTalkController {
         cancelArmed = false;
         v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 
-        transcript.setVisibility(View.GONE);
+        pendingAction = null;
+        confirmRow.setVisibility(View.GONE);
+        card.setVisibility(View.GONE);
         main.removeCallbacks(hideStatus);
         status.setBackgroundColor(COLOR_RECORDING);
         status.setText(activity.getString(R.string.voice_recording, clock(0),
@@ -256,35 +301,94 @@ public class HoldToTalkController {
         status.setText(R.string.voice_transcribing);
         status.setVisibility(View.VISIBLE);
 
-        transcriber = new Transcriber(transcriptionUrl());
+        transcriber = new Transcriber(AiServer.baseUrl(activity));
         transcriber.transcribe(wav, new Transcriber.Callback() {
             @Override
             public void onTranscript(String text) {
-                done();
+                transcriber = null;
                 if (text.isEmpty()) {
+                    done();
                     showHint(R.string.voice_empty, COLOR_HINT);
-                } else {
-                    transcript.setTextColor(COLOR_TRANSCRIPT);
-                    transcript.setText(text);
-                    transcript.setVisibility(View.VISIBLE);
+                    return;
                 }
+                transcript.setTextColor(COLOR_TRANSCRIPT);
+                transcript.setText(text);
+                answer.setVisibility(View.GONE);
+                card.setVisibility(View.VISIBLE);
+                understand(text);
+            }
+
+            @Override
+            public void onError(String message) {
+                transcriber = null;
+                done();
+                transcript.setTextColor(COLOR_ERROR);
+                transcript.setText(activity.getString(R.string.voice_error, message));
+                answer.setVisibility(View.GONE);
+                card.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    /** Hands the transcript to the model and shows whatever comes back. */
+    private void understand(String text) {
+        status.setBackgroundColor(COLOR_BUSY);
+        status.setText(R.string.voice_thinking);
+        status.setVisibility(View.VISIBLE);
+
+        ChatModel model = new ChatModel(AiServer.baseUrl(activity), AiServer.model(activity));
+        session = new VoiceSession(model, commands(), username(), new VoiceSession.Listener() {
+            @Override
+            public void onAnswer(String reply) {
+                done();
+                showAnswer(reply, false);
+            }
+
+            @Override
+            public void onExecuted(VoiceCommands.Action action) {
+                done();
+                showAnswer(activity.getString(R.string.voice_executed, action.description), false);
+            }
+
+            @Override
+            public void onConfirmRequired(VoiceCommands.Action action) {
+                done();
+                pendingAction = action;
+                showAnswer(action.description, false);
+                confirmRow.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(String message) {
                 done();
-                transcript.setTextColor(COLOR_ERROR);
-                transcript.setText(activity.getString(R.string.voice_error, message));
-                transcript.setVisibility(View.VISIBLE);
-            }
-
-            private void done() {
-                busy = false;
-                transcriber = null;
-                button.setEnabled(true);
-                status.setVisibility(View.GONE);
+                showAnswer(activity.getString(R.string.voice_error, message), true);
             }
         });
+        session.start(text);
+    }
+
+    /** Back to idle: the button works again and the status banner goes away. */
+    private void done() {
+        busy = false;
+        session = null;
+        button.setEnabled(true);
+        status.setVisibility(View.GONE);
+    }
+
+    private void showAnswer(String text, boolean isError) {
+        answer.setTextColor(isError ? COLOR_ERROR : 0xFFFFFFFF);
+        answer.setText(text);
+        answer.setVisibility(View.VISIBLE);
+        card.setVisibility(View.VISIBLE);
+    }
+
+    private VoiceCommands commands() {
+        return new VoiceCommands(C_beam.getInstance(), username());
+    }
+
+    private String username() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        return prefs.getString(Settings.USERNAME, "bernd");
     }
 
     private void stopRecordingUi() {
@@ -341,13 +445,6 @@ public class HoldToTalkController {
                     }
                 })
                 .show();
-    }
-
-    /** The expert-settings override applies whenever it is filled in; empty means default. */
-    private String transcriptionUrl() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        String url = prefs.getString(Settings.STT_URL, "");
-        return url == null || url.trim().isEmpty() ? Transcriber.DEFAULT_URL : url.trim();
     }
 
     private static String clock(long ms) {

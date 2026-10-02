@@ -171,10 +171,18 @@
     <string name="pref_debug_enabled">debug-modus</string>
     <string name="pref_debug_enabled_summ">schaltet zusa:tzliches funktionen fu:rs debugging ein
     </string>
-    <string name="pref_stt_url">whisper url</string>
-    <string name="pref_stt_url_summ">adresse der spracherkennung auf dem KI-server. leer lassen
-        fu:r den standard.
+    <string name="pref_ai_url">KI-server url</string>
+    <string name="pref_ai_url_summ">basis-adresse der OpenAI-kompatiblen schnittstelle
+        (spracherkennung und sprachmodell). leer lassen fu:r den standard.
     </string>
+    <string name="pref_ai_model">KI-modell</string>
+    <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle. leer lassen
+        fu:r gemma4:e4b.
+    </string>
+    <string name="voice_thinking">denke nach…</string>
+    <string name="voice_executed">ausgefu:hrt: %s</string>
+    <string name="voice_confirm_yes">ausfu:hren</string>
+    <string name="voice_confirm_no">verwerfen</string>
     <string name="voice_hold_hint">zum sprechen halten</string>
     <string name="voice_recording">● aufnahme la:uft  %1$s / %2$s</string>
     <string name="voice_release_to_discard">loslassen zum verwerfen</string>

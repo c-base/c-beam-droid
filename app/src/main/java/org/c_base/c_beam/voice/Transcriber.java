@@ -23,8 +23,6 @@ import java.nio.charset.StandardCharsets;
 public class Transcriber {
     private static final String TAG = "Transcriber";
 
-    public static final String DEFAULT_URL =
-            "https://ai.cbrp3.c-base.org/ollama/v1/audio/transcriptions";
     private static final String MODEL = "Whisper-Large-v3-Turbo";
     private static final int CONNECT_TIMEOUT_MS = 5000;
     private static final int READ_TIMEOUT_MS = 30000;
@@ -39,8 +37,8 @@ public class Transcriber {
     private volatile HttpURLConnection current;
     private volatile boolean cancelled;
 
-    public Transcriber(String url) {
-        this.url = url;
+    public Transcriber(String baseUrl) {
+        this.url = baseUrl + "/audio/transcriptions";
     }
 
     /** Uploads on a background thread and reports on the main thread, unless cancelled. */

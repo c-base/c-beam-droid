@@ -107,9 +107,15 @@
         <EditTextPreference
             android:defaultValue=""
             android:inputType="textUri"
-            android:key="pref_stt_url"
-            android:summary="@string/pref_stt_url_summ"
-            android:title="@string/pref_stt_url" />
+            android:key="pref_ai_url"
+            android:summary="@string/pref_ai_url_summ"
+            android:title="@string/pref_ai_url" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_ai_model"
+            android:summary="@string/pref_ai_model_summ"
+            android:title="@string/pref_ai_model" />
 
         <CheckBoxPreference
             android:defaultValue="false"
