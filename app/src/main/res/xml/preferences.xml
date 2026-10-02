@@ -53,6 +53,12 @@
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_voice_speak"
+        android:summary="@string/pref_voice_speak_summ"
+        android:title="@string/pref_voice_speak" />
+
 
     <!--
     <EditTextPreference

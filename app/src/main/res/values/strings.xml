@@ -179,6 +179,15 @@
     <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle. leer lassen
         fu:r gemma4:e4b.
     </string>
+    <string name="pref_voice_speak">antworten vorlesen</string>
+    <string name="pref_voice_speak_summ">antworten des bordcomputers mit der sprachausgabe des
+        telefons vorlesen. braucht eine deutsche stimme, die auf dem gera:t rechnet.
+    </string>
+    <string name="voice_no_german_voice">sprachausgabe: keine deutsche stimme auf dem gera:t
+        installiert
+    </string>
+    <string name="voice_spoken_executed">Erledigt.</string>
+    <string name="voice_spoken_confirm">%s. Ausführen?</string>
     <string name="voice_thinking">denke nach…</string>
     <string name="voice_executed">ausgefu:hrt: %s</string>
     <string name="voice_confirm_yes">ausfu:hren</string>

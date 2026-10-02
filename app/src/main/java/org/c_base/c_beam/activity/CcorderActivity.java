@@ -641,6 +641,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        holdToTalk.release();
         if (soundPool != null) {
             soundPool.release();
             soundPool = null;

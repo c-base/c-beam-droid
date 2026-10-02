@@ -18,6 +18,7 @@ String FONT = "pref_font";
 	String C_BEAM_URL = "pref_c_beam_url";
 	String AI_URL = "pref_ai_url";
 	String AI_MODEL = "pref_ai_model";
+	String VOICE_SPEAK = "pref_voice_speak";
 	String DEFAULT_ETA = "pref_default_eta";
     String USER_DISCOVERED_NAVDRAWER =  "pref_user_discovered_navdrawer";
 	String MQTT_URI = "pref_mqtt_uri";

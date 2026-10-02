@@ -69,6 +69,9 @@ public class HoldToTalkController {
     private VoiceSession session;
     private VoiceCommands.Action pendingAction;
     private ObjectAnimator pulse;
+    /** Only exists while "antworten vorlesen" is switched on. */
+    private Speaker speaker;
+    private boolean warnedNoVoice;
 
     private boolean available;
     private boolean busy;
@@ -121,6 +124,7 @@ public class HoldToTalkController {
                 confirmRow.setVisibility(View.GONE);
                 commands().execute(action);
                 print(activity.getString(R.string.voice_executed, action.description));
+                say(activity.getString(R.string.voice_spoken_executed));
             }
         });
         panel.findViewById(R.id.voice_confirm_no).setOnClickListener(new View.OnClickListener() {
@@ -140,10 +144,50 @@ public class HoldToTalkController {
         if (!available) {
             abort();
         }
+        syncSpeaker();
+    }
+
+    /** Called from onDestroy: lets go of the text-to-speech engine. */
+    public void release() {
+        abort();
+        if (speaker != null) {
+            speaker.shutdown();
+            speaker = null;
+        }
+    }
+
+    /** Starts or drops the text-to-speech engine as the setting changes (checked on resume). */
+    private void syncSpeaker() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        boolean wanted = prefs.getBoolean(Settings.VOICE_SPEAK, false);
+        if (wanted && speaker == null) {
+            speaker = new Speaker(activity);
+            warnedNoVoice = false;
+        } else if (!wanted && speaker != null) {
+            speaker.shutdown();
+            speaker = null;
+        }
+    }
+
+    private void say(String text) {
+        if (speaker == null) {
+            return;
+        }
+        if (speaker.lacksGermanVoice()) {
+            if (!warnedNoVoice) {
+                warnedNoVoice = true;
+                print(activity.getString(R.string.voice_no_german_voice));
+            }
+            return;
+        }
+        speaker.speak(text);
     }
 
     /** Called from onPause: a recording must not outlive the visible activity. */
     public void abort() {
+        if (speaker != null) {
+            speaker.stop();
+        }
         if (recorder.isRecording()) {
             recorder.cancel();
             stopRecordingUi();
@@ -254,6 +298,10 @@ public class HoldToTalkController {
         finished = false;
         cancelArmed = false;
         v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        // Otherwise the phone would record its own voice.
+        if (speaker != null) {
+            speaker.stop();
+        }
 
         // The terminal keeps its scrollback; only an unanswered proposal is dropped.
         pendingAction = null;
@@ -337,12 +385,14 @@ public class HoldToTalkController {
             public void onAnswer(String reply) {
                 done();
                 print(reply);
+                say(reply);
             }
 
             @Override
             public void onExecuted(VoiceCommands.Action action) {
                 done();
                 print(activity.getString(R.string.voice_executed, action.description));
+                say(activity.getString(R.string.voice_spoken_executed));
             }
 
             @Override
@@ -351,6 +401,7 @@ public class HoldToTalkController {
                 pendingAction = action;
                 print(action.description + " [j/n]");
                 confirmRow.setVisibility(View.VISIBLE);
+                say(activity.getString(R.string.voice_spoken_confirm, action.description));
             }
 
             @Override
