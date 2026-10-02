@@ -222,33 +222,26 @@
                         android:padding="8dp"
                         android:visibility="gone">
 
-                    <!-- What was heard (yellow), what c-beam answered or did (white), and,
+                    <!-- A small terminal in the style of the activity log: what was heard
+                         appears after the prompt, what c-beam answered or did below it, and,
                          for anything audible in the station, the confirmation row. -->
                     <LinearLayout
                             android:id="@+id/voice_card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:background="@drawable/button_32x32_med"
+                            android:background="#000000"
                             android:orientation="vertical"
-                            android:padding="8dp"
+                            android:padding="4dp"
                             android:visibility="gone">
 
                         <TextView
-                                android:id="@+id/voice_transcript"
+                                android:id="@+id/voice_terminal"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="#FFFF00"
-                                android:textSize="16sp" />
-
-                        <TextView
-                                android:id="@+id/voice_answer"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:textColor="#FFFFFF"
-                                android:textSize="16sp"
-                                android:visibility="gone" />
+                                android:fontFamily="monospace"
+                                android:textColor="#3AB6E4"
+                                android:textSize="10sp" />
 
                         <LinearLayout
                                 android:id="@+id/voice_confirm"

@@ -48,10 +48,9 @@ public class HoldToTalkController {
 
     private static final int COLOR_RECORDING = 0xDDCC0000;
     private static final int COLOR_DISCARD = 0xDDCC6600;
-    private static final int COLOR_BUSY = 0xDD1D6A8F;
     private static final int COLOR_HINT = 0xDD333333;
-    private static final int COLOR_TRANSCRIPT = 0xFFFFFF00;
-    private static final int COLOR_ERROR = 0xFFFF6666;
+    /** Scrollback of the little terminal; older lines fall off the top. */
+    private static final int TERMINAL_LINES = 12;
 
     private final Activity activity;
     private final View panel;
@@ -59,9 +58,10 @@ public class HoldToTalkController {
     private final TextView status;
     private final ProgressBar level;
     private final View card;
-    private final TextView transcript;
-    private final TextView answer;
+    private final TextView terminal;
     private final View confirmRow;
+    private final java.util.ArrayDeque<String> lines = new java.util.ArrayDeque<String>();
+    private boolean transientLine;
 
     private final VoiceRecorder recorder = new VoiceRecorder();
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -92,8 +92,7 @@ public class HoldToTalkController {
         status = panel.findViewById(R.id.voice_status);
         level = panel.findViewById(R.id.voice_level);
         card = panel.findViewById(R.id.voice_card);
-        transcript = panel.findViewById(R.id.voice_transcript);
-        answer = panel.findViewById(R.id.voice_answer);
+        terminal = panel.findViewById(R.id.voice_terminal);
         confirmRow = panel.findViewById(R.id.voice_confirm);
         cancelSlopPx = (int) (CANCEL_SLOP_DP * activity.getResources().getDisplayMetrics().density);
 
@@ -121,7 +120,7 @@ public class HoldToTalkController {
                 pendingAction = null;
                 confirmRow.setVisibility(View.GONE);
                 commands().execute(action);
-                showAnswer(activity.getString(R.string.voice_executed, action.description), false);
+                print(activity.getString(R.string.voice_executed, action.description));
             }
         });
         panel.findViewById(R.id.voice_confirm_no).setOnClickListener(new View.OnClickListener() {
@@ -129,8 +128,7 @@ public class HoldToTalkController {
             public void onClick(View v) {
                 pendingAction = null;
                 confirmRow.setVisibility(View.GONE);
-                card.setVisibility(View.GONE);
-                showHint(R.string.voice_discarded, COLOR_HINT);
+                print(activity.getString(R.string.voice_discarded));
             }
         });
     }
@@ -159,9 +157,13 @@ public class HoldToTalkController {
             session.cancel();
             session = null;
         }
-        // A proposal that was never confirmed dies with the screen.
+        // A proposal that was never confirmed dies with the screen, and so does a
+        // progress line whose result will never arrive.
         pendingAction = null;
         confirmRow.setVisibility(View.GONE);
+        if (transientLine) {
+            print(activity.getString(R.string.voice_discarded));
+        }
         busy = false;
         button.setEnabled(true);
     }
@@ -253,9 +255,9 @@ public class HoldToTalkController {
         cancelArmed = false;
         v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 
+        // The terminal keeps its scrollback; only an unanswered proposal is dropped.
         pendingAction = null;
         confirmRow.setVisibility(View.GONE);
-        card.setVisibility(View.GONE);
         main.removeCallbacks(hideStatus);
         status.setBackgroundColor(COLOR_RECORDING);
         status.setText(activity.getString(R.string.voice_recording, clock(0),
@@ -297,9 +299,9 @@ public class HoldToTalkController {
         busy = true;
         button.setEnabled(false);
         main.removeCallbacks(hideStatus);
-        status.setBackgroundColor(COLOR_BUSY);
-        status.setText(R.string.voice_transcribing);
-        status.setVisibility(View.VISIBLE);
+        status.setVisibility(View.GONE);
+        // Progress shows up in the terminal itself; the line is replaced by the result.
+        printTransient(prompt() + " " + activity.getString(R.string.voice_transcribing));
 
         transcriber = new Transcriber(AiServer.baseUrl(activity));
         transcriber.transcribe(wav, new Transcriber.Callback() {
@@ -308,13 +310,10 @@ public class HoldToTalkController {
                 transcriber = null;
                 if (text.isEmpty()) {
                     done();
-                    showHint(R.string.voice_empty, COLOR_HINT);
+                    print(prompt() + " " + activity.getString(R.string.voice_empty));
                     return;
                 }
-                transcript.setTextColor(COLOR_TRANSCRIPT);
-                transcript.setText(text);
-                answer.setVisibility(View.GONE);
-                card.setVisibility(View.VISIBLE);
+                print(prompt() + " " + text);
                 understand(text);
             }
 
@@ -322,46 +321,42 @@ public class HoldToTalkController {
             public void onError(String message) {
                 transcriber = null;
                 done();
-                transcript.setTextColor(COLOR_ERROR);
-                transcript.setText(activity.getString(R.string.voice_error, message));
-                answer.setVisibility(View.GONE);
-                card.setVisibility(View.VISIBLE);
+                print(prompt());
+                print(activity.getString(R.string.voice_error, message));
             }
         });
     }
 
     /** Hands the transcript to the model and shows whatever comes back. */
     private void understand(String text) {
-        status.setBackgroundColor(COLOR_BUSY);
-        status.setText(R.string.voice_thinking);
-        status.setVisibility(View.VISIBLE);
+        printTransient(activity.getString(R.string.voice_thinking));
 
         ChatModel model = new ChatModel(AiServer.baseUrl(activity), AiServer.model(activity));
         session = new VoiceSession(model, commands(), username(), new VoiceSession.Listener() {
             @Override
             public void onAnswer(String reply) {
                 done();
-                showAnswer(reply, false);
+                print(reply);
             }
 
             @Override
             public void onExecuted(VoiceCommands.Action action) {
                 done();
-                showAnswer(activity.getString(R.string.voice_executed, action.description), false);
+                print(activity.getString(R.string.voice_executed, action.description));
             }
 
             @Override
             public void onConfirmRequired(VoiceCommands.Action action) {
                 done();
                 pendingAction = action;
-                showAnswer(action.description, false);
+                print(action.description + " [j/n]");
                 confirmRow.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError(String message) {
                 done();
-                showAnswer(activity.getString(R.string.voice_error, message), true);
+                print(activity.getString(R.string.voice_error, message));
             }
         });
         session.start(text);
@@ -375,11 +370,35 @@ public class HoldToTalkController {
         status.setVisibility(View.GONE);
     }
 
-    private void showAnswer(String text, boolean isError) {
-        answer.setTextColor(isError ? COLOR_ERROR : 0xFFFFFFFF);
-        answer.setText(text);
-        answer.setVisibility(View.VISIBLE);
+    /** A progress line ("transkribiere…", "denke nach…") that the next print replaces. */
+    private void printTransient(String text) {
+        print(text);
+        transientLine = true;
+    }
+
+    /** Appends to the terminal, like the activity log: scrollback, then a fresh prompt. */
+    private void print(String text) {
+        if (transientLine) {
+            lines.pollLast();
+            transientLine = false;
+        }
+        for (String line : text.split("\n")) {
+            lines.addLast(line);
+        }
+        while (lines.size() > TERMINAL_LINES) {
+            lines.removeFirst();
+        }
+        StringBuilder b = new StringBuilder();
+        for (String line : lines) {
+            b.append(line).append('\n');
+        }
+        b.append(prompt());
+        terminal.setText(b);
         card.setVisibility(View.VISIBLE);
+    }
+
+    private String prompt() {
+        return username() + "@c-beam>";
     }
 
     private VoiceCommands commands() {
