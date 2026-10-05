@@ -11,7 +11,11 @@ import org.c_base.c_beam.Settings;
  * settings and apply whenever they are filled in; an empty field means the default.
  */
 public final class AiServer {
-    /** OpenAI-compatible base; Whisper and the chat models hang off it. Crew network only. */
+    /**
+     * OpenAI-compatible base; Whisper and the chat models hang off it. Crew network only.
+     * Despite the path this is Lemonade (llama.cpp) mimicking Ollama's API, which is why
+     * `gemma4:e4b` works as a model name although the model list calls it something else.
+     */
     public static final String DEFAULT_BASE_URL = "https://ai.cbrp3.c-base.org/ollama/v1";
 
     private AiServer() {

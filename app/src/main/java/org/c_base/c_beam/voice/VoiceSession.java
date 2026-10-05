@@ -11,6 +11,8 @@ import java.util.Locale;
 /**
  * One spoken request from transcript to outcome: asks the model, runs QUERY tools and
  * feeds their results back, runs SELF tools, and hands CONFIRM tools to the UI untouched.
+ * A question that needs no tool (general knowledge, a calculation, a translation) the
+ * model answers by itself; only actions are bound to the tool list.
  * Knows nothing about HTTP (that is {@link ChatModel}) or views (the controller).
  */
 public class VoiceSession {
@@ -55,7 +57,11 @@ public class VoiceSession {
             @Override
             public void onReply(ChatModel.Reply reply) {
                 if (reply.toolCall == null) {
-                    listener.onAnswer(reply.text);
+                    if (reply.text.isEmpty()) {
+                        listener.onError("keine antwort");
+                    } else {
+                        listener.onAnswer(reply.text);
+                    }
                     return;
                 }
                 VoiceCommands.Action action = commands.validate(reply.toolCall);
@@ -98,9 +104,17 @@ public class VoiceSession {
                 + "Du bekommst gesprochene Sätze als Text, erkannt per Spracherkennung; "
                 + "kleine Fehler darin sind möglich. "
                 + "Führe Befehle ausschließlich über die Werkzeuge aus und erfinde keine. "
-                + "Beantworte Fragen mit Hilfe der Werkzeuge und antworte dann kurz auf Deutsch, "
-                + "höchstens zwei Sätze. Passt kein Werkzeug, sage in einem Satz, dass du das "
-                + "nicht kannst. Der sprechende Nutzer heißt " + username + ". "
+                + "Fragen zur Station (wer an Bord ist, Bar, Events, Missionen, Artefakte) "
+                + "beantwortest du mit Hilfe der Werkzeuge. Alle anderen Fragen, etwa Wissens- "
+                + "und Verständnisfragen, Rechnen oder Übersetzen, beantwortest du selbst aus "
+                + "deinem Wissen; weißt du etwas nicht sicher, sage das. "
+                + "Soll etwas getan werden, wofür es kein Werkzeug gibt, sage in einem Satz, "
+                + "dass du das nicht kannst. "
+                + "Antworte immer auf Deutsch, kurz und in höchstens drei Sätzen. Deine Antwort "
+                + "wird vorgelesen: Fließtext ohne Markdown, Listen, Tabellen oder Formeln. "
+                + "Keine Floskeln, keine Angebote, keine Rückfragen am Ende und keine Erklärung, "
+                + "woher du etwas weißt. "
+                + "Der sprechende Nutzer heißt " + username + ". "
                 + "Jetzt ist " + now + ".";
     }
 

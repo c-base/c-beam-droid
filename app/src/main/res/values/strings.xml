@@ -176,7 +176,7 @@
         (spracherkennung und sprachmodell). leer lassen fu:r den standard.
     </string>
     <string name="pref_ai_model">KI-modell</string>
-    <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle. leer lassen
+    <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle und fragen. leer lassen
         fu:r gemma4:e4b.
     </string>
     <string name="pref_voice_speak">antworten vorlesen</string>

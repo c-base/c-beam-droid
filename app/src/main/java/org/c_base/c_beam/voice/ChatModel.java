@@ -20,6 +20,11 @@ import java.nio.charset.StandardCharsets;
  * One chat-completion request to the language model on the station's AI server,
  * OpenAI-compatible (`/chat/completions` with `tools`). Pure transport: it neither knows
  * what the tools do nor decides anything; see {@link VoiceSession} for that.
+ *
+ * The server behind the Ollama-style URL is Lemonade on top of llama.cpp. Gemma 4 thinks
+ * before it answers unless told otherwise, and that thinking used to eat the whole token
+ * budget on anything the model found hard, leaving an empty answer after eight seconds.
+ * llama.cpp's `chat_template_kwargs` switches it off; a real Ollama ignores the field.
  */
 public class ChatModel {
     private static final String TAG = "ChatModel";
@@ -27,6 +32,8 @@ public class ChatModel {
     public static final String DEFAULT_MODEL = "gemma4:e4b";
     private static final int CONNECT_TIMEOUT_MS = 5000;
     private static final int READ_TIMEOUT_MS = 60000;
+    /** The server rate-limits bursts with a Retry-After of a second or two; wait that out once. */
+    private static final int MAX_RETRY_AFTER_S = 5;
 
     /** A tool invocation the model proposes; the arguments are whatever it produced. */
     public static class ToolCall {
@@ -113,14 +120,45 @@ public class ChatModel {
             body.put("model", model);
             body.put("temperature", 0);
             body.put("stream", false);
-            body.put("max_tokens", 300);
+            // Three spoken sentences in German; enough that a free answer is not cut off.
+            body.put("max_tokens", 400);
             body.put("messages", messages);
             body.put("tools", tools);
+            body.put("chat_template_kwargs", new JSONObject().put("enable_thinking", false));
         } catch (JSONException e) {
             throw new IOException(e);
         }
         byte[] payload = body.toString().getBytes(StandardCharsets.UTF_8);
 
+        try {
+            return post(payload);
+        } catch (RateLimited e) {
+            if (e.retryAfterS > MAX_RETRY_AFTER_S || cancelled) {
+                throw new IOException("KI-server ausgelastet, in " + e.retryAfterS + " s nochmal");
+            }
+            try {
+                Thread.sleep(e.retryAfterS * 1000L);
+            } catch (InterruptedException ignored) {
+                throw new IOException("abgebrochen");
+            }
+            try {
+                return post(payload);
+            } catch (RateLimited again) {
+                throw new IOException("KI-server ausgelastet");
+            }
+        }
+    }
+
+    private static class RateLimited extends IOException {
+        final int retryAfterS;
+
+        RateLimited(int retryAfterS) {
+            super("HTTP 429");
+            this.retryAfterS = retryAfterS;
+        }
+    }
+
+    private Reply post(byte[] payload) throws IOException {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         current = c;
         try {
@@ -139,9 +177,12 @@ public class ChatModel {
             if (code != HttpURLConnection.HTTP_OK) {
                 Log.w(TAG, "HTTP " + code + ": " + readAll(c.getErrorStream()));
                 if (code == 429) {
-                    String retry = c.getHeaderField("Retry-After");
-                    throw new IOException(retry == null ? "KI-server ausgelastet"
-                            : "KI-server ausgelastet, in " + retry + " s nochmal");
+                    int retry = MAX_RETRY_AFTER_S + 1;
+                    try {
+                        retry = Integer.parseInt(c.getHeaderField("Retry-After").trim());
+                    } catch (NumberFormatException | NullPointerException ignored) {
+                    }
+                    throw new RateLimited(Math.max(retry, 1));
                 }
                 throw new IOException("HTTP " + code);
             }
