@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * One chat-completion request to the language model on the station's AI server,
@@ -34,6 +36,14 @@ public class ChatModel {
     private static final int READ_TIMEOUT_MS = 60000;
     /** The server rate-limits bursts with a Retry-After of a second or two; wait that out once. */
     private static final int MAX_RETRY_AFTER_S = 5;
+
+    /**
+     * Gemma now and then writes a tool call as plain text, `station_knowledge(query="…")`,
+     * instead of emitting a tool_call; seen at temperature 0 on about one question in ten.
+     * Such an answer, taken literally, would be read aloud, so it is parsed back into a call.
+     */
+    private static final Pattern TEXT_CALL = Pattern.compile("^\\s*([a-z_]+)\\((.*)\\)\\s*$", Pattern.DOTALL);
+    private static final Pattern TEXT_ARG = Pattern.compile("([a-z_]+)\\s*=\\s*(?:\"((?:[^\"\\\\]|\\\\.)*)\"|'((?:[^'\\\\]|\\\\.)*)')");
 
     /** A tool invocation the model proposes; the arguments are whatever it produced. */
     public static class ToolCall {
@@ -205,10 +215,31 @@ public class ChatModel {
                 return new Reply(null, new ToolCall(call.optString("id", "call-0"),
                         fn.getString("name"), fn.optString("arguments", "{}")));
             }
-            return new Reply(message.optString("content", "").trim(), null);
+            String content = message.optString("content", "").trim();
+            ToolCall textual = parseTextCall(content);
+            return textual != null ? new Reply(null, textual) : new Reply(content, null);
         } catch (JSONException e) {
             throw new IOException("unerwartete antwort");
         }
+    }
+
+    /** `name(key="value", …)` as a call, or null if the text is not shaped like that. */
+    static ToolCall parseTextCall(String content) {
+        Matcher call = TEXT_CALL.matcher(content);
+        if (!call.matches()) {
+            return null;
+        }
+        JSONObject args = new JSONObject();
+        Matcher arg = TEXT_ARG.matcher(call.group(2));
+        try {
+            while (arg.find()) {
+                String value = arg.group(2) != null ? arg.group(2) : arg.group(3);
+                args.put(arg.group(1), value.replaceAll("\\\\(.)", "$1"));
+            }
+        } catch (JSONException e) {
+            return null;
+        }
+        return new ToolCall("call-text", call.group(1), args.toString());
     }
 
     private static String readAll(InputStream in) throws IOException {

@@ -27,6 +27,8 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 
+import java.util.Locale;
+
 /**
  * Hold-to-talk microphone button with its recording banner and result card.
  *
@@ -36,6 +38,7 @@ import org.c_base.c_beam.domain.C_beam;
  *
  * The transcript then goes through a {@link VoiceSession}; whatever comes back (an answer,
  * something done, or a proposal that needs a tap) lands in the card above the button.
+ * The {@link Conversation} outlives the single request, so a follow-up can refer back.
  */
 public class HoldToTalkController {
     public static final int PERMISSION_REQUEST_CODE = 43;
@@ -67,6 +70,7 @@ public class HoldToTalkController {
     private final Handler main = new Handler(Looper.getMainLooper());
     private Transcriber transcriber;
     private VoiceSession session;
+    private final Conversation conversation = new Conversation();
     private VoiceCommands.Action pendingAction;
     private ObjectAnimator pulse;
     /** Only exists while "antworten vorlesen" is switched on. */
@@ -123,6 +127,7 @@ public class HoldToTalkController {
                 pendingAction = null;
                 confirmRow.setVisibility(View.GONE);
                 commands().execute(action);
+                conversation.resolved(true);
                 print(activity.getString(R.string.voice_executed, action.description));
                 say(activity.getString(R.string.voice_spoken_executed));
             }
@@ -132,6 +137,7 @@ public class HoldToTalkController {
             public void onClick(View v) {
                 pendingAction = null;
                 confirmRow.setVisibility(View.GONE);
+                conversation.resolved(false);
                 print(activity.getString(R.string.voice_discarded));
             }
         });
@@ -205,6 +211,7 @@ public class HoldToTalkController {
         // progress line whose result will never arrive.
         pendingAction = null;
         confirmRow.setVisibility(View.GONE);
+        conversation.resolved(false);
         if (transientLine) {
             print(activity.getString(R.string.voice_discarded));
         }
@@ -306,6 +313,7 @@ public class HoldToTalkController {
         // The terminal keeps its scrollback; only an unanswered proposal is dropped.
         pendingAction = null;
         confirmRow.setVisibility(View.GONE);
+        conversation.resolved(false);
         main.removeCallbacks(hideStatus);
         status.setBackgroundColor(COLOR_RECORDING);
         status.setText(activity.getString(R.string.voice_recording, clock(0),
@@ -380,12 +388,18 @@ public class HoldToTalkController {
         printTransient(activity.getString(R.string.voice_thinking));
 
         ChatModel model = new ChatModel(AiServer.baseUrl(activity), AiServer.model(activity));
-        session = new VoiceSession(model, commands(), username(), new VoiceSession.Listener() {
+        session = new VoiceSession(model, commands(), username(), conversation,
+                new VoiceSession.Listener() {
             @Override
             public void onAnswer(String reply) {
                 done();
                 print(reply);
                 say(reply);
+            }
+
+            @Override
+            public void onQuery(VoiceCommands.Action action) {
+                printTransient(action.description);
             }
 
             @Override
@@ -427,13 +441,17 @@ public class HoldToTalkController {
         transientLine = true;
     }
 
-    /** Appends to the terminal, like the activity log: scrollback, then a fresh prompt. */
+    /**
+     * Appends to the terminal, like the activity log: scrollback, then a fresh prompt.
+     * Everything is lower case, as is the custom at c-base; the spoken answer keeps its
+     * capitals (see {@link #say}).
+     */
     private void print(String text) {
         if (transientLine) {
             lines.pollLast();
             transientLine = false;
         }
-        for (String line : text.split("\n")) {
+        for (String line : text.toLowerCase(Locale.GERMAN).split("\n")) {
             lines.addLast(line);
         }
         while (lines.size() > TERMINAL_LINES) {
@@ -453,7 +471,7 @@ public class HoldToTalkController {
     }
 
     private VoiceCommands commands() {
-        return new VoiceCommands(C_beam.getInstance(), username());
+        return new VoiceCommands(C_beam.getInstance(), username(), AiServer.knowledge(activity));
     }
 
     private String username() {

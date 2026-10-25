@@ -22,6 +22,9 @@ import java.util.Locale;
  * QUERY runs at once and its result goes back to the model so it can answer;
  * SELF runs at once because it only touches the user's own state;
  * CONFIRM is anything audible or visible in the station and needs a tap first.
+ *
+ * All QUERY tools read cached state and are synchronous, except the knowledge base,
+ * which goes over the network; hence {@link #query}, which answers through a callback.
  */
 public class VoiceCommands {
     public enum Level { QUERY, SELF, CONFIRM }
@@ -49,12 +52,28 @@ public class VoiceCommands {
         }
     }
 
+    /** Name of the knowledge-base tool; the only asynchronous one. */
+    static final String KNOWLEDGE = "station_knowledge";
+
+    /** How a QUERY tool reports back; {@link #execute} is the shortcut for the synchronous ones. */
+    public interface QueryCallback {
+        void onResult(String result);
+        void onError(String message);
+    }
+
     private final C_beam c_beam;
     private final String username;
+    /** Null when no API key is configured; the tool is then not offered at all. */
+    private final Knowledge knowledge;
 
-    public VoiceCommands(C_beam c_beam, String username) {
+    public VoiceCommands(C_beam c_beam, String username, Knowledge knowledge) {
         this.c_beam = c_beam;
         this.username = username;
+        this.knowledge = knowledge;
+    }
+
+    public boolean hasKnowledge() {
+        return knowledge != null;
     }
 
     /** Tool definitions for the model, built fresh so the sound list is current. */
@@ -75,6 +94,17 @@ public class VoiceCommands {
                     new JSONObject().put("search", new JSONObject()
                             .put("type", "string")
                             .put("description", "Optionaler Suchbegriff; leer für alle"))));
+            if (knowledge != null) {
+                tools.put(tool(KNOWLEDGE,
+                        "Die Wissensdatenbank der c-base durchsuchen: Geschichte und Legende "
+                                + "der Station, Räume, Technik, WLAN und Zugänge, Preise, Begriffe, "
+                                + "Regeln, Projekte, Vereinsleben und Leute. Für jede Wissensfrage "
+                                + "über die c-base",
+                        new JSONObject().put("query", new JSONObject()
+                                .put("type", "string")
+                                .put("description", "Suchanfrage auf Deutsch, als kurze Frage "
+                                        + "oder Stichworte")), "query"));
+            }
             tools.put(tool("login", "Den Nutzer in der c-base einloggen (an Bord melden)",
                     new JSONObject()));
             tools.put(tool("logout", "Den Nutzer aus der c-base ausloggen (von Bord melden)",
@@ -126,6 +156,11 @@ public class VoiceCommands {
             case "artefacts":
                 return new Action(call.name, Level.QUERY, "artefakte",
                         args.optString("search", "").trim(), null, null);
+            case KNOWLEDGE: {
+                String query = cleanText(args.optString("query", ""));
+                return query == null || knowledge == null ? null
+                        : new Action(call.name, Level.QUERY, "suche: „" + query + "“", query, null, null);
+            }
             case "login":
                 return new Action(call.name, Level.SELF, "einloggen als " + username, null, null, null);
             case "logout":
@@ -153,7 +188,36 @@ public class VoiceCommands {
         }
     }
 
-    /** Runs the action. For QUERY actions the return value is what the model gets to see. */
+    /** Runs a QUERY action and hands the model's view of the result to the callback. */
+    public void query(Action action, final QueryCallback callback) {
+        if (KNOWLEDGE.equals(action.name)) {
+            knowledge.search(action.text, new Knowledge.Callback() {
+                @Override
+                public void onResult(String text) {
+                    callback.onResult(text);
+                }
+
+                @Override
+                public void onError(String message) {
+                    callback.onError(message);
+                }
+            });
+        } else {
+            callback.onResult(execute(action));
+        }
+    }
+
+    /** Stops a knowledge lookup that is still running; its callback will not fire. */
+    public void cancel() {
+        if (knowledge != null) {
+            knowledge.cancel();
+        }
+    }
+
+    /**
+     * Runs the action. For QUERY actions the return value is what the model gets to see;
+     * the knowledge base is the exception and only runs through {@link #query}.
+     */
     public String execute(Action action) {
         switch (action.name) {
             case "who_is_on_board": {
@@ -199,7 +263,12 @@ public class VoiceCommands {
                         names.add(name);
                     }
                 }
-                return names.isEmpty() ? "kein artefakt gefunden" : joinLines(names, MAX_LIST_ITEMS);
+                if (names.isEmpty()) {
+                    // The 4B model otherwise gives up here instead of trying the knowledge base.
+                    return knowledge == null ? "kein artefakt gefunden"
+                            : "kein artefakt gefunden; für wissen über geräte und räume " + KNOWLEDGE + " nutzen";
+                }
+                return joinLines(names, MAX_LIST_ITEMS);
             }
             case "login":
                 c_beam.force_login(username);

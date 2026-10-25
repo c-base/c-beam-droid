@@ -123,6 +123,38 @@
             android:summary="@string/pref_ai_model_summ"
             android:title="@string/pref_ai_model" />
 
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_rag_url"
+            android:summary="@string/pref_rag_url_summ"
+            android:title="@string/pref_rag_url" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="pref_rag_key"
+            android:summary="@string/pref_rag_key_summ"
+            android:title="@string/pref_rag_key" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_rag_collection"
+            android:summary="@string/pref_rag_collection_summ"
+            android:title="@string/pref_rag_collection" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_voice_say_cbase"
+            android:summary="@string/pref_voice_say_cbase_summ"
+            android:title="@string/pref_voice_say_cbase" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_voice_say_cbeam"
+            android:summary="@string/pref_voice_say_cbeam_summ"
+            android:title="@string/pref_voice_say_cbeam" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_debug_enabled"

@@ -179,6 +179,26 @@
     <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle und fragen. leer lassen
         fu:r gemma4:e4b.
     </string>
+    <string name="pref_rag_url">wissensdatenbank url</string>
+    <string name="pref_rag_url_summ">adresse der qdrant-datenbank mit dem wissen der c-base,
+        das der bordcomputer bei fragen zur station nachschla:gt. leer lassen fu:r den standard.
+    </string>
+    <string name="pref_rag_key">wissensdatenbank api-key</string>
+    <string name="pref_rag_key_summ">ohne key bleibt die wissensdatenbank aus und das modell
+        antwortet aus eigenem wissen.
+    </string>
+    <string name="pref_rag_collection">wissensdatenbank collection</string>
+    <string name="pref_rag_collection_summ">name der collection in qdrant. leer lassen fu:r
+        cbase_knowledge.
+    </string>
+    <string name="pref_voice_say_cbase">aussprache c-base</string>
+    <string name="pref_voice_say_cbase_summ">so spricht die deutsche stimme „c-base“: eine
+        lautschrift, wie ein deutscher leser das englische sagen wu:rde. leer lassen
+        fu:r „Sieh Behs“.
+    </string>
+    <string name="pref_voice_say_cbeam">aussprache c-beam</string>
+    <string name="pref_voice_say_cbeam_summ">dasselbe fu:r „c-beam“. leer lassen fu:r „Sieh Biehm“.
+    </string>
     <string name="pref_voice_speak">antworten vorlesen</string>
     <string name="pref_voice_speak_summ">antworten des bordcomputers mit der sprachausgabe des
         telefons vorlesen. braucht eine deutsche stimme, die auf dem gera:t rechnet.

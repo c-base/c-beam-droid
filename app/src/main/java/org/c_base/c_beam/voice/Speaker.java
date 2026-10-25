@@ -1,11 +1,15 @@
 package org.c_base.c_beam.voice;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 import android.util.Log;
+
+import org.c_base.c_beam.Settings;
 
 import java.util.Locale;
 import java.util.Set;
@@ -15,16 +19,26 @@ import java.util.Set;
  * a German voice that synthesises on the device, so the answer never reaches a cloud
  * service. Optional: the caller checks the setting; this class only says whether a usable
  * voice exists.
+ *
+ * The station's names are English words that a German voice reads letter by letter, so
+ * they are respelled the way a German reader would say the English before speaking. The
+ * respelling sits in the expert settings because what sounds right depends on the voice
+ * installed, and trying variants by ear beats guessing.
  */
 public class Speaker {
     private static final String TAG = "Speaker";
 
+    public static final String DEFAULT_CBASE = "Sieh Behs";
+    public static final String DEFAULT_CBEAM = "Sieh Biehm";
+
+    private final Context context;
     private final TextToSpeech tts;
     private boolean ready;
     private boolean germanVoice;
 
     public Speaker(Context context) {
-        tts = new TextToSpeech(context.getApplicationContext(), new TextToSpeech.OnInitListener() {
+        this.context = context.getApplicationContext();
+        tts = new TextToSpeech(this.context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.SUCCESS) {
@@ -53,7 +67,24 @@ public class Speaker {
         }
         Bundle params = new Bundle();
         params.putInt(TextToSpeech.Engine.KEY_PARAM_STREAM, AudioManager.STREAM_MUSIC);
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, params, "c-beam");
+        tts.speak(respell(text), TextToSpeech.QUEUE_FLUSH, params, "c-beam");
+    }
+
+    /** Swaps the station's names for their respellings; read from the settings each time. */
+    private String respell(String text) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return respell(text, pref(prefs, Settings.VOICE_SAY_CBASE, DEFAULT_CBASE),
+                pref(prefs, Settings.VOICE_SAY_CBEAM, DEFAULT_CBEAM));
+    }
+
+    static String respell(String text, String cbase, String cbeam) {
+        return text.replaceAll("(?i)\\bc-base\\b", java.util.regex.Matcher.quoteReplacement(cbase))
+                .replaceAll("(?i)\\bc-beam\\b", java.util.regex.Matcher.quoteReplacement(cbeam));
+    }
+
+    private static String pref(SharedPreferences prefs, String key, String fallback) {
+        String value = prefs.getString(key, "");
+        return value == null || value.trim().isEmpty() ? fallback : value.trim();
     }
 
     /** Cuts the voice off, e.g. because the microphone is about to open. */

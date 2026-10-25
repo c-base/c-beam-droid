@@ -7,8 +7,9 @@ import android.preference.PreferenceManager;
 import org.c_base.c_beam.Settings;
 
 /**
- * Where the station's AI server is and which model to ask. Both come from the expert
- * settings and apply whenever they are filled in; an empty field means the default.
+ * Where the station's AI server and its knowledge base are and which model to ask. All
+ * of it comes from the expert settings and applies whenever filled in; an empty field
+ * means the default, except for the knowledge base's key, which has none.
  */
 public final class AiServer {
     /**
@@ -32,6 +33,25 @@ public final class AiServer {
     public static String model(Context context) {
         String model = pref(context, Settings.AI_MODEL);
         return model.isEmpty() ? ChatModel.DEFAULT_MODEL : model;
+    }
+
+    /**
+     * The station's knowledge base, or null when no API key is set: Qdrant refuses
+     * requests without one, so without a key the model simply gets no knowledge tool.
+     */
+    public static Knowledge knowledge(Context context) {
+        String key = pref(context, Settings.RAG_KEY);
+        if (key.isEmpty()) {
+            return null;
+        }
+        String url = pref(context, Settings.RAG_URL);
+        if (url.isEmpty()) {
+            url = Knowledge.DEFAULT_URL;
+        }
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        return new Knowledge(baseUrl(context), url, key, pref(context, Settings.RAG_COLLECTION));
     }
 
     private static String pref(Context context, String key) {

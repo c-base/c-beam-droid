@@ -24,6 +24,13 @@ public class Transcriber {
     private static final String TAG = "Transcriber";
 
     private static final String MODEL = "Whisper-Large-v3-Turbo";
+    /**
+     * Whisper's prompt is a spelling hint, not an instruction: it biases the recognizer
+     * towards these words. Without it "c-base" came out as "Seabase" or "Siebe" and
+     * "Crew-WLAN" as "QWLAN". Servers that do not know the field ignore it.
+     */
+    private static final String VOCABULARY = "c-base, c-beam, Crew-WLAN, c-lab, Matelight, "
+            + "Club-Mate, Bordcomputer, Artefakt, Mission, Durchsage, Raumstation.";
     private static final int CONNECT_TIMEOUT_MS = 5000;
     private static final int READ_TIMEOUT_MS = 30000;
 
@@ -90,6 +97,9 @@ public class Transcriber {
         byte[] head = ("--" + boundary + "\r\n"
                 + "Content-Disposition: form-data; name=\"model\"\r\n\r\n"
                 + MODEL + "\r\n"
+                + "--" + boundary + "\r\n"
+                + "Content-Disposition: form-data; name=\"prompt\"\r\n\r\n"
+                + VOCABULARY + "\r\n"
                 + "--" + boundary + "\r\n"
                 + "Content-Disposition: form-data; name=\"file\"; filename=\"speech.wav\"\r\n"
                 + "Content-Type: audio/wav\r\n\r\n").getBytes(StandardCharsets.UTF_8);
