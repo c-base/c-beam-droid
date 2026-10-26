@@ -67,7 +67,12 @@ public class RingActivity extends C_beamActivity {
     private boolean renderPending = false;
     private final Runnable renderRunnable = () -> {
         renderPending = false;
-        updateLists();
+        // On start and on fragment attach this runs before the first app_data payload
+        // has arrived. The singleton then holds only empty lists, and rendering them
+        // would swap the fragments' spinners for "niemand an bord" while still loading.
+        if (c_beam.hasData()) {
+            updateLists();
+        }
     };
     private final C_beam.DataListener dataListener = this::requestRender;
 

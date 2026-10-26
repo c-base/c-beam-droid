@@ -74,6 +74,8 @@ public class C_beam {
     private int sleepTime = 1000;
 
     private volatile Thread thread;
+    /** True once the first {@code app_data} payload has been parsed. */
+    private volatile boolean hasData;
     private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
@@ -280,6 +282,7 @@ public class C_beam {
                 updateSounds((JSONArray) result.get("sounds"));
                 updateBarStatus((boolean) result.get("barstatus"));
                 sleepTime = 5000;
+                hasData = true;
                 Log.i(TAG, "updateLists successful");
                 notifyDataUpdated();
             } else {
@@ -576,6 +579,14 @@ public class C_beam {
                 }
             }
         }
+    }
+
+    /**
+     * Whether the lists hold a real payload yet. Before the first one they are merely
+     * empty, which is not the same as "nobody on board".
+     */
+    public boolean hasData() {
+        return hasData;
     }
 
     public ArrayList<User> getOnlineList() {
