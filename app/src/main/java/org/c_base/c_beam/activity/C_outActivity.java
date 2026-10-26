@@ -183,8 +183,10 @@ public class C_outActivity extends C_beamActivity {
         //updateLists();
     }
 
+    /** Drops the online flag too, or switchToOnlineMode() would skip restarting the poller. */
     protected void stopNetworkingThreads() {
         c_beam.stopThread();
+        mIsOnline = false;
     }
 
     private void showOfflineView() {

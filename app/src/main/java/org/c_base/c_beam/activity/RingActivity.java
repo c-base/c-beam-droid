@@ -31,13 +31,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.text.format.DateUtils;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.viewpagerindicator.TitlePageIndicator;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import org.c_base.c_beam.GCMFacade;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -67,6 +71,7 @@ public class RingActivity extends C_beamActivity {
     private boolean renderPending = false;
     private final Runnable renderRunnable = () -> {
         renderPending = false;
+        updateFreshness();
         // On start and on fragment attach this runs before the first app_data payload
         // has arrived. The singleton then holds only empty lists, and rendering them
         // would swap the fragments' spinners for "niemand an bord" while still loading.
@@ -84,6 +89,7 @@ public class RingActivity extends C_beamActivity {
 
     protected TextView tvAp = null;
     protected TextView tvUsername = null;
+    private TextView tvLastUpdate = null;
     private int defaultETA = 30;
     protected TimePicker timePicker;
     private SharedPreferences sharedPref;
@@ -187,6 +193,10 @@ public class RingActivity extends C_beamActivity {
     }
 
     protected void setupAPDisplay() {
+        tvLastUpdate = findViewById(R.id.textView_last_update);
+        if (tvLastUpdate != null) {
+            Helper.setFont(this, tvLastUpdate);
+        }
         tvAp = findViewById(R.id.textView_ap);
         tvAp.setTextColor(Color.rgb(58, 182, 228));
         tvUsername = findViewById(R.id.textView_username);
@@ -233,8 +243,14 @@ public class RingActivity extends C_beamActivity {
         c_beam.startThread();
     }
 
+    /**
+     * Also drops the online flag: switchToOnlineMode() is a no-op while it is set, so
+     * onResume after a plain onPause (back from settings, from the c-corder, ...) would
+     * otherwise never restart the poller and the lists would silently stop refreshing.
+     */
     protected void stopNetworkingThreads() {
         c_beam.stopThread();
+        mIsOnline = false;
     }
 
     private void showOfflineView() {
@@ -368,6 +384,26 @@ public class RingActivity extends C_beamActivity {
      */
     protected void updateLists() {
 
+    }
+
+    /**
+     * Shows when the lists were last fetched, and flags them when the latest poll failed,
+     * so a list left over from last night is recognisable as such.
+     */
+    private void updateFreshness() {
+        if (tvLastUpdate == null) {
+            return;
+        }
+        long millis = c_beam.getLastUpdateMillis();
+        if (millis == 0) {
+            tvLastUpdate.setVisibility(View.GONE);
+            return;
+        }
+        String pattern = DateUtils.isToday(millis) ? "HH:mm" : "dd.MM. HH:mm";
+        String when = new SimpleDateFormat(pattern, Locale.GERMANY).format(new Date(millis));
+        tvLastUpdate.setText(getString(c_beam.isStale()
+                ? R.string.last_update_stale : R.string.last_update, when));
+        tvLastUpdate.setVisibility(View.VISIBLE);
     }
 
     /**

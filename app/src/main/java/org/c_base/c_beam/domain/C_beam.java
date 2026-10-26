@@ -16,6 +16,7 @@ import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
+import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionOptions;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -51,6 +52,13 @@ public class C_beam {
     private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
     private static final String ETA_URL = "https://shell.c-base.org/rpc/";
 
+    // The library's defaults are 0 = infinite. A poll that hangs in a half-open socket
+    // (typical after the phone has dozed overnight) can't be interrupted, and every later
+    // poller would queue up behind it on rpcLock, so the list would never refresh again.
+    // app_data is ~465 KB and takes 3–9 s on the crew WLAN, hence the generous read timeout.
+    private static final int CONNECT_TIMEOUT_MS = 5000;
+    private static final int READ_TIMEOUT_MS = 30000;
+
     // Locking model: the only monitors in this class guard the two RPC sessions, so a
     // network round trip never blocks a reader. Everything the UI reads is a volatile
     // reference that the poller swaps wholesale (see updateLists), and the wrappers below
@@ -76,6 +84,10 @@ public class C_beam {
     private volatile Thread thread;
     /** True once the first {@code app_data} payload has been parsed. */
     private volatile boolean hasData;
+    /** Wall-clock time of the last successful app_data poll, 0 before the first. */
+    private volatile long lastUpdateMillis;
+    /** Wall-clock time of the last failed poll, 0 if none; compare against lastUpdateMillis. */
+    private volatile long lastFailureMillis;
     private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
@@ -140,7 +152,11 @@ public class C_beam {
 
         // No trustAllCerts here: the RPC hosts serve publicly trusted
         // certificates, so the platform's own validation is what we want.
-        return new JSONRPC2Session(serverURL);
+        JSONRPC2Session session = new JSONRPC2Session(serverURL);
+        JSONRPC2SessionOptions options = session.getOptions();
+        options.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        options.setReadTimeout(READ_TIMEOUT_MS);
+        return session;
     }
 
     public static C_beam getInstance() {
@@ -283,17 +299,25 @@ public class C_beam {
                 updateBarStatus((boolean) result.get("barstatus"));
                 sleepTime = 5000;
                 hasData = true;
+                lastUpdateMillis = System.currentTimeMillis();
                 Log.i(TAG, "updateLists successful");
                 notifyDataUpdated();
             } else {
                 Log.e(TAG, "updateLists returned null");
-                initC_beamClient();
+                pollFailed();
             }
         } catch (Exception e) {
             Log.e(TAG, "updateLists failed");
             e.printStackTrace();
-            initC_beamClient();
+            pollFailed();
         }
+    }
+
+    private void pollFailed() {
+        lastFailureMillis = System.currentTimeMillis();
+        initC_beamClient();
+        // The screen keeps showing the last payload; tell it so it can mark the data stale.
+        notifyDataUpdated();
     }
 
     private void updateStats(JSONArray statsResult) {
@@ -587,6 +611,15 @@ public class C_beam {
      */
     public boolean hasData() {
         return hasData;
+    }
+
+    public long getLastUpdateMillis() {
+        return lastUpdateMillis;
+    }
+
+    /** True when the most recent poll failed, i.e. the lists are older than they look. */
+    public boolean isStale() {
+        return lastFailureMillis > lastUpdateMillis;
     }
 
     public ArrayList<User> getOnlineList() {

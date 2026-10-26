@@ -45,6 +45,8 @@
     <string name="title_activity_main_activity2">MainActivity2</string>
     <string name="offline">nicht an bord</string>
     <string name="no_one_online">derzeit ist niemand an bord</string>
+    <string name="last_update">stand %s</string>
+    <string name="last_update_stale">stand %s \u00b7 keine verbindung</string>
     <string name="online">an bord</string>
     <string name="button_mission_start">mission starten</string>
     <string name="button_mission_end">mission beenden</string>
@@ -176,9 +178,9 @@
         (spracherkennung und sprachmodell). leer lassen fu:r den standard.
     </string>
     <string name="pref_ai_model">KI-modell</string>
-    <string name="pref_ai_model_summ">name des sprachmodells fu:r sprachbefehle und fragen. leer lassen
-        fu:r gemma4:e4b.
-    </string>
+    <string name="pref_ai_model_summ">sprachmodell fu:r sprachbefehle und fragen: %s</string>
+    <string name="ai_model_default">standard (gemma 4, schnell)</string>
+    <string name="ai_model_custom">%s (von hand eingetragen)</string>
     <string name="pref_rag_url">wissensdatenbank url</string>
     <string name="pref_rag_url_summ">adresse der qdrant-datenbank mit dem wissen der c-base,
         das der bordcomputer bei fragen zur station nachschla:gt. leer lassen fu:r den standard.
