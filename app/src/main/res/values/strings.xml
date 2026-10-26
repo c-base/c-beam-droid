@@ -194,10 +194,13 @@
     <string name="pref_voice_say_cbase">aussprache c-base</string>
     <string name="pref_voice_say_cbase_summ">so spricht die deutsche stimme „c-base“: eine
         lautschrift, wie ein deutscher leser das englische sagen wu:rde. leer lassen
-        fu:r „Sieh Behs“.
+        fu:r „ssiebays“.
     </string>
     <string name="pref_voice_say_cbeam">aussprache c-beam</string>
-    <string name="pref_voice_say_cbeam_summ">dasselbe fu:r „c-beam“. leer lassen fu:r „Sieh Biehm“.
+    <string name="pref_voice_say_cbeam_summ">dasselbe fu:r „c-beam“. leer lassen fu:r „ssiebiem“.
+    </string>
+    <string name="pref_voice_say_crew">aussprache crew</string>
+    <string name="pref_voice_say_crew_summ">dasselbe fu:r „crew“. leer lassen fu:r „kru“.
     </string>
     <string name="pref_voice_speak">antworten vorlesen</string>
     <string name="pref_voice_speak_summ">antworten des bordcomputers mit der sprachausgabe des

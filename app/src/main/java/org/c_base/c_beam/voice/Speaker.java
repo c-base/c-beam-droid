@@ -28,8 +28,9 @@ import java.util.Set;
 public class Speaker {
     private static final String TAG = "Speaker";
 
-    public static final String DEFAULT_CBASE = "Sieh Behs";
-    public static final String DEFAULT_CBEAM = "Sieh Biehm";
+    public static final String DEFAULT_CBASE = "ssiebays";
+    public static final String DEFAULT_CBEAM = "ssiebiem";
+    public static final String DEFAULT_CREW = "kru";
 
     private final Context context;
     private final TextToSpeech tts;
@@ -74,12 +75,14 @@ public class Speaker {
     private String respell(String text) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return respell(text, pref(prefs, Settings.VOICE_SAY_CBASE, DEFAULT_CBASE),
-                pref(prefs, Settings.VOICE_SAY_CBEAM, DEFAULT_CBEAM));
+                pref(prefs, Settings.VOICE_SAY_CBEAM, DEFAULT_CBEAM),
+                pref(prefs, Settings.VOICE_SAY_CREW, DEFAULT_CREW));
     }
 
-    static String respell(String text, String cbase, String cbeam) {
+    static String respell(String text, String cbase, String cbeam, String crew) {
         return text.replaceAll("(?i)\\bc-base\\b", java.util.regex.Matcher.quoteReplacement(cbase))
-                .replaceAll("(?i)\\bc-beam\\b", java.util.regex.Matcher.quoteReplacement(cbeam));
+                .replaceAll("(?i)\\bc-beam\\b", java.util.regex.Matcher.quoteReplacement(cbeam))
+                .replaceAll("(?i)\\bcrew\\b", java.util.regex.Matcher.quoteReplacement(crew));
     }
 
     private static String pref(SharedPreferences prefs, String key, String fallback) {

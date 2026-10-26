@@ -24,6 +24,7 @@ String FONT = "pref_font";
 	String VOICE_SPEAK = "pref_voice_speak";
 	String VOICE_SAY_CBASE = "pref_voice_say_cbase";
 	String VOICE_SAY_CBEAM = "pref_voice_say_cbeam";
+	String VOICE_SAY_CREW = "pref_voice_say_crew";
 	String DEFAULT_ETA = "pref_default_eta";
     String USER_DISCOVERED_NAVDRAWER =  "pref_user_discovered_navdrawer";
 	String MQTT_URI = "pref_mqtt_uri";
