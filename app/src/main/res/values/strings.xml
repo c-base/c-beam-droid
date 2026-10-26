@@ -110,6 +110,7 @@
     <string name="label_play_sound">c_out cound abspielen:</string>
     <string name="button_r2d2">r2d2</string>
     <string name="label_enter_text">text eingeben:</string>
+    <string name="button_self_destruct">erde absprengen</string>
     <string name="button_lift_off">abheben</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_section3">earthmap</string>

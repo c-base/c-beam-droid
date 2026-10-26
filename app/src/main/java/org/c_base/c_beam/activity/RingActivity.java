@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -195,7 +196,16 @@ public class RingActivity extends C_beamActivity {
     protected void setupAPDisplay() {
         tvLastUpdate = findViewById(R.id.textView_last_update);
         if (tvLastUpdate != null) {
+            // setFont applies the configured size and a generous padding; the label
+            // only borrows the typeface and stays small.
             Helper.setFont(this, tvLastUpdate);
+            tvLastUpdate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            int h = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
+                    getResources().getDisplayMetrics());
+            int v = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
+                    getResources().getDisplayMetrics());
+            tvLastUpdate.setPadding(h, v, h, v);
+            tvLastUpdate.setTextColor(Color.rgb(58, 182, 228));
         }
         tvAp = findViewById(R.id.textView_ap);
         tvAp.setTextColor(Color.rgb(58, 182, 228));
