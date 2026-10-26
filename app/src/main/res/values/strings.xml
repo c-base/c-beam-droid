@@ -193,6 +193,20 @@
     <string name="pref_rag_collection_summ">name der collection in qdrant. leer lassen fu:r
         cbase_knowledge.
     </string>
+    <string name="pref_knowledge_source">wissensquelle</string>
+    <string name="pref_knowledge_source_summ">wo der bordcomputer bei fragen zur station
+        nachschla:gt: %s. sandy strands ist der experimentelle assistent der station mit
+        eigenem RAG; er braucht keinen api-key, antwortet aber langsamer.
+    </string>
+    <string name="pref_sandy_url">sandy strands url</string>
+    <string name="pref_sandy_url_summ">websocket-adresse von sandy strands. leer lassen fu:r
+        den standard.
+    </string>
+    <string name="pref_sandy_audio">sandy strands stimme</string>
+    <string name="pref_sandy_audio_summ">sandys gesprochene antwort auf dem telefon abspielen
+        statt sie zu verwerfen (deutsche stimme von sandy). der bordcomputer liest seine
+        eigene antwort dann nicht noch einmal vor.
+    </string>
     <string name="pref_voice_say_cbase">aussprache c-base</string>
     <string name="pref_voice_say_cbase_summ">so spricht die deutsche stimme „c-base“: eine
         lautschrift, wie ein deutscher leser das englische sagen wu:rde. leer lassen

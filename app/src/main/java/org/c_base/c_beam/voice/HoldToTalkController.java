@@ -70,6 +70,11 @@ public class HoldToTalkController {
     private final Handler main = new Handler(Looper.getMainLooper());
     private Transcriber transcriber;
     private VoiceSession session;
+    /**
+     * The tools of the latest request, kept past done(): Sandy's voice may still be
+     * playing after the session is over and must stay interruptible.
+     */
+    private VoiceCommands lastCommands;
     private final Conversation conversation = new Conversation();
     private VoiceCommands.Action pendingAction;
     private ObjectAnimator pulse;
@@ -194,6 +199,9 @@ public class HoldToTalkController {
         if (speaker != null) {
             speaker.stop();
         }
+        if (lastCommands != null) {
+            lastCommands.hush();
+        }
         if (recorder.isRecording()) {
             recorder.cancel();
             stopRecordingUi();
@@ -305,9 +313,12 @@ public class HoldToTalkController {
         finished = false;
         cancelArmed = false;
         v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        // Otherwise the phone would record its own voice.
+        // Otherwise the phone would record its own voice (or Sandy's).
         if (speaker != null) {
             speaker.stop();
+        }
+        if (lastCommands != null) {
+            lastCommands.hush();
         }
 
         // The terminal keeps its scrollback; only an unanswered proposal is dropped.
@@ -388,13 +399,19 @@ public class HoldToTalkController {
         printTransient(activity.getString(R.string.voice_thinking));
 
         ChatModel model = new ChatModel(AiServer.baseUrl(activity), AiServer.model(activity));
-        session = new VoiceSession(model, commands(), username(), conversation,
+        final VoiceCommands commands = commands();
+        lastCommands = commands;
+        session = new VoiceSession(model, commands, username(), conversation,
                 new VoiceSession.Listener() {
             @Override
             public void onAnswer(String reply) {
                 done();
                 print(reply);
-                say(reply);
+                // Sandy's voice may have read its answer already; one voice is enough.
+                // (Asked on the commands, not the session: done() has just dropped that.)
+                if (!commands.knowledgeSpoke()) {
+                    say(reply);
+                }
             }
 
             @Override

@@ -59,6 +59,17 @@
         android:summary="@string/pref_voice_speak_summ"
         android:title="@string/pref_voice_speak" />
 
+    <!-- Entries are replaced with the server's live list once it has answered;
+         the arrays below are only the offline fallback. -->
+    <ListPreference
+        android:defaultValue=""
+        android:dialogTitle="@string/pref_ai_model"
+        android:entries="@array/ai_model_entries"
+        android:entryValues="@array/ai_model_values"
+        android:key="pref_ai_model"
+        android:summary="@string/pref_ai_model_summ"
+        android:title="@string/pref_ai_model" />
+
 
     <!--
     <EditTextPreference
@@ -119,12 +130,6 @@
 
         <EditTextPreference
             android:defaultValue=""
-            android:key="pref_ai_model"
-            android:summary="@string/pref_ai_model_summ"
-            android:title="@string/pref_ai_model" />
-
-        <EditTextPreference
-            android:defaultValue=""
             android:inputType="textUri"
             android:key="pref_rag_url"
             android:summary="@string/pref_rag_url_summ"
@@ -142,6 +147,28 @@
             android:key="pref_rag_collection"
             android:summary="@string/pref_rag_collection_summ"
             android:title="@string/pref_rag_collection" />
+
+        <ListPreference
+            android:defaultValue="qdrant"
+            android:dialogTitle="@string/pref_knowledge_source"
+            android:entries="@array/knowledge_source_entries"
+            android:entryValues="@array/knowledge_source_values"
+            android:key="pref_knowledge_source"
+            android:summary="@string/pref_knowledge_source_summ"
+            android:title="@string/pref_knowledge_source" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_sandy_url"
+            android:summary="@string/pref_sandy_url_summ"
+            android:title="@string/pref_sandy_url" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_sandy_audio"
+            android:summary="@string/pref_sandy_audio_summ"
+            android:title="@string/pref_sandy_audio" />
 
         <EditTextPreference
             android:defaultValue=""

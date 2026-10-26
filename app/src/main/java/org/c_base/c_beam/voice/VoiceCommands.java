@@ -63,10 +63,10 @@ public class VoiceCommands {
 
     private final C_beam c_beam;
     private final String username;
-    /** Null when no API key is configured; the tool is then not offered at all. */
-    private final Knowledge knowledge;
+    /** Null when no source is configured; the tool is then not offered at all. */
+    private final KnowledgeSource knowledge;
 
-    public VoiceCommands(C_beam c_beam, String username, Knowledge knowledge) {
+    public VoiceCommands(C_beam c_beam, String username, KnowledgeSource knowledge) {
         this.c_beam = c_beam;
         this.username = username;
         this.knowledge = knowledge;
@@ -191,7 +191,7 @@ public class VoiceCommands {
     /** Runs a QUERY action and hands the model's view of the result to the callback. */
     public void query(Action action, final QueryCallback callback) {
         if (KNOWLEDGE.equals(action.name)) {
-            knowledge.search(action.text, new Knowledge.Callback() {
+            knowledge.search(action.text, new KnowledgeSource.Callback() {
                 @Override
                 public void onResult(String text) {
                     callback.onResult(text);
@@ -211,6 +211,18 @@ public class VoiceCommands {
     public void cancel() {
         if (knowledge != null) {
             knowledge.cancel();
+        }
+    }
+
+    /** True when the knowledge source has already read its answer aloud (Sandy's voice). */
+    public boolean knowledgeSpoke() {
+        return knowledge != null && knowledge.spokeAloud();
+    }
+
+    /** Silences the knowledge source's audio, if it has any. */
+    public void hush() {
+        if (knowledge != null) {
+            knowledge.hush();
         }
     }
 

@@ -33,7 +33,7 @@ import java.util.Locale;
  * vector layout are looked up once per process so that nothing about the store has to
  * be hard-coded here beyond the embedding model.
  */
-public class Knowledge {
+public class Knowledge implements KnowledgeSource {
     private static final String TAG = "Knowledge";
 
     /** Qdrant's HTTP port on lazee-nerdserv; plain HTTP, crew network only. */
@@ -64,12 +64,6 @@ public class Knowledge {
             "text", "content", "page_content", "chunk", "document", "body"};
     /** Payload fields that say where a chunk came from. */
     private static final String[] SOURCE_KEYS = {"title", "source", "url", "file", "path", "name"};
-
-    public interface Callback {
-        /** The chunks as one text for the model, or a short note that nothing was found. */
-        void onResult(String text);
-        void onError(String message);
-    }
 
     /** What was learnt about the store; the same for every request, hence static. */
     private static class Layout {
@@ -109,6 +103,7 @@ public class Knowledge {
         this.collection = collection;
     }
 
+    @Override
     public void search(final String query, final Callback callback) {
         cancelled = false;
         new Thread(new Runnable() {
@@ -140,6 +135,16 @@ public class Knowledge {
         }, "Knowledge").start();
     }
 
+    @Override
+    public boolean spokeAloud() {
+        return false;
+    }
+
+    @Override
+    public void hush() {
+    }
+
+    @Override
     public void cancel() {
         cancelled = true;
         HttpURLConnection c = current;

@@ -35,11 +35,22 @@ public final class AiServer {
         return model.isEmpty() ? ChatModel.DEFAULT_MODEL : model;
     }
 
+    /** Value of the knowledge-source setting that routes lookups through Sandy Strands. */
+    public static final String SOURCE_SANDY = "sandy";
+
     /**
-     * The station's knowledge base, or null when no API key is set: Qdrant refuses
-     * requests without one, so without a key the model simply gets no knowledge tool.
+     * The station's knowledge source, or null when there is none: with Sandy Strands
+     * selected it is Sandy's assistant; otherwise Qdrant directly, which needs an API key
+     * (the server refuses requests without one), so without a key the model simply gets
+     * no knowledge tool.
      */
-    public static Knowledge knowledge(Context context) {
+    public static KnowledgeSource knowledge(Context context) {
+        if (SOURCE_SANDY.equals(pref(context, Settings.KNOWLEDGE_SOURCE))) {
+            String url = pref(context, Settings.SANDY_URL);
+            boolean audio = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean(Settings.SANDY_AUDIO, false);
+            return new SandyStrands(url.isEmpty() ? SandyStrands.DEFAULT_URL : url, audio);
+        }
         String key = pref(context, Settings.RAG_KEY);
         if (key.isEmpty()) {
             return null;
