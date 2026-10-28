@@ -7,8 +7,8 @@ android {
         applicationId "org.c_base.c_beam"
         minSdkVersion 25
         targetSdkVersion 37
-        versionCode 39
-        versionName "26.09.0"
+        versionCode 40
+        versionName "26.10.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
@@ -84,6 +84,9 @@ dependencies {
     // and 5 later. It is a plain Java client, so the long-lived connection lives in our own
     // MqttForegroundService (noGCM flavor).
     implementation 'com.hivemq:hivemq-mqtt-client:1.4.0'
+    // Plain-Java WebSocket client for Sandy Strands (voice/SandyStrands), which only
+    // speaks over a WebSocket. Pure Java, no Kotlin runtime, unlike OkHttp.
+    implementation 'org.java-websocket:Java-WebSocket:1.6.0'
         withGCMImplementation 'com.google.firebase:firebase-messaging:25.1.2'
 }
 

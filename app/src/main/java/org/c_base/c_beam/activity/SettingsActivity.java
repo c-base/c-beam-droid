@@ -3,6 +3,7 @@ package org.c_base.c_beam.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -19,6 +20,11 @@ import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.domain.User;
+import org.c_base.c_beam.voice.AiServer;
+import org.c_base.c_beam.voice.ModelCatalog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -49,6 +55,67 @@ public class SettingsActivity extends PreferenceActivity {
 		});
 	}
 	
+	/**
+	 * Fills the model list from the AI server. Until (or unless) it answers, the static
+	 * fallback from arrays.xml stays. A value that is in neither list — typed into the old
+	 * free-text field, say — is kept and shown as its own entry rather than dropped.
+	 */
+	private void loadModelList() {
+		final ListPreference modelPref = (ListPreference) findPreference(Settings.AI_MODEL);
+		if (modelPref == null) {
+			return;
+		}
+		ensureCurrentValueListed(modelPref);
+		final String baseUrl = AiServer.baseUrl(this);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final List<ModelCatalog.Model> models = ModelCatalog.fetch(baseUrl);
+				if (models.isEmpty() || isFinishing()) {
+					return;
+				}
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						List<CharSequence> entries = new ArrayList<CharSequence>();
+						List<CharSequence> values = new ArrayList<CharSequence>();
+						entries.add(getString(R.string.ai_model_default));
+						values.add("");
+						for (ModelCatalog.Model m : models) {
+							String hint = m.hint();
+							entries.add(hint.isEmpty() ? m.id : m.id + " (" + hint + ")");
+							values.add(m.id);
+						}
+						modelPref.setEntries(entries.toArray(new CharSequence[0]));
+						modelPref.setEntryValues(values.toArray(new CharSequence[0]));
+						ensureCurrentValueListed(modelPref);
+					}
+				});
+			}
+		}).start();
+	}
+
+	private void ensureCurrentValueListed(ListPreference pref) {
+		String value = pref.getValue();
+		if (value == null) {
+			value = "";
+			pref.setValue(value);
+		}
+		if (pref.findIndexOfValue(value) >= 0) {
+			return;
+		}
+		CharSequence[] entries = pref.getEntries();
+		CharSequence[] values = pref.getEntryValues();
+		CharSequence[] newEntries = new CharSequence[entries.length + 1];
+		CharSequence[] newValues = new CharSequence[values.length + 1];
+		System.arraycopy(entries, 0, newEntries, 0, entries.length);
+		System.arraycopy(values, 0, newValues, 0, values.length);
+		newEntries[entries.length] = getString(R.string.ai_model_custom, value);
+		newValues[values.length] = value;
+		pref.setEntries(newEntries);
+		pref.setEntryValues(newValues);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,6 +125,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preferences);
+		loadModelList();
 
 		final Context context = getApplicationContext();
 		

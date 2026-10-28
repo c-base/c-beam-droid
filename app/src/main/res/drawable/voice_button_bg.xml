@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Round hold-to-talk button: dark with the accent ring while idle, unmistakably red
+     while the microphone is open (state_activated), dimmed while a request is running. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="oval">
+            <solid android:color="#80222222" />
+            <stroke android:width="2dp" android:color="#80666666" />
+        </shape>
+    </item>
+    <item android:state_activated="true">
+        <shape android:shape="oval">
+            <solid android:color="#FFCC0000" />
+            <stroke android:width="2dp" android:color="#FFFF6666" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#C0000000" />
+            <stroke android:width="2dp" android:color="#FF33B6F6" />
+        </shape>
+    </item>
+</selector>

@@ -241,7 +241,7 @@ public class MainActivity extends RingActivity {
                 } else if (position == EVENTS_FRAGMENT) {
                     fragment = new EventListFragment();
                 } else if (position == C_ONTROL_FRAGMENT) {
-                    fragment = new C_ontrolFragment(c_beam);
+                    fragment = new C_ontrolFragment();
                 } else if (position == MISSION_FRAGMENT) {
                     fragment = new MissionListFragment();
                 } else if (position == ACTIVITYLOG_FRAGMENT) {

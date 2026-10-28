@@ -53,6 +53,23 @@
         android:summary="@string/pref_display_ap_summ"
         android:title="@string/pref_display_ap" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_voice_speak"
+        android:summary="@string/pref_voice_speak_summ"
+        android:title="@string/pref_voice_speak" />
+
+    <!-- Entries are replaced with the server's live list once it has answered;
+         the arrays below are only the offline fallback. -->
+    <ListPreference
+        android:defaultValue=""
+        android:dialogTitle="@string/pref_ai_model"
+        android:entries="@array/ai_model_entries"
+        android:entryValues="@array/ai_model_values"
+        android:key="pref_ai_model"
+        android:summary="@string/pref_ai_model_summ"
+        android:title="@string/pref_ai_model" />
+
 
     <!--
     <EditTextPreference
@@ -103,6 +120,73 @@
             android:key="pref_c_beam_url"
             android:summary="@string/pref_c_beam_url_summ"
             android:title="@string/pref_c_beam_url" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_ai_url"
+            android:summary="@string/pref_ai_url_summ"
+            android:title="@string/pref_ai_url" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_rag_url"
+            android:summary="@string/pref_rag_url_summ"
+            android:title="@string/pref_rag_url" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textPassword"
+            android:key="pref_rag_key"
+            android:summary="@string/pref_rag_key_summ"
+            android:title="@string/pref_rag_key" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_rag_collection"
+            android:summary="@string/pref_rag_collection_summ"
+            android:title="@string/pref_rag_collection" />
+
+        <ListPreference
+            android:defaultValue="qdrant"
+            android:dialogTitle="@string/pref_knowledge_source"
+            android:entries="@array/knowledge_source_entries"
+            android:entryValues="@array/knowledge_source_values"
+            android:key="pref_knowledge_source"
+            android:summary="@string/pref_knowledge_source_summ"
+            android:title="@string/pref_knowledge_source" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:inputType="textUri"
+            android:key="pref_sandy_url"
+            android:summary="@string/pref_sandy_url_summ"
+            android:title="@string/pref_sandy_url" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_sandy_audio"
+            android:summary="@string/pref_sandy_audio_summ"
+            android:title="@string/pref_sandy_audio" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_voice_say_cbase"
+            android:summary="@string/pref_voice_say_cbase_summ"
+            android:title="@string/pref_voice_say_cbase" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_voice_say_cbeam"
+            android:summary="@string/pref_voice_say_cbeam_summ"
+            android:title="@string/pref_voice_say_cbeam" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_voice_say_crew"
+            android:summary="@string/pref_voice_say_crew_summ"
+            android:title="@string/pref_voice_say_crew" />
 
         <CheckBoxPreference
             android:defaultValue="false"

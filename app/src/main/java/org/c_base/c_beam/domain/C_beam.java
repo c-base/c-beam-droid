@@ -12,10 +12,12 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
+import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionOptions;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -51,6 +53,13 @@ public class C_beam {
     private static final String C_BEAM_URL = "https://c-beam.cbrp3.c-base.org/rpc/";
     private static final String ETA_URL = "https://shell.c-base.org/rpc/";
 
+    // The library's defaults are 0 = infinite. A poll that hangs in a half-open socket
+    // (typical after the phone has dozed overnight) can't be interrupted, and every later
+    // poller would queue up behind it on rpcLock, so the list would never refresh again.
+    // app_data is ~465 KB and takes 3–9 s on the crew WLAN, hence the generous read timeout.
+    private static final int CONNECT_TIMEOUT_MS = 5000;
+    private static final int READ_TIMEOUT_MS = 30000;
+
     // Locking model: the only monitors in this class guard the two RPC sessions, so a
     // network round trip never blocks a reader. Everything the UI reads is a volatile
     // reference that the poller swaps wholesale (see updateLists), and the wrappers below
@@ -74,6 +83,12 @@ public class C_beam {
     private int sleepTime = 1000;
 
     private volatile Thread thread;
+    /** True once the first {@code app_data} payload has been parsed. */
+    private volatile boolean hasData;
+    /** Wall-clock time of the last successful app_data poll, 0 before the first. */
+    private volatile long lastUpdateMillis;
+    /** Wall-clock time of the last failed poll, 0 if none; compare against lastUpdateMillis. */
+    private volatile long lastFailureMillis;
     private volatile ArrayList<ActivityLog> activitylog;
 
     private final boolean debug = false;
@@ -138,7 +153,11 @@ public class C_beam {
 
         // No trustAllCerts here: the RPC hosts serve publicly trusted
         // certificates, so the platform's own validation is what we want.
-        return new JSONRPC2Session(serverURL);
+        JSONRPC2Session session = new JSONRPC2Session(serverURL);
+        JSONRPC2SessionOptions options = session.getOptions();
+        options.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        options.setReadTimeout(READ_TIMEOUT_MS);
+        return session;
     }
 
     public static C_beam getInstance() {
@@ -216,22 +235,56 @@ public class C_beam {
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
 
-    private Object c_beamCall(String method, Map<String, Object> params) {
+    /**
+     * Sends one request to c-beam and returns the raw response; transport problems
+     * surface as the session exception. Callers that only want the result use
+     * {@link #c_beamCall}.
+     */
+    private JSONRPC2Response c_beamSend(String method, Map<String, Object> params)
+            throws JSONRPC2SessionException {
         JSONRPC2Request request = new JSONRPC2Request(method, params, 0);
-        JSONRPC2Response response;
+        synchronized (rpcLock) {
+            return c_beamClient.send(request);
+        }
+    }
 
+    /**
+     * Describes a failed call for the log and the UI: the transport error, or the
+     * JSON-RPC error the server answered with, including its data field (the
+     * Django backend puts the exception text there).
+     */
+    private static String describeFailure(String method, JSONRPC2Response response, Exception e) {
+        if (e != null) {
+            return method + " unreachable: " + e.getMessage();
+        }
+        if (response == null) {
+            return method + " got no response";
+        }
+        JSONRPC2Error error = response.getError();
+        if (error == null) {
+            return method + " failed";
+        }
+        String text = method + " failed: " + error.getMessage() + " (" + error.getCode() + ")";
+        Object data = error.getData();
+        if (data != null) {
+            text += ": " + data;
+        }
+        return text;
+    }
+
+    private Object c_beamCall(String method, Map<String, Object> params) {
+        JSONRPC2Response response;
         try {
-            synchronized (rpcLock) {
-                response = c_beamClient.send(request);
-            }
+            response = c_beamSend(method, params);
         } catch (JSONRPC2SessionException e) {
-            Log.e(TAG, "c_beamCall failed: " + e.getMessage());
+            Log.e(TAG, describeFailure(method, null, e));
             return null;
         }
 
         if (response != null && response.indicatesSuccess()) {
             return response.getResult();
         }
+        Log.e(TAG, describeFailure(method, response, null));
         return null;
     }
 
@@ -280,17 +333,26 @@ public class C_beam {
                 updateSounds((JSONArray) result.get("sounds"));
                 updateBarStatus((boolean) result.get("barstatus"));
                 sleepTime = 5000;
+                hasData = true;
+                lastUpdateMillis = System.currentTimeMillis();
                 Log.i(TAG, "updateLists successful");
                 notifyDataUpdated();
             } else {
                 Log.e(TAG, "updateLists returned null");
-                initC_beamClient();
+                pollFailed();
             }
         } catch (Exception e) {
             Log.e(TAG, "updateLists failed");
             e.printStackTrace();
-            initC_beamClient();
+            pollFailed();
         }
+    }
+
+    private void pollFailed() {
+        lastFailureMillis = System.currentTimeMillis();
+        initC_beamClient();
+        // The screen keeps showing the last payload; tell it so it can mark the data stale.
+        notifyDataUpdated();
     }
 
     private void updateStats(JSONArray statsResult) {
@@ -578,6 +640,23 @@ public class C_beam {
         }
     }
 
+    /**
+     * Whether the lists hold a real payload yet. Before the first one they are merely
+     * empty, which is not the same as "nobody on board".
+     */
+    public boolean hasData() {
+        return hasData;
+    }
+
+    public long getLastUpdateMillis() {
+        return lastUpdateMillis;
+    }
+
+    /** True when the most recent poll failed, i.e. the lists are older than they look. */
+    public boolean isStale() {
+        return lastFailureMillis > lastUpdateMillis;
+    }
+
     public ArrayList<User> getOnlineList() {
         return onlineList;
     }
@@ -691,7 +770,7 @@ public class C_beam {
     public String set_stripe_default() {
         String result = "failure";
         if (isInCrewNetwork()) {
-            callAsync("set_pattern_default");
+            callAsync("set_stripe_default");
         }
         return result;
     }
@@ -843,8 +922,19 @@ public class C_beam {
         new RPCCallTask(method).execute(map);
     }
 
+    /** Outcome of a fire-and-forget call: exactly one of result and error is set. */
+    private static final class RpcOutcome {
+        final String result;
+        final String error;
+
+        RpcOutcome(String result, String error) {
+            this.result = result;
+            this.error = error;
+        }
+    }
+
     @SuppressLint("StaticFieldLeak")
-    public class RPCCallTask extends AsyncTask<Map<String, String>, Void, String> {
+    public class RPCCallTask extends AsyncTask<Map<String, String>, Void, RpcOutcome> {
         private final String method;
 
         public RPCCallTask(String method) {
@@ -853,25 +943,41 @@ public class C_beam {
 
         @SafeVarargs
         @Override
-        protected final String doInBackground(Map<String, String>... params) {
+        protected final RpcOutcome doInBackground(Map<String, String>... params) {
             Map<String, Object> callParams = new HashMap<>();
             if (params.length > 0 && params[0] != null) {
                 callParams.putAll(params[0]);
             }
-            Object response = c_beamCall(method, callParams);
-            if (response instanceof JSONObject) {
-                return ((JSONObject) response).toJSONString();
-            } else if (response instanceof String) {
-                return (String) response;
+            JSONRPC2Response response;
+            try {
+                response = c_beamSend(method, callParams);
+            } catch (JSONRPC2SessionException e) {
+                return new RpcOutcome(null, describeFailure(method, null, e));
             }
-            return "failure";
+            if (response == null || !response.indicatesSuccess()) {
+                return new RpcOutcome(null, describeFailure(method, response, null));
+            }
+            Object result = response.getResult();
+            if (result instanceof JSONObject) {
+                return new RpcOutcome(((JSONObject) result).toJSONString(), null);
+            } else if (result != null) {
+                return new RpcOutcome(result.toString(), null);
+            }
+            return new RpcOutcome(null, null);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(RpcOutcome outcome) {
             Context context = appContext();
-            if (context != null && !result.equals("failure")) {
-                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            if (outcome.error != null) {
+                // a failed button press used to vanish silently; the server's error
+                // text is what tells the user (and the log) what is wrong
+                Log.e(TAG, outcome.error);
+                if (context != null) {
+                    Toast.makeText(context, outcome.error, Toast.LENGTH_LONG).show();
+                }
+            } else if (context != null && outcome.result != null) {
+                Toast.makeText(context, outcome.result, Toast.LENGTH_LONG).show();
             }
         }
     }

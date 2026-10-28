@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Offline fallback for the model list; the settings screen swaps in /models live.
+         The empty value means "the app's default", see ChatModel.DEFAULT_MODEL. -->
+    <string-array name="ai_model_entries">
+        <item>@string/ai_model_default</item>
+        <item>Gemma-4-E4B-it-MTP-GGUF (tools, vision)</item>
+        <item>Qwen3-Coder-Next-GGUF (coding, tools)</item>
+    </string-array>
+    <string-array name="ai_model_values">
+        <item></item>
+        <item>Gemma-4-E4B-it-MTP-GGUF</item>
+        <item>Qwen3-Coder-Next-GGUF</item>
+    </string-array>
+
+    <string-array name="knowledge_source_entries">
+        <item>wissensdatenbank direkt (qdrant)</item>
+        <item>sandy strands</item>
+    </string-array>
+    <string-array name="knowledge_source_values">
+        <item>qdrant</item>
+        <item>sandy</item>
+    </string-array>
+
     <string-array name="drawer_items_array">
         <item>clamp</item>
         <item>carbon</item>

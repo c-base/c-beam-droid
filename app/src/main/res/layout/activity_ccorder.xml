@@ -63,7 +63,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         android:layout_alignParentBottom="true"
                         android:background="#B0000000"
                         android:padding="2dp">
@@ -207,6 +207,117 @@
                             android:alpha="0.5"
                             android:layout_alignParentLeft="true"
                             android:layout_weight="1"/>
+                </LinearLayout>
+
+                <!-- Hold-to-talk: transcript card, recording banner with level meter, and the
+                     round microphone button. Sits above the c-ontrols when they are shown and
+                     at the bottom edge otherwise. Hidden outside the crew network. -->
+                <LinearLayout
+                        android:id="@+id/voice_panel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@id/hidecontainer"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:orientation="vertical"
+                        android:padding="8dp"
+                        android:visibility="gone">
+
+                    <!-- A small terminal in the style of the activity log: what was heard
+                         appears after the prompt, what c-beam answered or did below it, and,
+                         for anything audible in the station, the confirmation row. -->
+                    <LinearLayout
+                            android:id="@+id/voice_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:background="#000000"
+                            android:orientation="vertical"
+                            android:padding="4dp"
+                            android:visibility="gone">
+
+                        <TextView
+                                android:id="@+id/voice_terminal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="monospace"
+                                android:textColor="#3AB6E4"
+                                android:textSize="10sp" />
+
+                        <LinearLayout
+                                android:id="@+id/voice_confirm"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="6dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                            <Button
+                                    android:id="@+id/voice_confirm_no"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/button"
+                                    android:text="@string/voice_confirm_no"
+                                    android:textColor="#FFFFFF" />
+
+                            <Button
+                                    android:id="@+id/voice_confirm_yes"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/button"
+                                    android:text="@string/voice_confirm_yes"
+                                    android:textColor="#33B6F6"
+                                    android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical|end"
+                            android:orientation="horizontal">
+
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:id="@+id/voice_status"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="#DDCC0000"
+                                    android:padding="8dp"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+                            <ProgressBar
+                                    android:id="@+id/voice_level"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="6dp"
+                                    android:layout_marginTop="4dp"
+                                    android:max="100"
+                                    android:progressTint="#FF3333"
+                                    android:progressBackgroundTint="#66000000"
+                                    android:visibility="gone" />
+                        </LinearLayout>
+
+                        <ImageButton
+                                android:id="@+id/voice_button"
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:background="@drawable/voice_button_bg"
+                                android:contentDescription="@string/voice_hold_hint"
+                                android:scaleType="center"
+                                android:src="@drawable/ic_mic" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </RelativeLayout>
