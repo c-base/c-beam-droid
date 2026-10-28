@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -84,6 +85,7 @@
                         android:textOn="Antenne an" />
                 </TableRow>
 
+                <!-- disabled, software-endlager and bluewall/darkwall have no function right now (see C_ontrolFragment)
                 <TableRow
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent">
@@ -110,14 +112,16 @@
                         android:textOn="Bluewall" />
 
                 </TableRow>
+                -->
             </TableLayout>
 
             <TableLayout
                 android:id="@+id/tableLayout2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
+                android:stretchColumns="*"
                 android:layout_below="@+id/buttonLayout">
 
                 <TextView
@@ -128,118 +132,82 @@
                     android:gravity="center"
                     android:text="c_leusen-LED pattern:" />
 
+                <!-- only the patterns the c_leuse leds know: off, rainbow, success
+                     (gruen), failure (rot), notbeleuchtung and the server default.
+                     the disabled buttons below the table are kept for reference. -->
                 <TableRow
                     android:id="@+id/tableRow5"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
 
                     <Button
                         android:id="@+id/button1"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:minWidth="66dip"
                         android:text="OFF" />
 
                     <Button
                         android:id="@+id/button2"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:minWidth="86dp"
                         android:text="Rainbow" />
 
                     <Button
                         android:id="@+id/button3"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Gru:n" />
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tableRow6"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
-
-                    <Button
-                        android:id="@+id/button4"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Blaugru:n" />
-
-                    <Button
-                        android:id="@+id/button6"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Blau" />
 
                     <Button
                         android:id="@+id/button5"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:minWidth="66dip"
                         android:text="Rot" />
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/tableRow7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <Button
-                        android:id="@+id/button7"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Weiss" />
 
                     <Button
                         android:id="@+id/button_pattern_default"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Default" />
 
                     <Button
                         android:id="@+id/button_emergency_lights"
                         style="?android:attr/buttonStyleSmall"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="10sp"
+                        app:autoSizeMaxTextSize="14sp"
                         android:text="Notbeleuchtung" />
                 </TableRow>
 
-                <TableRow
-                    android:id="@+id/tableRow4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <Button
-                        android:id="@+id/button_small_blue"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Blauer Punkt" />
-
-                    <Button
-                        android:id="@+id/button_small_green"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Grüner Punkt" />
-
-                    <Button
-                        android:id="@+id/button_small_red"
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Roter Punkt" />
+                <!-- disabled, the c_leuse leds have no such patterns (see C_ontrolFragment)
+                <TableRow android:id="@+id/tableRow7">
+                    <Button android:id="@+id/button4" style="?android:attr/buttonStyleSmall" android:text="Blaugru:n" />
+                    <Button android:id="@+id/button6" style="?android:attr/buttonStyleSmall" android:text="Blau" />
+                    <Button android:id="@+id/button7" style="?android:attr/buttonStyleSmall" android:text="Weiss" />
                 </TableRow>
+                <TableRow android:id="@+id/tableRow4">
+                    <Button android:id="@+id/button_small_blue" style="?android:attr/buttonStyleSmall" android:text="Blauer Punkt" />
+                    <Button android:id="@+id/button_small_green" style="?android:attr/buttonStyleSmall" android:text="Grüner Punkt" />
+                    <Button android:id="@+id/button_small_red" style="?android:attr/buttonStyleSmall" android:text="Roter Punkt" />
+                </TableRow>
+                -->
             </TableLayout>
 
+            <!-- disabled, the c_leuse leds have no speed setting (see C_ontrolFragment)
             <TableLayout
                 android:id="@+id/TableLayout3"
                 android:layout_width="wrap_content"
@@ -331,6 +299,7 @@
                 </TableRow>
 
             </TableLayout>
+            -->
 
         </RelativeLayout>
     </ScrollView>

@@ -770,7 +770,7 @@ public class C_beam {
     public String set_stripe_default() {
         String result = "failure";
         if (isInCrewNetwork()) {
-            callAsync("set_pattern_default");
+            callAsync("set_stripe_default");
         }
         return result;
     }

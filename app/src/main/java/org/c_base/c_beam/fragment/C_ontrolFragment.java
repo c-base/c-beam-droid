@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.activity.BamActivity;
@@ -111,6 +110,8 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
+        // disabled: bluewall/darkwall and the software-endlager have no function on the station right now
+        /*
         ToggleButton t = v.findViewById(R.id.toggleButtonBluewall);
         t.setOnClickListener(new OnClickListener() {
             @Override
@@ -133,6 +134,7 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.hwstorage();
             }
         });
+        */
         /* */
         b = v.findViewById(R.id.button1);
         b.setOnClickListener(new OnClickListener() {
@@ -158,6 +160,8 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
+        // disabled: the c_leuse leds know only off, rainbow, success, failure and notbeleuchtung; this legacy id falls back to rainbow (was blaugruen)
+        /*
         b = v.findViewById(R.id.button4);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -165,16 +169,10 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_pattern(3);
             }
         });
+        */
 
+        // legacy id 4 is what the server maps to "failure", the red pattern
         b = v.findViewById(R.id.button5);
-        b.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                c_beam.set_stripe_pattern(5);
-            }
-        });
-
-        b = v.findViewById(R.id.button6);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +180,19 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
+        // disabled: legacy id 4 is "failure" (red) on the c_leuse leds, the rot button sends it now (was blau)
+        /*
+        b = v.findViewById(R.id.button6);
+        b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c_beam.set_stripe_pattern(4);
+            }
+        });
+        */
+
+        // disabled: the c_leuse leds know only off, rainbow, success, failure and notbeleuchtung; this legacy id falls back to rainbow (was weiss)
+        /*
         b = v.findViewById(R.id.button7);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -189,7 +200,10 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_pattern(6);
             }
         });
+        */
 
+        // disabled: the c_leuse leds have no speed setting, set_stripe_speed is a no-op on the server
+        /*
         b = v.findViewById(R.id.button_speed_plus_9);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -246,6 +260,7 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_speed(-9);
             }
         });
+        */
 
         b = v.findViewById(R.id.button_emergency_lights);
         b.setOnClickListener(new OnClickListener() {
@@ -255,6 +270,8 @@ public class C_ontrolFragment extends Fragment {
             }
         });
 
+        // disabled: the c_leuse leds know only off, rainbow, success, failure and notbeleuchtung; this legacy id falls back to rainbow (was blauer punkt)
+        /*
         b = v.findViewById(R.id.button_small_blue);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -262,7 +279,10 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_pattern(7);
             }
         });
+        */
 
+        // disabled: the c_leuse leds know only off, rainbow, success, failure and notbeleuchtung; this legacy id falls back to rainbow (was gruener punkt)
+        /*
         b = v.findViewById(R.id.button_small_green);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -270,7 +290,10 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_pattern(8);
             }
         });
+        */
 
+        // disabled: the c_leuse leds know only off, rainbow, success, failure and notbeleuchtung; this legacy id falls back to rainbow (was roter punkt)
+        /*
         b = v.findViewById(R.id.button_small_red);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -278,6 +301,7 @@ public class C_ontrolFragment extends Fragment {
                 c_beam.set_stripe_pattern(9);
             }
         });
+        */
 
         b = v.findViewById(R.id.button_pattern_default);
         b.setOnClickListener(new OnClickListener() {
