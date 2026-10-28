@@ -223,6 +223,9 @@
     <string name="pref_voice_speak_summ">antworten des bordcomputers mit der sprachausgabe des
         telefons vorlesen. braucht eine deutsche stimme, die auf dem gera:t rechnet.
     </string>
+    <string name="event_time">%1$s - %2$s</string>
+    <string name="event_all_day">ganzta:gig</string>
+    <string name="event_no_description">keine beschreibung</string>
     <string name="voice_no_german_voice">sprachausgabe: keine deutsche stimme auf dem gera:t
         installiert
     </string>

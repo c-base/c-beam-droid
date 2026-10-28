@@ -97,7 +97,14 @@ public class EventListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 	    Intent myIntent = new Intent(v.getContext(), nextActivity);
-		myIntent.putExtra("id", items.get((int) id).getId());
+		// events come from the station calendar without an id, so the detail
+		// view gets the entry itself instead of looking it up again
+		Event e = items.get((int) id);
+		myIntent.putExtra(EventActivity.EXTRA_TITLE, e.getTitle());
+		myIntent.putExtra(EventActivity.EXTRA_START, e.getStart());
+		myIntent.putExtra(EventActivity.EXTRA_END, e.getEnd());
+		myIntent.putExtra(EventActivity.EXTRA_DESCRIPTION, e.getDescription());
+		myIntent.putExtra(EventActivity.EXTRA_ALL_DAY, e.isAllDay());
 		startActivityForResult(myIntent, 0);
 	}
 
