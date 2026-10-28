@@ -141,7 +141,6 @@
                         android:layout_height="wrap_content"
                         android:layout_above="@+id/fragment"
                         android:layout_alignParentRight="true"
-                        android:background="@color/black_overlay"
                         android:paddingLeft="6dp"
                         android:paddingRight="6dp"
                         android:paddingTop="1dp"

@@ -14,12 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.util.Helper;
+import org.c_base.c_beam.voice.HoldToTalkController;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -27,6 +30,8 @@ import androidx.core.graphics.Insets;
 public class C_beamActivity extends AppCompatActivity {
     ActionBar actionBar;
     C_beam c_beam = C_beam.getInstance();
+    /** The hold-to-talk panel over the content; null until setContentView ran. */
+    private HoldToTalkController holdToTalk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +42,63 @@ public class C_beamActivity extends AppCompatActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        setupActionBar();
-        applyEdgeToEdge();
+        setContentView(getLayoutInflater().inflate(layoutResID, null));
     }
 
     @Override
     public void setContentView(View view) {
-        super.setContentView(view);
+        super.setContentView(withVoicePanel(view));
         setupActionBar();
         applyEdgeToEdge();
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        super.setContentView(view, params);
+        super.setContentView(withVoicePanel(view), params);
         setupActionBar();
         applyEdgeToEdge();
+    }
+
+    /**
+     * Lays the hold-to-talk panel over the bottom edge of the screen's own content, so
+     * the microphone is reachable from every screen in the same place. Where the screen
+     * has a bottom bar (see {@link #voicePanelInset}) the panel sits above it.
+     * The panel only shows in the crew network (see onResume).
+     */
+    private View withVoicePanel(View content) {
+        FrameLayout frame = new FrameLayout(this);
+        frame.addView(content, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        final View panel = getLayoutInflater().inflate(R.layout.view_voice_panel, frame, false);
+        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
+        frame.addView(panel, lp);
+        holdToTalk = new HoldToTalkController(this, panel);
+        // the bars' heights are only known after layout, and they may come and go
+        frame.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int bottom = voicePanelInset();
+            if (lp.bottomMargin != bottom) {
+                lp.bottomMargin = bottom;
+                panel.setLayoutParams(lp);
+            }
+        });
+        return frame;
+    }
+
+    /**
+     * How much of the screen's bottom edge the voice panel must leave free, in pixels:
+     * the main button row of the ring screens, the "stand" label above it once it shows,
+     * and on c-mission the activity logger. Screens with other bottom bars override this.
+     */
+    protected int voicePanelInset() {
+        return heightIfShown(R.id.fragment) + heightIfShown(R.id.activity_logger)
+                + heightIfShown(R.id.textView_last_update);
+    }
+
+    /** The height of the view with that id, or 0 when the screen has no such view or hides it. */
+    protected final int heightIfShown(int id) {
+        View v = findViewById(id);
+        return v != null && v.isShown() ? v.getHeight() : 0;
     }
 
     private void applyEdgeToEdge() {
@@ -178,6 +223,33 @@ public class C_beamActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         c_beam.reloadConfiguration();
+        if (holdToTalk != null) {
+            holdToTalk.setAvailable(c_beam.isInCrewNetwork());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (holdToTalk != null) {
+            holdToTalk.abort();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (holdToTalk != null) {
+            holdToTalk.release();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (holdToTalk != null) {
+            holdToTalk.onPermissionResult(requestCode, grantResults);
+        }
     }
 
     protected void startActivity(Class<?> activityClass) {

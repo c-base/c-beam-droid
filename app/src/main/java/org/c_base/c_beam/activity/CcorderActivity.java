@@ -59,7 +59,6 @@ import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
 import org.c_base.c_beam.domain.Ring;
-import org.c_base.c_beam.voice.HoldToTalkController;
 
 @SuppressLint("NewApi")
 public class CcorderActivity extends C_beamActivity implements Callback, SensorEventListener {
@@ -114,7 +113,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private ToggleButton toggleButtonCam;
     private SharedPreferences sharedPref;
     private boolean hasLinearAcceleration = false;
-    private HoldToTalkController holdToTalk;
     private long lastScanSoundTime = 0;
     private static final long SCAN_SOUND_MIN_INTERVAL = 150; // milliseconds
 
@@ -152,7 +150,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         setupScanBar();
         setupSurfaceView();
         setupNavigationDrawer();
-        holdToTalk = new HoldToTalkController(this, findViewById(R.id.voice_panel));
 
         showWarningMessage();
     }
@@ -566,12 +563,17 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
+    /** The c-ontrols toggle row, plus the c-ontrols themselves while they are shown. */
+    @Override
+    protected int voicePanelInset() {
+        return heightIfShown(R.id.RelativeLayout1) + heightIfShown(R.id.hidecontainer);
+    }
+
     protected void onResume() {
         super.onResume();
         registerSensors();
         startTimerForSlowPlots();
         checkCameraPermission();
-        holdToTalk.setAvailable(c_beam.isInCrewNetwork());
     }
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 42;
@@ -607,7 +609,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                 openCamera();
             }
         }
-        holdToTalk.onPermissionResult(requestCode, grantResults);
     }
 
     private void startTimerForSlowPlots() {
@@ -624,7 +625,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         super.onPause();
         // Lets go of the microphone before anything else: a recording must not survive the
         // screen going dark or the user switching away.
-        holdToTalk.abort();
         unregisterSensors();
         try {
             if (camera != null) {
@@ -641,7 +641,6 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        holdToTalk.release();
         if (soundPool != null) {
             soundPool.release();
             soundPool = null;
