@@ -14,12 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.fragment.AboutDialogFragment;
 import org.c_base.c_beam.util.Helper;
+import org.c_base.c_beam.voice.HoldToTalkController;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -27,6 +29,8 @@ import androidx.core.graphics.Insets;
 public class C_beamActivity extends AppCompatActivity {
     ActionBar actionBar;
     C_beam c_beam = C_beam.getInstance();
+    /** The hold-to-talk panel below the content; null until setContentView ran. */
+    private HoldToTalkController holdToTalk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +41,37 @@ public class C_beamActivity extends AppCompatActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        setupActionBar();
-        applyEdgeToEdge();
+        setContentView(getLayoutInflater().inflate(layoutResID, null));
     }
 
     @Override
     public void setContentView(View view) {
-        super.setContentView(view);
+        super.setContentView(withVoicePanel(view));
         setupActionBar();
         applyEdgeToEdge();
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
-        super.setContentView(view, params);
+        super.setContentView(withVoicePanel(view), params);
         setupActionBar();
         applyEdgeToEdge();
+    }
+
+    /**
+     * Puts the screen's own content above the hold-to-talk panel, so the microphone is
+     * reachable from every screen in the same place. The panel only shows in the crew
+     * network (see onResume); elsewhere the content keeps the whole height.
+     */
+    private View withVoicePanel(View content) {
+        LinearLayout column = new LinearLayout(this);
+        column.setOrientation(LinearLayout.VERTICAL);
+        column.addView(content, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        View panel = getLayoutInflater().inflate(R.layout.view_voice_panel, column, false);
+        column.addView(panel);
+        holdToTalk = new HoldToTalkController(this, panel);
+        return column;
     }
 
     private void applyEdgeToEdge() {
@@ -178,6 +196,33 @@ public class C_beamActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         c_beam.reloadConfiguration();
+        if (holdToTalk != null) {
+            holdToTalk.setAvailable(c_beam.isInCrewNetwork());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (holdToTalk != null) {
+            holdToTalk.abort();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (holdToTalk != null) {
+            holdToTalk.release();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (holdToTalk != null) {
+            holdToTalk.onPermissionResult(requestCode, grantResults);
+        }
     }
 
     protected void startActivity(Class<?> activityClass) {
