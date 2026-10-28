@@ -1,6 +1,6 @@
-Release Notes
+# Release Notes
 
-26.10.0
+## 26.10.0
 - Hold-to-talk voice dictation and voice commands on every screen, floating above the bottom buttons (Whisper on the station's AI server)
 - Ask the station's language model general questions, with the AI model chosen from the server's list
 - Choose the knowledge source for answers: lazee's RAG or Sandy Strands
@@ -13,7 +13,7 @@ Release Notes
 - Fix the unlabeled c-ontrol buttons and the Default LED pattern button
 - Hide the c-ontrol buttons that no longer do anything (LED colours, speed, Software-Endlager, Darkwall); the LED pattern buttons now match what the c_leuse LEDs support
 
-26.09.0
+## 26.09.0
 - Fix unsafe WebView SSL error handler (Google Play policy alert)
 - Enable TLS certificate validation for c-beam and ETA server connections
 - Limit unencrypted HTTP to the internal services that require it
@@ -26,74 +26,74 @@ Release Notes
 - Fix notifications not appearing on Android 8 and newer in the F-Droid build
 - Keep the user interface responsive while data is loading
 
-26.07.0
+## 26.07.0
 - Fix crash in carbon
 - Fix behaviour for empty ETA and userlist
 
-26.06.0
+## 26.06.0
 - Change versioning scheme
 - Compatibility updates and fixes
 
-1.7.1
+## 1.7.1
 - Add bar status indicator
 
-1.7.0
+## 1.7.0
 - Fix push notifications and update minSdk version
 
-1.6.5
+## 1.6.5
 - Yet another API Update Release
 
-1.6.4
+## 1.6.4
 - API Update Release
 
-1.6.3
+## 1.6.3
 - WTF-Release
 
-1.6.2
+## 1.6.2
 - Changed some URLs from HTTP to HTTPS
 - Allowed HTTP connections anyway since some internal services don't have TLS
 
-1.6.1
+## 1.6.1
 - Fixed JSON RPC connection on Android 9
 
-1.6.0
+## 1.6.0
 - Switched from GCM to FCM (Google notifications)
 
-1.5.3
+## 1.5.3
 - Fixed crash in push settings
 
-1.5.2
+## 1.5.2
 - Added matelight tab to core activity
 - Replaced Google Maps with OSM
 
-1.5.1
+## 1.5.1
 - Fixed Google Alert regarding WebView SSL Error Handler
 
-1.5.0
+## 1.5.0
 - MQTT push notification support
 - SDK Update
 
-1.4.4
+## 1.4.4
 - added temperature sensor to c-corder (thx to bronsen)
 - fixed notification timestamp bug.
 - updated api
 
-1.4.3
+## 1.4.3
 - c-beam changed url bugfix
 - c-corder bugfix
 
-1.4.2
+## 1.4.2
 - smart watch notification interface for 3rd party apps
 - c-beam url updated
 - bugfixes
 
-1.4.1
+## 1.4.1
 - bugfix and easteregg release
 
-[some release notes are missing]
+*some release notes are missing*
 
-1.1.2
-* Missionen / Activity Log
-* NFC Login (cketti)
+## 1.1.2
+- Missionen / Activity Log
+- NFC Login (cketti)
 
-all release notes at: https://github.com/c-base/c-beam-droid/blob/master/releasenotes.txt
+All release notes: <https://github.com/c-base/c-beam-droid/blob/master/RELEASE.md>
