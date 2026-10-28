@@ -1,9 +1,10 @@
 Release Notes
 
 26.10.0
-- Hold-to-talk voice dictation and voice commands in the c-corder (Whisper on the station's AI server)
+- Hold-to-talk voice dictation and voice commands on every screen, floating above the bottom buttons (Whisper on the station's AI server)
 - Ask the station's language model general questions, with the AI model chosen from the server's list
 - Choose the knowledge source for answers: lazee's RAG or Sandy Strands
+- When the knowledge base has nothing, c-beam points to the data rescue probe siri, which unfortunately does not have it either
 - Optionally read c-beam's answers aloud with the phone's text-to-speech, with proper pronunciation of c-base, c-beam and crew
 - Show voice results as a small terminal in the activity-log style
 - Show when the lists were last refreshed and update them more reliably
