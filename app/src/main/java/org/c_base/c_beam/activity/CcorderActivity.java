@@ -636,9 +636,14 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
-    /** cbag3 artefact pages, as printed on the labels: the slug is the last path part. */
-    private static final Pattern ARTEFACT_URL =
-            Pattern.compile("https?://cbag3\\.c-base\\.org/([^/?#]+)/?(?:[?#].*)?", Pattern.CASE_INSENSITIVE);
+    /**
+     * cbag3 artefact pages. The proper form is https://cbag3.c-base.org/artefact/NAME/,
+     * but codes in the station have been seen without the slash after the host and
+     * without the /artefact/ part, so both are optional here and put back when the
+     * slug is built: the server's slugs are "/artefact/NAME".
+     */
+    private static final Pattern ARTEFACT_URL = Pattern.compile(
+            "https?://cbag3\\.c-base\\.org/*(?:artefact/+)?([^/?#]+)/*(?:[?#].*)?", Pattern.CASE_INSENSITIVE);
     private static final Pattern CREW_URL =
             Pattern.compile("https?://([a-z0-9-]+)\\.crew\\.c-base\\.org(?:/.*)?", Pattern.CASE_INSENSITIVE);
 
@@ -652,10 +657,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
             toggleButtonScanner.performClick();
         }
         Matcher m = ARTEFACT_URL.matcher(text);
-        if (m.matches()) {
-            note(getString(R.string.qr_artefact, m.group(1)));
+        if (m.matches() && !"artefact".equalsIgnoreCase(m.group(1))) {
+            String name = m.group(1);
+            note(getString(R.string.qr_artefact, name));
             Intent intent = new Intent(this, ArtefactActivity.class);
-            intent.putExtra("slug", m.group(1));
+            intent.putExtra("slug", "/artefact/" + name);
             startActivity(intent);
             return;
         }
