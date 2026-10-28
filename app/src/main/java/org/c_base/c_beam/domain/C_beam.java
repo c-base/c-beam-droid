@@ -481,6 +481,16 @@ public class C_beam {
         return u;
     }
 
+    /** The member with that username, or null if the lists do not know one. */
+    public User getUser(String username) {
+        for (User user : users) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     public User getCurrentUser() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext());
         String username = sharedPref.getString(Settings.USERNAME, "bernd");

@@ -69,6 +69,8 @@ dependencies {
     // attributes and, once those were removed, rendered the c-corder plots empty even
     // though sensor data was arriving. Migrating to 1.x is tracked in CODE-AUDIT.md.
     implementation 'com.androidplot:androidplot-core:0.6.1'
+    // QR decoding in the c-corder: pure Java, no Google services behind the package name
+    implementation 'com.google.zxing:core:3.5.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'com.mcxiaoke.viewpagerindicator:library:2.4.1@aar'

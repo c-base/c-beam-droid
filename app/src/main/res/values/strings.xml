@@ -223,6 +223,13 @@
     <string name="pref_voice_speak_summ">antworten des bordcomputers mit der sprachausgabe des
         telefons vorlesen. braucht eine deutsche stimme, die auf dem gera:t rechnet.
     </string>
+    <string name="qr_artefact">artefakt erkannt: %s</string>
+    <string name="qr_member">member erkannt: %s</string>
+    <string name="qr_member_unknown">member %s ist nicht in der liste</string>
+    <string name="qr_url">link erkannt: %s</string>
+    <string name="qr_open_url">link o:ffnen?</string>
+    <string name="qr_no_browser">kein browser auf dem gera:t</string>
+    <string name="qr_text">code gelesen: %s</string>
     <string name="event_time">%1$s - %2$s</string>
     <string name="event_all_day">ganzta:gig</string>
     <string name="event_no_description">keine beschreibung</string>

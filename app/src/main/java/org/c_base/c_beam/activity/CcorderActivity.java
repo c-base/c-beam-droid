@@ -52,9 +52,17 @@ import android.widget.ToggleButton;
 import com.androidplot.xy.XYPlot;
 import java.io.IOException;
 import java.util.ArrayList;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
+import android.view.HapticFeedbackConstants;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.c_base.c_beam.domain.User;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.ccorder.DrawOnTop;
+import org.c_base.c_beam.ccorder.QrScanner;
 import org.c_base.c_beam.ccorder.Scanbar;
 import org.c_base.c_beam.ccorder.SensorPlot;
 import org.c_base.c_beam.ccorder.TouchSurfaceView;
@@ -110,6 +118,8 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
     private final String[] dimensionArrayTemp = {"°K"};
     private ToggleButton toggleButtonSensors;
     private ToggleButton toggleButtonScanner;
+    /** Reads QR codes from the preview while the scanner toggle is on. */
+    private QrScanner qrScanner;
     private ToggleButton toggleButtonCam;
     private SharedPreferences sharedPref;
     private boolean hasLinearAcceleration = false;
@@ -248,9 +258,11 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                     transAnimation.setRepeatCount(-1);
                     transAnimation.setDuration(1000);
                     scanBar.startAnimation(transAnimation);
+                    startQrScanner();
                 } else {
                     scanBar.clearAnimation();
                     scanBar.setVisibility(View.GONE);
+                    stopQrScanner();
                 }
             }
         });
@@ -595,10 +607,92 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
                     camera.setDisplayOrientation(90);
                     camera.startPreview();
                 }
+                if (toggleButtonScanner != null && toggleButtonScanner.isChecked()) {
+                    startQrScanner();
+                }
             }
         } catch (Exception ex) {
             Log.e(TAG, "Failed to open camera", ex);
         }
+    }
+
+    private void startQrScanner() {
+        if (camera == null || qrScanner != null) {
+            return;
+        }
+        qrScanner = new QrScanner(camera, new QrScanner.Listener() {
+            @Override
+            public void onCode(String text) {
+                onQrCode(text);
+            }
+        });
+        qrScanner.start();
+    }
+
+    private void stopQrScanner() {
+        if (qrScanner != null) {
+            qrScanner.stop();
+            qrScanner = null;
+        }
+    }
+
+    /** cbag3 artefact pages, as printed on the labels: the slug is the last path part. */
+    private static final Pattern ARTEFACT_URL =
+            Pattern.compile("https?://cbag3\\.c-base\\.org/([^/?#]+)/?(?:[?#].*)?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CREW_URL =
+            Pattern.compile("https?://([a-z0-9-]+)\\.crew\\.c-base\\.org(?:/.*)?", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * A code was read: say so in the terminal, end the scan like a real scanner would,
+     * and open whatever the code points at in the station.
+     */
+    private void onQrCode(String text) {
+        scanBar.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        if (toggleButtonScanner.isChecked()) {
+            toggleButtonScanner.performClick();
+        }
+        Matcher m = ARTEFACT_URL.matcher(text);
+        if (m.matches()) {
+            note(getString(R.string.qr_artefact, m.group(1)));
+            Intent intent = new Intent(this, ArtefactActivity.class);
+            intent.putExtra("slug", m.group(1));
+            startActivity(intent);
+            return;
+        }
+        m = CREW_URL.matcher(text);
+        if (m.matches()) {
+            User member = c_beam.getUser(m.group(1));
+            if (member == null) {
+                note(getString(R.string.qr_member_unknown, m.group(1)));
+                return;
+            }
+            note(getString(R.string.qr_member, member.getUsername()));
+            Intent intent = new Intent(this, UserActivity.class);
+            intent.putExtra("id", member.getId());
+            startActivity(intent);
+            return;
+        }
+        if (text.startsWith("http://") || text.startsWith("https://")) {
+            note(getString(R.string.qr_url, text));
+            final Uri uri = Uri.parse(text);
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.qr_open_url)
+                    .setMessage(text)
+                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                            } catch (ActivityNotFoundException e) {
+                                note(getString(R.string.qr_no_browser));
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.button_cancel, null)
+                    .show();
+            return;
+        }
+        note(getString(R.string.qr_text, text));
     }
 
     @Override
@@ -626,6 +720,7 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         // Lets go of the microphone before anything else: a recording must not survive the
         // screen going dark or the user switching away.
         unregisterSensors();
+        stopQrScanner();
         try {
             if (camera != null) {
                 camera.stopPreview();
