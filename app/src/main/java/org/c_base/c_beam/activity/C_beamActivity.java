@@ -30,8 +30,10 @@ import androidx.core.graphics.Insets;
 public class C_beamActivity extends AppCompatActivity {
     ActionBar actionBar;
     C_beam c_beam = C_beam.getInstance();
-    /** The hold-to-talk panel below the content; null until setContentView ran. */
+    /** The hold-to-talk panel over the content; null until setContentView ran. */
     private HoldToTalkController holdToTalk;
+    /** Extra room above a bottom bar, so the microphone clears the "stand" label there. */
+    private static final int VOICE_PANEL_LIFT_DP = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,10 @@ public class C_beamActivity extends AppCompatActivity {
         frame.addView(panel, lp);
         holdToTalk = new HoldToTalkController(this, panel);
         // the bar's height is only known after layout, and it may come and go
+        final int lift = (int) (VOICE_PANEL_LIFT_DP * getResources().getDisplayMetrics().density);
         frame.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             View anchor = voicePanelAnchor();
-            int bottom = anchor != null && anchor.isShown() ? anchor.getHeight() : 0;
+            int bottom = anchor != null && anchor.isShown() ? anchor.getHeight() + lift : 0;
             if (lp.bottomMargin != bottom) {
                 lp.bottomMargin = bottom;
                 panel.setLayoutParams(lp);
