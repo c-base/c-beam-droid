@@ -12,6 +12,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
@@ -234,22 +235,56 @@ public class C_beam {
         return wifiManager.isWifiEnabled() && (ip.startsWith("42.42.") || ip.startsWith("10.0."));
     }
 
-    private Object c_beamCall(String method, Map<String, Object> params) {
+    /**
+     * Sends one request to c-beam and returns the raw response; transport problems
+     * surface as the session exception. Callers that only want the result use
+     * {@link #c_beamCall}.
+     */
+    private JSONRPC2Response c_beamSend(String method, Map<String, Object> params)
+            throws JSONRPC2SessionException {
         JSONRPC2Request request = new JSONRPC2Request(method, params, 0);
-        JSONRPC2Response response;
+        synchronized (rpcLock) {
+            return c_beamClient.send(request);
+        }
+    }
 
+    /**
+     * Describes a failed call for the log and the UI: the transport error, or the
+     * JSON-RPC error the server answered with, including its data field (the
+     * Django backend puts the exception text there).
+     */
+    private static String describeFailure(String method, JSONRPC2Response response, Exception e) {
+        if (e != null) {
+            return method + " unreachable: " + e.getMessage();
+        }
+        if (response == null) {
+            return method + " got no response";
+        }
+        JSONRPC2Error error = response.getError();
+        if (error == null) {
+            return method + " failed";
+        }
+        String text = method + " failed: " + error.getMessage() + " (" + error.getCode() + ")";
+        Object data = error.getData();
+        if (data != null) {
+            text += ": " + data;
+        }
+        return text;
+    }
+
+    private Object c_beamCall(String method, Map<String, Object> params) {
+        JSONRPC2Response response;
         try {
-            synchronized (rpcLock) {
-                response = c_beamClient.send(request);
-            }
+            response = c_beamSend(method, params);
         } catch (JSONRPC2SessionException e) {
-            Log.e(TAG, "c_beamCall failed: " + e.getMessage());
+            Log.e(TAG, describeFailure(method, null, e));
             return null;
         }
 
         if (response != null && response.indicatesSuccess()) {
             return response.getResult();
         }
+        Log.e(TAG, describeFailure(method, response, null));
         return null;
     }
 
@@ -887,8 +922,19 @@ public class C_beam {
         new RPCCallTask(method).execute(map);
     }
 
+    /** Outcome of a fire-and-forget call: exactly one of result and error is set. */
+    private static final class RpcOutcome {
+        final String result;
+        final String error;
+
+        RpcOutcome(String result, String error) {
+            this.result = result;
+            this.error = error;
+        }
+    }
+
     @SuppressLint("StaticFieldLeak")
-    public class RPCCallTask extends AsyncTask<Map<String, String>, Void, String> {
+    public class RPCCallTask extends AsyncTask<Map<String, String>, Void, RpcOutcome> {
         private final String method;
 
         public RPCCallTask(String method) {
@@ -897,25 +943,41 @@ public class C_beam {
 
         @SafeVarargs
         @Override
-        protected final String doInBackground(Map<String, String>... params) {
+        protected final RpcOutcome doInBackground(Map<String, String>... params) {
             Map<String, Object> callParams = new HashMap<>();
             if (params.length > 0 && params[0] != null) {
                 callParams.putAll(params[0]);
             }
-            Object response = c_beamCall(method, callParams);
-            if (response instanceof JSONObject) {
-                return ((JSONObject) response).toJSONString();
-            } else if (response instanceof String) {
-                return (String) response;
+            JSONRPC2Response response;
+            try {
+                response = c_beamSend(method, callParams);
+            } catch (JSONRPC2SessionException e) {
+                return new RpcOutcome(null, describeFailure(method, null, e));
             }
-            return "failure";
+            if (response == null || !response.indicatesSuccess()) {
+                return new RpcOutcome(null, describeFailure(method, response, null));
+            }
+            Object result = response.getResult();
+            if (result instanceof JSONObject) {
+                return new RpcOutcome(((JSONObject) result).toJSONString(), null);
+            } else if (result != null) {
+                return new RpcOutcome(result.toString(), null);
+            }
+            return new RpcOutcome(null, null);
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(RpcOutcome outcome) {
             Context context = appContext();
-            if (context != null && !result.equals("failure")) {
-                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            if (outcome.error != null) {
+                // a failed button press used to vanish silently; the server's error
+                // text is what tells the user (and the log) what is wrong
+                Log.e(TAG, outcome.error);
+                if (context != null) {
+                    Toast.makeText(context, outcome.error, Toast.LENGTH_LONG).show();
+                }
+            } else if (context != null && outcome.result != null) {
+                Toast.makeText(context, outcome.result, Toast.LENGTH_LONG).show();
             }
         }
     }

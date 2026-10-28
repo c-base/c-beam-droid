@@ -110,7 +110,7 @@ public class CoreActivity extends RingActivity {
             Fragment fragment;
             if (pages[position] == null) {
                 if (position == CONTROL_FRAGMENT) {
-                    fragment = new C_ontrolFragment(c_beam);
+                    fragment = new C_ontrolFragment();
                 } else if (position == MEMBERINTERFACE_FRAGMENT) {
                     fragment = new WebViewFragment();
                     ((WebViewFragment) fragment).setUrl(getString(R.string.memberinterface_url));

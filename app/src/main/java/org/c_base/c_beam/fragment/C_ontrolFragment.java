@@ -1,6 +1,5 @@
 package org.c_base.c_beam.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,16 +20,17 @@ import org.c_base.c_beam.domain.C_beam;
 import org.c_base.c_beam.util.Helper;
 
 
-@SuppressLint("ValidFragment")
 public class C_ontrolFragment extends Fragment {
     private ProgressBar input;
     private final C_ontrolFragment cf = this;
     private AlertDialog pd;
     private int progress;
-    private final C_beam c_beam;
+    // the fragment framework re-instantiates fragments through the no-arg
+    // constructor when an activity is restored from saved state, so the
+    // C_beam singleton is fetched here instead of being passed in
+    private final C_beam c_beam = C_beam.getInstance();
 
-    public C_ontrolFragment(C_beam c_beam) {
-        this.c_beam = c_beam;
+    public C_ontrolFragment() {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
