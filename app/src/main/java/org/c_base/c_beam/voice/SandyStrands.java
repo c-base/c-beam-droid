@@ -264,7 +264,9 @@ public class SandyStrands implements KnowledgeSource {
      */
     static String format(String query, String answer, List<String> sources) {
         if (answer.isEmpty()) {
-            return "nichts gefunden: sandy strands hat zu „" + query + "“ nichts gesagt";
+            return "nichts gefunden: sandy strands hat zu „" + query + "“ nichts gesagt. sage das "
+                    + "und verweise auf die datenrettungssonde siri, die diese information "
+                    + "leider auch nicht enthält";
         }
         if (answer.length() > MAX_ANSWER_CHARS) {
             answer = answer.substring(0, MAX_ANSWER_CHARS - 1) + "…";

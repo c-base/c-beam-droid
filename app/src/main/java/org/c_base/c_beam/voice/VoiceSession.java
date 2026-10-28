@@ -29,7 +29,8 @@ public class VoiceSession {
      */
     private static final Pattern REFUSAL = Pattern.compile(
             "kann ich (leider )?nicht|nicht (tun|machen|ausführen|möglich)|kein\\w*( \\w+)? werkzeug"
-            + "|(weiß|weiss) (dazu|darüber|davon) nichts|dazu (ist )?nichts (bekannt|gefunden)",
+            + "|(weiß|weiss) (dazu|darüber|davon) nichts|dazu (ist )?nichts (bekannt|gefunden)"
+            + "|datenrettungssonde",
             Pattern.CASE_INSENSITIVE);
 
     public interface Listener {
@@ -172,7 +173,10 @@ public class VoiceSession {
                 + " wieder auf, mit einer neuen Suchanfrage. Die Fundstellen sind Kandidaten "
                 + "einer Ähnlichkeitssuche und können unpassend sein: verwende nur, was die "
                 + "Frage wirklich beantwortet, und erfinde nichts dazu. Steht die Antwort nicht "
-                + "in den Fundstellen, sage, dass die Station dazu nichts weiß. Die Spracherkennung "
+                + "in den Fundstellen, sage, dass die Station dazu nichts weiß, und verweise auf "
+                + "die Datenrettungssonde „Siri“, die diese Information leider auch nicht "
+                + "enthält, etwa: „dazu weiß die station nichts. die datenrettungssonde siri "
+                + "enthält diese information leider auch nicht.“ Die Spracherkennung "
                 + "schreibt c-base oft als „Seabase“, „Sea Base“, „C Base“ oder „die Base“ und "
                 + "c-beam als „Seabeam“; gemeint ist immer die c-base beziehungsweise c-beam, "
                 + "und in Suchanfragen schreibst du c-base. ";
