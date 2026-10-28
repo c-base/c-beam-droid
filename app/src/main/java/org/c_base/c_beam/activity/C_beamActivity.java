@@ -14,7 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
@@ -59,19 +60,39 @@ public class C_beamActivity extends AppCompatActivity {
     }
 
     /**
-     * Puts the screen's own content above the hold-to-talk panel, so the microphone is
-     * reachable from every screen in the same place. The panel only shows in the crew
-     * network (see onResume); elsewhere the content keeps the whole height.
+     * Lays the hold-to-talk panel over the bottom edge of the screen's own content, so
+     * the microphone is reachable from every screen in the same place. Where the screen
+     * has a bottom button bar (see {@link #voicePanelAnchor}) the panel sits above it.
+     * The panel only shows in the crew network (see onResume).
      */
     private View withVoicePanel(View content) {
-        LinearLayout column = new LinearLayout(this);
-        column.setOrientation(LinearLayout.VERTICAL);
-        column.addView(content, new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
-        View panel = getLayoutInflater().inflate(R.layout.view_voice_panel, column, false);
-        column.addView(panel);
+        FrameLayout frame = new FrameLayout(this);
+        frame.addView(content, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        final View panel = getLayoutInflater().inflate(R.layout.view_voice_panel, frame, false);
+        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
+        frame.addView(panel, lp);
         holdToTalk = new HoldToTalkController(this, panel);
-        return column;
+        // the bar's height is only known after layout, and it may come and go
+        frame.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            View anchor = voicePanelAnchor();
+            int bottom = anchor != null && anchor.isShown() ? anchor.getHeight() : 0;
+            if (lp.bottomMargin != bottom) {
+                lp.bottomMargin = bottom;
+                panel.setLayoutParams(lp);
+            }
+        });
+        return frame;
+    }
+
+    /**
+     * The bottom bar the voice panel should float above, or null to rest on the bottom
+     * edge: the main button row of the ring screens, or the c-corder's c-ontrols.
+     */
+    protected View voicePanelAnchor() {
+        View bar = findViewById(R.id.fragment);
+        return bar != null ? bar : findViewById(R.id.hidecontainer);
     }
 
     private void applyEdgeToEdge() {
