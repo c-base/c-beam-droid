@@ -32,8 +32,6 @@ public class C_beamActivity extends AppCompatActivity {
     C_beam c_beam = C_beam.getInstance();
     /** The hold-to-talk panel over the content; null until setContentView ran. */
     private HoldToTalkController holdToTalk;
-    /** Extra room above a bottom bar, so the microphone clears the "stand" label there. */
-    private static final int VOICE_PANEL_LIFT_DP = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +74,9 @@ public class C_beamActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
         frame.addView(panel, lp);
         holdToTalk = new HoldToTalkController(this, panel);
-        // the bar's height is only known after layout, and it may come and go
-        final int lift = (int) (VOICE_PANEL_LIFT_DP * getResources().getDisplayMetrics().density);
+        // the bars' heights are only known after layout, and they may come and go
         frame.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            int inset = voicePanelInset();
-            int bottom = inset > 0 ? inset + lift : 0;
+            int bottom = voicePanelInset();
             if (lp.bottomMargin != bottom) {
                 lp.bottomMargin = bottom;
                 panel.setLayoutParams(lp);
@@ -91,11 +87,12 @@ public class C_beamActivity extends AppCompatActivity {
 
     /**
      * How much of the screen's bottom edge the voice panel must leave free, in pixels:
-     * the main button row of the ring screens plus, on c-mission, the activity logger
-     * above it. Screens with other bottom bars override this.
+     * the main button row of the ring screens, the "stand" label above it once it shows,
+     * and on c-mission the activity logger. Screens with other bottom bars override this.
      */
     protected int voicePanelInset() {
-        return heightIfShown(R.id.fragment) + heightIfShown(R.id.activity_logger);
+        return heightIfShown(R.id.fragment) + heightIfShown(R.id.activity_logger)
+                + heightIfShown(R.id.textView_last_update);
     }
 
     /** The height of the view with that id, or 0 when the screen has no such view or hides it. */
