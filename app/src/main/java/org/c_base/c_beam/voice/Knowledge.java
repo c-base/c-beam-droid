@@ -274,7 +274,9 @@ public class Knowledge implements KnowledgeSource {
             blocks.add((source.isEmpty() ? "" : "[" + source + "]\n") + text);
         }
         if (blocks.isEmpty()) {
-            return "nichts gefunden: die wissensdatenbank enthält nichts dazu";
+            return "nichts gefunden: die wissensdatenbank enthält nichts dazu. sage das und "
+                    + "verweise auf die datenrettungssonde siri, die diese information leider "
+                    + "auch nicht enthält";
         }
         // The similarity scores are too compressed to filter on, so the model gets told
         // what it is looking at; without this it once invented a CNC mill out of chunks
