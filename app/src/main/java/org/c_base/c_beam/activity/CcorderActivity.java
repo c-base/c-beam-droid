@@ -563,6 +563,12 @@ public class CcorderActivity extends C_beamActivity implements Callback, SensorE
         }
     }
 
+    /** The c-ontrols toggle row, plus the c-ontrols themselves while they are shown. */
+    @Override
+    protected int voicePanelInset() {
+        return heightIfShown(R.id.RelativeLayout1) + heightIfShown(R.id.hidecontainer);
+    }
+
     protected void onResume() {
         super.onResume();
         registerSensors();

@@ -64,7 +64,7 @@ public class C_beamActivity extends AppCompatActivity {
     /**
      * Lays the hold-to-talk panel over the bottom edge of the screen's own content, so
      * the microphone is reachable from every screen in the same place. Where the screen
-     * has a bottom button bar (see {@link #voicePanelAnchor}) the panel sits above it.
+     * has a bottom bar (see {@link #voicePanelInset}) the panel sits above it.
      * The panel only shows in the crew network (see onResume).
      */
     private View withVoicePanel(View content) {
@@ -79,8 +79,8 @@ public class C_beamActivity extends AppCompatActivity {
         // the bar's height is only known after layout, and it may come and go
         final int lift = (int) (VOICE_PANEL_LIFT_DP * getResources().getDisplayMetrics().density);
         frame.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            View anchor = voicePanelAnchor();
-            int bottom = anchor != null && anchor.isShown() ? anchor.getHeight() + lift : 0;
+            int inset = voicePanelInset();
+            int bottom = inset > 0 ? inset + lift : 0;
             if (lp.bottomMargin != bottom) {
                 lp.bottomMargin = bottom;
                 panel.setLayoutParams(lp);
@@ -90,12 +90,18 @@ public class C_beamActivity extends AppCompatActivity {
     }
 
     /**
-     * The bottom bar the voice panel should float above, or null to rest on the bottom
-     * edge: the main button row of the ring screens, or the c-corder's c-ontrols.
+     * How much of the screen's bottom edge the voice panel must leave free, in pixels:
+     * the main button row of the ring screens plus, on c-mission, the activity logger
+     * above it. Screens with other bottom bars override this.
      */
-    protected View voicePanelAnchor() {
-        View bar = findViewById(R.id.fragment);
-        return bar != null ? bar : findViewById(R.id.hidecontainer);
+    protected int voicePanelInset() {
+        return heightIfShown(R.id.fragment) + heightIfShown(R.id.activity_logger);
+    }
+
+    /** The height of the view with that id, or 0 when the screen has no such view or hides it. */
+    protected final int heightIfShown(int id) {
+        View v = findViewById(id);
+        return v != null && v.isShown() ? v.getHeight() : 0;
     }
 
     private void applyEdgeToEdge() {
