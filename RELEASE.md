@@ -7,6 +7,7 @@
 - When the knowledge base has nothing, c-beam points to the data rescue probe siri, which unfortunately does not have it either
 - Optionally read c-beam's answers aloud with the phone's text-to-speech, with proper pronunciation of c-base, c-beam and crew
 - Show voice results as a small terminal in the activity-log style
+- The c-corder scanner reads QR codes: artefact labels open the artefact page, crew pages the member page, other links the browser
 - Show when the lists were last refreshed and update them more reliably
 - Show the server's error message when a c-ontrol action fails instead of failing silently
 - Fix crash when the app is reopened on the c-ontrol tab after Android killed it in the background
