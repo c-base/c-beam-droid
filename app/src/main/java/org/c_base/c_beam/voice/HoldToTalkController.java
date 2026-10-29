@@ -158,6 +158,16 @@ public class HoldToTalkController {
         syncSpeaker();
     }
 
+    /** True while the panel is shown, i.e. in the crew network. */
+    public boolean isAvailable() {
+        return available;
+    }
+
+    /** A line from elsewhere in the app, shown in the terminal like an answer. */
+    public void note(String text) {
+        print(text);
+    }
+
     /** Called from onDestroy: lets go of the text-to-speech engine. */
     public void release() {
         abort();

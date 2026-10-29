@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.c_base.c_beam.R;
 import org.c_base.c_beam.Settings;
 import org.c_base.c_beam.domain.C_beam;
@@ -83,6 +84,18 @@ public class C_beamActivity extends AppCompatActivity {
             }
         });
         return frame;
+    }
+
+    /**
+     * Tells the user something in the voice terminal where it is shown, otherwise as a
+     * toast: the c-corder reports scanned codes this way.
+     */
+    protected void note(String line) {
+        if (holdToTalk != null && holdToTalk.isAvailable()) {
+            holdToTalk.note(line);
+        } else {
+            Toast.makeText(this, line, Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
